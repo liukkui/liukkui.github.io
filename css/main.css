@@ -1770,6 +1770,22 @@ pre .javascript .function {
   border: 1px solid #eee;
   opacity: 1;
 }
+.site-author-image {
+  -webkit-transition: -webkit-transform 1s ease-out;
+  -moz-transition: -moz-transform 1s ease-out;
+  -ms-transition: -ms-transform 1s ease-out;
+  transition: transform 1s ease-out;
+}
+.site-author-image:hover {
+  -webkit-transform: rotateZ(360deg);
+  -moz-transform: rotateZ(360deg);
+  -ms-transform: rotate(360deg);
+  -webkit-transform: rotateZ(360deg);
+  -moz-transform: rotateZ(360deg);
+  -ms-transform: rotateZ(360deg);
+  -o-transform: rotateZ(360deg);
+  transform: rotateZ(360deg);
+}
 .site-author-name {
   margin: 0;
   text-align: center;
@@ -1842,6 +1858,9 @@ pre .javascript .function {
   margin-bottom: 10px;
   border-bottom-color: #555;
   font-size: 13px;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-delay: 0s;
 }
 .links-of-author a:before,
 .links-of-author .exturl:before {
@@ -1852,7 +1871,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ec36a1;
+  background: #dab638;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2898,7 +2917,6 @@ ul.breadcrumb li+li:last-child {
 }
 .links-of-author-item {
   margin: 5px 0 0;
-  width: 50%;
 }
 .links-of-author-item a,
 .links-of-author-item .exturl {
@@ -2951,9 +2969,7 @@ ul.breadcrumb li+li:last-child {
 }
 .links-of-blogroll-inline .links-of-blogroll-item {
   margin: 5px 0 0;
-  width: 50%;
   display: inline-block;
-  width: unset;
 }
 .links-of-blogroll-inline .links-of-blogroll-item a,
 .links-of-blogroll-inline .links-of-blogroll-item .exturl {
