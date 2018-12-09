@@ -16,7 +16,8 @@
 <meta property="og:description" content="#Mysql和Mariadb的数据库操作之DDL&amp;amp;DML Mysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/SQL的多表查询">
-<meta property="og:updated_time" content="2018-12-09T06:18:05.653Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/mysql/SQL的多表查询">
+<meta property="og:updated_time" content="2018-12-09T06:21:43.612Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql">
 <meta name="twitter:description" content="#Mysql和Mariadb的数据库操作之DDL&amp;amp;DML Mysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
@@ -112,6 +113,7 @@
            SELECT
                ---&gt;查询
 </code></pre><p>数据库的专用名词：<br>字符集：character，可在各个级别设置，如创建库时，创建表，创建字段，存在优先级问题<br>    在数据库级别设置字符集时，当创建表时，则默认使用数据库级别的字符集<br>    在创建表级别设置字符集时，可以和数据库级别的字符集不同<br>    创建表时的字段上设置字符集，即表中的各个字段也可以使用不同的字符集，最好别用<br>    一般是所有的库，所有的表，所有的字段都使用一样的字符集，避免出现乱码<br>排序规则：collation<br>表</p>
+<p><img src="mysql/SQL的多表查询" alt="SQL的多表查询"></p>
 <p>配置文件中建议修改的项：</p>
 <p>1.统一编码的设置：<br>    需要修改服务器端的配置文件<br>            /etc/my.cnf，添加一行character-set-server=utf8mb4<br>        客户端也要修改配置文件：/etc/my.cnf.d/mysql-clients.cnf<br>            添加一行：default-character-set=utf8mb4<br>2.把表的 表结构和表中数据分开放<br>    因为数据库表现为磁盘上一个目录，里面会有两个文件<em>.frm(表结构文件)和</em>.idb(表中数据文件)<br>    新版本的mysql是分开放的，但是老版本的是把*.frm单独放，数据统一都放在ibdata1中，所以数据很不安全，所以建议在配置文件中加一个选项，将表结构和数据分开放<br>    搜索：show variables like ‘%per_table%’<br>    innodb_file_per_table =on 添加到/etc/my.cnf中<br>3.安全更改或删除<br>    a.在客户端上将mysql -U 定义成别名<br>    b.或者在/etc/my.cnf.d/mysql-clients.cnf客户端配置文件中添加safe-updates</p>
 <p>4.修改表中的字段的字符集等信息<br>字符集应该是数据库设计初期都规定好的<br>        alter database studentdb character set  utf8; 在数据库级别上修改字符集<br>        alter table student character set utf8;<br>            改表整个字段的字符集，但是只能影响新增加的字段，旧的字段是不起作用的<br>        alter table student change name name varchar(20) character set utf8;<br>            修改表中某个字段的字符集</p>
@@ -612,7 +614,7 @@ grant还可以进行授权和创建账号的功能，必选指定密码，代替
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/mysql/" data-id="cjpgi05qx0000uc71pk9f3xs4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/12/09/mysql/" data-id="cjpgi548o00002871gmscykx3" class="article-share-link">Share</a>
       
       
     </footer>
