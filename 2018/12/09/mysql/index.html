@@ -1,104 +1,478 @@
 <!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="utf-8">
-  
+
+
+
+
+
+
+
+
+
+
+
 
   
-  <title>mysql | linux基础&amp;运维技术</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#Mysql和Mariadb的数据库操作之DDL&amp;amp;DML Mysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Mysql和Mariadb的数据库操作之DDL&amp;amp;DMLMysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
 <meta name="keywords" content="mysql,awk,ansible">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql">
 <meta property="og:url" content="http://yoursite.com/2018/12/09/mysql/index.html">
 <meta property="og:site_name" content="linux基础&amp;运维技术">
-<meta property="og:description" content="#Mysql和Mariadb的数据库操作之DDL&amp;amp;DML Mysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
+<meta property="og:description" content="Mysql和Mariadb的数据库操作之DDL&amp;amp;DMLMysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/SQL的多表查询">
-<meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/mysql/SQL的多表查询">
-<meta property="og:updated_time" content="2018-12-09T06:21:43.612Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/SQL.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/12/09/mysql/">
+<meta property="og:updated_time" content="2018-12-09T06:48:08.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql">
-<meta name="twitter:description" content="#Mysql和Mariadb的数据库操作之DDL&amp;amp;DML Mysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/09/mysql/SQL的多表查询">
-  
-    <link rel="alternate" href="/atom.xml" title="linux基础&amp;运维技术" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-</html>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">linux基础&amp;运维技术</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">运维技术&amp;数据库&amp;编程</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-mysql" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/09/mysql/" class="article-date">
-  <time datetime="2018-12-09T05:43:48.000Z" itemprop="datePublished">2018-12-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      mysql
-    </h1>
+<meta name="twitter:description" content="Mysql和Mariadb的数据库操作之DDL&amp;amp;DMLMysql官网：官网；文档Mariadb官网：官网；文档之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/09/mysql/SQL.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/09/mysql/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>mysql | linux基础&运维技术</title>
   
 
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">linux基础&运维技术</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">运维技术&数据库&编程</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">0</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">0</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">1</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/09/mysql/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linux基础&运维技术">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-09 13:43:48 / 修改时间：14:48:08" itemprop="dateCreated datePublished" datetime="2018-12-09T13:43:48+08:00">2018-12-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p>#Mysql和Mariadb的数据库操作之DDL&amp;DML</p>
-<p>Mysql官网：<a href="https://www.mysql.com" target="_blank" rel="noopener">官网</a>；<a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener">文档</a><br>Mariadb官网：<a href="http://mariadb.org" target="_blank" rel="noopener">官网</a>；<a href="https://mariadb.com/kb/en/" target="_blank" rel="noopener">文档</a><br>之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作</p>
+      
+
+      
+        <h1 id="Mysql和Mariadb的数据库操作之DDL-amp-DML"><a href="#Mysql和Mariadb的数据库操作之DDL-amp-DML" class="headerlink" title="Mysql和Mariadb的数据库操作之DDL&amp;DML"></a>Mysql和Mariadb的数据库操作之DDL&amp;DML</h1><p>Mysql官网：<a href="https://www.mysql.com" target="_blank" rel="noopener">官网</a>；<a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener">文档</a><br>Mariadb官网：<a href="http://mariadb.org" target="_blank" rel="noopener">官网</a>；<a href="https://mariadb.com/kb/en/" target="_blank" rel="noopener">文档</a><br>之前介绍了数据库原理和编译安装Mariadb,下文介绍数据库具体的操作</p>
 <a id="more"></a>
 <p>数据库的查询命令</p>
-<p><img src="SQL的多表查询" alt="SQL的多表查询"></p>
+<p><img src="/2018/12/09/mysql/SQL.jpg" alt=""></p>
+<p>官方授权文档：参考：<a href="https://dev.mysql.com/doc/refman/5.7/en/grant.html" target="_blank" rel="noopener">grant</a></p>
 <pre><code>SQL语句分类：
        DDL: Data Defination Language 数据定义语言
            CREATE，DROP，ALTER 
@@ -113,14 +487,10 @@
            SELECT
                ---&gt;查询
 </code></pre><p>数据库的专用名词：<br>字符集：character，可在各个级别设置，如创建库时，创建表，创建字段，存在优先级问题<br>    在数据库级别设置字符集时，当创建表时，则默认使用数据库级别的字符集<br>    在创建表级别设置字符集时，可以和数据库级别的字符集不同<br>    创建表时的字段上设置字符集，即表中的各个字段也可以使用不同的字符集，最好别用<br>    一般是所有的库，所有的表，所有的字段都使用一样的字符集，避免出现乱码<br>排序规则：collation<br>表</p>
-<p><img src="mysql/SQL的多表查询" alt="SQL的多表查询"></p>
 <p>配置文件中建议修改的项：</p>
 <p>1.统一编码的设置：<br>    需要修改服务器端的配置文件<br>            /etc/my.cnf，添加一行character-set-server=utf8mb4<br>        客户端也要修改配置文件：/etc/my.cnf.d/mysql-clients.cnf<br>            添加一行：default-character-set=utf8mb4<br>2.把表的 表结构和表中数据分开放<br>    因为数据库表现为磁盘上一个目录，里面会有两个文件<em>.frm(表结构文件)和</em>.idb(表中数据文件)<br>    新版本的mysql是分开放的，但是老版本的是把*.frm单独放，数据统一都放在ibdata1中，所以数据很不安全，所以建议在配置文件中加一个选项，将表结构和数据分开放<br>    搜索：show variables like ‘%per_table%’<br>    innodb_file_per_table =on 添加到/etc/my.cnf中<br>3.安全更改或删除<br>    a.在客户端上将mysql -U 定义成别名<br>    b.或者在/etc/my.cnf.d/mysql-clients.cnf客户端配置文件中添加safe-updates</p>
 <p>4.修改表中的字段的字符集等信息<br>字符集应该是数据库设计初期都规定好的<br>        alter database studentdb character set  utf8; 在数据库级别上修改字符集<br>        alter table student character set utf8;<br>            改表整个字段的字符集，但是只能影响新增加的字段，旧的字段是不起作用的<br>        alter table student change name name varchar(20) character set utf8;<br>            修改表中某个字段的字符集</p>
-<p>###数据库操作(DDL,DML,DCL,DQL)</p>
-<p>###DDL语句:数据定义语言—&gt;数据库/表的创建、删除、修改(CREATE，DROP，ALTER)</p>
-<p>####库：创建、删除(创建时可指定字符集和排序规则)</p>
-<pre><code>创建数据库：create ---&gt;数据库表现为目录--&gt;表的集合
+<h3 id="数据库操作-DDL-DML-DCL-DQL"><a href="#数据库操作-DDL-DML-DCL-DQL" class="headerlink" title="数据库操作(DDL,DML,DCL,DQL)"></a>数据库操作(DDL,DML,DCL,DQL)</h3><h3 id="DDL语句-数据定义语言—-gt-数据库-表的创建、删除、修改-CREATE，DROP，ALTER"><a href="#DDL语句-数据定义语言—-gt-数据库-表的创建、删除、修改-CREATE，DROP，ALTER" class="headerlink" title="DDL语句:数据定义语言—&gt;数据库/表的创建、删除、修改(CREATE，DROP，ALTER)"></a>DDL语句:数据定义语言—&gt;数据库/表的创建、删除、修改(CREATE，DROP，ALTER)</h3><h4 id="库：创建、删除-创建时可指定字符集和排序规则"><a href="#库：创建、删除-创建时可指定字符集和排序规则" class="headerlink" title="库：创建、删除(创建时可指定字符集和排序规则)"></a>库：创建、删除(创建时可指定字符集和排序规则)</h4><pre><code>创建数据库：create ---&gt;数据库表现为目录--&gt;表的集合
         1.所以如果在存放数据库目录的文件夹下mkdir一个文件夹，则在数据库里也会看到
         2.所以这就是为什么创建mysql用户的时候，不要生成家目录
         3.创建用户自己的数据库，一定是表现为磁盘上的一个文件夹
@@ -160,7 +530,7 @@ help creat database test；查看帮助创建数据库时指定字符集
         create database testdb1 CHARACTER SET=utf8mb4;
         创建完，在磁盘中表现为一个文件夹
         默认有一个文件db.opt:记录当前数据库使用的字符集，和排序规则
-</code></pre><p>###要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型<br><img src="" alt="数据类型"></p>
+</code></pre><h3 id="要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型"><a href="#要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型" class="headerlink" title="要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型"></a>要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型</h3><p><img src="/2018/12/09/mysql/" alt="数据类型"></p>
 <pre><code>创建表实际上指定由哪些字段组成，字段是由字段名称+字段存储数据的数据类型组成
 表：二维关系；
 设计表：遵循规范
@@ -168,8 +538,16 @@ help creat database test；查看帮助创建数据库时指定字符集
 字段：要指定字段名的，字段数据类型，和修饰符(约束，主键等)；
             数据类型决定了此字段在磁盘上保存占用空间的大小
      约束，索引：应该创建在经常用作查询条件的字段上
-</code></pre><p>#####数据类型：(不同的数据类型占用空间大小不同)，详见上图<br>    创建表时，必须指定数据类型<br>    数值型：又包括整数型和小数型<br>        1、整型又包括:<br>            tinyint(m) 1个字节 2^8 加上符号位范围(-128~127):适用于存放小数据：age<br>            smallint(m) 2个字节 2^16，范围(-32768~32767):使用于<br>            mediumint(m) 3个字节 2^24， 范围(-8388608~8388607)<br>            int(m) 4个字节 2^32，范围(-2147483648~2147483647)<br>            bigint(m) 8个字节 范围(+-9.22*10的18次方)</p>
-<pre><code>        修饰符：unsigned:通通认为都是整数，即上面的范围最大值翻倍
+</code></pre><h5 id="数据类型：-不同的数据类型占用空间大小不同-，详见上图"><a href="#数据类型：-不同的数据类型占用空间大小不同-，详见上图" class="headerlink" title="数据类型：(不同的数据类型占用空间大小不同)，详见上图"></a>数据类型：(不同的数据类型占用空间大小不同)，详见上图</h5><pre><code>创建表时，必须指定数据类型
+数值型：又包括整数型和小数型
+    1、整型又包括:
+        tinyint(m) 1个字节 2^8 加上符号位范围(-128~127):适用于存放小数据：age
+        smallint(m) 2个字节 2^16，范围(-32768~32767):使用于
+        mediumint(m) 3个字节 2^24， 范围(-8388608~8388607)
+        int(m) 4个字节 2^32，范围(-2147483648~2147483647)
+        bigint(m) 8个字节 范围(+-9.22*10的18次方)
+
+        修饰符：unsigned:通通认为都是整数，即上面的范围最大值翻倍
             如：tinyint unsigned的取值范围为(0~255)int(m)里的m是表示SELECT查询结果集中的显示宽度，并不影响实际的取值范
             围，规定了MySQL的一些交互工具（例如MySQL命令行客户端）用来显示字符
             的个数。对于存储和计算来说，Int(1)和Int(20)是相同的
@@ -194,8 +572,7 @@ help creat database test；查看帮助创建数据库时指定字符集
     BINARY(M) 固定长度，可存二进制或字符，长度为0-M字节
     VARBINARY(M) 可变长度，可存二进制或字符，允许长度为0-M字节
     内建类型：ENUM枚举, SET集合
-</code></pre><p>#####修饰符：字段除了数据类型,还需要定义修饰符</p>
-<pre><code>所有类型：
+</code></pre><h5 id="修饰符：字段除了数据类型-还需要定义修饰符"><a href="#修饰符：字段除了数据类型-还需要定义修饰符" class="headerlink" title="修饰符：字段除了数据类型,还需要定义修饰符"></a>修饰符：字段除了数据类型,还需要定义修饰符</h5><pre><code>所有类型：
     • NULL 数据列可包含NULL值
     • NOT NULL 数据列不允许包含NULL值
     • DEFAULT 默认值，对字段不赋值时，使用系统设定的默认值
@@ -211,8 +588,7 @@ help creat database test；查看帮助创建数据库时指定字符集
     char存储空间规则 查询快
     varchar减小存储空间，但是每个字节占用空间不规则，查询慢
     表里最好不要存在空值null,影响性能和写代码会很麻烦(NULL的查询方式比较特殊)
-</code></pre><p>####创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了</p>
-<pre><code>创建表前，要先use +数据库名，指定在哪个数据库里创建表
+</code></pre><h4 id="创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了"><a href="#创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了" class="headerlink" title="创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了"></a>创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了</h4><pre><code>创建表前，要先use +数据库名，指定在哪个数据库里创建表
     1.可以使用use切换进入到某个数据库中，再创建表
     2.也可以使用：数据库.表来创建，而不进入到某个库中
         如：
@@ -250,8 +626,7 @@ help creat database test；查看帮助创建数据库时指定字符集
     更小的通常更好，尽量使用可正确存储数据的最小数据类型
     简单就好，简单数据类型的操作通常需要更少的CPU周期
     尽量避免NULL，包含为NULL的列，对MySQL更难优化
-</code></pre><p>###表操作</p>
-<pre><code>查看所有的引擎：SHOW ENGINES
+</code></pre><h3 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h3><pre><code>查看所有的引擎：SHOW ENGINES
 查看表：SHOW TABLES [FROM db_name]
 查看表结构：DESC [db_name.]tb_name
             或者 show col                简化版mysql可能会用此命令查询
@@ -325,8 +700,7 @@ MariaDB [studentdb]&gt; desc student;
     创建表的第三种语法:复制表结构和数据
         create table custom like student;
         只是把student的表结构复制过去了，数据没有被复制
-</code></pre><p>###修改表：Alter(了解即可)</p>
-<pre><code>DROP TABLE [IF EXISTS] &apos;tbl_name&apos;;
+</code></pre><h3 id="修改表：Alter-了解即可"><a href="#修改表：Alter-了解即可" class="headerlink" title="修改表：Alter(了解即可)"></a>修改表：Alter(了解即可)</h3><pre><code>DROP TABLE [IF EXISTS] &apos;tbl_name&apos;;
 ALTER TABLE &apos;tbl_name&apos;
     字段：
         添加字段：add
@@ -363,9 +737,7 @@ ALTER TABLE &apos;tbl_name&apos;
     alter table student character set utf8;
     alter table student change name name varchar(20) character set utf8;
 </code></pre><p>非主键的字段间存在依赖关系，违反了第三范式</p>
-<p>###DML语句:数据操纵语言—&gt;数据的增、删、改(INSERT，DELETE，UPDATE)</p>
-<p>######DML之insert</p>
-<pre><code>INSERT： 帮助说明：help insert;insert的三种语法
+<h3 id="DML语句-数据操纵语言—-gt-数据的增、删、改-INSERT，DELETE，UPDATE"><a href="#DML语句-数据操纵语言—-gt-数据的增、删、改-INSERT，DELETE，UPDATE" class="headerlink" title="DML语句:数据操纵语言—&gt;数据的增、删、改(INSERT，DELETE，UPDATE)"></a>DML语句:数据操纵语言—&gt;数据的增、删、改(INSERT，DELETE，UPDATE)</h3><h6 id="DML之insert"><a href="#DML之insert" class="headerlink" title="DML之insert"></a>DML之insert</h6><pre><code>INSERT： 帮助说明：help insert;insert的三种语法
 备注：
     1.生产环境要先确认表的字符集是不是utf8mb4,尤其是在备份的时候，一定要使用
         相同的字符集进行备份.
@@ -452,8 +824,7 @@ ALTER TABLE &apos;tbl_name&apos;
         |  3 | 孙   | m    |   20 | NULL  | 花果山     |
         |  4 | 白居易| m    |   20 | NULL  | NULL      |
         +----+------+------+------+-------+-----------+
-</code></pre><p>######DML之delete</p>
-<pre><code>注意：
+</code></pre><h6 id="DML之delete"><a href="#DML之delete" class="headerlink" title="DML之delete"></a>DML之delete</h6><pre><code>注意：
     1.删除表中的单条或多条记录时，一定要注意限制条件where，limit
     2.慎用truncate,快速删除数据库里的数据，且不记录日志,如果有日志，还是有机会还    原的，相比而言delete还算是比较安全
     3.为了防止没有加限定条件而造成数据丢失，将mysql -U定义成别名，类似update
@@ -480,14 +851,27 @@ truncate table tbl_name; 清空表
         但是truncate删除数据时，不记录日志，很危险
         delete，也是也是删除数据库里的数据，但是删除时记录日志，从这个方面
         来说比truncate更安全。
-</code></pre><p>######DML之update:更改表<br>    备注：<br>        1.和delete表一样，一定要注意限制条件where，limit，不然修改的就是整张表了<br>        2.为了防止没有加限定条件而造成数据丢失，将mysql -U定义成别名，<br>            或者修改客户端的配置文件添加一行：safe-updates<br>    UPDATE：<br>    UPDATE [LOW_PRIORITY] [IGNORE] table_reference<br>         SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] …<br>         [WHERE where_condition]<br>         [ORDER BY …]<br>         [LIMIT row_count]<br>    注意：一定要有限制条件，否则将修改所有行的指定字段<br>        限制条件：<br>        WHERE<br>        LIMIT<br>    Mysql 选项：-U|–safe-updates| –i-am-a-dummy 安全更改或删除</p>
-<pre><code>示例：
+</code></pre><h6 id="DML之update-更改表"><a href="#DML之update-更改表" class="headerlink" title="DML之update:更改表"></a>DML之update:更改表</h6><pre><code>备注：
+    1.和delete表一样，一定要注意限制条件where，limit，不然修改的就是整张表了
+    2.为了防止没有加限定条件而造成数据丢失，将mysql -U定义成别名，
+        或者修改客户端的配置文件添加一行：safe-updates
+UPDATE：
+UPDATE [LOW_PRIORITY] [IGNORE] table_reference
+     SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
+     [WHERE where_condition]
+     [ORDER BY ...]
+     [LIMIT row_count]
+注意：一定要有限制条件，否则将修改所有行的指定字段
+    限制条件：
+    WHERE
+    LIMIT
+Mysql 选项：-U|--safe-updates| --i-am-a-dummy 安全更改或删除
+
+示例：
     1.更改id=4的记录的phone字段数据
         update student set phone=10011 where id=4;
 </code></pre><p>===========================================================================</p>
-<p>###DCL语句:数据控制语言—&gt;授权、取消权限、提交、撤销(GRANT，REVOKE，COMMIT，ROLLBACK)</p>
-<p>#####MySQL用户管理：在mysql库中的下面表记录权限相关的信息</p>
-<pre><code>元数据数据库：mysql
+<h3 id="DCL语句-数据控制语言—-gt-授权、取消权限、提交、撤销-GRANT，REVOKE，COMMIT，ROLLBACK"><a href="#DCL语句-数据控制语言—-gt-授权、取消权限、提交、撤销-GRANT，REVOKE，COMMIT，ROLLBACK" class="headerlink" title="DCL语句:数据控制语言—&gt;授权、取消权限、提交、撤销(GRANT，REVOKE，COMMIT，ROLLBACK)"></a>DCL语句:数据控制语言—&gt;授权、取消权限、提交、撤销(GRANT，REVOKE，COMMIT，ROLLBACK)</h3><h5 id="MySQL用户管理：在mysql库中的下面表记录权限相关的信息"><a href="#MySQL用户管理：在mysql库中的下面表记录权限相关的信息" class="headerlink" title="MySQL用户管理：在mysql库中的下面表记录权限相关的信息"></a>MySQL用户管理：在mysql库中的下面表记录权限相关的信息</h5><pre><code>元数据数据库：mysql
     系统授权表：
     db, host, user
     columns_priv, tables_priv, procs_priv, proxies_priv
@@ -536,8 +920,7 @@ truncate table tbl_name; 清空表
         使用UPDATE命令修改管理员密码
         --skip-networking；维护时考虑使用的
 关闭mysqld进程，移除上述两个选项，重启mysqld
-</code></pre><p>#####MySQL用户权限管理：grant,revoke,commit,rollback </p>
-<pre><code>管理类：
+</code></pre><h5 id="MySQL用户权限管理：grant-revoke-commit-rollback"><a href="#MySQL用户权限管理：grant-revoke-commit-rollback" class="headerlink" title="MySQL用户权限管理：grant,revoke,commit,rollback"></a>MySQL用户权限管理：grant,revoke,commit,rollback</h5><pre><code>管理类：
     CREATE TEMPORARY TABLES
     CREATE USER
     FILE
@@ -573,7 +956,7 @@ truncate table tbl_name; 清空表
     INSERT(col1,col2,...)
 所有权限
     ALL PRIVILEGES 或 ALL
-</code></pre><p>####上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant..to..<br>官方授权文档：参考：<a href="https://dev.mysql.com/doc/refman/5.7/en/grant.html" target="_blank" rel="noopener">grant</a></p>
+</code></pre><h4 id="上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant-to"><a href="#上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant-to" class="headerlink" title="上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant..to.."></a>上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant..to..</h4><p>官方授权文档：参考：<a href="https://dev.mysql.com/doc/refman/5.7/en/grant.html" target="_blank" rel="noopener">grant</a></p>
 <pre><code>GRANT priv_type [(column_list)],... ON [object_type] priv_level TO &apos;user&apos;@&apos;host&apos;[IDENTIFIED BY &apos;password&apos;] [WITH GRANT OPTION];
     priv_type: ALL [PRIVILEGES]  ---&gt;管理类权限
     object_type:TABLE | FUNCTION | PROCEDURE ---&gt;对象：表|函数
@@ -596,16 +979,18 @@ grant还可以进行授权和创建账号的功能，必选指定密码，代替
         grant all on *.* to test@&apos;192.168.34.%&apos; identified by &apos;root123&apos;;
     2.对test用户授权允许访问hellodb库的所有表
         grant all on helodb.* to test@&apos;192.168.34.107&apos;;
-</code></pre><p>###取消权限：revok..from..<br>    回收授权<br>    REVOKE priv_type [(column_list)] [, priv_type [(column_list)]] … ON<br>    [object_type] priv_level FROM user [, user] …</p>
-<pre><code>示例：
+</code></pre><h3 id="取消权限：revok-from"><a href="#取消权限：revok-from" class="headerlink" title="取消权限：revok..from.."></a>取消权限：revok..from..</h3><pre><code>回收授权
+REVOKE priv_type [(column_list)] [, priv_type [(column_list)]] ... ON
+[object_type] priv_level FROM user [, user] ...
+
+示例：
     1.之前对test授予了全部权限，现在只取消test用户的select权限
         revoke select on *.* from test@&apos;192.168.34.%&apos;;
     再查看授予test的权限时：
         show grants for test@&apos;192.168.34.%&apos;时，会看到没有select权限了
 
     2.REVOKE DELETE ON testdb.* FROM &apos;testuser&apos;@‘172.16.0.%’;
-</code></pre><p>###授权和取消授权注意的地方：</p>
-<pre><code>注意：MariaDB服务进程启动时会读取mysql库中所有授权表至内存
+</code></pre><h3 id="授权和取消授权注意的地方："><a href="#授权和取消授权注意的地方：" class="headerlink" title="授权和取消授权注意的地方："></a>授权和取消授权注意的地方：</h3><pre><code>注意：MariaDB服务进程启动时会读取mysql库中所有授权表至内存
     (1) GRANT或REVOKE等执行权限操作会保存于系统表中，MariaDB的服务进
     程通常会自动重读授权表，使之生效
     (2) 对于不能够或不能及时重读授权表的命令，可手动让MariaDB的服务进程
@@ -613,87 +998,332 @@ grant还可以进行授权和创建账号的功能，必选指定密码，代替
 </code></pre>
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/09/mysql/" data-id="cjpgi548o00002871gmscykx3" class="article-share-link">Share</a>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+
       
       
     </footer>
   </div>
   
-    
   
-</article>
+  
+  </article>
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li></ul>
-    </div>
   </div>
 
 
+          </div>
+          
+
   
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
+
+
+
+        </div>
         
-          <li>
-            <a href="/2018/12/09/mysql/">mysql</a>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
           </li>
-        
-      </ul>
-    </div>
-  </div>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-  
-</aside>
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql和Mariadb的数据库操作之DDL-amp-DML"><span class="nav-number">1.</span> <span class="nav-text">Mysql和Mariadb的数据库操作之DDL&amp;DML</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库操作-DDL-DML-DCL-DQL"><span class="nav-number">1.0.1.</span> <span class="nav-text">数据库操作(DDL,DML,DCL,DQL)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DDL语句-数据定义语言—-gt-数据库-表的创建、删除、修改-CREATE，DROP，ALTER"><span class="nav-number">1.0.2.</span> <span class="nav-text">DDL语句:数据定义语言—&gt;数据库/表的创建、删除、修改(CREATE，DROP，ALTER)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#库：创建、删除-创建时可指定字符集和排序规则"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">库：创建、删除(创建时可指定字符集和排序规则)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型"><span class="nav-number">1.0.3.</span> <span class="nav-text">要创建表就要要先了解数据类型和修饰符，下面先介绍数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据类型：-不同的数据类型占用空间大小不同-，详见上图"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">数据类型：(不同的数据类型占用空间大小不同)，详见上图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#修饰符：字段除了数据类型-还需要定义修饰符"><span class="nav-number">1.0.3.0.2.</span> <span class="nav-text">修饰符：字段除了数据类型,还需要定义修饰符</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">创建表：在上面了解数据类型和修饰符后，就可以进行创建表的操作了</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表操作"><span class="nav-number">1.0.4.</span> <span class="nav-text">表操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改表：Alter-了解即可"><span class="nav-number">1.0.5.</span> <span class="nav-text">修改表：Alter(了解即可)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DML语句-数据操纵语言—-gt-数据的增、删、改-INSERT，DELETE，UPDATE"><span class="nav-number">1.0.6.</span> <span class="nav-text">DML语句:数据操纵语言—&gt;数据的增、删、改(INSERT，DELETE，UPDATE)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#DML之insert"><span class="nav-number">1.0.6.0.0.1.</span> <span class="nav-text">DML之insert</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DML之delete"><span class="nav-number">1.0.6.0.0.2.</span> <span class="nav-text">DML之delete</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DML之update-更改表"><span class="nav-number">1.0.6.0.0.3.</span> <span class="nav-text">DML之update:更改表</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#DCL语句-数据控制语言—-gt-授权、取消权限、提交、撤销-GRANT，REVOKE，COMMIT，ROLLBACK"><span class="nav-number">1.0.7.</span> <span class="nav-text">DCL语句:数据控制语言—&gt;授权、取消权限、提交、撤销(GRANT，REVOKE，COMMIT，ROLLBACK)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MySQL用户管理：在mysql库中的下面表记录权限相关的信息"><span class="nav-number">1.0.7.0.1.</span> <span class="nav-text">MySQL用户管理：在mysql库中的下面表记录权限相关的信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MySQL用户权限管理：grant-revoke-commit-rollback"><span class="nav-number">1.0.7.0.2.</span> <span class="nav-text">MySQL用户权限管理：grant,revoke,commit,rollback</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant-to"><span class="nav-number">1.0.7.1.</span> <span class="nav-text">上面是具体的授权权限，下面是如何授权和查看备授予的权限：grant..to..</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#取消权限：revok-from"><span class="nav-number">1.0.8.</span> <span class="nav-text">取消权限：revok..from..</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#授权和取消授权注意的地方："><span class="nav-number">1.0.9.</span> <span class="nav-text">授权和取消授权注意的地方：</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
         
       </div>
-      <footer id="footer">
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
   
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2018 柳魁<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
+
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    
+	
+    
 
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
+    
   </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
 </body>
 </html>
