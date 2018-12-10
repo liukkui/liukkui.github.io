@@ -15,5 +15,11 @@ const ap = new APlayer({
         url: 'http://m10.music.126.net/20181210220952/eeea2e4ac54c74d779e0251f417d8727/ymusic/4fc3/a588/ceab/44264869e46520cd90e29b1b61ffee10.mp3',
         cover: 'https://www.liukui.tech/images/haha.gif',
       },
+      {
+        name: '光るなら',
+        artist: 'Goose house',
+        url: 'http://m10.music.126.net/20181210221020/b7651c34e579fb9d5dbb9daa2c6afe53/ymusic/9e0a/6075/ec14/a0338148b6233f2b8a48286db4125b50.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
     ]
 });
