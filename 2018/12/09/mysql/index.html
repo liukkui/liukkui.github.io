@@ -151,7 +151,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql">
 <meta property="og:url" content="http://yoursite.com/2018/12/09/mysql/index.html">
-<meta property="og:site_name" content="Linux&amp;运维技术">
+<meta property="og:site_name" content="Coool&#39;s blogs">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-10T02:37:14.716Z">
 <meta name="twitter:card" content="summary">
@@ -159,7 +159,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="Linux&运维技术" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="Coool's blogs" type="application/atom+xml">
 
 
 
@@ -174,7 +174,7 @@
   };
 </script>
 
-  <title>mysql | Linux&运维技术</title>
+  <title>mysql | Coool's blogs</title>
   
 
 
@@ -235,7 +235,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Linux&运维技术</span>
+        <span class="site-title">Coool's blogs</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -360,6 +360,25 @@
         
         
           
+          <li class="menu-item menu-item-相册">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/photos/" rel="section"><i class="menu-item-icon fa fa-fw fa-image"></i> <br>相册</a>
+
+  </li>
+        
+        
+        
+          
           <li class="menu-item menu-item-schedule">
 
     
@@ -462,7 +481,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux&运维技术">
+      <meta itemprop="name" content="Coool's blogs">
     </span>
 
     
@@ -520,6 +539,16 @@
           
 
           
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/09/mysql/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/12/09/mysql/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -702,6 +731,11 @@
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="your uid"></div>
+    </div>
 
   
 
@@ -1058,6 +1092,20 @@
 
 
   
+    <script type="text/javascript">
+      window.livereOptions = {
+        refer: '2018/12/09/mysql/'
+      };
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
 
 
 
@@ -1065,6 +1113,31 @@
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
 
 
 
