@@ -116,7 +116,7 @@
     root: '/',
     scheme: 'Pisces',
     version: '6.6.0',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: false,
     fastclick: false,
     lazyload: false,
@@ -452,6 +452,13 @@
 
 </div>
     </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
 
     
 
@@ -1666,8 +1673,17 @@ default/：设定默认变量时使用此目录中的main.yml文件
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -1799,7 +1815,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
                   
                     
                   
-                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-CloudMusic"></i>CloudMusic</a>
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
                 </span>
               
             </div>
@@ -1817,11 +1833,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
               <ul class="links-of-blogroll-list">
                 
                   <li class="links-of-blogroll-item">
-                    <a href="http://www.baidu.com" title="http://www.baidu.com" rel="noopener" target="_blank">Loveconvert</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">shuinono</a>
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
                   </li>
                 
               </ul>
@@ -1835,6 +1847,22 @@ default/：设定默认变量时使用此目录中的main.yml文件
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运维自动化管理工具之Ansible"><span class="nav-number">1.</span> <span class="nav-text">运维自动化管理工具之Ansible</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内容：1-软件发布环境机制优势对比-和-2-ansible的应用"><span class="nav-number">1.0.1.</span> <span class="nav-text">内容：1.软件发布环境机制优势对比  和   2.ansible的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布更新环境"><span class="nav-number">1.0.2.</span> <span class="nav-text">发布更新环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#灰度发布：又叫金丝雀发布-核心概念：一次只发布一部分主机"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">灰度发布：又叫金丝雀发布(核心概念：一次只发布一部分主机)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#蓝绿发布：核心：主备两套环境"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">蓝绿发布：核心：主备两套环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#滚动发布：在灰度发布的基础上进行进一步优化"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">滚动发布：在灰度发布的基础上进行进一步优化</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Ansible"><span class="nav-number">2.</span> <span class="nav-text">Ansible</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible特性：-最多管理500台主机，更多效率会降低"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">ansible特性：-最多管理500台主机，更多效率会降低</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ansible的学习过程："><span class="nav-number">2.0.1.</span> <span class="nav-text">Ansible的学习过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible命令执行过程"><span class="nav-number">2.0.2.</span> <span class="nav-text">ansible命令执行过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMDB作用介绍"><span class="nav-number">2.0.3.</span> <span class="nav-text">CMDB作用介绍:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ansible基本命令使用"><span class="nav-number">2.1.</span> <span class="nav-text">1.ansible基本命令使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible软件安装：多种安装方法"><span class="nav-number">2.1.1.</span> <span class="nav-text">ansible软件安装：多种安装方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible的重要-amp-主要文件"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">ansible的重要&amp;主要文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible主机清单配置：-etc-ansible-hosts-第一步-下文中介绍主机清单的多种表示方法"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">ansible主机清单配置：/etc/ansible/hosts,第一步(下文中介绍主机清单的多种表示方法)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible配置文件：-etc-ansible-ansible-cfg-（一般保持默认）"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">ansible配置文件：/etc/ansible/ansible.cfg （一般保持默认）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置文件说明和建议修改的项："><span class="nav-number">2.1.2.</span> <span class="nav-text">配置文件说明和建议修改的项：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ansible常用模块详解，介绍ansible单个命令的使用"><span class="nav-number">2.2.</span> <span class="nav-text">2.ansible常用模块详解，介绍ansible单个命令的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible模块的使用查询方法"><span class="nav-number">2.2.1.</span> <span class="nav-text">ansible模块的使用查询方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible的常用基本选项"><span class="nav-number">2.2.2.</span> <span class="nav-text">ansible的常用基本选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible的主机清单表示方法-Host-pattern"><span class="nav-number">2.2.3.</span> <span class="nav-text">ansible的主机清单表示方法:Host-pattern</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible的常见模块-第二步：具有很多模块，先列出比较常见且重要的，遇到再更新新的模块"><span class="nav-number">2.3.</span> <span class="nav-text">ansible的常见模块(第二步：具有很多模块，先列出比较常见且重要的，遇到再更新新的模块)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ansible-doc-模块名-可以查看具体使用方法：显示都有哪些选项"><span class="nav-number">2.3.0.0.1.</span> <span class="nav-text">ansible-doc +模块名 可以查看具体使用方法：显示都有哪些选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible系列的一些模块-用的不多"><span class="nav-number">2.4.</span> <span class="nav-text">ansible系列的一些模块(用的不多)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible重要知识之playbook-上面的各种模块的组合"><span class="nav-number">2.5.</span> <span class="nav-text">ansible重要知识之playbook(上面的各种模块的组合)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YAML语言（编写playbook的专门语言）"><span class="nav-number">2.5.1.</span> <span class="nav-text">YAML语言（编写playbook的专门语言）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Playbook中的核心元素"><span class="nav-number">2.6.</span> <span class="nav-text">Playbook中的核心元素:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行playbook"><span class="nav-number">2.7.</span> <span class="nav-text">运行playbook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#执行playbook时，更改正确的是绿色的，更改的显示黄色的，错误信息显示红色，可以根据颜色变化判断是否更改，或者是否更改成功了。"><span class="nav-number">2.7.1.</span> <span class="nav-text">执行playbook时，更改正确的是绿色的，更改的显示黄色的，错误信息显示红色，可以根据颜色变化判断是否更改，或者是否更改成功了。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例：以下实验均在centos7管理centos7集群，因为6-amp-7配置文件不同，均在7上实验"><span class="nav-number">2.8.</span> <span class="nav-text">示例：以下实验均在centos7管理centos7集群，因为6&amp;7配置文件不同，均在7上实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#将centos7的httpd-conf复制到centos7主机，6上的配置文件不同"><span class="nav-number">2.8.0.1.</span> <span class="nav-text">将centos7的httpd.conf复制到centos7主机，6上的配置文件不同</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上面的playbook只是实现了简单的安装配置功能，但是不能根据在更改配置文件后，再次执行，因为服务设置是start，不合理，所以要用到下面触发条件，来达到更改控制的目的。"><span class="nav-number">2.8.0.2.</span> <span class="nav-text">上面的playbook只是实现了简单的安装配置功能，但是不能根据在更改配置文件后，再次执行，因为服务设置是start，不合理，所以要用到下面触发条件，来达到更改控制的目的。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handlers和notify结合使用触发条件-当达到某个条件时，触发执行对应的task任务。"><span class="nav-number">2.8.1.</span> <span class="nav-text">handlers和notify结合使用触发条件:当达到某个条件时，触发执行对应的task任务。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例："><span class="nav-number">2.8.2.</span> <span class="nav-text">示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可以多个notify对应一个handlers，也可以多个motify对应多个handlers"><span class="nav-number">2.8.3.</span> <span class="nav-text">可以多个notify对应一个handlers，也可以多个motify对应多个handlers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例5：多个notify对应多个handlers"><span class="nav-number">2.8.4.</span> <span class="nav-text">示例5：多个notify对应多个handlers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tags的用法：作用：挑选某一段的task来执行"><span class="nav-number">2.8.5.</span> <span class="nav-text">tags的用法：作用：挑选某一段的task来执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Playbook中变量使用-可以多出定义，但是存在优先级"><span class="nav-number">2.9.</span> <span class="nav-text">Playbook中变量使用:可以多出定义，但是存在优先级</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优先级的顺序为：-e-var-gt-yaml中的var-gt-hosts中的普通变量-gt-hosts公共变量"><span class="nav-number">2.9.0.1.</span> <span class="nav-text">优先级的顺序为：-e var &gt; yaml中的var &gt; hosts中的普通变量 &gt; hosts公共变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从setup模块中查找到的有用的变量；可以通过判断变量的值，然后执行不同的操作，类似于shell中，先判断version-7？然后再执行不同的命令"><span class="nav-number">2.9.1.</span> <span class="nav-text">从setup模块中查找到的有用的变量；可以通过判断变量的值，然后执行不同的操作，类似于shell中，先判断version==7？然后再执行不同的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#调用不同变量来源的示例：得出变量的优先级顺序"><span class="nav-number">2.9.1.1.</span> <span class="nav-text">调用不同变量来源的示例：得出变量的优先级顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模板templates，作用："><span class="nav-number">2.10.</span> <span class="nav-text">模板templates，作用：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#templates功能：根据模块文件动态生成对应的配置文件"><span class="nav-number">2.10.1.</span> <span class="nav-text">templates功能：根据模块文件动态生成对应的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#示例1：通过templates模板nginx"><span class="nav-number">2.10.1.1.</span> <span class="nav-text">示例1：通过templates模板nginx</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#when配合templates实现根据不同版本执行不同的功能"><span class="nav-number">2.10.2.</span> <span class="nav-text">when配合templates实现根据不同版本执行不同的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#示例2：通过templates模板根据不同的centos版本，安装不同的httpd-就用到了when"><span class="nav-number">2.10.2.1.</span> <span class="nav-text">示例2：通过templates模板根据不同的centos版本，安装不同的httpd,就用到了when</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代：with-items，类似于shell中的for循环"><span class="nav-number">2.11.</span> <span class="nav-text">迭代：with_items，类似于shell中的for循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#迭代的示例："><span class="nav-number">2.11.0.1.</span> <span class="nav-text">迭代的示例：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代嵌套子变量-涉及到多个键值对的表达方式"><span class="nav-number">2.12.</span> <span class="nav-text">迭代嵌套子变量:涉及到多个键值对的表达方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Playbook中template结合for循环生成具有重复性的代码段"><span class="nav-number">2.12.1.</span> <span class="nav-text">Playbook中template结合for循环生成具有重复性的代码段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Roles：什么是roles-为什么要用roles？什么场景适合于roles-roles的结构？"><span class="nav-number">2.12.2.</span> <span class="nav-text">Roles：什么是roles,为什么要用roles？什么场景适合于roles?roles的结构？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible重要内容之Roles；playbook的集合和拆分"><span class="nav-number">2.13.</span> <span class="nav-text">ansible重要内容之Roles；playbook的集合和拆分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#roles的意义和适用场景："><span class="nav-number">2.13.1.</span> <span class="nav-text">roles的意义和适用场景：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#roles的目录结构（一般分成以下目录进行存放一类的文件）"><span class="nav-number">2.13.2.</span> <span class="nav-text">roles的目录结构（一般分成以下目录进行存放一类的文件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#roles-playbook的tags的标签的作用：通过标签可以更灵活的调用playbook的角色"><span class="nav-number">2.13.3.</span> <span class="nav-text">roles playbook的tags的标签的作用：通过标签可以更灵活的调用playbook的角色.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#playbook调用角色：介绍前文提到的变量来源第六条：来自于roles的变量"><span class="nav-number">2.13.4.</span> <span class="nav-text">playbook调用角色：介绍前文提到的变量来源第六条：来自于roles的变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#roles示例："><span class="nav-number">2.14.</span> <span class="nav-text">roles示例：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#以httpd-amp-nginxmemcached三个role为例，下面为整个roles的目录结构和调用角色的playbook-role-playbook-yml"><span class="nav-number">2.14.1.</span> <span class="nav-text">以httpd&amp;nginxmemcached三个role为例，下面为整个roles的目录结构和调用角色的playbook:role_playbook.yml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#roles的目录结构下的httpd-amp-nginxmemcached"><span class="nav-number">2.14.1.1.</span> <span class="nav-text">roles的目录结构下的httpd&amp;nginxmemcached</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用角色的playbook-roles-yml"><span class="nav-number">2.14.2.</span> <span class="nav-text">调用角色的playbook:roles.yml</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#可以通过加变量和标签和条件测试调用更灵活的调用各种角色"><span class="nav-number">2.14.2.0.1.</span> <span class="nav-text">可以通过加变量和标签和条件测试调用更灵活的调用各种角色)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下图为每个role的各个文件内容："><span class="nav-number">2.14.3.</span> <span class="nav-text">下图为每个role的各个文件内容：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#图一：参照roles的httpd的目录各个文件内容"><span class="nav-number">2.14.3.1.</span> <span class="nav-text">图一：参照roles的httpd的目录各个文件内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图二：参照roles的nginx的目录各个文件内容"><span class="nav-number">2.14.3.2.</span> <span class="nav-text">图二：参照roles的nginx的目录各个文件内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图三：参照roles的memcached的目录各个文件内容"><span class="nav-number">2.14.3.3.</span> <span class="nav-text">图三：参照roles的memcached的目录各个文件内容</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1894,6 +1922,8 @@ default/：设定默认变量时使用此目录中的main.yml文件
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     
@@ -2415,3 +2445,6 @@ default/：设定默认变量时使用此目录中的main.yml文件
 
 <script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
