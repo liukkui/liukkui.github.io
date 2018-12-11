@@ -57,6 +57,32 @@
   </entry>
   
   <entry>
+    <title>httpd</title>
+    <link href="http://yoursite.com/2017/10/18/httpd/"/>
+    <id>http://yoursite.com/2017/10/18/httpd/</id>
+    <published>2017-10-18T00:00:00.000Z</published>
+    <updated>2018-12-11T11:39:55.831Z</updated>
+    
+    <content type="html"><![CDATA[<p>1</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;1&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+      <category term="linux基础" scheme="http://yoursite.com/categories/linux%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="文本三剑客" scheme="http://yoursite.com/tags/%E6%96%87%E6%9C%AC%E4%B8%89%E5%89%91%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
     <title>文本三剑客之awk</title>
     <link href="http://yoursite.com/2017/10/18/%E6%96%87%E6%9C%AC%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8Bawk/"/>
     <id>http://yoursite.com/2017/10/18/文本三剑客之awk/</id>
