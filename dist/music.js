@@ -21,5 +21,24 @@ const ap = new APlayer({
         url: 'http://sg.sycdn.kuwo.cn/resource/n1/91/17/2649203588.mp3',
         cover: 'https://www.liukui.tech/images/haha.gif',
       },
+      {
+        name: 'Explore',
+        artist: 'Prince of Spain',
+        url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n2/83/10/1648760572.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
+      {
+        name: '骄傲的少年',
+        artist: '南征北战',
+        url: 'http://other.web.rh01.sycdn.kuwo.cn/resource/n2/26/45/1361879802.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
+      {
+        name: '性空山',
+        artist: '鹿子MIKA',
+        url: 'http://other.web.rm01.sycdn.kuwo.cn/resource/n2/21/93/1276909732.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
     ]
 });
+
