@@ -151,25 +151,25 @@
 <meta name="keywords" content="文本三剑客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="文本三剑客之awk">
-<meta property="og:url" content="http://yoursite.com/2017/10/18/文本三剑客之awk/index.html">
-<meta property="og:site_name" content="Coool&#39;s blogs">
+<meta property="og:url" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="文本处理三剑客之Awk">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2017/10/18/文本三剑客之awk/awk.png">
-<meta property="og:updated_time" content="2018-12-11T05:22:44.563Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/awk.png">
+<meta property="og:updated_time" content="2018-08-31T16:00:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本三剑客之awk">
 <meta name="twitter:description" content="文本处理三剑客之Awk">
-<meta name="twitter:image" content="http://yoursite.com/2017/10/18/文本三剑客之awk/awk.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/awk.png">
 
 
 
-  <link rel="alternate" href="/atom.xml" title="Coool's blogs" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="Coool's Blog" type="application/atom+xml">
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/10/18/文本三剑客之awk/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/10/18/文本三剑客之awk/">
 
 
 
@@ -179,7 +179,7 @@
   };
 </script>
 
-  <title>文本三剑客之awk | Coool's blogs</title>
+  <title>文本三剑客之awk | Coool's Blog</title>
   
 
 
@@ -245,7 +245,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Coool's blogs</span>
+        <span class="site-title">Coool's Blog</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -489,16 +489,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/18/文本三剑客之awk/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/文本三剑客之awk/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="C'est la vie">
       <meta itemprop="image" content="/images/haha.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coool's blogs">
+      <meta itemprop="name" content="Coool's Blog">
     </span>
 
     
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-12-11 13:22:44" itemprop="dateModified" datetime="2018-12-11T13:22:44+08:00">2018-12-11</time>
+                <time title="修改时间：2018-09-01 00:00:00" itemprop="dateModified" datetime="2018-09-01T00:00:00+08:00">2018-09-01</time>
               
             
           </span>
@@ -1289,6 +1289,21 @@ awk &apos;{if(NF&gt;5) print $0}&apos; /etc/fstab
 awk -F: &apos;{if($3&gt;=1000) {printf &quot;Common user: %s\n&quot;,$1} else {printf &quot;root or
 Sysuser: %s\n&quot;,$1}}&apos; /etc/passwd
 等于上文中的 awk -F: &apos;{$3&gt;=1000?name=&quot;common&quot;:name=&quot;sys&quot;;print name,$1,$3}&apos; /etc/passwd
+
+例如：随机生成1000个数字，用awk取出最大值和最小值(可以用shell写法)
+    1.生成1000个数字
+        for i in {1..1000};do if [ $i -eq 1 ];then echo -e &quot;$RANDOM\c&quot; 
+            &gt;&gt; f1.txt;else echo -e &quot;,$RANDOM\c&quot; &gt;&gt; f1.txt ;fi;done
+    2.用awk取出最大值和最小值
+        awk -F&apos;,&apos; &apos;{i=2;max=$1,while(i&lt;=NF){if($i &gt; max){max=$i}else 
+        if($i &lt; min){min=$i};i++}}END{print &quot;max=&quot;max,&quot;min=&quot;min}&apos; f1.txt
+验证用awk是否取出的值为正确的：
+    方法一：用tr验证
+        tr &apos;,&apos; &apos;\n&apos; &lt; f1.txt | sort -nr | head -n1
+        tr &apos;,&apos; &apos;\n&apos; &lt; f1.txt | sort -nr | tail -n1
+    方法二：用shell脚本验证
+    #!/bin/bash
+    for i in {1..1000};do
 </code></pre><h4 id="awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，"><a href="#awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，" class="headerlink" title="awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，"></a>awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，</h4><h4 id="这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理"><a href="#这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理" class="headerlink" title="这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理"></a>这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理</h4><h4 id="awk中while循环控制语句的语法及用法"><a href="#awk中while循环控制语句的语法及用法" class="headerlink" title="awk中while循环控制语句的语法及用法"></a>awk中while循环控制语句的语法及用法</h4><pre><code>语法：while(condition){statement;…}
 条件“真”，进入循环；条件“假”，退出循环
 使用场景：
@@ -2028,7 +2043,7 @@ $、^、(、)、[、]、?、.、|
     
       <div>
         <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-  <div>Donate comment here</div>
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作!</div>
   <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
     <span>打赏</span>
   </button>
@@ -2048,11 +2063,6 @@ $、^、(、)、[、]、?、.、|
       </div>
     
 
-    
-      <div id="bitcoin" style="display: inline-block">
-        <img id="bitcoin_qr" src="/images/bitcoin.png" alt="空腹吃早餐 比特币">
-        <p>比特币</p>
-      </div>
     
 
   </div>
@@ -2209,7 +2219,7 @@ $、^、(、)、[、]、?、.、|
               <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
             
               <p class="site-author-name" itemprop="name">空腹吃早餐</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
           </div>
 
           
@@ -2428,7 +2438,7 @@ $、^、(、)、[、]、?、.、|
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:07</span>
+    <span title="站点阅读时长">1:08</span>
   
 </div>
 
@@ -2446,7 +2456,7 @@ $、^、(、)、[、]、?、.、|
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共23.9k字</span>
+  <span class="post-count">博客全站共24.1k字</span>
 </div>
 
         
