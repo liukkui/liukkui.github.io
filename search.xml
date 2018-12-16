@@ -23,9 +23,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[httpd2]]></title>
-    <url>%2F2017%2F10%2F18%2Fhttpd2%2F</url>
-    <content type="text"><![CDATA[Till I reach the end, then I’ll start again《Try Everything》 http协议:应用层协议,主流http/1.1版本http0.9、http1.0、http1.1和http2.0的版本区别 http/0.9: 只有一个GET命令，且只能回应.html文件格式，像.txt等都不支持 http/1.0:效率太低 1.支持cache, MIME(支持各种资源类型), method2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低3.引入了POST命令和HEAD命令，头部信息和4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用 http/1.1: 1.主流使用版本2.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭， 对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性3.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率4.新增方法：PUT、PATCH、OPTIONS、DELETE()5.缺点： 同一个TCP连接里，所有的数据通信是按次序进行的。服务器只能顺序处理回应，前面的回应慢，会有许多请求排队，造成”队头堵塞”6.为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等7.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:不像tcp的有限状态机，http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点 http/2.0：解决 HTTP/1.1 效率不高问题 网络文件共享服务 FTP服务 NFS服务 SAMBA服务]]></content>
+    <title><![CDATA[httpd]]></title>
+    <url>%2F2017%2F10%2F18%2Fhttpd%2F</url>
+    <content type="text"><![CDATA[危栏倚遍都无寐，只恐星河堕入楼。 ——《秋夕楼居》吴融 Till I reach the end, then I’ll start again《Try Everything》 This is an H1 Red Green Blue This is a blockquoteinside a list item. http://example.com/ Redaa This is an H2 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色]]></content>
       <categories>
         <category>linux基础</category>
       </categories>
@@ -34,9 +34,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[httpd]]></title>
-    <url>%2F2017%2F10%2F18%2Fhttpd%2F</url>
-    <content type="text"><![CDATA[危栏倚遍都无寐，只恐星河堕入楼。 ——《秋夕楼居》吴融 Till I reach the end, then I’ll start again《Try Everything》 This is an H1 Red Green Blue This is a blockquoteinside a list item. http://example.com/ Redaa This is an H2 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色 size定义字体大小，color定义颜色]]></content>
+    <title><![CDATA[httpd2]]></title>
+    <url>%2F2017%2F10%2F18%2Fhttpd2%2F</url>
+    <content type="text"><![CDATA[Till I reach the end, then I’ll start again《Try Everything》 http协议:应用层协议,主流http/1.1版本http0.9、http1.0、http1.1和http2.0的版本区别 http/0.9: 只有一个GET命令，且只能回应.html文件格式，像.txt等都不支持 http/1.0:效率太低 1.支持cache, MIME(支持各种资源类型), method2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低3.引入了POST命令和HEAD命令，头部信息和4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用 http/1.1: 1.主流使用版本2.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭， 对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性3.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率4.新增方法：PUT、PATCH、OPTIONS、DELETE()5.缺点： 同一个TCP连接里，所有的数据通信是按次序进行的。服务器只能顺序处理回应，前面的回应慢，会有许多请求排队，造成”队头堵塞”6.为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等7.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:不像tcp的有限状态机，http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点 http/2.0：解决 HTTP/1.1 效率不高问题 网络文件共享服务 FTP服务 NFS服务 SAMBA服务]]></content>
       <categories>
         <category>linux基础</category>
       </categories>

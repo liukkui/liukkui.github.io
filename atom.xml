@@ -57,28 +57,6 @@
   </entry>
   
   <entry>
-    <title>httpd2</title>
-    <link href="https://www.liukui.tech/2017/10/18/httpd2/"/>
-    <id>https://www.liukui.tech/2017/10/18/httpd2/</id>
-    <published>2017-10-18T00:00:00.000Z</published>
-    <updated>2018-12-16T04:52:28.223Z</updated>
-    
-    <content type="html"><![CDATA[<p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p><h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><p>http0.9、http1.0、http1.1和http2.0的版本区别</p><ul><li>http/0.9:<blockquote><p>只有一个GET命令，且只能回应<em>.html文件格式，像</em>.txt等都不支持</p></blockquote></li><li>http/1.0:效率太低<blockquote><p>1.支持cache, MIME(支持各种资源类型), method<br>2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低<br>3.引入了POST命令和HEAD命令，头部信息和<br>4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用</p></blockquote></li><li>http/1.1:<blockquote><p>1.主流使用版本<br>2.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭，<br>  对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性<br>3.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率<br>4.新增方法：PUT、PATCH、OPTIONS、DELETE()<br>5.缺点：</p><blockquote><p>同一个TCP连接里，所有的数据通信是按次序进行的。服务器只能顺序处理回应，前面的回应慢，会有许多请求排队，造成”队头堵塞”<br>6.为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等<br>7.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:不像tcp的有限状态机，http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点</p></blockquote></blockquote></li><li>http/2.0：解决 HTTP/1.1 效率不高问题</li></ul><h2 id="网络文件共享服务"><a href="#网络文件共享服务" class="headerlink" title="网络文件共享服务"></a>网络文件共享服务</h2><ul><li>FTP服务</li><li>NFS服务</li><li>SAMBA服务</li></ul>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;blockquote class=&quot;blockquote-center&quot;&gt;Till I reach the end, then I’ll start again&lt;br&gt;《Try Everything》&lt;br&gt;&lt;/blockquote&gt;&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="linux基础" scheme="https://www.liukui.tech/categories/linux%E5%9F%BA%E7%A1%80/"/>
-    
-    
-      <category term="文本三剑客" scheme="https://www.liukui.tech/tags/%E6%96%87%E6%9C%AC%E4%B8%89%E5%89%91%E5%AE%A2/"/>
-    
-  </entry>
-  
-  <entry>
     <title>httpd</title>
     <link href="https://www.liukui.tech/2017/10/18/httpd/"/>
     <id>https://www.liukui.tech/2017/10/18/httpd/</id>
@@ -91,6 +69,28 @@
     
       &lt;blockquote&gt;
 &lt;p&gt;危栏倚遍都无寐，只恐星河堕入楼。 ——《秋夕楼居》吴融&lt;br&gt;&lt;/p&gt;&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="linux基础" scheme="https://www.liukui.tech/categories/linux%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="文本三剑客" scheme="https://www.liukui.tech/tags/%E6%96%87%E6%9C%AC%E4%B8%89%E5%89%91%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>httpd2</title>
+    <link href="https://www.liukui.tech/2017/10/18/httpd2/"/>
+    <id>https://www.liukui.tech/2017/10/18/httpd2/</id>
+    <published>2017-10-18T00:00:00.000Z</published>
+    <updated>2018-12-16T04:52:28.223Z</updated>
+    
+    <content type="html"><![CDATA[<p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p><h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><p>http0.9、http1.0、http1.1和http2.0的版本区别</p><ul><li>http/0.9:<blockquote><p>只有一个GET命令，且只能回应<em>.html文件格式，像</em>.txt等都不支持</p></blockquote></li><li>http/1.0:效率太低<blockquote><p>1.支持cache, MIME(支持各种资源类型), method<br>2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低<br>3.引入了POST命令和HEAD命令，头部信息和<br>4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用</p></blockquote></li><li>http/1.1:<blockquote><p>1.主流使用版本<br>2.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭，<br>  对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性<br>3.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率<br>4.新增方法：PUT、PATCH、OPTIONS、DELETE()<br>5.缺点：</p><blockquote><p>同一个TCP连接里，所有的数据通信是按次序进行的。服务器只能顺序处理回应，前面的回应慢，会有许多请求排队，造成”队头堵塞”<br>6.为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等<br>7.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:不像tcp的有限状态机，http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点</p></blockquote></blockquote></li><li>http/2.0：解决 HTTP/1.1 效率不高问题</li></ul><h2 id="网络文件共享服务"><a href="#网络文件共享服务" class="headerlink" title="网络文件共享服务"></a>网络文件共享服务</h2><ul><li>FTP服务</li><li>NFS服务</li><li>SAMBA服务</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;blockquote class=&quot;blockquote-center&quot;&gt;Till I reach the end, then I’ll start again&lt;br&gt;《Try Everything》&lt;br&gt;&lt;/blockquote&gt;&lt;br&gt;&lt;/p&gt;
     
     </summary>
     
