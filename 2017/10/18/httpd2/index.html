@@ -145,7 +145,7 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="Till I reach the end, then I’ll start again《Try Everything》">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-16T07:59:39.642Z">
+<meta property="og:updated_time" content="2018-12-16T11:19:14.639Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="httpd2">
 <meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">904</span>
+                <span title="本文字数">1.7k</span>
               
 
               
@@ -576,7 +576,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">1 分钟</span>
+                <span title="阅读时长">2 分钟</span>
               
             </div>
           
@@ -597,7 +597,7 @@
 
       
         <p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p>
-<h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><p>http0.9、http1.0、http1.1和http2.0的版本区别</p>
+<h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><h4 id="http协议的版本区别"><a href="#http协议的版本区别" class="headerlink" title="http协议的版本区别"></a>http协议的版本区别</h4><p>http0.9、http1.0、http1.1和http2.0的版本区别</p>
 <ul>
 <li>http/0.9:<blockquote>
 <p>只有一个GET命令，且只能回应<em>.html文件格式，像</em>.txt等都不支持</p>
@@ -607,19 +607,45 @@
 <p>1.支持cache, MIME(支持各种资源类型), method<br>2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低<br>3.引入了POST命令和HEAD命令，头部信息和<br>4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用</p>
 </blockquote>
 </li>
-<li>http/1.1:<blockquote>
-<p>1.主流使用版本<br>2.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭，<br>  对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性<br>3.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率<br>4.新增方法：PUT、PATCH、OPTIONS、DELETE()<br>5.缺点：</p>
-<blockquote>
-<p>同一个TCP连接里，所有的数据通信是按次序进行的。服务器只能顺序处理回应，前面的回应慢，会有许多请求排队，造成”队头堵塞”<br>6.为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等<br>7.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:不像tcp的有限状态机，http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点</p>
-</blockquote>
+<li>http/1.1:主流使用版本<blockquote>
+<p>1.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭，<br>  对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性</p>
+<pre><code>这里所说的是指一个域名最大6个连接，但是在一个网页上可以有很多域名，所以会有相当多的持久连接，实现高并发请求
+</code></pre><p>2.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率<br>3.新增方法：PUT、PATCH、OPTIONS、DELETE(删除功能通常不用)<br>4.缺点：<br>  同一个TCP连接三次握手之后，所有的数据通信是按顺序进行传输的。服务器只能顺序处理回应，当前面的数据比较大，传输比较慢时，后面的许多请求则会一直处于排队状态，就造成”队头堵塞”现象<br>5.解决队头堵塞的办法：<br>  为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等<br>6.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:</p>
+<pre><code>不带状态怎么理解？
+http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点
+</code></pre></blockquote>
+</li>
+<li>http/2.0：解决 HTTP/1.1 效率不高问题<blockquote>
+<p>1.</p>
 </blockquote>
 </li>
-<li>http/2.0：解决 HTTP/1.1 效率不高问题</li>
 </ul>
-<h2 id="网络文件共享服务"><a href="#网络文件共享服务" class="headerlink" title="网络文件共享服务"></a>网络文件共享服务</h2><ul>
-<li>FTP服务</li>
-<li>NFS服务</li>
-<li>SAMBA服务</li>
+<h3 id="HTTP工作机制"><a href="#HTTP工作机制" class="headerlink" title="HTTP工作机制"></a>HTTP工作机制</h3><ul>
+<li>工作机制主要分为两步：请求和响应<blockquote>
+<p>http请求：http request<br>http响应：http response<br>一次http事务：请求<-->响应</--></p>
+</blockquote>
+</li>
+<li>Web资源：web resource<br>一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资<br>源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源<br>的集合<blockquote>
+<p>静态文件：无需服务端做出额外处理;</p>
+<pre><code>服务器端是什么样传到客户端就是什么样，比如下面这些文件
+文件后缀：.html, .txt, .jpg, .js, .css, .mp3, .avi
+只不过浏览器有时会解析出来以好看的页面展示给用户
+</code></pre><p>动态文件：服务端执行程序，返回执行的结果</p>
+<pre><code>服务器放的资源和客户端看到的不一样，看到的不是代码本身，而是代码的执行结果
+文件后缀：.php, .jsp ,.asp,.sh等
+将上面的文件程序代码执行结果配合数据库，再通过http协议封装报文传给用户
+</code></pre></blockquote>
+</li>
+<li><p>提高HTTP连接性能</p>
+<blockquote>
+<p>1.并行连接：通过开多个TCP连接发起并发的HTTP请求<br>2.持久连接：keep-alive,长连接，通过一次TCP三次握手连接后，传输多个请求再关闭tcp连接，关闭连接可以有两种方式：1.是设置每次的tcp连接时间；2.是规定传输的请求个数，HTTP的配置文件中可以进行设置，如http1.1和http2.0都支持持久连接，<br>3.管道化连接：通过共享TCP连接发起并发的HTTP请求<br>4.复用的连接：交替传送请求和响应报文（实验阶段）</p>
+</blockquote>
+</li>
+<li><p>HTTP协议的其他相关技术</p>
+<ul>
+<li>URI</li>
+</ul>
+</li>
 </ul>
 
       
@@ -987,7 +1013,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">1.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#网络文件共享服务"><span class="nav-number"></span> <span class="nav-text">网络文件共享服务</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">1.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">1.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">2.</span> <span class="nav-text">HTTP工作机制</span></a></li></ol></div>
             
 
           </div>
@@ -1007,8 +1033,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2018</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -1037,22 +1062,12 @@
   
 </div>
 
-<div class="powered-by">
-<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
-  本站访客数:<span id="busuanzi_value_site_uv"></span>
-</span>
-</div>
 
 
 
 
 
 
-
-<div class="theme-info">
-  <div class="powered-by"></div>
-  <span class="post-count">博客全站共28.1k字</span>
-</div>
 
         
 
