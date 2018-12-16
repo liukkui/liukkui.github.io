@@ -141,16 +141,16 @@
 <meta name="keywords" content="运维，linux，windows">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cobbler">
-<meta property="og:url" content="https://www.liukui.tech/2016/09/06/Cobbler/index.html">
+<meta property="og:url" content="https://www.liukui.tech/2017/05/06/Cobbler/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI所以现在更多使用Cobbler来实现自动化部署.">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2016/09/06/Cobbler/cobbler工作原理.png">
-<meta property="og:updated_time" content="2018-12-16T08:59:07.810Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/05/06/Cobbler/cobbler工作原理.png">
+<meta property="og:updated_time" content="2018-12-16T10:00:42.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cobbler">
 <meta name="twitter:description" content="在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI所以现在更多使用Cobbler来实现自动化部署.">
-<meta name="twitter:image" content="https://www.liukui.tech/2016/09/06/Cobbler/cobbler工作原理.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/05/06/Cobbler/cobbler工作原理.png">
 
 
 
@@ -159,7 +159,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2016/09/06/Cobbler/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/05/06/Cobbler/">
 
 
 
@@ -475,7 +475,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2016/09/06/Cobbler/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/05/06/Cobbler/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -518,7 +518,7 @@
                 
               
 
-              <time title="创建时间：2016-09-06 08:00:00" itemprop="dateCreated datePublished" datetime="2016-09-06T08:00:00+08:00">2016-09-06</time>
+              <time title="创建时间：2017-05-06 08:00:00" itemprop="dateCreated datePublished" datetime="2017-05-06T08:00:00+08:00">2017-05-06</time>
             
 
             
@@ -600,7 +600,7 @@
       
         <p><strong>在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI<br>所以现在更多使用Cobbler来实现自动化部署.</strong></p>
 <a id="more"></a>
-<h3 id="Cobbler工作原理"><a href="#Cobbler工作原理" class="headerlink" title="Cobbler工作原理"></a>Cobbler工作原理</h3><p><img src="/2016/09/06/Cobbler/cobbler工作原理.png" alt=""></p>
+<h3 id="Cobbler工作原理"><a href="#Cobbler工作原理" class="headerlink" title="Cobbler工作原理"></a>Cobbler工作原理</h3><p><img src="/2017/05/06/Cobbler/cobbler工作原理.png" alt=""></p>
 <h3 id="系统自动安装之-cobbler"><a href="#系统自动安装之-cobbler" class="headerlink" title="系统自动安装之-cobbler"></a>系统自动安装之-cobbler</h3><p>之前写过PXE自动化安装的文档，但是PXE只支持BIOS，不支持UEFI:<a href="">PXE系统自动化部署</a><br>Cobbler可以同时支持BIOS和UEFI两种：基于PXE技术为基础的整合</p>
 <p>BIOS+MBR：分区最多支持2T的<br>UEFI+GPT：分区可以支持大于2T的分区<br>    在之前的工作中，需要建立大于2T的分区时，PXE安装就不合适了</p>
 <h3 id="cobbler-具有图形化管理界面的工具"><a href="#cobbler-具有图形化管理界面的工具" class="headerlink" title="cobbler:具有图形化管理界面的工具"></a>cobbler:具有图形化管理界面的工具</h3><pre><code>cobbler是什么？
