@@ -2087,7 +2087,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #a4ffff;
+  background: #dbcf22;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2847,7 +2847,7 @@ ul.breadcrumb li+li:last-child {
   box-sizing: border-box;
   padding: 40px;
   width: calc(100% - 252px);
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.7);
   min-height: 700px;
   box-shadow: initial;
   border-radius: initial;
@@ -3210,9 +3210,9 @@ ul.breadcrumb li+li:last-child {
   }
 }
 .post {
-  margin-top: 60px;
+  margin-top: 0px;
   margin-bottom: 60px;
-  padding: 25px;
+  padding: 15px;
   -webkit-box-shadow: -10px 0px 10px #ff0;
   -moz-box-shadow: 0 0 5px rgba(202,203,204,0.5);
 }
