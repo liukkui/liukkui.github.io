@@ -14,7 +14,18 @@
 
 <html class="theme-next pisces" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
@@ -1536,7 +1547,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
       
         <div class="post-tags">
           
-            <a href="/tags/ansible-运维技术/" rel="tag"><i class="fa fa-tag"></i> ansible,运维技术</a>
+            <a href="/tags/ansible-运维技术/" rel="tag"># ansible,运维技术</a>
           
         </div>
       
@@ -1859,7 +1870,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
         <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2018</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
-  </span>fa-user
+  </span>
   <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
 
   
