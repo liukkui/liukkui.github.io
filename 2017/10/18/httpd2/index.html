@@ -144,10 +144,13 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="Till I reach the end, then I’ll start again《Try Everything》">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-17T02:38:59.484Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
+<meta property="og:updated_time" content="2018-12-17T08:43:07.779Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="httpd2">
 <meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
 
 
 
@@ -560,7 +563,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">1.7k</span>
+                <span title="本文字数">9.6k</span>
               
 
               
@@ -574,7 +577,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">2 分钟</span>
+                <span title="阅读时长">9 分钟</span>
               
             </div>
           
@@ -595,17 +598,22 @@
 
       
         <p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p>
+<h3 id="HTTP协议和APACHE原理"><a href="#HTTP协议和APACHE原理" class="headerlink" title="HTTP协议和APACHE原理"></a>HTTP协议和APACHE原理</h3><p>Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等<br>本文说的是HTTP SERVER<a href="http://www.apache.org/" target="_blank" rel="noopener">apache</a></p>
+<p>HTTP2.4的官方文档<a href="http://httpd.apache.org/docs/2.4/" target="_blank" rel="noopener">http2.4文档：安装，模块，指令等说明</a></p>
 <h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><h4 id="http协议的版本区别"><a href="#http协议的版本区别" class="headerlink" title="http协议的版本区别"></a>http协议的版本区别</h4><p>http0.9、http1.0、http1.1和http2.0的版本区别</p>
 <ul>
-<li>http/0.9:<blockquote>
+<li><p>http/0.9:</p>
+<blockquote>
 <p>只有一个GET命令，且只能回应<em>.html文件格式，像</em>.txt等都不支持</p>
 </blockquote>
 </li>
-<li>http/1.0:效率太低<blockquote>
+<li><p>http/1.0:效率太低</p>
+<blockquote>
 <p>1.支持cache, MIME(支持各种资源类型), method<br>2.建立TCP三次握手之后,每个TCP连接只能发送一个请求，发送数据完毕，连接就关闭，如果还要请求其他资源，就必须再新建一个连接,效率太低<br>3.引入了POST命令和HEAD命令，头部信息和<br>4.http协议加了头信息,ip(tcp(http(data))),data可以是各种MIME的资源类型可以用</p>
 </blockquote>
 </li>
-<li>http/1.1:主流使用版本<blockquote>
+<li><p>http/1.1:主流使用版本</p>
+<blockquote>
 <p>1.http/1.1版本开始引入持久连接（persistent connection）,即TCP连接默认不关闭，<br>  对于同一个域名，大多数浏览器允许同时建立6个持久连接，提高了请求的并发性</p>
 <pre><code>这里所说的是指一个域名最大6个连接，但是在一个网页上可以有很多域名，所以会有相当多的持久连接，实现高并发请求
 </code></pre><p>2.引入了管道机制（pipelining），即在同一个TCP连接里，客户端可以同时发送多个请求，进一步改进了HTTP协议的效率<br>3.新增方法：PUT、PATCH、OPTIONS、DELETE(删除功能通常不用)<br>4.缺点：<br>  同一个TCP连接三次握手之后，所有的数据通信是按顺序进行传输的。服务器只能顺序处理回应，当前面的数据比较大，传输比较慢时，后面的许多请求则会一直处于排队状态，就造成”队头堵塞”现象<br>5.解决队头堵塞的办法：<br>  为避免上述问题，两种方法：一是减少请求数，二是同时多开持久连接。网页优化技巧，如合并脚本和样式表、将图片嵌入CSS代码、域名分片（domain sharding）等<br>6.HTTP 协议不带有状态，每次请求都必须附上所有信息。请求的很多字段都是重复的，浪费带宽，影响速度:</p>
@@ -613,8 +621,9 @@
 http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信息丢失，所以会通过cookie和session来弥补这个缺点
 </code></pre></blockquote>
 </li>
-<li>http/2.0：解决 HTTP/1.1 效率不高问题<blockquote>
-<p>1.</p>
+<li><p>http/2.0：解决 HTTP/1.1效率不高的问题</p>
+<blockquote>
+<p>1.头信息和数据体都是二进制，称为头信息帧和数据帧<br>2.和http1.1区别：请求不需要排队，提高效率<br>  复用TCP连接，在一个连接里，客户端和浏览器都可以同时发送多个请求或回应，且不用按顺序一一对应，避免了“队头堵塞“,此双向的实时通信称为多工（Multiplexing）<br>3.引入头信息压缩机制（header compression）,头信息使用gzip或compress压缩后再发送；客户端和服务器同时维护一张头信息表，所有字段都会存入这个表，生成一个索引号，不发送同样字段，只发送索引号，提高速度<br>4.HTTP/2 允许服务器未经请求，主动向客户端发送资源，即服务器推送（server push）：http2.0的推送既有好处又有缺点(产生很多垃圾信息)</p>
 </blockquote>
 </li>
 </ul>
@@ -625,8 +634,8 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
 </li>
 <li>Web资源：web resource<br>一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资<br>源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源<br>的集合<blockquote>
 <p>静态文件：无需服务端做出额外处理;</p>
-<pre><code>服务器端是什么样传到客户端就是什么样，比如下面这些文件
-文件后缀：.html, .txt, .jpg, .js, .css, .mp3, .avi
+<pre><code>服务器端是什么样传到客户端就是什么样，比如下面这些
+比如文件后缀：.html, .txt, .jpg, .js, .css, .mp3, .avi
 只不过浏览器有时会解析出来以好看的页面展示给用户
 </code></pre><p>动态文件：服务端执行程序，返回执行的结果</p>
 <pre><code>服务器放的资源和客户端看到的不一样，看到的不是代码本身，而是代码的执行结果
@@ -636,14 +645,201 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
 </li>
 <li><p>提高HTTP连接性能</p>
 <blockquote>
-<p>1.并行连接：通过开多个TCP连接发起并发的HTTP请求<br>2.持久连接：keep-alive,长连接，通过一次TCP三次握手连接后，传输多个请求再关闭tcp连接，关闭连接可以有两种方式：1.是设置每次的tcp连接时间；2.是规定传输的请求个数，HTTP的配置文件中可以进行设置，如http1.1和http2.0都支持持久连接，<br>3.管道化连接：通过共享TCP连接发起并发的HTTP请求<br>4.复用的连接：交替传送请求和响应报文（实验阶段）</p>
+<p>并行连接：通过开多个TCP连接发起并发的HTTP请求<br>持久连接：keep-alive,长连接，通过一次TCP三次握手连接后，传输多个请求再关闭tcp连接，关闭连接可以有两种方式：1.是设置每次的tcp连接时间；2.是规定传输的请求个数，HTTP的配置文件中可以进行设置，如http1.1和http2.0都支持持久连接，<br>管道化连接：通过共享TCP连接发起并发的HTTP请求<br>复用的连接：交替传送请求和响应报文（实验阶段）</p>
 </blockquote>
 </li>
 <li><p>HTTP协议的其他相关技术</p>
-<ul>
-<li>URI</li>
-</ul>
 </li>
+<li><p>1.URI：一般把URI认为是URL<br>URI: Uniform Resource Identifier 统一资源标识，分为URL和URN</p>
+<blockquote>
+<p>1.URN: Uniform Resource Naming，统一资源命名</p>
+<pre><code>如P2P、迅雷等下载使用的磁力链接是URN的一种实现，不是从一个服务器上下载，从互联网任何一个有资源的地方下载，没有体现出这个资源在互联网上的路径，URN只代表这个资源叫什么名
+</code></pre><p>2.URL: Uniform Resorce Locator，统一资源定位符，用于描述某服务器某特定资源位置</p>
+<pre><code>如输入一个网址，能具体体现出这个资源在互联网上的位置
+</code></pre><p>两者区别：URN如同一个人的名称，而URL代表一个人的住址。换言之，URN定义某事物的身份，而URL提供查找该事物的方法。URN仅用于命名，而不指定地址</p>
+</blockquote>
+</li>
+<li><p>URL的组成<br><scheme>://<user>:<password>@<host>:<port>/<path></path>;<params>?<query>#<frag></frag></query></params></port></host></password></user></scheme></p>
+<blockquote>
+<p>scheme:表示访问服务器获取资源时，使用的哪种协议,如http，https,ftp等<br>user:用户，某些方案访问资源时需要的用户名<br>password:密码，用户对应的密码，中间用：分隔<br>Host:主机，资源宿主服务器的主机名或IP地址，一般写FQDN通过DNS解析<br>port:端口,资源宿主服务器正在监听的端口号，很多方案有默认端口号，如80,8080<br>/path:路径,服务器资源的本地名，由一个/将其与前面的URL组件分隔<br>params:参数，指定输入的参数，参数为名/值对，多个参数，用;分隔，一般是键值对<br>query:查询，传递参数给程序，如数据库，用？分隔,多个查询用&amp;分隔，类似sql语句的select查询功能<br>frag:片段,一小片或一部分资源的名字，此组件在客户端使用，用#分隔</p>
+</blockquote>
+</li>
+<li><p>网站访问量</p>
+<blockquote>
+<p>1.IP(独立IP)：即Internet Protocol,指独立IP数。</p>
+<pre><code>如果一个局域网内通过一个公网IP出去，则局域网内IP数只算一个
+</code></pre><p>2.PV(访问量)： 即Page View, </p>
+<pre><code>页面浏览量或点击量，用户每次刷新即被计算一次，PV反映的是浏览某网站的页面数，
+PV与来访者的数量成正比，PV并不是面的来访者数量，而是网站被访问的页面数量
+一般为了博客为了好看的访问量，都是统计PV量
+</code></pre><p>3.UV(独立访客)：即Unique Visitor,访问网站的一台电脑为一个访客。一天内相同的客户端只被计算一次。可以理解成访问某网站的电脑的数量。</p>
+<pre><code>网站判断来访电脑的身份是通过来访电脑的cookies或者session来实现的。
+如果更换了IP后但不清除cookies，再访问相同网站，该网站的统计中UV数是不变的
+ 如：局域网内三个人用同一台电脑访问一个网站，则这个网站的 IP:1;PV:6;UV:1
+</code></pre></blockquote>
+</li>
+</ul>
+<h3 id="Web服务请求处理步骤"><a href="#Web服务请求处理步骤" class="headerlink" title="Web服务请求处理步骤"></a>Web服务请求处理步骤</h3><p>很切合实际生活：比如<br>当我们打开一个浏览器，输入一个<a href="http://www.taobao.com，在互联网后台发生了什么？" target="_blank" rel="noopener">www.taobao.com，在互联网后台发生了什么？</a><br>这就涉及到web服务请求处理步骤和一次完整的http请求处理过程了，如下图<br><img src="/2017/10/18/httpd2/" alt="web请求步骤"></p>
+<p>当然在建立连接前还有DNS解析–&gt;TCP建立连接的三次握手—&gt;再到完整的http的处理过程<br>每个过程都是一段需要原理详细描述的.</p>
+<h4 id="一次完整的http请求处理过程"><a href="#一次完整的http请求处理过程" class="headerlink" title="一次完整的http请求处理过程"></a>一次完整的http请求处理过程</h4><pre><code>1.建立连接：接收或拒绝连接请求
+2.接收请求：接收客户端请求报文中对某资源的一次请求的过程
+Web访问响应模型（Web I/O）
+    单进程I/O模型：访问量不大
+        启动只有一个进程处理用户请求，而且一次只处理一个，多个请求被串行响应
+        会造成请求排队现象，只适用于访问并发不大的情况
+    多进程I/O模型：
+        系统开启多个进程处理用户请求,而且每个进程只响应一个连接请求
+        如果并发请求过高时，也会造成请求排队现象，只是比单进程稍微高效一点
+        而且服务器上开多个进程是要占用消耗资源的，CPU、内存的容量也是不支持的
+    复用I/O结构：
+        开启多个进程进程，而一个进程又同时监控N个连接请求
+        只有当N个连接请求真正进行数据传输时，这个进程才会响应，就不需要像多进程一样开启多个进程，极大的减小服务器的资源消耗
+        实现方法：多线程模型和事件驱动
+        多线程模型：一个进程生成N个线程，每线程响应一个连接请求
+        事件驱动：一个进程处理N个请求
+    复用的多进程I/O模型：
+        启动M个进程，每个进程响应N个连接请求，同时接收M*N个请求
+        充分使用CPU个数，每个核开启一个进程，一个进程响应多个请求，这就是典型的
+        nginx使用的复用多进程I/O模型
+</code></pre><p><font size="3" color="#FF0000"><br>    1.apache使用的就是多进程I/O模型，缺点：就是开启很多进程，用户量太大时，当达到并发连接数10k时，进程数太多，CPU、内存资源消耗严重，服务器性能下降，apache的响应速度就会变慢，不能支持高并发的连接请求<br>    2.nginx使用的是复用的多进程I/O模型，CPU的每个核开启一个进程，一个进程负责N个连接请求，当这些连接请求真正进行数据传输时，这个进程才会响应<br>    避免了多进程I/O模型来一个请求就开启一个进程的缺点，即使不进行数据传输也会占用一个进程的问题，会造成很大的资源占用浪费<br>    同时也避免了复用I/O模型的缺点：N个进程同时进行数据传输时，一个进程无法同时相应的问题<br></font><br><img src="/2017/10/18/httpd2/" alt="web访问响应四种模型"><br>参考下面的HTTP的MPM三种工作模式<a href=""></a></p>
+<pre><code>3、处理请求：服务器对请求报文进行解析，并获取请求的资源及请求方法等相关信息，根据方法，资源，首部和可选的主体部分对请求进行处理
+    分析元数据：请求报文首部信息获得method
+    &lt;method&gt; &lt;URL&gt; &lt;VERSION&gt;
+    HEADERS 格式 name:value
+    &lt;request body&gt;
+    通过method来响应用户请求，比如下载(get)，上传等信息
+    HTTP常用请求方式，Method
+        GET、POST、HEAD、PUT、DELETE、TRACE、OPTIONS
+4.访问资源：
+    服务器获取请求报文中请求的资源web服务器，即存放了web资源的服务器，负责向请求者提供对方请求的静态资源，或动态运行后生成的资源
+    在apache中默认的根/是---&gt; /var/www/html/index.html 可以修改配置文件
+    web服务器资源路径映射方式：
+        (a) docroot
+        (b) alias
+        (c) 虚拟主机docroot
+        (d) 用户家目录docroot
+5.构建响应报文：
+    一旦Web服务器识别除了资源，就执行请求方法中描述的动作，并返回响应报文。响应报文中 包含有响应状态码、响应首部，如果生成了响应主体的话，还包括响应主体
+   1）响应实体
+        描述了响应主体MIME类型的Content-Type首部
+        描述了响应主体长度的Content-Length
+   2）URL重定向
+        web服务构建的响应并非客户端请求的资源，而是资源另外一个访问路径
+   3）MIME类型
+   当get到/var/www/html/index.html文件后，http会添加响应实体或者URL重定向，MIME类型信息 
+6.发送响应报文
+    将构建完的响应报文发送给用户
+    将index.html(构建完的报文)进行http、tcp、IP头等封装后的响应报文发给用户
+    用户再层层解封装获得index.html的内容
+7.记录日志
+    最后，当事务结束时，Web服务器会在日志文件中添加一个条目，来描述已执行的事务
+    通过在/var/log/httpd/acess_log日志中记录http的响应记录数
+    方便分析日志统计该网站的IP，PV量等信息
+</code></pre><h3 id="HTTP介绍"><a href="#HTTP介绍" class="headerlink" title="HTTP介绍"></a>HTTP介绍</h3><p>特性：<br>高度模块化：core + modules<br>DSO: Dynamic Shared Object 动态加/卸载<br>MPM：multi-processing module多路处理模块</p>
+<h4 id="HTTP的三种工作模型：MPM工作模式"><a href="#HTTP的三种工作模型：MPM工作模式" class="headerlink" title="HTTP的三种工作模型：MPM工作模式"></a>HTTP的三种工作模型：MPM工作模式</h4><p><font size="3" color="#FF0000"><br>多用途的处理模块，三种模型分别是，默认使用prefork模型<br>因为http很多软件是只支持prefork模型而不支持woker或者event模型的，所以一般都是使用prefork模型<br></font><br>可以参考Web访问响应模型（Web I/O）<a href="">HTTP原理</a></p>
+<ul>
+<li>1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型<br>  一个主进程：生成和回收n个子进程，创建套接字，不响应请求<br>  多个子进程：工作work进程，每个子进程处理一个请求；系统初始时，预先生成多个空闲进程，等待请求，最大不超过1024个，消耗比较大内存资源</li>
+<li>2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型<br>  一个主进程生成m个子进程，每个子进程又负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n，支持高并发性<br>  缺点：线程消耗资源比进程要小很多，但是如果子进程中的线程出现问题，则会影响整个子进程，从这个方面考虑，没有prefork稳定！</li>
+<li>3.event：事件驱动模型（worker模型的优化,worker模型的变种）<br>  event模型在httpd-2.4：event 稳定版，centos7默认版本开始使用<br>  一个主进程：生成m个子进程，每个进程直接响应n个请求，并发响应请求：m*n<br>  相比较worker的有点：<br>  有专门的线程来监控管理这些keep-alive类型的线程，当有真实请求时，将请求传递给服务线程，执行完毕后，又允许释放。这样增强了高并发场景下的请求处理能力</li>
+</ul>
+<h4 id="进程工作的角色切换"><a href="#进程工作的角色切换" class="headerlink" title="进程工作的角色切换"></a>进程工作的角色切换</h4><h3 id="Httpd的功能特性"><a href="#Httpd的功能特性" class="headerlink" title="Httpd的功能特性"></a>Httpd的功能特性</h3><p>httpd的常见特性：</p>
+<ul>
+<li>虚拟主机：在一个物理服务器上搭建多个网站<br>  IP、Port、FQDN</li>
+<li>CGI：Common Gateway Interface，通用网关接口<br>  通过CGI接口处理动态的程序处理</li>
+<li>反向代理<br>  当有用户访问量大时，在前端有一个服务器充当调度器的角色<br>  通过调度算法把请求发送到后端真正提供服务的服务器上去，用户只看到调度器的信息<br>  看不到后端真正提供服务的服务器群</li>
+<li>负载均衡</li>
+<li>路径别名</li>
+<li>丰富的用户认证机制<br>  basic<br>  digest</li>
+<li>支持第三方模块</li>
+</ul>
+<h3 id="Httpd2-4新特性和安装以及配置"><a href="#Httpd2-4新特性和安装以及配置" class="headerlink" title="Httpd2.4新特性和安装以及配置"></a>Httpd2.4新特性和安装以及配置</h3><pre><code>新特性
+    MPM支持运行为DSO机制；以模块形式按需加载
+        在centos7上的httpd2.4上只有一个二进制程序
+            /usr/sbin/httpd，更改MPM模式只需要加载event或者worker模块即可
+        但是在centos6上的httpd2.2版本：
+            每个MPM模式都有各自对应的二进制程序
+                /usr/sbin/httpd
+                /usr/sbin/httpd.event
+                /usr/sbin/httpd.worker
+            如果更改MPM的模式，是需要改对应的二进制程序的
+    event MPM生产环境可用
+    异步读写机制
+    支持每模块及每目录的单独日志级别定义
+    每请求相关的专用配置
+    增强版的表达式分析式
+    毫秒级持久连接时长定义：httpd2.2只能精确到秒级别
+        上文提到http1.1和http2.0协议版本都支持持久连接，但是持久连接也是有时长的
+        所以在http中是可以定义连接时长(时长和传输请求两种方式)的
+    基于FQDN的虚拟主机不需要NameVirutalHost指令
+        httpd2.2创建虚拟主机时还需要NameVirutalHost指令
+        httpd2.4就不需要了
+    新指令，AllowOverrideList
+    支持用户自定义变量
+    更低的内存消耗
+</code></pre><h3 id="Httpd2-4的具体安装和配置"><a href="#Httpd2-4的具体安装和配置" class="headerlink" title="Httpd2.4的具体安装和配置"></a>Httpd2.4的具体安装和配置</h3><p>Httpd的软件比较复杂，所以很多功能都模块化了，需要什么功能，加载模块就行了<br>还支持第三方的模块，按需加载模块<br>存放模块的路径：/etc/httpd/modules</p>
+<pre><code>CentOS7程序环境安装：httpd-2.4
+    yum install httpd 
+    yum install httpd-manual 帮助文档，无网络环境下可以查看帮助文档
+
+主要配置文件：
+    /usr/sbin/httpd     httpd的主程序文件
+    /usr/lib/systemd/system/httpd.service   httpd的启动单元文件
+    /etc/httpd/conf/httpd.conf              主要配置文件
+        配置文件里的路径都是以/etc/httpd/为参考点的
+    /etc/httpd/conf.d/*.conf
+    /etc/httpd/conf.modules.d/00-mpm.conf    mpm相关
+    /etc/httpd/conf.modules.d/00-proxy.conf  配置代理相关
+    /etc/httpd/conf.modules.d/00-systemd.conf 
+    /etc/httpd/conf.modules.d/01-cgi.conf    CGI相关
+    /var/cache/httpd    httpd的缓存目录
+    /var/log/httpd      httpd的日志文件目录
+            access_log: 访问日志
+            error_log：错误日志
+    /etc/httpd/modules  httpd的模块存放路径，软件比较复杂
+    /usr/lib64/httpd/modules   也是httpd的模块存放路径
+        两个模块的路径实际上是软链接关系
+    /var/www/html       httpd存放网页的目录：默认index.html
+
+帮助文档包：在没有网络时查看帮助文档，建议安装
+    httpd-manual
+
+检查配置文件语法：
+    httpd –t
+    类似DNS的rndc语法检查功能
+    sudo：visudo功能
+    ansible:ansible -C|--check 执行前检查语法功能
+    cobbler 也有
+
+httpd的控制和启动命令
+    systemctl enable|disable httpd.service
+    systemctl {start|stop|restart|status|reload} httpd.service
+    备注：很多服务都有reload功能，但是需要注意的是修改或加载模块等操作
+        有时reload是无效的，只能restart服务
+</code></pre><h3 id="Httpd2-4的常见配置"><a href="#Httpd2-4的常见配置" class="headerlink" title="Httpd2.4的常见配置"></a>Httpd2.4的常见配置</h3><ul>
+<li><p>1.显示服务器版本信息HTTP2.4官方指令参考文档<a href="http://httpd.apache.org/docs/2.4/mod/quickreference.html" target="_blank" rel="noopener">指令参考文档</a></p>
+<p>  主要组成:</p>
+<pre><code>Global Environment   全局配置
+Main server configuration   一个服务器上搭建一个网站叫主服务器
+virtual host   虚拟主机，一台主机上搭建多个网站
+</code></pre></li>
+</ul>
+<p>练习一下grep命令：只显示配置文件中的非注释的行(出去注释行和空行)<br>egrep -v ‘^ <em>#.</em>|^$’ /etc/httpd/conf/httpd.conf</p>
+<p><font size="3" color="#FF0000"><br>常见配置一般都在/etc/httpd/conf/httpd.conf的文件中<br>没有的配置选项可以加在httpd.conf文件最后，也可以放在<br>/etc/httpd/conf.d/*.conf 创建一个 .conf文件，比如test.conf<br>下面的一些配置都是在/etc/httpd/conf.d/test.conf文件中添加<br></font></p>
+<ul>
+<li><p>1.显示服务器版本信息<br>  访问<a href="http://192.168.34.103" target="_blank" rel="noopener">http://192.168.34.103</a><br>  打开f12调试模式，可以看到回应头的信息中带有apache的版本信息<br>  也可以通过curl -I <a href="http://192.168.34.103来显示头信息" target="_blank" rel="noopener">http://192.168.34.103来显示头信息</a><br>  可以看到头信息里有：Server: Apache/2.4.6 (CentOS)，显示出具体版本会是网站不安全<br>  查看指令参考文档：修改ServerTokens选项</p>
+<pre><code>建议修改为：ServerTokens Prod，重启httpd服务，apache版本信息关闭了，加固安全
+</code></pre></li>
+<li><p>2.修改监听的IP和Port<br>  Listen [IP:]PORT<br>  (1) 省略IP表示为本机所有IP<br>  (2) Listen监听端口至少一个，可以有多个端口<br>  (3) 监听端口可以绑定到服务器的特定IP上，只能通过这个IP才能使用此端口</p>
+<pre><code>test.conf添加listen端口：
+listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
+</code></pre></li>
+<li><p>3.持久连接：默认KeepAlive是开启的<br>  Persistent Connection：连接建立，每个资源获取完成后不会断开连接，而是继续等待其它的请求完成，默认关闭持久连接<br>  断开条件：时间限制：以秒为单位， 默认5s，httpd-2.4 支持毫秒级<br>  副作用：对并发访问量大的服务器，持久连接会使有些请求得不到响应<br>  折衷：使用较短的持久连接时间</p>
+<pre><code>设置：KeepAlive On|Off
+    KeepAliveTimeout 15   设置持久连接为15s
+测试：telnet WEB_SERVER_IP PORT
+    GET /URL HTTP/1.1
+    Host: WEB_SERVER_IP
+</code></pre></li>
 </ul>
 
       
@@ -1013,7 +1209,7 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">1.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">1.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">2.</span> <span class="nav-text">HTTP工作机制</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">5.</span> <span class="nav-text">HTTP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">5.1.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">5.2.</span> <span class="nav-text">进程工作的角色切换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">6.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">7.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">8.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">9.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
             
 
           </div>
@@ -1047,7 +1243,7 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">89k</span>
+    <span title="站点总字数">97k</span>
   
 
   
@@ -1058,7 +1254,7 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:21</span>
+    <span title="站点阅读时长">1:28</span>
   
 </div>
 

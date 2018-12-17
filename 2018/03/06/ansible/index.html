@@ -150,7 +150,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/06/ansible/roles.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/06/ansible/roles_nginx.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/06/ansible/roles_memcached.png">
-<meta property="og:updated_time" content="2018-12-17T02:27:38.476Z">
+<meta property="og:updated_time" content="2018-12-17T07:14:16.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ansible">
 <meta name="twitter:description" content="运维自动化管理工具之Ansible">
@@ -581,7 +581,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">26 分钟</span>
+                <span title="阅读时长">27 分钟</span>
               
             </div>
           
@@ -722,6 +722,12 @@ CMDB即配置管理数据库，通过识别、控制、维护，检查企业的I
     /usr/bin/ansible-playbook 管理执行编排的playbook剧本任务
     /usr/bin/ansible-vault 文件加密工具
     /usr/bin/ansible-console 基于Console界面与用户交互的执行工具
+常用命令：
+    ansible all --list 查看ansible管理的主机群
+    ansible all -m &quot;模块名&quot; -a &apos;执行的命令&apos;   用什么模块执行什么命令
+        all也可以换成定义的--list中组的名字
+    ansible-playbook -C &apos;*.yml&apos; 对所有主机执行剧本
+    ansible-plsybook -C -t &apos;标签&apos; &apos;*.yml&apos; 对所有主机执行哪个标签的剧本
 </code></pre><h4 id="ansible主机清单配置：-etc-ansible-hosts-第一步-下文中介绍主机清单的多种表示方法"><a href="#ansible主机清单配置：-etc-ansible-hosts-第一步-下文中介绍主机清单的多种表示方法" class="headerlink" title="ansible主机清单配置：/etc/ansible/hosts,第一步(下文中介绍主机清单的多种表示方法)"></a>ansible主机清单配置：/etc/ansible/hosts,第一步(下文中介绍主机清单的多种表示方法)</h4><pre><code>支持不分组，分组，等方式
     如：
         192.168.34.100
@@ -1872,7 +1878,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">89k</span>
+    <span title="站点总字数">97k</span>
   
 
   
@@ -1883,7 +1889,7 @@ default/：设定默认变量时使用此目录中的main.yml文件
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:21</span>
+    <span title="站点阅读时长">1:28</span>
   
 </div>
 
