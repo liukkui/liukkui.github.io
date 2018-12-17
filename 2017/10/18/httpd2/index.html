@@ -146,7 +146,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:updated_time" content="2018-12-17T08:43:07.779Z">
+<meta property="og:updated_time" content="2018-12-17T11:43:09.981Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="httpd2">
 <meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
@@ -545,6 +545,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/10/18/httpd2/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/18/httpd2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -563,7 +573,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.6k</span>
+                <span title="本文字数">12k</span>
               
 
               
@@ -577,7 +587,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">9 分钟</span>
+                <span title="阅读时长">11 分钟</span>
               
             </div>
           
@@ -827,19 +837,70 @@ virtual host   虚拟主机，一台主机上搭建多个网站
 <p><font size="3" color="#FF0000"><br>常见配置一般都在/etc/httpd/conf/httpd.conf的文件中<br>没有的配置选项可以加在httpd.conf文件最后，也可以放在<br>/etc/httpd/conf.d/*.conf 创建一个 .conf文件，比如test.conf<br>下面的一些配置都是在/etc/httpd/conf.d/test.conf文件中添加<br></font></p>
 <ul>
 <li><p>1.显示服务器版本信息<br>  访问<a href="http://192.168.34.103" target="_blank" rel="noopener">http://192.168.34.103</a><br>  打开f12调试模式，可以看到回应头的信息中带有apache的版本信息<br>  也可以通过curl -I <a href="http://192.168.34.103来显示头信息" target="_blank" rel="noopener">http://192.168.34.103来显示头信息</a><br>  可以看到头信息里有：Server: Apache/2.4.6 (CentOS)，显示出具体版本会是网站不安全<br>  查看指令参考文档：修改ServerTokens选项</p>
-<pre><code>建议修改为：ServerTokens Prod，重启httpd服务，apache版本信息关闭了，加固安全
+<pre><code>建议使用：ServerTokens Prod，重启httpd服务，apache版本信息关闭了，加固安全
 </code></pre></li>
 <li><p>2.修改监听的IP和Port<br>  Listen [IP:]PORT<br>  (1) 省略IP表示为本机所有IP<br>  (2) Listen监听端口至少一个，可以有多个端口<br>  (3) 监听端口可以绑定到服务器的特定IP上，只能通过这个IP才能使用此端口</p>
 <pre><code>test.conf添加listen端口：
 listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
 </code></pre></li>
-<li><p>3.持久连接：默认KeepAlive是开启的<br>  Persistent Connection：连接建立，每个资源获取完成后不会断开连接，而是继续等待其它的请求完成，默认关闭持久连接<br>  断开条件：时间限制：以秒为单位， 默认5s，httpd-2.4 支持毫秒级<br>  副作用：对并发访问量大的服务器，持久连接会使有些请求得不到响应<br>  折衷：使用较短的持久连接时间</p>
-<pre><code>设置：KeepAlive On|Off
-    KeepAliveTimeout 15   设置持久连接为15s
+<li><p>3.持久连接：默认KeepAlive是开启的<br>  Persistent Connection：连接建立，每个资源获取完成后不会断开连接，而是继续等待其它的请求完成，默认关闭持久连接<br>  断开条件：时间限制：以秒为单位， 默认5s，httpd-2.4的新特性支持毫秒级<br>  副作用：对并发访问量大的服务器，持久连接要设置短一点，要不然会造成请求排队堵塞<br>  折衷：使用较短的持久连接时间</p>
+<pre><code>设置：
+    KeepAlive On|Off       设置持久连接开启或者关闭
+    KeepAliveTimeout 15    设置持久连接为15s
 测试：telnet WEB_SERVER_IP PORT
-    GET /URL HTTP/1.1
-    Host: WEB_SERVER_IP
+    GET /index.html HTTP/1.1
+    Host: WEB_SERVER_IP  host可以随便填写，但是在虚拟主机中是有区别的
 </code></pre></li>
+<li><p>4.MPM（ Multi-Processing Module）多路处理模块：prefork,worker,event<br>  默认是prefork：/etc/httpd/conf.modules.d/00-mpm.conf  修改mpm的文件<br>  建议还是使用prefork模块，因为后续的很多模块都依赖于prefork模块的<br>  查看静态编译的模块<br>  httpd -l<br>  查看当前系统中httpd的静态编译及动态装载的加载的模块<br>  httpd –M<br>  动态模块加载：不需重启即生效<br>  动态模块路径<br>   /usr/lib64/httpd/modules/</p>
+<pre><code>切换使用的MPM模块
+    在/etc/httpd/conf.modules.d/00-mpm.conf中
+    选择要启用的MPM相关的LoadModule指令即可
+prefork的配置：
+    StartServers 8           
+    MinSpareServers 5       保留5个空闲子进程处理新的请求
+    MaxSpareServers 20      允许的最大空闲进程数
+    ServerLimit 256         最多进程数,最大20000，并发量建议最多10000     
+    MaxRequestsPerChild     4000 子进程最多能处理的请求数量。在处理
+    MaxRequestsPerChild个请求之后,子进程将会被父进程终止，这时候子进
+    程占用的内存就会释放(为0时永远不释放）
+worker和prefork配置类似，只不过会有线程数量的限制
+</code></pre></li>
+<li><p>5.DSO： Dynamic Shared Object<br>  加载动态模块配置<br>  /etc/httpd/conf/httpd.conf<br>  Include conf.modules.d/*.conf<br>  配置指定实现模块加载格式：<br>  LoadModule &lt;mod_name&gt; &lt;mod_path&gt;<br>  模块文件路径可使用相对路径：<br>  相对于ServerRoot（默认/etc/httpd）</p>
+</li>
+<li><p>6.定义’Main’ server的文档页面路径：存放页面的主目录<br>  主目录是由DocumentRoot指令来设置的<br>  网页文件默认是存在/var/www/html/下的，此处可以自定义<br>  在/etc/httpd/conf/httpd.conf中默认DocumentRoot是”/var/www/html”</p>
+<pre><code>如果要自定义主目录，还需要设置该目录为允许访问
+在httpd2.2上是不需要设置权限访问的
+但是在httpd2.4上是需要设置该目录允许访问的
+修改格式如下：
+#DocumentRoot &quot;/var/www/html&quot;
+DocumentRoot &quot;/data/www&quot;
+&lt;directory /data/www&gt;
+    Require all granted
+&lt;/directory&gt; 
+</code></pre></li>
+<li><p>7.定义站点默认主页面<br>  访问192.168.34.103默认显示的是index.html的内容，<br>  这一项是由DirectoryIndex指令设置的</p>
+<pre><code>在/etc/httpd/conf/httpd.conf中有定义默认页面，修改即可
+添加：DirectoryIndex haha.html，当然前提是存放页面的主目录下有这个html文件
+</code></pre></li>
+<li><p>8.站点访问控制常见机制<br>  可基于两种机制指明对哪些资源进行何种访问控制<br>  访问控制机制有两种：1.客户端来源地址，2.用户账号<br>  而文件系统路径：可以是<br>  1.具体的目录；2.可以是具体到一个文件；3.可以是扩展的正则表达式匹配<br>  示例：<br>  ‘<filesmatch "\.(gif|jpe?g|png)$"="">‘’   用的是扩展的正则表达式<br>  <files “?at.*”="">                     通配符<br>  &lt;Location /status&gt;</files></filesmatch></p>
+  <locationmatch "="" (extra|special)="" data"="">
+</locationmatch></li>
+<li><p>9.<directory>中”基于源地址”实现访问控制<br>   (1) Options：后跟1个或多个以空白字符分隔的选项列<br>  在选项前的+，- 表示增加或删除指定选项<br>  常见选项：<br>  Indexes：指明的URL路径下不存在与定义的主页面资源相符的资源文件时，返回索引列表给用户,即显示/var/www/html/下的所有文件给用户看，比如阿里和清华镜像源就是这个机制<br>  适用于下载网站和镜像网站，不适合电商网站<br>  FollowSymLinks：允许访问符号链接文件所指向的源文件<br>  None：全部禁用<br>  All： 全部允许</directory></p>
+<pre><code>Indexes使用示例：前提是定义站点默认主页面的index.html不存在，存在的话显示的
+就是index.html的内容，适用于下载网站和镜像网站，不适合电商网站
+    &lt;directory &quot;/data/www&quot;&gt;
+    options Indexes                                          
+    Require all granted
+    &lt;/directory&gt;
+
+FollowSymLinks使用示例：
+    &lt;directory &quot;/data/www&quot;&gt;
+    options Indexes  FollowSymLinks       
+    Require all granted
+    &lt;/directory&gt;
+</code></pre><p><font size="4" color="#FF0000"><br>实现options indexes的前提：存放页面的主目录下没有index.html文件，但是此时即使加上 options Indexes选项，页面也不会列出主目录下的所有文件，因为httpd找不到主目录下的index.html文件则会找/etc/httpd/conf.d/下的welcome.html页面，welcome.html文件就是页面上经常看到的测试123页面，把welcome.html文件改名或删除，就会显示主目录下的所有列表文件了.<br></font><br>  (2) AllowOverride<br>  与访问控制相关的哪些指令可以放在指定目录下的.htaccess（由<br>  AccessFileName指定）文件中，覆盖之前的配置指令</p>
+</li>
+<li>10.</li>
 </ul>
 
       
@@ -1007,6 +1068,10 @@ listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
 
   
 
@@ -1243,7 +1308,7 @@ listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">97k</span>
+    <span title="站点总字数">100k</span>
   
 
   
@@ -1254,7 +1319,7 @@ listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:28</span>
+    <span title="站点阅读时长">1:31</span>
   
 </div>
 
@@ -1420,6 +1485,31 @@ listen 172.18.132.151:6666 6666端口只能通过此IP才能访问
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        placeholder: '长得帅的都已经留言了',
+        avatar:'monsterid',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
 
 
 
