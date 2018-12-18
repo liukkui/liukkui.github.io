@@ -146,7 +146,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:updated_time" content="2018-12-17T13:25:13.986Z">
+<meta property="og:updated_time" content="2018-12-17T13:46:04.704Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="httpd2">
 <meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
@@ -573,7 +573,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">14k</span>
+                <span title="本文字数">15k</span>
               
 
               
@@ -936,8 +936,27 @@ Require ip 192.168.34.107
 &lt;/RequireAny&gt;                                                 
 &lt;/directory&gt;
 </code></pre></li>
-<li><p>10.日志设定：日志默认/var/log/httpd/下<br>  日志类型：访问日志(access_log)和错误日志(error_log)<br>  在/etc/httpd/conf/httpd.conf中定义了访问日志和错误日志的存放路径<br>  CustomLog “logs/access_log”<br>  ErrorLog “logs/error_log”<br>  可以看出日志文件都是以/etc/httpd/为根的，所以写的是相对路径<br>  而</p>
-</li>
+</ul>
+<ul>
+<li>10.日志设定：日志默认/var/log/httpd/下<br><a href="http://httpd.apache.org/docs/2.2/mod/mod_log_config.html#formats" target="_blank" rel="noopener">format官方说明文档</a><br>  日志类型：访问日志(access_log)和错误日志(error_log)<br>  日志的格式，先通过Logformat指令指定然后起个名，然后生成的日志再调用这个日志格式<pre><code>在/etc/httpd/conf/httpd.conf中定义了访问日志和错误日志的存放路径和日志格式定义
+LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot;&quot; combined   --&gt;由Logformat指令定义完起一个combined名
+CustomLog &quot;logs/access_log&quot; combined再调用这个日志格式
+ErrorLog &quot;logs/error_log&quot;
+</code></pre>  可以看出日志文件都是以/etc/httpd/为根的，所以写的是相对路径<br>  定义日志格式：由LogFormat format strings指令来设置的，combined<pre><code>定义的格式各个项说明
+%h 客户端IP地址
+%l 远程用户,启用mod_ident才有效，通常为减号“-”
+%u 验证（basic，digest）远程用户,非登录访问时，为一个减号“-”
+%t 服务器收到请求时的时间
+%r First line of request，即表示请求报文的首行；记录了此次请求的“方法”，
+“URL”以及协议版本
+%&gt;s 响应状态码
+%b 响应报文的大小，单位是字节；不包括响应报文http首部
+%{Referer}i 
+    请求报文中首部“referer”的值；即从哪个页面中的超链接跳转至当前页面的，通过referer可以分析出网页
+    是否被调用了，比如说广告生效了，或者说搭建的个人网站被别人盗链了，占用了自己的服务器资源，
+    所以网站要加防盗链
+%{User-Agent}i 请求报文中首部“User-Agent”的值；即发出请求的应用程序
+</code></pre></li>
 </ul>
 
       
@@ -1345,7 +1364,7 @@ Require ip 192.168.34.107
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">101k</span>
+    <span title="站点总字数">102k</span>
   
 
   
@@ -1356,7 +1375,7 @@ Require ip 192.168.34.107
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:32</span>
+    <span title="站点阅读时长">1:33</span>
   
 </div>
 
