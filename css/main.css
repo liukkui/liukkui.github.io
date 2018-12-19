@@ -2087,7 +2087,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #f921ff;
+  background: #ec0b65;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3213,7 +3213,7 @@ ul.breadcrumb li+li:last-child {
   margin-top: 0px;
   margin-bottom: 60px;
   padding: 15px;
-  -webkit-box-shadow: -10px 0px 10px #ff0;
+  -webkit-box-shadow: -10px 0px 10px #f00;
   -moz-box-shadow: 0 0 5px rgba(202,203,204,0.5);
 }
 .post {
@@ -3227,7 +3227,7 @@ body {
   background-position: center;
 }
 .site-meta {
-  background: #ff2a2a;
+  background: #f00;
 }
 .github-corner :hover .octo-arm {
   animation: octocat-wave 560ms ease-in-out;
