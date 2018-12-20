@@ -507,40 +507,59 @@
       <div class="post-body">
         
         
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-                
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                  
-                    
-                  
-                
-                目前共计 6 个标签
-            </div>
-            <div class="tag-cloud-tags">
-              <a href="/tags/ansible-运维技术/" style="font-size: 12px; color: #ccc">ansible,运维技术</a> <a href="/tags/mysql/" style="font-size: 12px; color: #ccc">mysql</a> <a href="/tags/文本三剑客/" style="font-size: 12px; color: #ccc">文本三剑客</a> <a href="/tags/文本处理工具/" style="font-size: 30px; color: #111">文本处理工具</a> <a href="/tags/旧事，杂记/" style="font-size: 12px; color: #ccc">旧事，杂记</a> <a href="/tags/运维，linux，windows/" style="font-size: 12px; color: #ccc">运维，linux，windows</a>
-            </div>
-          </div>
+         <div class="tag-cloud">
+  <!-- <div class="tag-cloud-title">
+      目前共计 6 个标签
+  </div> -->
+  <div class="tag-cloud-tags" id="tags">
+    <a href="/tags/ansible-运维技术/" style="font-size: 16px; color: #fff">ansible,运维技术</a> <a href="/tags/mysql/" style="font-size: 16px; color: #fff">mysql</a> <a href="/tags/文本三剑客/" style="font-size: 16px; color: #fff">文本三剑客</a> <a href="/tags/文本处理工具/" style="font-size: 16px; color: #fff">文本处理工具</a> <a href="/tags/旧事，杂记/" style="font-size: 16px; color: #fff">旧事，杂记</a> <a href="/tags/运维，linux，windows/" style="font-size: 16px; color: #fff">运维，linux，windows</a>
+  </div>
+</div>
+<br>
+
+<script type="text/javascript">
+   var alltags=document.getElementById('tags');
+   var tags=alltags.getElementsByTagName('a');
+
+   for (var i = tags.length - 1; i >= 0; i--) {
+     var r=Math.floor(Math.random()*75+130);
+     var g=Math.floor(Math.random()*75+100);
+     var b=Math.floor(Math.random()*75+80);
+     tags[i].style.background = "rgb("+r+","+g+","+b+")";
+   }
+</script>
+
+<style type="text/css">
+    div#posts.posts-expand .tag-cloud a{
+   background-color: #f5f7f1;
+   border-radius: 6px;
+   padding-left: 10px;
+   padding-right: 10px;
+   margin-top: 18px;
+
+ }
+
+ .tag-cloud a{
+   background-color: #f5f7f1;
+   border-radius: 4px;
+   padding-right: 5px;
+   padding-left: 5px;
+   margin-right: 5px;
+   margin-left: 0px;
+   margin-top: 8px;
+   margin-bottom: 0px;
+
+ }
+
+ .tag-cloud a:before{
+      content: "📜";
+ }
+
+ .tag-cloud-tags{
+   text-align: left;
+   counter-reset: tags;
+ }
+</style>
         
       </div>
       
