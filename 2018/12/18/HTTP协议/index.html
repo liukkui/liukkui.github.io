@@ -136,22 +136,24 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="Till I reach the end, then I’ll start again《Try Everything》">
-<meta name="keywords" content="文本处理工具">
+  <meta name="description" content="HTTP协议和APACHE原理Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等本文说的是HTTP SERVERapache">
+<meta name="keywords" content="apache,web服务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="httpd2">
-<meta property="og:url" content="https://www.liukui.tech/2017/10/18/httpd2/index.html">
+<meta property="og:title" content="HTTP协议">
+<meta property="og:url" content="https://www.liukui.tech/2018/12/18/HTTP协议/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="Till I reach the end, then I’ll start again《Try Everything》">
+<meta property="og:description" content="HTTP协议和APACHE原理Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等本文说的是HTTP SERVERapache">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:updated_time" content="2018-12-19T13:59:31.331Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/doubi.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web服务请求处理步骤.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web访问响应的四种模型.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/进程角色切换原理.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTPD的prefork模型.png">
+<meta property="og:updated_time" content="2018-12-20T11:47:11.967Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="httpd2">
-<meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
+<meta name="twitter:title" content="HTTP协议">
+<meta name="twitter:description" content="HTTP协议和APACHE原理Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等本文说的是HTTP SERVERapache">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/doubi.jpg">
 
 
 
@@ -160,7 +162,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/10/18/httpd2/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/12/18/HTTP协议/">
 
 
 
@@ -170,7 +172,7 @@
   };
 </script>
 
-  <title>httpd2 | Coool's Blog</title>
+  <title>HTTP协议 | Coool's Blog</title>
   
 
 
@@ -350,7 +352,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">7</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">6</span></a>
 
   </li>
         
@@ -475,7 +477,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/httpd2/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/12/18/HTTP协议/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -492,7 +494,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">httpd2
+          <h1 class="post-title" itemprop="name headline">HTTP协议
               
             
           </h1>
@@ -500,6 +502,10 @@
 
         <div class="post-meta">
                   
+            <i class="fa fa-thumb-tack"></i>
+            <font color="808080">置顶</font>
+            <span class="post-meta-divider">|</span>
+          
           <span class="post-time">
 
             
@@ -518,7 +524,7 @@
                 
               
 
-              <time title="创建时间：2017-10-18 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-18T08:00:00+08:00">2017-10-18</time>
+              <time title="创建时间：2018-12-18 08:00:00" itemprop="dateCreated datePublished" datetime="2018-12-18T08:00:00+08:00">2018-12-18</time>
             
 
             
@@ -536,7 +542,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux基础/" itemprop="url" rel="index"><span itemprop="name">linux基础</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/HTTP协议/" itemprop="url" rel="index"><span itemprop="name">HTTP协议</span></a></span>
 
                 
                 
@@ -598,7 +604,8 @@
       
 
       
-        <p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p>
+        <p><img src="/2018/12/18/HTTP协议/doubi.jpg" alt=""></p>
+<h3 id="HTTP协议和APACHE原理"><a href="#HTTP协议和APACHE原理" class="headerlink" title="HTTP协议和APACHE原理"></a>HTTP协议和APACHE原理</h3><p>Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等<br>本文说的是HTTP SERVER<a href="http://www.apache.org/" target="_blank" rel="noopener">apache</a><br><a id="more"></a><br>HTTP2.4的官方文档<a href="http://httpd.apache.org/docs/2.4/" target="_blank" rel="noopener">http2.4文档：安装，模块，指令等说明</a><br>HTTP2.4官方指令参考文档<a href="http://httpd.apache.org/docs/2.4/mod/quickreference.html" target="_blank" rel="noopener">指令参考文档</a><br><!--more--></p>
 <h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><h4 id="http协议的版本区别"><a href="#http协议的版本区别" class="headerlink" title="http协议的版本区别"></a>http协议的版本区别</h4><p>http0.9、http1.0、http1.1和http2.0的版本区别</p>
 <ul>
 <li><p>http/0.9:</p>
@@ -678,7 +685,7 @@ PV与来访者的数量成正比，PV并不是面的来访者数量，而是网�
 </code></pre></blockquote>
 </li>
 </ul>
-<h3 id="Web服务请求处理步骤"><a href="#Web服务请求处理步骤" class="headerlink" title="Web服务请求处理步骤"></a>Web服务请求处理步骤</h3><p>很切合实际生活：比如<br>当我们打开一个浏览器，输入一个<a href="http://www.taobao.com，在互联网后台发生了什么？" target="_blank" rel="noopener">www.taobao.com，在互联网后台发生了什么？</a><br>这就涉及到web服务请求处理步骤和一次完整的http请求处理过程了，如下图<br><img src="/2017/10/18/httpd2/" alt="web请求步骤"></p>
+<h3 id="Web服务请求处理步骤"><a href="#Web服务请求处理步骤" class="headerlink" title="Web服务请求处理步骤"></a>Web服务请求处理步骤</h3><p>很切合实际生活：比如<br>当我们打开一个浏览器，输入一个<a href="http://www.taobao.com，在互联网后台发生了什么？" target="_blank" rel="noopener">www.taobao.com，在互联网后台发生了什么？</a><br>这就涉及到web服务请求处理步骤和一次完整的http请求处理过程了，如下图<br><img src="/2018/12/18/HTTP协议/web服务请求处理步骤.png" alt="web请求步骤"></p>
 <p>当然在建立连接前还有DNS解析–&gt;TCP建立连接的三次握手—&gt;再到完整的http的处理过程<br>每个过程都是一段需要原理详细描述的.</p>
 <h4 id="一次完整的http请求处理过程"><a href="#一次完整的http请求处理过程" class="headerlink" title="一次完整的http请求处理过程"></a>一次完整的http请求处理过程</h4><pre><code>1.建立连接：接收或拒绝连接请求
 2.接收请求：接收客户端请求报文中对某资源的一次请求的过程
@@ -702,7 +709,7 @@ Web访问响应模型（Web I/O）
         nginx使用的复用多进程I/O模型
 </code></pre><font size="3" color="#FF0000"><br>    1.apache使用的就是多进程I/O模型，缺点：就是开启很多进程，用户量太大时，当达到并发连接数10k时，进程数太多，CPU、内存资源消耗严重，服务器性能下降，apache的响应速度就会变慢，不能支持高并发的连接请求，通过 ps auxf可以看出是一个父进程多个子进程<br>    2.nginx使用的是复用的多进程I/O模型，CPU的每个核开启一个进程，一个进程负责N个连接请求，当这些连接请求真正进行数据传输时，这个进程才会响应<br>    避免了多进程I/O模型来一个请求就开启一个进程的缺点，即使不进行数据传输也会占用一个进程的问题，会造成很大的资源占用浪费<br>    同时也避免了复用I/O模型的缺点：N个进程同时进行数据传输时，一个进程无法同时相应的问题<br></font>
 
-<p><img src="/2017/10/18/httpd2/" alt="web访问响应四种模型"><br>参考下面的HTTP的MPM三种工作模式<a href=""></a></p>
+<p><img src="/2018/12/18/HTTP协议/web访问响应的四种模型.png" alt="web访问响应四种模型"><br>参考下面的HTTP的MPM三种工作模式<a href=""></a></p>
 <pre><code>3、处理请求：服务器对请求报文进行解析，并获取请求的资源及请求方法等相关信息，根据方法，资源，首部和可选的主体部分对请求进行处理
     分析元数据：请求报文首部信息获得method
     &lt;method&gt; &lt;URL&gt; &lt;VERSION&gt;
@@ -737,7 +744,7 @@ Web访问响应模型（Web I/O）
     通过在/var/log/httpd/acess_log日志中记录http的响应记录数
     方便分析日志统计该网站的IP，PV量等信息
 </code></pre><h3 id="HTTP介绍"><a href="#HTTP介绍" class="headerlink" title="HTTP介绍"></a>HTTP介绍</h3><p>特性：<br>高度模块化：core + modules<br>DSO: Dynamic Shared Object 动态加/卸载<br>MPM：multi-processing module多路处理模块</p>
-<h4 id="HTTP的三种工作模型：MPM工作模式"><a href="#HTTP的三种工作模型：MPM工作模式" class="headerlink" title="HTTP的三种工作模型：MPM工作模式"></a>HTTP的三种工作模型：MPM工作模式</h4><font size="3" color="#FF0000"><br>多用途的处理模块，三种模型分别是，默认使用prefork模型<br>因为http很多软件是只支持prefork模型而不支持woker或者event模型的，所以一般都是使用prefork模型<br></font>
+<h3 id="HTTP的三种工作模型：MPM工作模式"><a href="#HTTP的三种工作模型：MPM工作模式" class="headerlink" title="HTTP的三种工作模型：MPM工作模式"></a>HTTP的三种工作模型：MPM工作模式</h3><font size="3" color="#FF0000"><br>多用途的处理模块，三种模型分别是，默认使用prefork模型<br>因为http很多软件是只支持prefork模型而不支持woker或者event模型的，所以一般都是使用prefork模型<br></font>
 
 <p>可以参考Web访问响应模型（Web I/O）<a href="">HTTP原理</a></p>
 <ul>
@@ -745,7 +752,8 @@ Web访问响应模型（Web I/O）
 <li>2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型<br>  一个主进程生成m个子进程，每个子进程又负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n，支持高并发性<br>  缺点：线程消耗资源比进程要小很多，但是如果子进程中的线程出现问题，则会影响整个子进程，从这个方面考虑，没有prefork稳定！</li>
 <li>3.event：事件驱动模型（worker模型的优化,worker模型的变种）<br>  event模型在httpd-2.4：event 稳定版，centos7默认版本开始使用<br>  一个主进程：生成m个子进程，每个进程直接响应n个请求，并发响应请求：m*n<br>  相比较worker的有点：<br>  有专门的线程来监控管理这些keep-alive类型的线程，当有真实请求时，将请求传递给服务线程，执行完毕后，又允许释放。这样增强了高并发场景下的请求处理能力</li>
 </ul>
-<h4 id="进程工作的角色切换"><a href="#进程工作的角色切换" class="headerlink" title="进程工作的角色切换"></a>进程工作的角色切换</h4><h3 id="Httpd的功能特性"><a href="#Httpd的功能特性" class="headerlink" title="Httpd的功能特性"></a>Httpd的功能特性</h3><p>httpd的常见特性：</p>
+<h3 id="进程工作的角色切换"><a href="#进程工作的角色切换" class="headerlink" title="进程工作的角色切换"></a>进程工作的角色切换</h3><p><img src="/2018/12/18/HTTP协议/进程角色切换原理.png" alt="进程间的角色切换"></p>
+<h3 id="Httpd的功能特性"><a href="#Httpd的功能特性" class="headerlink" title="Httpd的功能特性"></a>Httpd的功能特性</h3><p>httpd的常见特性：</p>
 <ul>
 <li>虚拟主机：在一个物理服务器上搭建多个网站<br>  IP、Port、FQDN</li>
 <li>CGI：Common Gateway Interface，通用网关接口<br>  通过CGI接口处理动态的程序处理</li>
@@ -857,9 +865,10 @@ prefork的配置：
     MaxRequestsPerChild个请求之后,子进程将会被父进程终止，这时候子进
     程占用的内存就会释放(为0时永远不释放）
 worker和prefork配置类似，只不过会有线程数量的限制
-</code></pre><p>从下面ps auxf的进程图可以看书httpd是使用的prefork模型，而且因为端口是80，开启需要特殊<br>权限，所以父进程是root,子进程是apache<br><img src="/2017/10/18/httpd2/" alt="httpd的prefork模型"></p>
+</code></pre><p>从下面ps auxf的进程图可以看书httpd是使用的prefork模型，而且因为端口是80，开启需要特殊<br>权限，所以父进程是root,子进程是apache</p>
 </li>
 </ul>
+<p><img src="/2018/12/18/HTTP协议/HTTPD的prefork模型.png" alt=""></p>
 <ul>
 <li><p>5.DSO： Dynamic Shared Object<br>  加载动态模块配置<br>  /etc/httpd/conf/httpd.conf<br>  Include conf.modules.d/*.conf<br>  配置指定实现模块加载格式：<br>  LoadModule &lt;mod_name&gt; &lt;mod_path&gt;<br>  模块文件路径可使用相对路径：<br>  相对于ServerRoot（默认/etc/httpd）</p>
 </li>
@@ -1137,7 +1146,7 @@ GET /index.html HTTP/1.1
 HOST: www.a.com
 </code></pre></li>
 </ul>
-<font size="5" color="#FF0000"><br>当访问192.168.34.103时 HOST：即网站的域名，返回的结果就是其对应的页面信息<br>在互联网上，一般是先在本地服务器上通过第三种方式搭建多个网站，然后再通过服务商的智能DNS解析，可以通过访问不同的域名，解析到IP地址，服务器根据输入的HOST：域名判断访问的是哪个网站，进而返回对应网站站点的信息，对于主机较少或者IP有限的环境中，使用http虚拟主机还是很方便的。<br></font>
+<font size="4" color="#FF0000"><br>当访问192.168.34.103时 HOST：即网站的域名，返回的结果就是其对应的页面信息<br>在互联网上，一般是先在本地服务器上通过第三种方式搭建多个网站，然后再通过服务商的智能DNS解析，可以通过访问不同的域名，解析到IP地址，服务器根据输入的HOST：域名判断访问的是哪个网站，进而返回对应网站站点的信息，对于主机较少或者IP有限的环境中，使用http虚拟主机还是很方便的。<br></font>
       
     </div>
 
@@ -1203,7 +1212,7 @@ HOST: www.a.com
       
         <div class="post-tags">
           
-            <a href="/tags/文本处理工具/" rel="tag"><i class="fa fa-tag"></i> 文本处理工具</a>
+            <a href="/tags/apache-web服务/" rel="tag"><i class="fa fa-tag"></i> apache,web服务</a>
           
         </div>
       
@@ -1270,8 +1279,8 @@ HOST: www.a.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/18/文本三剑客之awk/" rel="next" title="文本三剑客之awk">
-                <i class="fa fa-chevron-left"></i> 文本三剑客之awk
+              <a href="/2018/03/06/ansible/" rel="next" title="ansible">
+                <i class="fa fa-chevron-left"></i> ansible
               </a>
             
           </div>
@@ -1279,10 +1288,6 @@ HOST: www.a.com
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/10/18/httpd/" rel="prev" title="httpd">
-                httpd <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -1354,7 +1359,7 @@ HOST: www.a.com
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1505,7 +1510,7 @@ HOST: www.a.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">1.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">1.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">2.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">3.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">3.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">4.</span> <span class="nav-text">HTTP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">4.1.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">4.2.</span> <span class="nav-text">进程工作的角色切换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">5.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">6.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">7.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">8.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">5.</span> <span class="nav-text">HTTP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">6.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">7.</span> <span class="nav-text">进程工作的角色切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">8.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">9.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">10.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">11.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
             
 
           </div>
@@ -1539,7 +1544,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">110k</span>
+    <span title="站点总字数">116k</span>
   
 
   
@@ -1550,7 +1555,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:40</span>
+    <span title="站点阅读时长">1:46</span>
   
 </div>
 
