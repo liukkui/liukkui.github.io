@@ -34,12 +34,6 @@ const ap = new APlayer({
         cover: 'https://www.liukui.tech/images/haha.gif',
       },
       {
-        name: 'Beautiful Now',
-        artist: 'Zedd',
-        url: 'http://other.web.nc01.sycdn.kuwo.cn/resource/n3/30/0/3496398090.mp3',
-        cover: 'https://www.liukui.tech/images/haha.gif',
-      },
-      {
         name: 'Right Now (Na Na Na)',
         artist: 'Am1r',
         url: 'http://sg.sycdn.kuwo.cn/resource/n1/91/17/2649203588.mp3',
