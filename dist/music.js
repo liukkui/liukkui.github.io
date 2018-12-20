@@ -3,16 +3,16 @@ const ap = new APlayer({
     fixed: true,
     autoplay: false,
     audio: [
+       {
+        name: 'Explore',
+        artist: 'Prince of Spain',
+        url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n2/83/10/1648760572.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
       {
         name: '走歌人',
         artist: '杠姐',
         url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n3/1/70/780373770.mp3',
-        cover: 'https://www.liukui.tech/images/haha.gif',
-      },
-      {
-        name: 'Explore',
-        artist: 'Prince of Spain',
-        url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n2/83/10/1648760572.mp3',
         cover: 'https://www.liukui.tech/images/haha.gif',
       },
       {
