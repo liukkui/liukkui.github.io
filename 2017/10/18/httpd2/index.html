@@ -146,7 +146,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
-<meta property="og:updated_time" content="2018-12-19T09:16:48.905Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/18/httpd2/">
+<meta property="og:updated_time" content="2018-12-19T13:59:31.331Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="httpd2">
 <meta name="twitter:description" content="Till I reach the end, then I’ll start again《Try Everything》">
@@ -545,16 +546,6 @@
 
           
             
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/10/18/httpd2/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/18/httpd2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -573,7 +564,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">18k</span>
+                <span title="本文字数">22k</span>
               
 
               
@@ -587,7 +578,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">17 分钟</span>
+                <span title="阅读时长">20 分钟</span>
               
             </div>
           
@@ -608,8 +599,6 @@
 
       
         <p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><a id="more"></a></p>
-<h3 id="HTTP协议和APACHE原理"><a href="#HTTP协议和APACHE原理" class="headerlink" title="HTTP协议和APACHE原理"></a>HTTP协议和APACHE原理</h3><p>Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等<br>本文说的是HTTP SERVER<a href="http://www.apache.org/" target="_blank" rel="noopener">apache</a></p>
-<p>HTTP2.4的官方文档<a href="http://httpd.apache.org/docs/2.4/" target="_blank" rel="noopener">http2.4文档：安装，模块，指令等说明</a></p>
 <h3 id="http协议-应用层协议-主流http-1-1版本"><a href="#http协议-应用层协议-主流http-1-1版本" class="headerlink" title="http协议:应用层协议,主流http/1.1版本"></a>http协议:应用层协议,主流http/1.1版本</h3><h4 id="http协议的版本区别"><a href="#http协议的版本区别" class="headerlink" title="http协议的版本区别"></a>http协议的版本区别</h4><p>http0.9、http1.0、http1.1和http2.0的版本区别</p>
 <ul>
 <li><p>http/0.9:</p>
@@ -643,11 +632,11 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
 </blockquote>
 </li>
 <li>Web资源：web resource<br>一个网页由多个资源构成，打开一个页面，会有多个资源展示出来，但是每个资<br>源都要单独请求。因此，一个“Web 页面”通常并不是单个资源，而是一组资源<br>的集合<blockquote>
-<p>静态文件：无需服务端做出额外处理;</p>
+<p>静态页面/文件：无需服务端做出额外处理;</p>
 <pre><code>服务器端是什么样传到客户端就是什么样，比如下面这些
 比如文件后缀：.html, .txt, .jpg, .js, .css, .mp3, .avi
 只不过浏览器有时会解析出来以好看的页面展示给用户
-</code></pre><p>动态文件：服务端执行程序，返回执行的结果</p>
+</code></pre><p>动态页面/文件：服务端执行程序，返回执行的结果</p>
 <pre><code>服务器放的资源和客户端看到的不一样，看到的不是代码本身，而是代码的执行结果
 文件后缀：.php, .jsp ,.asp,.sh等
 将上面的文件程序代码执行结果配合数据库，再通过http协议封装报文传给用户
@@ -669,7 +658,7 @@ http不像tcp拥有限状态机；http协议是没有状态的，刷新页面信
 </code></pre><p>两者区别：URN如同一个人的名称，而URL代表一个人的住址。换言之，URN定义某事物的身份，而URL提供查找该事物的方法。URN仅用于命名，而不指定地址</p>
 </blockquote>
 </li>
-<li><p>URL的组成<br>scheme://user:password@host:<port>/<path></path>;<params>?<query>#<frag></frag></query></params></port></p>
+<li><p>URL的组成<br>scheme://user:password@host:port/path;params?query#frag</p>
 <blockquote>
 <p>scheme:表示访问服务器获取资源时，使用的哪种协议,如http，https,ftp等<br>user:用户，某些方案访问资源时需要的用户名<br>password:密码，用户对应的密码，中间用：分隔<br>Host:主机，资源宿主服务器的主机名或IP地址，一般写FQDN通过DNS解析<br>port:端口,资源宿主服务器正在监听的端口号，很多方案有默认端口号，如80,8080<br>/path:路径,服务器资源的本地名，由一个/将其与前面的URL组件分隔<br>params:参数，指定输入的参数，参数为名/值对，多个参数，用;分隔，一般是键值对<br>query:查询，传递参数给程序，如数据库，用？分隔,多个查询用&amp;分隔，类似sql语句的select查询功能<br>frag:片段,一小片或一部分资源的名字，此组件在客户端使用，用#分隔</p>
 </blockquote>
@@ -711,7 +700,7 @@ Web访问响应模型（Web I/O）
         启动M个进程，每个进程响应N个连接请求，同时接收M*N个请求
         充分使用CPU个数，每个核开启一个进程，一个进程响应多个请求，这就是典型的
         nginx使用的复用多进程I/O模型
-</code></pre><font size="3" color="#FF0000"><br>    1.apache使用的就是多进程I/O模型，缺点：就是开启很多进程，用户量太大时，当达到并发连接数10k时，进程数太多，CPU、内存资源消耗严重，服务器性能下降，apache的响应速度就会变慢，不能支持高并发的连接请求<br>    2.nginx使用的是复用的多进程I/O模型，CPU的每个核开启一个进程，一个进程负责N个连接请求，当这些连接请求真正进行数据传输时，这个进程才会响应<br>    避免了多进程I/O模型来一个请求就开启一个进程的缺点，即使不进行数据传输也会占用一个进程的问题，会造成很大的资源占用浪费<br>    同时也避免了复用I/O模型的缺点：N个进程同时进行数据传输时，一个进程无法同时相应的问题<br></font>
+</code></pre><font size="3" color="#FF0000"><br>    1.apache使用的就是多进程I/O模型，缺点：就是开启很多进程，用户量太大时，当达到并发连接数10k时，进程数太多，CPU、内存资源消耗严重，服务器性能下降，apache的响应速度就会变慢，不能支持高并发的连接请求，通过 ps auxf可以看出是一个父进程多个子进程<br>    2.nginx使用的是复用的多进程I/O模型，CPU的每个核开启一个进程，一个进程负责N个连接请求，当这些连接请求真正进行数据传输时，这个进程才会响应<br>    避免了多进程I/O模型来一个请求就开启一个进程的缺点，即使不进行数据传输也会占用一个进程的问题，会造成很大的资源占用浪费<br>    同时也避免了复用I/O模型的缺点：N个进程同时进行数据传输时，一个进程无法同时相应的问题<br></font>
 
 <p><img src="/2017/10/18/httpd2/" alt="web访问响应四种模型"><br>参考下面的HTTP的MPM三种工作模式<a href=""></a></p>
 <pre><code>3、处理请求：服务器对请求报文进行解析，并获取请求的资源及请求方法等相关信息，根据方法，资源，首部和可选的主体部分对请求进行处理
@@ -868,7 +857,10 @@ prefork的配置：
     MaxRequestsPerChild个请求之后,子进程将会被父进程终止，这时候子进
     程占用的内存就会释放(为0时永远不释放）
 worker和prefork配置类似，只不过会有线程数量的限制
-</code></pre></li>
+</code></pre><p>从下面ps auxf的进程图可以看书httpd是使用的prefork模型，而且因为端口是80，开启需要特殊<br>权限，所以父进程是root,子进程是apache<br><img src="/2017/10/18/httpd2/" alt="httpd的prefork模型"></p>
+</li>
+</ul>
+<ul>
 <li><p>5.DSO： Dynamic Shared Object<br>  加载动态模块配置<br>  /etc/httpd/conf/httpd.conf<br>  Include conf.modules.d/*.conf<br>  配置指定实现模块加载格式：<br>  LoadModule &lt;mod_name&gt; &lt;mod_path&gt;<br>  模块文件路径可使用相对路径：<br>  相对于ServerRoot（默认/etc/httpd）</p>
 </li>
 <li><p>6.定义’Main’ server的文档页面路径：存放页面的主目录<br>  主目录是由DocumentRoot指令来设置的<br>  网页文件默认是存在/var/www/html/下的，此处可以自定义<br>  在/etc/httpd/conf/httpd.conf中默认DocumentRoot是”/var/www/html”</p>
@@ -885,12 +877,8 @@ DocumentRoot &quot;/data/www&quot;
 <li><p>7.定义站点默认主页面<br>  访问192.168.34.103默认显示的是index.html的内容，<br>  这一项是由DirectoryIndex指令设置的</p>
 <pre><code>在/etc/httpd/conf/httpd.conf中有定义默认页面，修改即可
 添加：DirectoryIndex haha.html，当然前提是存放页面的主目录下有这个html文件
-</code></pre></li>
-</ul>
-<font color="#FF0000"><br>此处需要了解httpd的权限和访问报错的相关问题和默认主页面：<br>1.访问192.168.34.103跳出的页面默认是index.html页面，如果不存在，则去找conf.d/welcome.conf文件，即报错提示，如果两个都不存在，显示的是/var/www/html目录下的文件列表，因为在httpd.conf配置文件中，定义options indexes选项<br>2.默认页面和默认访问目录都是可以通过指令来指定的<br>3.如果没有index.html文件，没有welcome.conf文件，没有options indexes配置，访问时会报错You don’t have permission to access / on this server.的提示.<br>4.上面三条在下面第12条配置别名时，可以体现的很明显<br>5.所以如果自定义目录和用别名，有时是需要设置目录访问权限、设置目录对应的index.html文件(如果该文件存在就不需要设置了)，设置options indexes选项<br></font>
-
-
-<ul>
+</code></pre><font color="#FF0000"><br>此处需要了解httpd的权限和访问报错的相关问题和默认主页面：<br>1.访问192.168.34.103跳出的页面默认是index.html页面，如果不存在，则去找conf.d/welcome.conf文件，即报错提示，如果两个都不存在，显示的是/var/www/html目录下的文件列表，因为在httpd.conf配置文件中，定义options indexes选项<br>2.默认页面和默认访问目录都是可以通过指令来指定的<br>3.如果没有index.html文件，没有welcome.conf文件，没有options indexes配置，访问时会报错You don’t have permission to access / on this server.的提示.<br>4.上面三条在下面第12条配置别名时，可以体现的很明显<br>5.所以如果自定义目录和用别名，有时是需要设置目录访问权限、设置目录对应的index.html文件或者跳转的html文件(如果该文件存在就不需要设置了)，设置options indexes选项<br></font>
+</li>
 <li><p>8.站点访问控制常见机制<br>  可基于两种机制指明对哪些资源进行何种访问控制<br>  访问控制机制有两种：1.客户端来源地址，2.用户账号<br>  而文件系统路径：可以是<br>  1.具体的目录；2.可以是具体到一个文件；3.可以是扩展的正则表达式匹配<br>  示例：<br>  ‘<filesmatch "\.(gif|jpe?g|png)$"="">‘’   用的是扩展的正则表达式<br>  <files “?at.*”="">                     通配符<br>  &lt;Location /status&gt;</files></filesmatch></p>
   <locationmatch "="" (extra|special)="" data"="">
 </locationmatch></li>
@@ -907,7 +895,7 @@ FollowSymLinks使用示例：文件列表显示链接(创建的软硬链接)文�
     options Indexes  FollowSymLinks       
     Require all granted
     &lt;/directory&gt;
-</code></pre><font size="4" color="#FF0000"><br>实现options indexes的前提：存放页面的主目录下没有index.html文件，但是此时即使加上 options Indexes选项，页面也不会列出主目录下的所有文件，因为httpd找不到主目录下的index.html文件则会找/etc/httpd/conf.d/下的welcome.html页面，welcome.html文件就是页面上经常看到的测试123页面，把welcome.html文件改名或删除，就会显示主目录下的所有列表文件了.<br></font>
+</code></pre><font size="4" color="#FF0000"><br>实现options indexes的前提：存放页面的主目录下没有index.html文件，但是此时即使加上 options Indexes选项，页面也不会列出主目录下的所有文件，因为httpd找不到主目录下的index.html文件则会找/etc/httpd/conf.d/下的welcome.conf文件，welcome.conf文件就是页面上经常看到的测试123页面，把welcome.conf文件改名或删除，就会显示主目录下的所有列表文件了.<br></font>
 
 <p>  (2) AllowOverride<br>  allowoverride意思是：把options选项放到.htaccess的文件里，而不是放在httpd.conf中,只需要把.htaccess文件放到你需要控制的目录下并设置allowoverride权限即可<br>  只对<directory>语句有效;<br>  allowoverride权限时卸载httpd的*.conf配置文件中的<br>  AllowOverride All: .htaccess中所有指令都有效<br>  AllowOverride None： .htaccess 文件无效<br>  AllowOverride AuthConfig Indexes 除了AuthConfig 和Indexes的其它</directory></p>
 <pre><code>配置allowoverride示例：
@@ -941,15 +929,13 @@ Require ip 192.168.34.107
 &lt;/RequireAny&gt;                                                 
 &lt;/directory&gt;
 </code></pre></li>
-</ul>
-<ul>
 <li><p>10.日志设定：日志默认/var/log/httpd/下<br><a href="http://httpd.apache.org/docs/2.2/mod/mod_log_config.html#formats" target="_blank" rel="noopener">format官方说明文档</a><br>  日志类型：访问日志(access_log)和错误日志(error_log)<br>  日志的格式，先通过Logformat指令指定然后起个名，然后生成的日志再调用这个日志格式</p>
 <pre><code>在/etc/httpd/conf/httpd.conf中定义了访问日志和错误日志的存放路径和日志格式定义
 LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot;&quot; combined   --&gt;由Logformat指令定义完起一个combined名
 CustomLog &quot;logs/access_log&quot; combined再调用这个日志格式
 ErrorLog &quot;logs/error_log&quot;
-</code></pre><p>  可以看出日志文件都是以/etc/httpd/为根的，所以写的是相对路径<br>  定义日志格式：由LogFormat format strings指令来设置的，combined</p>
-<pre><code>定义的格式各个项说明
+</code></pre><p>  可以看出日志文件都是以/etc/httpd/为根的，所以写的是相对路径</p>
+<pre><code>日志中的格式各个项说明
 %h 客户端IP地址
 %l 远程用户,启用mod_ident才有效，通常为减号“-”
 %u 验证（basic，digest）远程用户,非登录访问时，为一个减号“-”
@@ -960,11 +946,13 @@ ErrorLog &quot;logs/error_log&quot;
 %b 响应报文的大小，单位是字节；不包括响应报文http首部
 %{Referer}i 
     请求报文中首部“referer”的值；即从哪个页面中的超链接跳转至当前页面的，通过referer可以分析出网页
-    是否被调用了，比如说广告生效了，或者说搭建的个人网站被别人盗链了，占用了自己的服务器资源，
-    所以网站要加防盗链
-%{User-Agent}i 请求报文中首部“User-Agent”的值；即发出请求的应用程序
-</code></pre>  <font color="#FF0000"><br>  注意：<br>  1.111只是一个别名，在/var/www/html下不需要创建；但是如果/var/www/html下有111的文件夹，如果设置别名后，则访问的是/data/www/ceshi目录，原目录下的111文件夹就失效了。<br>  2.在这里和上文第7条设置权限时有联系的，httpd2.4设置路径别名的时候，真正的路径也是需要在test.conf下设置权限的(/data/www/ceshi目录)<br>  3.如果/data/www/ceshi/下没有index.html会报权限不允许的错误，所以要设置默认主页面directoryindex<br>  </font>
-</li>
+    是否被调用了，比如说广告生效了，或者说搭建的个人网站被别人盗链了，占用了自己的服务器资源，所以网站一般要加防盗链，防止资源被盗和占用服务器资源
+%{User-Agent}i 指客户端的浏览器版本
+</code></pre></li>
+<li><p>11.设定默认字符集<br>  一般不需要设置：基本上使用的是utf-8;<br>  AddDefaultCharset UTF-8 此为默认值</p>
+<pre><code>如果需要修改字符集，在test.conf或者httpd.conf下添加
+AddDefaultCharset gb2312 即可
+</code></pre></li>
 <li><p>12.定义路径别名<br>作用：默认访问的文件夹是设置的DocumentRoot文件夹，如果不是在默认文件夹下，而需求要实现把其他路径下的目录共享出来，这就用到了定义路径别名的功能</p>
 <p>  把一个URL起一个别名不指向真正的目录<br>  在httpd2.4里目录如果没有开启允许时，默认是不允许访问的</p>
 <pre><code>例如：访问 /var/www/html/111,111这个目录可有可无，只是充当别名
@@ -1008,7 +996,7 @@ ErrorLog &quot;logs/error_log&quot;
     但是：因为httpd线程是以apache运行的，而httpdpass是600权限，所以默认tom登录是没有权限的，让apache对httpdpass有读权限：
     setfacl -m u:apache:r httpdpass 即可
 </code></pre></li>
-<li><p>14.实现用户家目录的http共享;并实现账户机密访问<br>  实现基础：基于模块mod_userdir.so实现<br>  在/etc/httpd/conf.d/userdir.conf文件中定义了家目录共享的格式，只需要启用就行了</p>
+<li><p>14.实现用户家目录的http共享;并实现账户机密访问<br>  实现基础：基于模块mod_userdir.so实现<br>  httpd -M |grep user 可以看出user加密的模块是已经加载的，直接改配置文件即可<br>  在/etc/httpd/conf.d/userdir.conf文件中定义了家目录共享的格式，只需要启用就行了</p>
 <pre><code>实现步骤：
 1. vim /etc/httpd/conf.d/userdir.conf
     &lt;IfModule mod_userdir.c&gt; 
@@ -1031,8 +1019,125 @@ ErrorLog &quot;logs/error_log&quot;
 5.http访问test家目录方式,即可用加密账户登录
     192.168.34.103/~test
 </code></pre></li>
-</ul>
+<li><p>15.ServerSignature On|Off|EMail<br>  作用：当用户访问的页面不存在的情况下服务器会产生错误文档，而当ServerSignature选项是打开的情况下，错误文档会将服务器的名字，apahce的版本信息，显示在页面上，某种程度上会对web服务器产生不安全因素，所以一般建议关闭</p>
+<pre><code>在配置文件添加一行：
+ServerSignature off 即可
+</code></pre></li>
+<li><p>16.status页面<br>  作用：显示apache的工作状态，有助于判断apache是否正常工作<br>  status页面功能是由下面这个模块实现的：httpd<br>  LoadModule status_module modules/mod_status.so</p>
+<pre><code>实现步骤：在配置文件添加
+&lt;Location &quot;/status&quot;&gt;
+ SetHandler server-status
+&lt;/Location&gt;
+ExtendedStatus ON   #显示扩展信息
+</code></pre><p>  记录的信息包括：启动时间，线程数，等待连接数，cpu，进程，MPM等信息<br>  在实际生产中，由于apache服务器很多，就可以通过curl 192.168.34.103/status来抓取页面，分析apache某个指标是不是正常的；</p>
+<pre><code>比如编写简单一个脚本：
+    curl 192.168.34.103/status |grep &quot;Apache Status&quot; || systemctl start httpd
+</code></pre></li>
+<li><p><font size="5" color="#FF0000">17.实现http的虚拟主机</font><br>  作用：一个物理服务器上实现多台虚拟主机，至于为什么会用到虚拟主机，有可能是因为要上线的同一网站的有多个域名，却只有一个公网IP地址，也有可能是主机不多啊..，所以虚拟主机的价值就体现出来了…</p>
+<p>  实现虚拟主机有三种方式</p>
+<pre><code>基于ip：为每个虚拟主机准备至少一个ip地址，一个主机可以配多个内网IP地址
+基于port：为每个虚拟主机使用至少一个独立的port；80,8081,8082等等
+基于FQDN：为每个虚拟主机使用至少一个FQDN
+</code></pre><p>  当然这三种方式，基于IP和port的对于用户来说不太现实，一般都是通过输入域名方式来实现虚拟主机搭建.</p>
+<pre><code>1.基于IP的虚拟主机搭建：但是这种方式用的比较少
+先准备三个网站目录，和在本机上添加三个IP地址
+    &lt;virtualhost 192.168.34.103&gt;
+    DocumentRoot &quot;/data/asite&quot;
+    &lt;directory /data/asite&gt;
+    Require all granted
+    &lt;/directory&gt;
+    customlog /var/log/httpd/access_a.log combined
+    &lt;/virtualhost&gt;
 
+    &lt;virtualhost 192.168.34.200&gt;
+    DocumentRoot &quot;/data/bsite&quot;
+    &lt;directory /data/bsite&gt;
+    Require all granted
+    &lt;/directory&gt;
+    customlog /var/log/httpd/access_b.log combined
+    &lt;/virtualhost&gt;
+
+    &lt;virtualhost 192.168.34.210&gt;
+    DocumentRoot &quot;/data/csite&quot;
+    &lt;directory /data/csite&gt;
+    Require all granted
+    &lt;/directory&gt;
+重启服务即可
+通过curl 192.168.34.103  
+    curl 192.168.34.200
+    curl 192.168.34.210
+即可获取到各自的index.html文件内容，对应的日志也都生成了
+</code></pre><p>  2.基于port的虚拟主机搭建，监听三个port即可;使用的不多</p>
+<pre><code>listen 8081
+listen 8082
+listen 8083
+&lt;virtualhost *:8081&gt;
+servername &quot;www.a.com&quot;
+DocumentRoot &quot;/data/asite&quot;
+&lt;directory /data/asite&gt;
+Require all granted
+&lt;/directory&gt;
+customlog /var/log/httpd/access_a.log combined
+&lt;/virtualhost&gt;
+
+&lt;virtualhost *:8082&gt;
+servername &quot;www.b.cn&quot;
+DocumentRoot &quot;/data/bsite&quot;
+&lt;directory /data/bsite&gt;
+Require all granted
+&lt;/directory&gt;
+customlog /var/log/httpd/access_b.log combined
+&lt;/virtualhost&gt;
+
+&lt;virtualhost *:8083&gt;                                                                                                      
+servername &quot;www.c.net&quot;
+DocumentRoot &quot;/data/csite&quot;
+&lt;directory /data/csite&gt;
+Require all granted
+&lt;/directory&gt;
+</code></pre><p>  通过本机IP+port获得不同网站的信息</p>
+<pre><code>curl 192.168.34.103:8081
+curl 192.168.34.103:8082
+curl 192.168.34.103:8083
+</code></pre><p>  3.基于FQDN的虚拟主机搭建：用的最多<br>  前提：这里就不搭建DNS服务器了，使用本机的hosts文件进行域名解析</p>
+<pre><code>&lt;virtualhost *:80&gt;
+servername &quot;www.a.com&quot;
+DocumentRoot &quot;/data/asite&quot;
+&lt;directory /data/asite&gt;
+Require all granted
+&lt;/directory&gt;
+customlog /var/log/httpd/access_a.log combined
+&lt;/virtualhost&gt;
+
+&lt;virtualhost *:80&gt;
+servername &quot;www.b.cn&quot;
+DocumentRoot &quot;/data/bsite&quot;
+&lt;directory /data/bsite&gt;
+Require all granted
+&lt;/directory&gt;
+customlog /var/log/httpd/access_b.log combined
+&lt;/virtualhost&gt;
+
+&lt;virtualhost *:80&gt;                                                                                                     
+servername &quot;www.c.net&quot;
+DocumentRoot &quot;/data/csite&quot;
+&lt;directory /data/csite&gt;
+Require all granted
+&lt;/directory&gt;
+customlog /var/log/httpd/access_c.log combined
+&lt;/virtualhost&gt;
+</code></pre><p>  测试：curl <a href="http://www.a.com" target="_blank" rel="noopener">www.a.com</a></p>
+<pre><code>curl www.b.cn
+curl www.c.net
+</code></pre><p>  就可获得各自的主页面信息<br>从这telnet就可以理解出，如果在互联网通过域名访问时(同一IP)，返回的结果是不同网站的信息<br>  [root@node7-1 ~]#telnet 192.168.34.103 80</p>
+<pre><code>Trying 192.168.34.103...
+Connected to 192.168.34.103.
+Escape character is &apos;^]&apos;.
+GET /index.html HTTP/1.1
+HOST: www.a.com
+</code></pre></li>
+</ul>
+<font size="5" color="#FF0000"><br>当访问192.168.34.103时 HOST：即网站的域名，返回的结果就是其对应的页面信息<br>在互联网上，一般是先在本地服务器上通过第三种方式搭建多个网站，然后再通过服务商的智能DNS解析，可以通过访问不同的域名，解析到IP地址，服务器根据输入的HOST：域名判断访问的是哪个网站，进而返回对应网站站点的信息，对于主机较少或者IP有限的环境中，使用http虚拟主机还是很方便的。<br></font>
       
     </div>
 
@@ -1198,10 +1303,6 @@ ErrorLog &quot;logs/error_log&quot;
 
           </div>
           
-
-  
-    <div class="comments" id="comments">
-    </div>
 
   
 
@@ -1404,7 +1505,7 @@ ErrorLog &quot;logs/error_log&quot;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">5.</span> <span class="nav-text">HTTP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">5.1.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">5.2.</span> <span class="nav-text">进程工作的角色切换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">6.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">7.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">8.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">9.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">1.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">1.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">2.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">3.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">3.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">4.</span> <span class="nav-text">HTTP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">4.1.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">4.2.</span> <span class="nav-text">进程工作的角色切换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">5.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">6.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">7.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">8.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
             
 
           </div>
@@ -1438,7 +1539,7 @@ ErrorLog &quot;logs/error_log&quot;
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">106k</span>
+    <span title="站点总字数">110k</span>
   
 
   
@@ -1449,7 +1550,7 @@ ErrorLog &quot;logs/error_log&quot;
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">1:36</span>
+    <span title="站点阅读时长">1:40</span>
   
 </div>
 
@@ -1615,31 +1716,6 @@ ErrorLog &quot;logs/error_log&quot;
 
 
 
-
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  
-  
-  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
-  
-  <script type="text/javascript">
-    var GUEST = ['nick','mail','link'];
-    var guest = 'nick,mail';
-    guest = guest.split(',').filter(function (item) {
-      return GUEST.indexOf(item)>-1;
-    });
-    new Valine({
-        el: '#comments' ,
-        verify: true,
-        notify: true,
-        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
-        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
-        placeholder: '长得帅的都已经留言了',
-        avatar:'monsterid',
-        meta:guest,
-        pageSize:'10' || 10,
-        visitor: false
-    });
-  </script>
 
 
 
