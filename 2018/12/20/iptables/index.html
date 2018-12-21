@@ -136,16 +136,18 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="C&apos;est la vie">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Coool&#39;s Blog">
-<meta property="og:url" content="https://www.liukui.tech/archives/index.html">
+  <meta name="description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
+<meta name="keywords" content="运维技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iptables">
+<meta property="og:url" content="https://www.liukui.tech/2018/12/20/iptables/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="C&apos;est la vie">
+<meta property="og:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-21T01:17:08.979Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Coool&#39;s Blog">
-<meta name="twitter:description" content="C&apos;est la vie">
+<meta name="twitter:title" content="iptables">
+<meta name="twitter:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
 
 
 
@@ -154,7 +156,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/archives/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/12/20/iptables/">
 
 
 
@@ -164,7 +166,7 @@
   };
 </script>
 
-  <title>归档 | Coool's Blog</title>
+  <title>iptables | Coool's Blog</title>
   
 
 
@@ -216,7 +218,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -332,7 +334,7 @@
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
 
     
     
@@ -449,325 +451,351 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      
-      <span class="archive-page-counter">
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/12/20/iptables/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">iptables
+              
+            
+          </h1>
         
+
+        <div class="post-meta">
+                  
+            <i class="fa fa-thumb-tack"></i>
+            <font color="808080">置顶</font>
+            <span class="post-meta-divider">|</span>
           
-        
-        嗯..! 目前共计 7 篇日志。 继续努力。
-      </span>
-      
+          <span class="post-time">
 
-      
+            
+            
+            
 
-        
-        
-        
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
 
-        
+              
+                
+              
+
+              <time title="创建时间：2018-12-20 08:00:00" itemprop="dateCreated datePublished" datetime="2018-12-20T08:00:00+08:00">2018-12-20</time>
+            
+
+            
+          </span>
+
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/iptables/" itemprop="url">
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
               
-                <span itemprop="name">iptables</span>
+                <span class="post-meta-item-text">分类于</span>
               
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T08:00:00+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/18/HTTP协议/" itemprop="url">
               
-                <span itemprop="name">HTTP协议</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+
+                
+                
               
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-18T08:00:00+08:00" content="2018-12-18">
-          12-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/06/ansible/" itemprop="url">
-              
-                <span itemprop="name">ansible</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-03-06T00:00:00+08:00" content="2018-03-06">
-          03-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/10/18/httpd/" itemprop="url">
+          
+
+          
+            <div class="post-symbolscount">
               
-                <span itemprop="name">httpd</span>
+
               
-            </a>
-        
-      </h2>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">1.1k</span>
+              
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-10-18T08:00:00+08:00" content="2017-10-18">
-          10-18
-        </time>
-      </div>
+              
+                <span class="post-meta-divider">|</span>
+              
 
-    </header>
-  </article>
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">1 分钟</span>
+              
+            </div>
+          
 
+          
 
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/10/18/文本三剑客之awk/" itemprop="url">
-              
-                <span itemprop="name">文本三剑客之awk</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-10-18T00:00:00+08:00" content="2017-10-18">
-          10-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/10/01/旧事-大好河山/" itemprop="url">
-              
-                <span itemprop="name">旧事-大好河山</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-10-01T08:00:00+08:00" content="2017-10-01">
-          10-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
+        <p>iptables的处理逻辑和命令</p>
+<ul>
+<li><p>对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；</p>
+</li>
+<li><p>规则意味着iptables是如何通过命令和各种选项进行规则编写的</p>
+</li>
+</ul>
+<p>对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则</p>
+<a id="more"></a>
+<h3 id="Linux防火墙"><a href="#Linux防火墙" class="headerlink" title="Linux防火墙"></a>Linux防火墙</h3><p>防火墙的概念<br>iptables的基本认识<br>iptables的组成:iptables的处理逻辑<br>iptables的基本语法<br>iptables之forward的概念<br>iptables之地址转换法则<br>SNAT源地址转换的具体实现<br>DNAT目标地址转换的具体实现</p>
+<p>不理解的地方：5个表的优先级和规则的优先级<br>什么是显示扩展和隐式扩展</p>
+<p>iptables的处理逻辑和命令<br>开发环境<br>测试环境</p>
+<p>生产环境</p>
+<h3 id="安全技术："><a href="#安全技术：" class="headerlink" title="安全技术："></a>安全技术：</h3><pre><code>防火墙：
+    防范非授权网络访问；隔离功能，工作在网络或主机边缘，对进出网络或主机的数据包基
+    于一定的规则检查，并在匹配某规则时由规则定义的行为进行处理的一组功能的组件，
+    基本上的实现都是默认情况下关闭所有的通过型访问，只开放允许访问的策略
+入侵检测机制和管理系统：
+    当病毒或者网络攻击绕过防火墙进入系统后的入侵检测机制，告知管理员采取手段提供有针对性的指导措施和安全决策依据。
+杀毒软件：病毒入侵后的防御软件
+入侵防御系统：
+    入侵检测系统检测到网络攻击或者病毒时，通过入侵防御系统进行准确的分析判断，
+    在判定为攻击行为后立即予以阻断，主动而有效的保护网络的安全，一般采用在线部署方式
+</code></pre><h3 id="防火墙作用："><a href="#防火墙作用：" class="headerlink" title="防火墙作用："></a>防火墙作用：</h3><pre><code>作用：
+数据报文发到服务器的以太网卡的二种访问行为
+1.linux中，数据报文从服务器的以太网卡经过内核空间走一遭，不与用户空间交互，再从网卡出去，穿墙而过
+2.或者数据报文达到网卡，到达内核空间，进而与本地用户空间的进程进行通讯，大多数网络通讯发生的目标所在，如httpd的访问，vsftp通讯，ssh通讯
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/06/Cobbler/" itemprop="url">
-              
-                <span itemprop="name">Cobbler</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-06T08:00:00+08:00" content="2017-05-06">
-          05-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
+究竟数据报文会以哪种方式怎么选择，会根据主机内部的路由表来选择，内核从网卡拿到请求报文，对linux而言tcp/ip协议栈是在内核中
+意味着报文的处理是在内核中处理的，也就是说防火墙必须工作在内核中，防火墙必须在内核中完成tcp/ip报文所流进的位置，用规则取检查，才能真正工作起来；
+根据内核的网络协议栈处理逻辑，会先拆除IP层的封装，获取到目标IP，如果是则拆除ip地址的首部封装，获取传输层封装(tcp的源端口，目标端口，几个标记位等信息；)
+这里所说端口是指进程地址，防火墙通常是在这个地方做限制的，只有通过防火墙设置的规则，才能进而与用户空间的应用程序进行数据报文的传输.
+</code></pre>
       
-
     </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/运维技术/" rel="tag"><i class="fa fa-tag"></i> 运维技术</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/18/HTTP协议/" rel="next" title="HTTP协议">
+                <i class="fa fa-chevron-left"></i> HTTP协议
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -788,8 +816,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -951,6 +988,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux防火墙"><span class="nav-number">1.</span> <span class="nav-text">Linux防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全技术："><span class="nav-number">2.</span> <span class="nav-text">安全技术：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙作用："><span class="nav-number">3.</span> <span class="nav-text">防火墙作用：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1132,6 +1185,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
 
   
 
