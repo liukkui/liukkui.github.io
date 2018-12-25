@@ -137,20 +137,20 @@
   </script>
 
   <meta name="description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
-<meta name="keywords" content="运维技术">
+<meta name="keywords" content="iptables防火墙">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iptables">
-<meta property="og:url" content="https://www.liukui.tech/2018/12/20/iptables/index.html">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/06/iptables/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/20/iptables/doubi.jpg">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/20/iptables/">
-<meta property="og:updated_time" content="2018-12-24T11:56:04.500Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/06/iptables/doubi.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/06/iptables/">
+<meta property="og:updated_time" content="2018-12-25T13:30:05.134Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iptables">
 <meta name="twitter:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/12/20/iptables/doubi.jpg">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/06/iptables/doubi.jpg">
 
 
 
@@ -159,7 +159,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/12/20/iptables/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/06/iptables/">
 
 
 
@@ -349,7 +349,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">7</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">8</span></a>
 
   </li>
         
@@ -474,7 +474,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/12/20/iptables/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/06/iptables/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -521,7 +521,7 @@
                 
               
 
-              <time title="创建时间：2018-12-20 08:00:00" itemprop="dateCreated datePublished" datetime="2018-12-20T08:00:00+08:00">2018-12-20</time>
+              <time title="创建时间：2018-10-06 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-06T08:00:00+08:00">2018-10-06</time>
             
 
             
@@ -539,7 +539,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iptables/" itemprop="url" rel="index"><span itemprop="name">iptables</span></a></span>
 
                 
                 
@@ -601,7 +601,7 @@
       
 
       
-        <p><img src="/2018/12/20/iptables/doubi.jpg" alt=""></p>
+        <p><img src="/2018/10/06/iptables/doubi.jpg" alt=""></p>
 <p>iptables的处理逻辑和命令</p>
 <ul>
 <li><p>对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；</p>
@@ -681,7 +681,7 @@ security：用于强制访问控制（MAC）网络规则，由Linux安全模块�
 </code></pre><p>如果把规则放在input和output上称为主机防火墙，只防护当前主机内部的进程是如何访问的</p>
 <h3 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a>iptables</h3><p>netfilter内核级的框架，内核framework，过滤器<br>syacall：iptables工具，管理规则：</p>
 <p>centos7上：默认安装firewall<br>    系统内自带的前端工具firewall;默认启用，建议关闭或卸载即可<br>        firewalld:系统守护进程，firewall-cmd<br>    在真正的防火墙管理时，建议用iptables来管理的<br>        iptables：<br>    保存iptabels规则的命令包<br>        iptables-services 需要自己手动安装<br>        用iptables-save restore管理加载事先设定好的防火墙规则即可</p>
-<h3 id="Netfilter表和链对应关系"><a href="#Netfilter表和链对应关系" class="headerlink" title="Netfilter表和链对应关系"></a>Netfilter表和链对应关系</h3><p><img src="/2018/12/20/iptables/" alt="Netfilter表的优先次序"></p>
+<h3 id="Netfilter表和链对应关系"><a href="#Netfilter表和链对应关系" class="headerlink" title="Netfilter表和链对应关系"></a>Netfilter表和链对应关系</h3><p><img src="/2018/10/06/iptables/" alt="Netfilter表的优先次序"></p>
 <p>报文流向：</p>
 <pre><code>* 流入报文路径：到本机内部
 * 流出报文路径：由本机发出
@@ -1114,7 +1114,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
       
         <div class="post-tags">
           
-            <a href="/tags/运维技术/" rel="tag"><i class="fa fa-tag"></i> 运维技术</a>
+            <a href="/tags/iptables防火墙/" rel="tag"><i class="fa fa-tag"></i> iptables防火墙</a>
           
         </div>
       
@@ -1181,8 +1181,8 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/18/HTTP协议/" rel="next" title="HTTP协议">
-                <i class="fa fa-chevron-left"></i> HTTP协议
+              <a href="/2018/03/06/ansible/" rel="next" title="ansible">
+                <i class="fa fa-chevron-left"></i> ansible
               </a>
             
           </div>
@@ -1190,6 +1190,10 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/10/iptables之FORWARD和NAT/" rel="prev" title="iptables之FORWARD和NAT">
+                iptables之FORWARD和NAT <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -1261,7 +1265,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1450,7 +1454,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">135k</span>
+    <span title="站点总字数">140k</span>
   
 
   
@@ -1461,7 +1465,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">2:03</span>
+    <span title="站点阅读时长">2:08</span>
   
 </div>
 

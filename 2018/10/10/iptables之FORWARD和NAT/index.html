@@ -136,16 +136,20 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="C&apos;est la vie">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Coool&#39;s Blog">
-<meta property="og:url" content="https://www.liukui.tech/archives/2017/05/index.html">
+  <meta name="description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
+<meta name="keywords" content="iptables防火墙">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iptables之FORWARD和NAT">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="C&apos;est la vie">
+<meta property="og:description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/生产环境下三种情景.png">
+<meta property="og:updated_time" content="2018-12-25T13:30:22.321Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Coool&#39;s Blog">
-<meta name="twitter:description" content="C&apos;est la vie">
+<meta name="twitter:title" content="iptables之FORWARD和NAT">
+<meta name="twitter:description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/生产环境下三种情景.png">
 
 
 
@@ -154,7 +158,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/archives/2017/05/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
 
 
 
@@ -164,7 +168,7 @@
   };
 </script>
 
-  <title>归档 | Coool's Blog</title>
+  <title>iptables之FORWARD和NAT | Coool's Blog</title>
   
 
 
@@ -216,7 +220,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -332,7 +336,7 @@
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
 
     
     
@@ -449,110 +453,398 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 8 篇日志。 继续努力。
-      </span>
-      
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
-
-        
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/05/06/Cobbler/" itemprop="url">
-              
-                <span itemprop="name">Cobbler</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">iptables之FORWARD和NAT
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-05-06T08:00:00+08:00" content="2017-05-06">
-          05-06
-        </time>
-      </div>
+        <div class="post-meta">
+                  
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
 
+              
+                
+              
+
+              <time title="创建时间：2018-10-10 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-10T08:00:00+08:00">2018-10-10</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iptables/" itemprop="url" rel="index"><span itemprop="name">iptables</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">5.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">5 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <p>iptables/netfilter网络防火墙：<br>        在FORWARD链上定义规则，注意以下几个问题：<br>            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；<br>            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；</p>
+<a id="more"></a>
+<h3 id="网络防火墙原理及示例"><a href="#网络防火墙原理及示例" class="headerlink" title="网络防火墙原理及示例"></a>网络防火墙原理及示例</h3><p>本地通信：两个主机在没有网关或者路由下进行通信，所有的本地通信是通过MAC地址进行通信的<br>        name–&gt;IP–&gt;MAC地址基于广播机制<br>        如果有交换机，交换机会查找MAC地址表(是通过源地址学习得到的),<br>        将数据报文直接发送到连接到交换机的目标主机上<br>网络通信：其实就是多个本地通信实现的，由多个路由器进行中继转发最后到达目标主机的<br>    而把linux服务器扮演成路由器的角色，则这台linux服务器充当是网关，就需要打开核心转发功能</p>
+<p><img src="/2018/10/10/iptables之FORWARD和NAT/生产环境下三种情景.png" alt=""><br>如上图生产环境下的三种情景<br>左边是研发测试环境：<br>右边是生产环境<br>隧道VPN</p>
+<p>实验模拟：<br>    sysctl -w net.ipv4.ip_forward=1<br>    A:<br>    route add -net 192.168.10.10/24 gw 192.168.34.103<br>    B:<br>    route add -net 192.168.34.0/24 gw 192.168.10.10<br>    情景一：客户端确定服务端不确定；源地址确定，目标地址不确定<br>    情景二：服务端确定，客户端不确定；源地址不确定，目标地址确定</p>
+<p>对于情景一的情况：<br>    客户端确定服务端不确定；源地址确定，目标地址不确定<br>示例1:<br>    1.先在FORWARD链上默认为拒绝<br>    如控制客户端只能访问httpd和ping操作，就可以在FORWARD链上添加如下规则<br>    tcp:80端口限制:<br>    iptables -A FORWARD 1 -s 192.168.34.0/24 -p tcp –dport 80 -j ACCEPT<br>    iptables -I FORWARD 2 -d 192.168.34.0/24 -p tcp –sport 80 -j ACCEPT<br>    icmp的ping限制：<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -j ACCEPT<br>    iptables -I FORWARD 4 -d 192.168.34.0/24 -p icmp –icmp-type 0 -j ACCEPT<br>    默认拒绝策略：<br>        iptables -I FORWARD 5 -j REJECT<br>    2.因为之前介绍过state的状态追踪功能：<br>    就可以简化成这样的规则：<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -A FORWARD 2 -s 192.168.34.0/24 -p tcp –dport 80 -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -j ACCEPT<br>    iptables -I FORWARD 4 -j REJECT<br>    3.情景一因为都是内网的服务器，是不能接收外网的请求的<br>    所以对于ping和tcp只允许从内网出去的，外网是不能进来的，规则如下<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -R FORWARD 2 -s 192.168.34.0/24 -p tcp –dport 80 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 4 -j REJECT</p>
+<p>示例2：控制访问ping,httpd：80,vsftp：21,dns：53<br>    规则如下：<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -R FORWARD 2 -s 192.168.34.0/24 -p tcp -m multiport –dport 80,21,53 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p udp –dport 53 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 4 -s 192.168.34.0/24 -p icmp –icmp-type 8 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 5 -p tcp -m state –state RELATED -j ACCEPT<br>    iptables -I FORWARD 6 -j REJECT</p>
+<font size="3" color="#FF0000"><br>结论：<br>    1.所以说有时服务器ping不通不代表服务不能访问，而且通过内网ping外网时，在外网服务器<br>    进行抓包时，可以看出源地址是内网IP,非网关IP，目标地址是外网IP地址<br>[root@centos7 data]# tcpdump -i ens33 -nn icmp<br>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode<br>listening on ens33, link-type EN10MB (Ethernet), capture size 262144 bytes<br>21:10:24.541810 IP 192.168.34.107 &gt; 192.168.10.10: ICMP echo request, id 1764, seq 3, length 64<br>21:10:24.541877 IP 192.168.10.10 &gt; 192.168.34.107: ICMP echo reply, id 1764, seq 3, length 64<br>    2.用linux防火墙做网关网络防火墙，有一个问题，内网的机器是保护了，但是这台linux服务<br>        是没有防护的，所以还需要在这台网络防火墙上在INPUT和OUTPUT链上加上规则，来防护<br>        这台linux网关网络防火墙！所以当用一台linux服务器做网络防火墙时，INPUT,OUTPUT<br>        FORWARD链是都需要设置规则的！<br></font>
+
+
+<pre><code>处理动作：
+    ACCEPT，DROP，REJECT
+
+    自定义链；
+        iptables -N chain_name
+        iptables -X chian_name
+        iptables -E old_name new_name
+
+        -j chain_name
+
+        RETURN
+
+    REDIRECT：端口重定向；
+        This  target  is only valid in the nat table, in the PREROUTING and OUTPUT chains, and user-defined chains which are  only called from those chains.
+
+        --to-ports port[-port]：映射至哪个目标端口； 
+
+        ~]# iptables -t nat -A PREROUTING -d 172.16.100.67 -p tcp --dport 80 -j REDIRECT --to-port 8088
+
+    SNAT：
+        This  target  is only valid in the nat table, in the POSTROUTING and INPUT chains, and user-defined chains which are only called from those chains. 
+
+         --to-source  [ipaddr[-ipaddr]][:port[-port]]
+
+     MASQUERADE
+        This target is only valid in the nat table, in the POSTROUTING chain.  It  should  only  be  used  with  dynamically assigned  IP (dialup) connections: if you have a static IP address, you should use the SNAT target.
+
+    DNAT：
+        This target is only valid in the nat table, in the PREROUTING and OUTPUT chains, and user-defined chains  which  are only  called from those chains.
+
+        --to-destination [ipaddr[-ipaddr]][:port[-port]]
+
+    LOG：
+        --log-prefix
+        --log-ip-options
+
+
+练习：INPUT和OUTPUT默认策略为DROP；
+
+    1、限制本地主机的web服务器在周一不允许访问；新请求的速率不能超过100个每秒；web服务器包含了admin字符串的页面不允许访问；web服务器仅允许响应报文离开本机；
+    2、在工作时间，即周一到周五的8:30-18:00，开放本机的ftp服务给172.16.0.0网络中的主机访问；数据下载请求的次数每分钟不得超过5个；
+    3、开放本机的ssh服务给172.16.x.1-172.18.x.100中的主机，x为你的学号，新请求建立的速率一分钟不得超过2个；仅允许响应报文通过其服务端口离开本机；
+    4、拒绝TCP标志位全部为1及全部为0的报文访问本机；
+    5、允许本机ping别的主机；但不开放别的主机ping本机；
+
+
+练习：判断下述规则的意义：
+    # iptables -N clean_in
+    # iptables -A clean_in -d 255.255.255.255 -p icmp -j DROP
+    # iptables -A clean_in -d 172.16.255.255 -p icmp -j DROP
+
+    # iptables -A clean_in -p tcp ! --syn -m state --state NEW -j DROP
+    # iptables -A clean_in -p tcp --tcp-flags ALL ALL -j DROP
+    # iptables -A clean_in -p tcp --tcp-flags ALL NONE -j DROP
+    # iptables -A clean_in -d 172.16.100.7 -j RETURN 
+
+
+    # iptables -A INPUT -d 172.16.100.7 -j clean_in
+
+    # iptables -A INPUT  -i lo -j ACCEPT
+    # iptables -A OUTPUT -o lo -j ACCEPT
+
+
+    # iptables -A INPUT  -i eth0 -m multiport -p tcp --dports 53,113,135,137,139,445 -j DROP
+    # iptables -A INPUT  -i eth0 -m multiport -p udp --dports 53,113,135,137,139,445 -j DROP
+    # iptables -A INPUT  -i eth0 -p udp --dport 1026 -j DROP
+    # iptables -A INPUT  -i eth0 -m multiport -p tcp --dports 1433,4899 -j DROP
+
+    # iptables -A INPUT  -p icmp -m limit --limit 10/second -j ACCEPT               
+</code></pre>
+      
     </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iptables防火墙/" rel="tag"><i class="fa fa-tag"></i> iptables防火墙</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/06/iptables/" rel="next" title="iptables">
+                <i class="fa fa-chevron-left"></i> iptables
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/18/HTTP协议/" rel="prev" title="HTTP协议">
+                HTTP协议 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -573,8 +865,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -736,6 +1037,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络防火墙原理及示例"><span class="nav-number">1.</span> <span class="nav-text">网络防火墙原理及示例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -917,6 +1234,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
 
   
 
