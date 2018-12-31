@@ -146,9 +146,11 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web服务请求处理步骤.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web访问响应的四种模型.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTP协议/http请求报文头部.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTP协议/http响应报文头部.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/进程角色切换原理.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTPD的prefork模型.png">
-<meta property="og:updated_time" content="2018-12-24T11:56:32.112Z">
+<meta property="og:updated_time" content="2018-12-31T08:08:23.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP协议">
 <meta name="twitter:description" content="HTTP协议和APACHE原理Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等本文说的是HTTP SERVERapache">
@@ -313,7 +315,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">7</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">8</span></a>
 
   </li>
         
@@ -332,7 +334,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">6</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">7</span></a>
 
   </li>
         
@@ -351,7 +353,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">8</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">11</span></a>
 
   </li>
         
@@ -569,7 +571,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">22k</span>
+                <span title="本文字数">27k</span>
               
 
               
@@ -583,7 +585,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">20 分钟</span>
+                <span title="阅读时长">24 分钟</span>
               
             </div>
           
@@ -741,10 +743,155 @@ Web访问响应模型（Web I/O）
     最后，当事务结束时，Web服务器会在日志文件中添加一个条目，来描述已执行的事务
     通过在/var/log/httpd/acess_log日志中记录http的响应记录数
     方便分析日志统计该网站的IP，PV量等信息
+</code></pre><h3 id="Http协议"><a href="#Http协议" class="headerlink" title="Http协议"></a>Http协议</h3><pre><code>http协议
+    http/0.9, http/1.0, http/1.1, http/2.0
+http协议：stateless 无状态
+    服务器无法持续追踪访问者来源
+解决http协议无状态方法
+    cookie 客户端存放
+    session 服务端存放
+http事务：一次访问的过程
+    请求：request
+    响应：response
+</code></pre><h3 id="Session和Cookie的区别"><a href="#Session和Cookie的区别" class="headerlink" title="Session和Cookie的区别"></a>Session和Cookie的区别</h3><pre><code>前言:
+    HTTP是一种无状态的协议，为了分辨链接是谁发起的，就需要我们自己去解决这个问题。
+    不然有些情况下即使是同一个网站我们每打开一个页面也都要登录一下。而Session和
+    Cookie就是为解决这个问题而提出来的两个机制。
+应用场景:
+    1.日常登录一个网站，今天输入用户名密码登录了，第二天再打开很多情况下就直接打开
+      了。这个时候用到的一个机制就是cookie。
+    2.session的一个场景是购物车，添加了商品之后客户端处可以知道添加了哪些商品，而
+      服务器端如何判别呢，所以也需要存储一些信息，这里就用到了session。
+Cookie的原理：
+    HTTP 是一种无状态协议。协议自身不对请求和响应之间的通信状态进行保存。
+    也就是说在 HTTP 这个级别，协议对于发送过的请求或响应都不做持久化处理。
+    这是为了更快地处理大量事务，确保协议的可伸缩性，而特意把 HTTP 协议设
+    计成如此简单的。可是随着 Web 的不断发展，很多业务都需要对通信状态进行
+    保存。于是引入了 Cookie 技术。使用 Cookie 的状态管理Cookie 技术通过在
+    请求和响应报文中写入 Cookie 信息来控制客户端的状态。Cookie 会根据从服
+    务器端发送的响应报文内的一个叫做 Set-Cookie 的首部字段信息，通知客户端
+    保存Cookie。当下次客户端再往该服务器发送请求时，客户端会自动在请求报
+    文中加入 Cookie 值后发送出去。服务器端发现客户端发送过来的 Cookie 后，
+    会去检查究竟是从哪一个客户端发来的连接请求，然后对比服务器上的记录，
+    最后得到之前的状态信息。
+
+    通俗讲，Cookie是访问某些网站以后在本地存储的一些网站相关的信息，下次再访问的时
+    候减少一些步骤。另外一个更准确的说法是：Cookies是服务器在本地机器上存储的小段文
+    本并随每一个请求发送至同一个服务器，是一种在客户端保持状态的方案。
+session的原理：
+    session就是一种保存上下文信息的机制，她是针对每一个用户的，session的内容在服
+    务器端，通过sessionId来区分不同的客户，session是以cookie或url重写为基础的，
+    默认用cookie来实现，系统会创造一个JSESSIONID的输出cookie，我们成为session 
+    cookie，以区分persistent coookies，注意session cookie是存储于浏览器内存中的
+    ，并不是写到硬盘上的；我们通常是看不见JSESSIONID的，但是当我们禁用浏览器的
+    cookie后，web服务器会采用url重写的方式传递sessionid，我们就可以在浏览器看到
+    sessionid=HJHADKSFHKAJSHFJ之类的字符串；session cookie针对某一次会话而言，会话结束session cookie也就消失了　
+
+session与cookie的区别：
+　　1.session保存在服务器，客户端不知道其中的信息；cookie保存在客户端，服务端可以
+        知道其中的信息
+　　2.session中保存的是对象，cookie中保存的是字符串
+　　3.session不能区分路径，同一个用户在访问一个网站期间，所有的session在任何一个
+    地方都可以访问到；而cookie中如果设置了路径参数，那么同一个网站中不同路径下的cookie互相是访问不道德
+
+session与cookie的联系：
+　　session是需要借助cookie才能正常工作的，如果客户端完全禁止cookie，session将失
+    效
+</code></pre><h3 id="Http应用层的报文头部-又分请求报文和响应报文两种"><a href="#Http应用层的报文头部-又分请求报文和响应报文两种" class="headerlink" title="Http应用层的报文头部:又分请求报文和响应报文两种"></a>Http应用层的报文头部:又分请求报文和响应报文两种</h3><p><img src="HTTP协议/http请求报文头部.png" alt="HTTP请求报文头部"></p>
+<pre><code>开始行
+    方法：method
+        GET： 从服务器获取一个资源
+        HEAD： 只从服务器获取文档的响应首部
+        POST： 向服务器输入数据，通常会再由网关程序继续处理
+        PUT： 将请求的主体部分存储在服务器中，如上传文件
+        DELETE： 请求删除服务器上指定的文档
+        TRACE： 追踪请求到达服务器中间经过的代理服务器
+        OPTIONS：请求服务器返回对指定资源支持使用的请求方法
+    URL:路径
+首部行
+实体行
+</code></pre><p><img src="HTTP协议/http响应报文头部.png" alt="HTTP响应报文头部"></p>
+<pre><code>开始行
+    版本：version
+        HTTP/&lt;major&gt;.&lt;minor&gt;1.1/2等等
+    状态码：
+        三位数字，如200，301, 302, 404, 502; 标记请求处理过程中发生的情况
+    短语：
+        状态码所标记的状态的简要描述
+首部行
+实体行
+</code></pre><h3 id="Http常见的状态码和状态码分类"><a href="#Http常见的状态码和状态码分类" class="headerlink" title="Http常见的状态码和状态码分类"></a>Http常见的状态码和状态码分类</h3><pre><code>status(状态码)：
+    1xx：100-101 信息提示
+    2xx：200-206 成功
+    3xx：300-305 重定向
+    4xx：400-415 错误类信息，客户端错误
+    5xx：500-505 错误类信息，服务器端错误
+
+200： 成功，请求数据通过响应报文的entity-body部分发送;OK
+301： 请求的URL指向的资源已经被删除；但在响应报文中通过首部Location指明了资
+      源现在所处的新位置；Moved Permanently
+302： 响应报文Location指明资源临时新位置 Moved Temporarily
+304： 如果之前访问一个网站，在本机上有缓存了，当再次访问时，就会出现304的状态码，
+      提示本地有不需要再去服务器上下载页面
+401： 需要输入账号和密码认证方能访问资源；Unauthorized
+403： 没有权限访问，请求被禁止了；Forbidden
+404： 服务器无法找到客户端请求的资源；要访问的文件不存在
+500： 服务器内部错误；Internal Server Error
+502： 代理服务器从后端服务器收到了一条伪响应，如无法连接到网关；Bad Gateway
+503： 服务不可用，临时服务器维护或过载，服务器无法处理请求
+      可能是服务器down机了，或者http服务关闭了
+504： 网关超时；转给后端服务器时，时间太长
+</code></pre><h3 id="curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因"><a href="#curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因" class="headerlink" title="curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因"></a>curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因</h3><pre><code>curl是基于URL语法在命令行方式下工作的文件传输工具
+1.它支持FTP, FTPS,HTTP, HTTPS, GOPHER, TELNET, DICT, FILE及LDAP等协议。
+2.curl支持HTTPS认证，并且支持HTTP的POST、PUT等方法， FTP上传， kerberos认证，
+HTTP上传，代理服务器，cookies，用户名/密码认证,下载文件断点续传，上载文件断
+点续传, http代理服务器管道（ proxy tunneling）
+3.还支持IPv6，socks5代理服务器，通过http代理服务器上传文件到FTP服务器等
+4.curl的强大在于能模拟各种浏览器自定义请求报文头部等信息，来访问某些控制严格的网站
+
+curl [options] [URL...]
+    -A/--user-agent &lt;string&gt; 冒充浏览器类型，实际上在请求报文修改了User-Agent
+        curl -A &apos;IE20&apos; http://192.168.34.103在http日志中可看到
+        一般用于测试访问网站或者爬虫功能要使用不同浏览器访问
+    -e/--referer &lt;URL&gt; 来源网址，防盗链相关
+        比如，伪装从百度跳转的192.168.34.103
+        curl -e &apos;www.baidu.com&apos; http://192.168.34.103
+    --cacert &lt;file&gt; CA证书 (SSL)
+    -k/--insecure 允许忽略证书进行 SSL 连接
+    --compressed 要求返回是压缩的格式
+    -H/--header &lt;line&gt;自定义首部信息访问网站
+    -i 显示页面内容，包括报文首部信息
+    -I/--head 只显示响应报文首部信息
+    -D/--dump-header &lt;file&gt; 将url的header信息存放在指定文件中，重定向
+    --basic 使用HTTP基本认证，401认证
+    -u/--user &lt;user[:password]&gt;设置服务器的用户和密码
+    -L 如果有3xx响应码，重新发请求到新位置
+        如果访问的网页被重定向到其他地方时，系统只会提示网页被重定向了，并不会跳转
+        -L就可以请求到新的页面上
+    -O 使用URL中默认的文件名保存文件到本地
+    -o &lt;file&gt; 将网络文件保存为指定的文件中
+    --limit-rate &lt;rate&gt; 设置传输速度
+    -0/--http1.0 数字0，使用HTTP 1.0
+    -v/--verbose 更详细
+    -C 选项可对文件使用断点续传功能
+    -c/--cookie-jar &lt;file name&gt; 将url中cookie存放在指定文件中
+    -x/--proxy &lt;proxyhost[:port]&gt; 指定代理服务器地址
+    -X/--request &lt;command&gt; 向服务器发送指定请求方法
+    -U/--proxy-user &lt;user:password&gt; 代理服务器用户和密码
+    -T 选项可将指定的本地文件上传到FTP服务器上
+    --data/-d 方式指定使用POST方式传递数据
+    -b name=data 从服务器响应set-cookie得到值，返回给服务器
+elinks工具：
+    字符界面的浏览器，显示页面内容和源码等
+    elinks [OPTION]... [URL]...
+    -dump: 非交互式模式，将URL的内容输出至标准输出
+        比如有些网站是不允许复制的，通过-dump就可以把网站页面文字抓取到本地了
+        elinks -dump www.baidu.com
+        不过一般都是用js脚本限制了复制功能，在浏览器关闭js，或查看源码都可以
+    -source:打印源码
 </code></pre><h3 id="HTTP介绍"><a href="#HTTP介绍" class="headerlink" title="HTTP介绍"></a>HTTP介绍</h3><p>特性：<br>高度模块化：core + modules<br>DSO: Dynamic Shared Object 动态加/卸载<br>MPM：multi-processing module多路处理模块</p>
 <h3 id="HTTP的三种工作模型：MPM工作模式"><a href="#HTTP的三种工作模型：MPM工作模式" class="headerlink" title="HTTP的三种工作模型：MPM工作模式"></a>HTTP的三种工作模型：MPM工作模式</h3><font size="3" color="#FF0000"><br>多用途的处理模块，三种模型分别是，默认使用prefork模型<br>因为http很多软件是只支持prefork模型而不支持woker或者event模型的，所以一般都是使用prefork模型<br></font>
 
-<p>可以参考Web访问响应模型（Web I/O）<a href="">HTTP原理</a></p>
 <ul>
 <li>1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型<br>  一个主进程：生成和回收n个子进程，创建套接字，不响应请求<br>  多个子进程：工作work进程，每个子进程处理一个请求；系统初始时，预先生成多个空闲进程，等待请求，最大不超过1024个，消耗比较大内存资源</li>
 <li>2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型<br>  一个主进程生成m个子进程，每个子进程又负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n，支持高并发性<br>  缺点：线程消耗资源比进程要小很多，但是如果子进程中的线程出现问题，则会影响整个子进程，从这个方面考虑，没有prefork稳定！</li>
@@ -1145,6 +1292,8 @@ HOST: www.a.com
 </code></pre></li>
 </ul>
 <font size="4" color="#FF0000"><br>当访问192.168.34.103时 HOST：即网站的域名，返回的结果就是其对应的页面信息<br>在互联网上，一般是先在本地服务器上通过第三种方式搭建多个网站，然后再通过服务商的智能DNS解析，可以通过访问不同的域名，解析到IP地址，服务器根据输入的HOST：域名判断访问的是哪个网站，进而返回对应网站站点的信息，对于主机较少或者IP有限的环境中，使用http虚拟主机还是很方便的。<br></font>
+
+
       
     </div>
 
@@ -1277,8 +1426,8 @@ HOST: www.a.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/10/iptables之FORWARD和NAT/" rel="next" title="iptables之FORWARD和NAT">
-                <i class="fa fa-chevron-left"></i> iptables之FORWARD和NAT
+              <a href="/2018/12/10/编译安装LAMP/" rel="next" title="编译安装LAMP">
+                <i class="fa fa-chevron-left"></i> 编译安装LAMP
               </a>
             
           </div>
@@ -1286,6 +1435,10 @@ HOST: www.a.com
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/30/httpd脚本/" rel="prev" title="httpd脚本">
+                httpd脚本 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -1357,7 +1510,7 @@ HOST: www.a.com
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1382,7 +1535,9 @@ HOST: www.a.com
                     
                       
                     
-                    <span class="site-state-item-count">6</span>
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1409,7 +1564,9 @@ HOST: www.a.com
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1512,7 +1669,7 @@ HOST: www.a.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">5.</span> <span class="nav-text">HTTP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">6.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">7.</span> <span class="nav-text">进程工作的角色切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">8.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">9.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">10.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">11.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http协议"><span class="nav-number">5.</span> <span class="nav-text">Http协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Session和Cookie的区别"><span class="nav-number">6.</span> <span class="nav-text">Session和Cookie的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http应用层的报文头部-又分请求报文和响应报文两种"><span class="nav-number">7.</span> <span class="nav-text">Http应用层的报文头部:又分请求报文和响应报文两种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http常见的状态码和状态码分类"><span class="nav-number">8.</span> <span class="nav-text">Http常见的状态码和状态码分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因"><span class="nav-number">9.</span> <span class="nav-text">curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">10.</span> <span class="nav-text">HTTP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">11.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">12.</span> <span class="nav-text">进程工作的角色切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">13.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">14.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">15.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">16.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
             
 
           </div>
@@ -1546,7 +1703,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">140k</span>
+    <span title="站点总字数">168k</span>
   
 
   
@@ -1557,7 +1714,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">2:08</span>
+    <span title="站点阅读时长">2:33</span>
   
 </div>
 
