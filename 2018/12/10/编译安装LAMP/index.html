@@ -147,7 +147,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/LAMP架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/haha.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/wordpress.png">
-<meta property="og:updated_time" content="2018-12-31T08:59:05.261Z">
+<meta property="og:updated_time" content="2018-12-31T11:54:35.114Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编译安装LAMP">
 <meta name="twitter:description" content="LAMP">
@@ -564,7 +564,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">5.8k</span>
+                <span title="本文字数">6.2k</span>
               
 
               
@@ -578,7 +578,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">5 分钟</span>
+                <span title="阅读时长">6 分钟</span>
               
             </div>
           
@@ -620,31 +620,31 @@
         tar xvf httpd-2.4.37.tar.bz2
         cp -r apr-1.6.5 httpd-2.4.37/srclib/apr
         cp -r apr-util-1.6.1 httpd-2.4.37/srclib/apr-util
-    a.编译
-        cd httpd-2.4.37
-        ./configure \
-        --prefix=/data/httpd24 \
-        --enable-so \
-        --enable-ssl \
-        --enable-cgi \
-        --enable-rewrite \
-        --with-zlib \
-        --with-pcre \
-        --with-included-apr \
-        --enable-modules=most \
-        --enable-mpms-shared=all \
-        --with-mpm=prefork
-        make &amp;&amp; make install
-    b.准备环境变量
-        用自带的服务控制脚本：/app/httpd24/bin/apachectl就需要设置环境变量了
-        echo &apos;PATH=/mysql/httpd24/bin:$PATH&apos; &gt; /etc/profile.d/httpd24.sh
-        . /etc/profile.d/httpd24.sh
-    c.修改配置文件，为了安全以apache用户运行，并监听在本地
-        useradd -r -s /sbin/nologin apache
-        vim /data/httpd24/conf/httpd.conf
-            User apache
-            Group apache
-            ServerName localhost:80
+        a.编译
+            cd httpd-2.4.37
+            ./configure \
+            --prefix=/data/httpd24 \
+            --enable-so \
+            --enable-ssl \
+            --enable-cgi \
+            --enable-rewrite \
+            --with-zlib \
+            --with-pcre \
+            --with-included-apr \
+            --enable-modules=most \
+            --enable-mpms-shared=all \
+            --with-mpm=prefork
+            make &amp;&amp; make install
+        b.准备环境变量
+            用自带的服务控制脚本：/app/httpd24/bin/apachectl就需要设置环境变量了
+            echo &apos;PATH=/mysql/httpd24/bin:$PATH&apos; &gt; /etc/profile.d/httpd24.sh
+            . /etc/profile.d/httpd24.sh
+        c.修改配置文件，为了安全以apache用户运行，并监听在本地
+            useradd -r -s /sbin/nologin apache
+            vim /data/httpd24/conf/httpd.conf
+                User apache
+                Group apache
+                ServerName localhost:80
 
     2.二进制安装mariadb-10.2.19
         a.准备用户和mysql数据库目录
@@ -684,79 +684,79 @@
         tar xf php-7.1.18.tar.bz2
         安装依赖包
             yum install libxml2-devel bzip2-devel libmcrypt-devel -y 
-    a.编译，指定安装数据路劲和配置文件路径       
-        cd php-7.1.18
-        ./configure --prefix=/data/php \
-        --enable-mysqlnd \
-        --with-mysqli=mysqlnd \
-        --with-openssl \
-        --with-pdo-mysql=mysqlnd \
-        --enable-mbstring \
-        --with-freetype-dir \
-        --with-jpeg-dir \
-        --with-png-dir \
-        --with-zlib \
-        --with-libxml-dir=/usr \
-        --enable-xml \
-        --enable-sockets \
-        --enable-fpm \
-        --with-config-file-path=/etc \
-        --with-config-file-scan-dir=/etc/php.d \
-        --enable-maintainer-zts \
-        --disable-fileinfo
-        make &amp;&amp; make install
-    b.准备php配置文件
-        cd php-7.1.18
-        cp php.ini-production /etc/php.ini
-            可以修改当前时区和按照生产环境修改并发连接数等信息
-    c.准备php的conf文件
-        cd /data/php
-        cp php-fpm.conf.default php-fpm.conf
-        cp php-fpm.d/www.conf.default php-fpm.d/www.conf
-        修改监听地址和允许连接地址，因为是在一台编译的，监听地址不用改了
-            vim php-fpm.d/www.conf
-                listen = 127.0.0.1:9000
-                ;listen.allowed_clients = 127.0.0.1
-    d.准备服务脚本:
-        cp /data/src/php-7.1.18/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-        chmod +x /etc/init.d/php-fpm
-        chkconfig --add php-fpm
-        chkconfig php-fpm on
+        a.编译，指定安装数据路劲和配置文件路径       
+            cd php-7.1.18
+            ./configure --prefix=/data/php \
+            --enable-mysqlnd \
+            --with-mysqli=mysqlnd \
+            --with-openssl \
+            --with-pdo-mysql=mysqlnd \
+            --enable-mbstring \
+            --with-freetype-dir \
+            --with-jpeg-dir \
+            --with-png-dir \
+            --with-zlib \
+            --with-libxml-dir=/usr \
+            --enable-xml \
+            --enable-sockets \
+            --enable-fpm \
+            --with-config-file-path=/etc \
+            --with-config-file-scan-dir=/etc/php.d \
+            --enable-maintainer-zts \
+            --disable-fileinfo
+            make &amp;&amp; make install
+        b.准备php配置文件
+            cd php-7.1.18
+            cp php.ini-production /etc/php.ini
+                可以修改当前时区和按照生产环境修改并发连接数等信息
+        c.准备php的conf文件
+            cd /data/php
+            cp php-fpm.conf.default php-fpm.conf
+            cp php-fpm.d/www.conf.default php-fpm.d/www.conf
+            修改监听地址和允许连接地址，因为是在一台编译的，监听地址不用改了
+                vim php-fpm.d/www.conf
+                    listen = 127.0.0.1:9000
+                    ;listen.allowed_clients = 127.0.0.1
+        d.准备服务脚本:
+            cp /data/src/php-7.1.18/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+            chmod +x /etc/init.d/php-fpm
+            chkconfig --add php-fpm
+            chkconfig php-fpm on
 
     4.修改httpd文件，支持php和启用代理
-    编辑apache配置文件httpd.conf，以使apache支持php,并启用代理
-    vim /data/httpd24/conf/httpd.conf
-        1.取消下面两行的注释
-            LoadModule proxy_module modules/mod_proxy.so
-            LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
-        2.定位至DirectoryIndex index.html
-            修改为DirectoryIndex index.php index.html
-        3.最后添加4行
-    AddType application/x-httpd-php .php
-    AddType application/x-httpd-php-source .phps
-    ProxyRequests Off
-    ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/app/httpd24/htdocs/$1
-         重启apache服务，apachectl restart
+        编辑apache配置文件httpd.conf，以使apache支持php,并启用代理
+        vim /data/httpd24/conf/httpd.conf
+            1.取消下面两行的注释
+                LoadModule proxy_module modules/mod_proxy.so
+                LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+            2.定位至DirectoryIndex index.html
+                修改为DirectoryIndex index.php index.html
+            3.最后添加4行
+        AddType application/x-httpd-php .php
+        AddType application/x-httpd-php-source .phps
+        ProxyRequests Off
+        ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/app/httpd24/htdocs/$1
+             重启apache服务，apachectl restart
 5.准备wordpress,把wordpress文件全部移动到httpd24/htdocs下
-    cd /data/src
-    unzip wordpress-5.0-zh_CN.zip
-    cd wordpress
-    mv * /data/httpd24/htdocs
-    为wordpress准备配置文件和数据库连接
-        cd /data/httpd24/htdocs
-        mv wp-config-sample.php wp-config.php
-        vim wp-config.php
-            define(&apos;DB_NAME&apos;, &apos;wordpress&apos;);
-            define(&apos;DB_USER&apos;, &apos;php&apos;);
-            define(&apos;DB_PASSWORD&apos;, &apos;php123&apos;);
-            define(&apos;DB_HOST&apos;, &apos;192.168.34.105&apos;);
-到此所以的编译安装和准备工作都做完了，把mysql,php-fpm,httpd启动即可
-        apachectl start
-        systemctl start php-fpm
-        systemctl start mysqld
-    http://192.168.34.105 配置wordpress即可
-然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的
-不过推荐使用LNMP架构，必经Nginx的强大可不是吹出来的..
+        cd /data/src
+        unzip wordpress-5.0-zh_CN.zip
+        cd wordpress
+        mv * /data/httpd24/htdocs
+        为wordpress准备配置文件和数据库连接
+            cd /data/httpd24/htdocs
+            mv wp-config-sample.php wp-config.php
+            vim wp-config.php
+                define(&apos;DB_NAME&apos;, &apos;wordpress&apos;);
+                define(&apos;DB_USER&apos;, &apos;php&apos;);
+                define(&apos;DB_PASSWORD&apos;, &apos;php123&apos;);
+                define(&apos;DB_HOST&apos;, &apos;192.168.34.105&apos;);
+    到此所以的编译安装和准备工作都做完了，把mysql,php-fpm,httpd启动即可
+            apachectl start
+            systemctl start php-fpm
+            systemctl start mysqld
+        http://192.168.34.105 配置wordpress即可
+    然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的
+    不过推荐使用LNMP架构，必经Nginx的强大可不是吹出来的..
 </code></pre><p><font size="4" color="#23238E"><br>然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的<br>不过推荐使用LNMP架构，毕竟Nginx的强大可不是吹出来的..<br></font> </p>
 <p><font size="4" color="#FF0000">安装完成后，开启了一个新的世界，就可以开心的玩耍了,helloworld！</font><br><img src="/2018/12/10/编译安装LAMP/haha.png"><br><img src="/2018/12/10/编译安装LAMP/wordpress.png" width="80%" height="80%"></p>
 
@@ -1180,7 +1180,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">2:33</span>
+    <span title="站点阅读时长">2:34</span>
   
 </div>
 
