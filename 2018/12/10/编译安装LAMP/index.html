@@ -147,7 +147,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/LAMP架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/haha.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/wordpress.png">
-<meta property="og:updated_time" content="2018-12-31T11:54:35.114Z">
+<meta property="og:updated_time" content="2018-12-31T11:57:40.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编译安装LAMP">
 <meta name="twitter:description" content="LAMP">
@@ -564,7 +564,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.2k</span>
+                <span title="本文字数">6.1k</span>
               
 
               
@@ -737,7 +737,7 @@
         ProxyRequests Off
         ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/app/httpd24/htdocs/$1
              重启apache服务，apachectl restart
-5.准备wordpress,把wordpress文件全部移动到httpd24/htdocs下
+    5.准备wordpress,把wordpress文件全部移动到httpd24/htdocs下
         cd /data/src
         unzip wordpress-5.0-zh_CN.zip
         cd wordpress
@@ -755,8 +755,6 @@
             systemctl start php-fpm
             systemctl start mysqld
         http://192.168.34.105 配置wordpress即可
-    然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的
-    不过推荐使用LNMP架构，必经Nginx的强大可不是吹出来的..
 </code></pre><p><font size="4" color="#23238E"><br>然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的<br>不过推荐使用LNMP架构，毕竟Nginx的强大可不是吹出来的..<br></font> </p>
 <p><font size="4" color="#FF0000">安装完成后，开启了一个新的世界，就可以开心的玩耍了,helloworld！</font><br><img src="/2018/12/10/编译安装LAMP/haha.png"><br><img src="/2018/12/10/编译安装LAMP/wordpress.png" width="80%" height="80%"></p>
 
