@@ -136,18 +136,20 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="Docker什么是容器：容器技术">
+  <meta name="description" content="Docker什么是容器：容器技术 Docker Image docker image是docker贡献给容器极具创造性的使用方式！分成构建，联合挂载这种镜像集中存储的Registry方式确实是一个创造性成果！   1.Docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  采用分成构建机制，最底层为bootfs,其之为rootfs 1.bootfs：用于系统">
 <meta name="keywords" content="Docker">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker">
 <meta property="og:url" content="https://www.liukui.tech/2018/06/18/Docker/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="Docker什么是容器：容器技术">
+<meta property="og:description" content="Docker什么是容器：容器技术 Docker Image docker image是docker贡献给容器极具创造性的使用方式！分成构建，联合挂载这种镜像集中存储的Registry方式确实是一个创造性成果！   1.Docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  采用分成构建机制，最底层为bootfs,其之为rootfs 1.bootfs：用于系统">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-03T04:45:42.823Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/06/18/Docker/">
+<meta property="og:updated_time" content="2019-01-05T02:54:53.887Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker">
-<meta name="twitter:description" content="Docker什么是容器：容器技术">
+<meta name="twitter:description" content="Docker什么是容器：容器技术 Docker Image docker image是docker贡献给容器极具创造性的使用方式！分成构建，联合挂载这种镜像集中存储的Registry方式确实是一个创造性成果！   1.Docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器  采用分成构建机制，最底层为bootfs,其之为rootfs 1.bootfs：用于系统">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/06/18/Docker/">
 
 
 
@@ -308,7 +310,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">9</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">10</span></a>
 
   </li>
         
@@ -346,7 +348,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">12</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">14</span></a>
 
   </li>
         
@@ -541,7 +543,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">17</span>
+                <span title="本文字数">846</span>
               
 
               
@@ -576,7 +578,43 @@
 
       
         <h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><p><code>什么是容器</code>：<a href="https://www.redhat.com/zh/topics/containers/whats-a-linux-container" target="_blank" rel="noopener">容器技术</a></p>
+<h5 id="Docker-Image"><a href="#Docker-Image" class="headerlink" title="Docker Image"></a>Docker Image</h5><p><img src="/2018/06/18/Docker/" alt="docker image原理和文件系统机制"></p>
+<font size="3" color="#FF0000"><br>docker image是docker贡献给容器极具创造性的使用方式！<br>分成构建，联合挂载这种镜像集中存储的Registry方式确实是一个创造性成果！<br></font>
 
+<ul>
+<li>1.Docker镜像含有启动容器所需要的文件系统及其内容，因此，其用于创建并启动docker容器<br>  采用分成构建机制，最底层为bootfs,其之为rootfs<blockquote>
+<p>1.bootfs：用于系统引导的文件系统，包括bootloader和kernel，容器启动完成后会被卸载以节约内存资源；</p>
+</blockquote>
+</li>
+</ul>
+<pre><code>docker image 相关命令
+    docker imges:镜像的管理命令
+    ls： 查看本地所有的镜像列表
+    build:
+    import:
+    inspect: 查看下载/创建的镜像详细信息
+            可以查看下载的某个镜像的具体信息
+                    如：CMD:镜像启动默认运行的命令
+                        Volume:
+                        network:
+            下文中构建docker file时这些都可以自定义
+    load:
+    prune:
+    pull：从远程仓库拉取镜像到本地
+    push: 把本地镜像推到远程的Registry
+    rm:  docker image rm = docker rmi 删除镜像
+    tag: 给镜像打标签
+    save:
+
+
+如何构建docker镜像？
+    制作镜像的原理：bootfs,rootfs只读，最上层是可写成
+    镜像仓库
+    在docker hub上创建仓库并上传：docker push
+container：
+    repository:tags
+        tags的默认是lasted，不过lasted是原始版，最好不要用
+</code></pre>
       
     </div>
 
@@ -793,7 +831,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -853,7 +891,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -956,7 +996,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Docker-Image"><span class="nav-number">1.0.1.</span> <span class="nav-text">Docker Image</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -990,7 +1030,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">169k</span>
+    <span title="站点总字数">178k</span>
   
 
   
@@ -1001,7 +1041,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">2:34</span>
+    <span title="站点阅读时长">2:42</span>
   
 </div>
 
