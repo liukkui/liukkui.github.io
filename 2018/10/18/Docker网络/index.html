@@ -149,7 +149,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/bridge网络.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/共享桥网络.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/host网络.png">
-<meta property="og:updated_time" content="2019-01-05T13:38:54.024Z">
+<meta property="og:updated_time" content="2019-01-06T01:01:49.594Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker网络">
 <meta name="twitter:description" content="Docker Network">
@@ -717,7 +717,7 @@ docker network:
     docker run --name c2 -it --rm --network bridge busybox:latest
 </code></pre><p><img src="/2018/10/18/Docker网络/bridge网络.png" alt="bridge网络"></p>
 <pre><code>3.启动为joined类型的网络
-    启动的c3共享的是c2的Net,UTS,IPC,Mount,PID,User还是隔离的
+    启动的c3共享的是c2的Net,UTS,IPC,而Mount,PID,User进程，用户，文件系统还是隔离的
 </code></pre><p><img src="/2018/10/18/Docker网络/共享桥网络.png" alt="共享桥网络"></p>
 <p>因为共享桥只是共享了Net网络，UTS主机名，IPC，<br>此时IP地址和hostname都是一样，就可以通过127.0.0.1进行通信了<br>而mount(文件系统)，user,PID还是隔离的，所以在1上创建一个文件，2上是看不到的<br>这就是共享桥的工作机制</p>
 <pre><code>4.启动为host宿主机类型的网络
