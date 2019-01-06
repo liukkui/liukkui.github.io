@@ -145,7 +145,7 @@
 <meta property="og:description" content="Docker Images">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker镜像/docker读写机制.png">
-<meta property="og:updated_time" content="2019-01-06T01:20:54.972Z">
+<meta property="og:updated_time" content="2019-01-06T01:23:12.660Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker镜像">
 <meta name="twitter:description" content="Docker Images">
@@ -673,6 +673,7 @@ b.对于写文件，新创建的文件是保存在可写层的，所以最终用
         3.上传docker hub
             docker login 登录到docker hub
                 输入账号密码，正常登录后
+        4.push镜像
             docker image push liukkui/myimg:v0.1
             正常情况下，如果hub仓库中有底层的基础镜像，则只推变化的镜像层
 </code></pre>
