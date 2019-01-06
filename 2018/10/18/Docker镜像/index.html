@@ -145,7 +145,7 @@
 <meta property="og:description" content="Docker Images">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker镜像/docker读写机制.png">
-<meta property="og:updated_time" content="2019-01-05T13:40:31.379Z">
+<meta property="og:updated_time" content="2019-01-06T01:11:33.648Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker镜像">
 <meta name="twitter:description" content="Docker Images">
@@ -608,7 +608,7 @@
     d.如果基于同一个镜像创建多个容器，那么可写层是各个容器独占的，只读层是共享的
 </code></pre><h4 id="容器的读写原理："><a href="#容器的读写原理：" class="headerlink" title="容器的读写原理："></a>容器的读写原理：</h4><p>如上图示：<br>1.对于docker来说有一个专门存放镜像的路径叫Graph Driver，而这个文件系统必须是特殊<br>格式的(aufs或者overlay2),在linux系统内默认是/var/lib/docker/image/overlay2；<br>overlay2目录就是构建在宿主机(xfs或ext4)的/var/lib/docker/image/目录的二级文件系统</p>
 <p>2.前面说镜像数据文件都放在bootfs和rootfs上的，可写层writbale是创建时创建的<br>    那么在可写层上是如何看到底层的数据目录？又是怎么把数据增删改到容器内的？<br>    默认xfs和ext4是不支持COW机制的</p>
-<p>如何看到镜像目录的？<br>    a.在创建容器时，是把镜像内的多层镜像通过联合挂载方式作为可写层的底层，也就是这个容器内部的可访问文件系统接口<br>    b.所谓联合挂载，是通过把镜像内的多层一层一层叠加上去的，而这个叠加方式的原理是：<br>    第一层上有数据时，而第二层没相同数据，在第二层是可以看到第一层数据的;如果第二层有第一层相同数据，则会覆盖第一层上的相同数据，在第二层上看到的是第一层和第二层总的文件，以此类推，在可写层上就可以看到镜像内的数据目录了，<br>如何修改和写文件？<br>    a.对于修改文件，因为文件是放在只读层的，只能是通过COW写时复制机制，先把文件从只读层复制到可写层上再进行修改然后保存在可写层,当然是首次修改，第二次再修改因为在可写层有文件了，在可写层修改即可<br>    b.对于写文件，新创建的文件是保存在可写层的，所以最终用户看到的是只读层和可写层的全<br>        部数据文件，这就是镜像的工作逻辑<br>通过上面的分析可以得出：<br>    1.这就是为什么基于同一镜像创建的两个容器，用户在不同的容器上看到的相同的数据都是只读层的，不同的数据是可写层上各自独有的，因为可写层是独占的，只读层是共享的<br>    2.这就是为什么镜像背后必须要求特殊文件系统的原因：因为ext4和xfs默认是不支持联合<br>    挂载和写时复制机制的<br>    3.因为可写层是可以自定义修改的，把可写层保存为镜像，然后再和原始镜像进行叠加成一个自定义的镜像，就可以作为基础镜像使用了，不过一般不这么做，而是通过dockerfile自定义镜像</p>
+<p>如何看到镜像目录的？<br>    a.在创建容器时，是把镜像内的多层镜像通过联合挂载方式作为可写层的底层，也就是这个容器内部的可访问文件系统接口<br>    b.所谓联合挂载，是通过把镜像内的多层一层一层叠加上去的，而这个叠加方式的原理是：<br>    第一层上有数据时，而第二层没相同数据，在第二层是可以看到第一层数据的;如果第二层有第一层相同数据，则会覆盖第一层上的相同数据，在第二层上看到的是第一层和第二层总的文件，以此类推，在可写层上就可以看到镜像内的数据目录了，<br>如何修改和写文件？<br>    a.对于修改文件，因为文件是放在只读层的，只能是通过COW写时复制机制，先把文件从只读层复制到可写层上再进行修改然后保存在可写层,当然是首次修改，第二次再修改因为在可写层有文件了，在可写层修改即可，而只读层的该文件版本仍然存在，只不过是被读写层中该文件的副本所隐藏了.<br>    b.对于写文件，新创建的文件是保存在可写层的，所以最终用户看到的是只读层和可写层的全<br>        部数据文件，这就是镜像的工作逻辑<br>通过上面的分析可以得出：<br>    1.这就是为什么基于同一镜像创建的两个容器，用户在不同的容器上看到的相同的数据都是只读层的，不同的数据是可写层上各自独有的，因为可写层是独占的，只读层是共享的<br>    2.这就是为什么镜像背后必须要求特殊文件系统的原因：因为ext4和xfs默认是不支持联合<br>    挂载和写时复制机制的<br>    3.因为可写层是可以自定义修改的，把可写层保存为镜像，然后再和原始镜像进行叠加成一个自定义的镜像，就可以作为基础镜像使用了，不过一般不这么做，而是通过dockerfile自定义镜像</p>
 <pre><code>docker image 相关命令
     docker imges:镜像的管理命令
     ls： 查看本地所有的镜像列表
@@ -779,8 +779,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker网络/" rel="next" title="Docker网络">
-                <i class="fa fa-chevron-left"></i> Docker网络
+              <a href="/2018/10/10/iptables之FORWARD和NAT/" rel="next" title="iptables之FORWARD和NAT">
+                <i class="fa fa-chevron-left"></i> iptables之FORWARD和NAT
               </a>
             
           </div>
@@ -789,8 +789,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/10/编译安装LAMP/" rel="prev" title="编译安装LAMP">
-                编译安装LAMP <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/Docker网络/" rel="prev" title="Docker网络">
+                Docker网络 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
