@@ -136,19 +136,19 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="DockerFile：构建容器">
+  <meta name="description" content="DockerFile：构建镜像">
 <meta name="keywords" content="容器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerfile">
 <meta property="og:url" content="https://www.liukui.tech/2018/10/18/Dockerfile/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="DockerFile：构建容器">
+<meta property="og:description" content="DockerFile：构建镜像">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/区别">
-<meta property="og:updated_time" content="2019-01-06T14:23:56.432Z">
+<meta property="og:updated_time" content="2019-01-07T00:37:57.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerfile">
-<meta name="twitter:description" content="DockerFile：构建容器">
+<meta name="twitter:description" content="DockerFile：构建镜像">
 <meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/区别">
 
 
@@ -577,7 +577,7 @@
       
 
       
-        <h3 id="DockerFile：构建容器"><a href="#DockerFile：构建容器" class="headerlink" title="DockerFile：构建容器"></a>DockerFile：构建容器</h3><a id="more"></a>
+        <h3 id="DockerFile：构建镜像"><a href="#DockerFile：构建镜像" class="headerlink" title="DockerFile：构建镜像"></a>DockerFile：构建镜像</h3><a id="more"></a>
 <pre><code>前面说过：
     1.镜像是分层的，当基于这个镜像创建一个容器时，docker是通过联合挂载机制把镜像层
     进行叠加作为容器的只读层，而后又在这个镜像栈上构建了一个可写层作为这个容器的工
@@ -596,7 +596,8 @@
     修改可写层并打包成镜像；commit只是一种方式，也可以使用dokcerfile
 </code></pre><h3 id="dockerfile基本要求"><a href="#dockerfile基本要求" class="headerlink" title="dockerfile基本要求"></a>dockerfile基本要求</h3><pre><code>1.dockerfile的工作逻辑：
     制作镜像无非就是基于某个基础镜像创建一个可写层修改后再commit成一层新的镜像
-    这个过程可以由docker自身完成，只需要在dockerfile配置文件中写清楚，基于哪个基础镜像，按需修改(通过各种指令生成)，而docker build可以读取dockerfile文件，隐
+    这个过程可以由docker自身完成，只需要在dockerfile配置文件中写清楚，基于哪个基础镜像，
+    按需修改(通过各种指令生成)，而docker build可以读取dockerfile文件，隐
     式的执行这些指令集生成一个新的镜像层保存在Graph Driver中
 2.工作目录
     构建docker镜像时，必须有一个工作目录docker,这个目录下只存在dockerfile和在
@@ -640,7 +641,7 @@
     2.${variable:+word} 
         如果变量有值，就使用word值，如有没值就是空值
 </code></pre><h3 id="dockerignore-file"><a href="#dockerignore-file" class="headerlink" title=".dockerignore file"></a>.dockerignore file</h3><pre><code>1.dockerignorefile是工作目录中专门记录需要忽略的文件列表
-2.而且docker build会自动忽略.dockerignorefile自身和记录在其中的所有文件
+2.而且docker build会自动忽略.dockerignore自身和记录在其中的所有文件
 </code></pre><h3 id="Dockerfile基本语法"><a href="#Dockerfile基本语法" class="headerlink" title="Dockerfile基本语法"></a>Dockerfile基本语法</h3><pre><code>FROM：
     FROM必须是文件的第一指令
     FROM &lt;repository&gt;[:&lt;tag&gt;  镜像的标签
@@ -937,8 +938,8 @@ ENTRYPOINT：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker网络/" rel="next" title="Docker网络">
-                <i class="fa fa-chevron-left"></i> Docker网络
+              <a href="/2018/10/10/iptables之FORWARD和NAT/" rel="next" title="iptables之FORWARD和NAT">
+                <i class="fa fa-chevron-left"></i> iptables之FORWARD和NAT
               </a>
             
           </div>
@@ -947,8 +948,8 @@ ENTRYPOINT：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/10/编译安装LAMP/" rel="prev" title="编译安装LAMP">
-                编译安装LAMP <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
+                docker存储卷 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1184,7 +1185,7 @@ ENTRYPOINT：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建容器"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">5.1.</span> <span class="nav-text">RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-build命令"><span class="nav-number">6.</span> <span class="nav-text">docker image build命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">5.1.</span> <span class="nav-text">RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-build命令"><span class="nav-number">6.</span> <span class="nav-text">docker image build命令</span></a></li></ol></div>
             
 
           </div>
