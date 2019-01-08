@@ -16,12 +16,6 @@ const ap = new APlayer({
         cover: 'https://www.liukui.tech/images/haha.gif',
       },
       {
-        name: '像我这样的人',
-        artist: '毛不易',
-        url: 'http://dl.stream.qqmusic.qq.com/M500003aLVV607is9h.mp3?vkey=5F9D3E92B6FC328CEC768A8ED0A135D3950F01BC0155F73814A4E99E85C1CF524EE326CBB9735526EAC5C98C78A14A86D294E312BB0107EE&guid=5150825362&fromtag=1',
-        cover: 'https://www.liukui.tech/images/haha.gif',
-      },
-      {
         name: '走歌人',
         artist: '杠姐',
         url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n3/1/70/780373770.mp3',
