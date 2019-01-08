@@ -3,6 +3,12 @@ const ap = new APlayer({
     fixed: true,
     autoplay: false,
     audio: [
+    	{
+        name: '小小恋歌',
+        artist: '新垣結衣',
+        url: 'http://other.web.re01.sycdn.kuwo.cn/resource/n2/52/46/3541559003.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
        {
         name: 'Explore',
         artist: 'Prince of Spain',
