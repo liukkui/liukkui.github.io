@@ -136,18 +136,20 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="私密文章，需要输入密码.">
-<meta name="keywords" content="文本三剑客">
+  <meta name="description" content="Mysql的读写分离">
+<meta name="keywords" content="database">
 <meta property="og:type" content="article">
-<meta property="og:title" content="httpd">
-<meta property="og:url" content="https://www.liukui.tech/2017/10/18/httpd/index.html">
+<meta property="og:title" content="mysql读写分离">
+<meta property="og:url" content="https://www.liukui.tech/2017/08/06/mysql读写分离/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="私密文章，需要输入密码.">
+<meta property="og:description" content="Mysql的读写分离">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.332Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/08/06/mysql读写分离/proxysql实现读写分离.png">
+<meta property="og:updated_time" content="2019-01-10T08:11:44.536Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="httpd">
-<meta name="twitter:description" content="私密文章，需要输入密码.">
+<meta name="twitter:title" content="mysql读写分离">
+<meta name="twitter:description" content="Mysql的读写分离">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/08/06/mysql读写分离/proxysql实现读写分离.png">
 
 
 
@@ -156,7 +158,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/10/18/httpd/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/08/06/mysql读写分离/">
 
 
 
@@ -166,7 +168,7 @@
   };
 </script>
 
-  <title>httpd | Coool's Blog</title>
+  <title>mysql读写分离 | Coool's Blog</title>
   
 
 
@@ -452,7 +454,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/httpd/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/08/06/mysql读写分离/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -469,7 +471,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">httpd
+          <h1 class="post-title" itemprop="name headline">mysql读写分离
               
             
           </h1>
@@ -477,6 +479,10 @@
 
         <div class="post-meta">
                   
+            <i class="fa fa-thumb-tack"></i>
+            <font color="808080">置顶</font>
+            <span class="post-meta-divider">|</span>
+          
           <span class="post-time">
 
             
@@ -495,7 +501,7 @@
                 
               
 
-              <time title="创建时间：2017-10-18 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-18T08:00:00+08:00">2017-10-18</time>
+              <time title="创建时间：2017-08-06 08:00:00" itemprop="dateCreated datePublished" datetime="2017-08-06T08:00:00+08:00">2017-08-06</time>
             
 
             
@@ -513,7 +519,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux基础/" itemprop="url" rel="index"><span itemprop="name">linux基础</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
 
                 
                 
@@ -541,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">7.1k</span>
+                <span title="本文字数">6.1k</span>
               
 
               
@@ -575,7 +588,150 @@
       
 
       
-        <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script> <div id="hbe-security"> <div class="input-container"> <input type="password" class="form-control" id="pass" placeholder=" 输入密码,PC:Enter查看,Phone:输入法换行查看. "> <label for="pass"> 输入密码,PC:Enter查看,Phone:输入法换行查看. </label> <div class="bottom-line"></div> </div> </div> <div id="encrypt-blog" style="display:none"> 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 </div><script src="/lib/crypto-js.js"></script><script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">
+        <h3 id="Mysql的读写分离"><a href="#Mysql的读写分离" class="headerlink" title="Mysql的读写分离"></a>Mysql的读写分离</h3><a id="more"></a>
+<p><img src="/2017/08/06/mysql读写分离/proxysql实现读写分离.png" alt="proxysql实现读写分离结构"></p>
+<p>ProxySQL官方网站:<a href="https://proxysql.com/" target="_blank" rel="noopener">ProxySQL</a>&amp;<a href="https://github.com/sysown/proxysql/wiki" target="_blank" rel="noopener">安装手册</a><br>Mycat:<a href="http://www.mycat.io/" target="_blank" rel="noopener">基于Cobar研发的Mycat</a></p>
+<pre><code>proxysql是一个高性能的mysql代理服务器，MYSQL中间件
+多种方式的的读/写分离
+定制基于用户、基于schema、基于语句的规则对SQL语句进行路由
+缓存查询结果
+后端节点监控
+</code></pre><h3 id="ProxySQL安装"><a href="#ProxySQL安装" class="headerlink" title="ProxySQL安装"></a>ProxySQL安装</h3><pre><code>基于YUM仓库安装
+    vim /etc/yum.repos.d/proxysql.repo
+    [proxysql_repo]
+    name= ProxySQL YUM repository
+    baseurl= http://repo.proxysql.com/ProxySQL/proxysql-1.4.x/centos/\$releasever
+    gpgcheck=1
+    gpgkey=http://repo.proxysql.com/ProxySQL/repo_pub_key
+
+基于RPM下载安装：https://github.com/sysown/proxysql/releases
+ProxySQL组成
+    服务脚本：/etc/init.d/proxysql
+    配置文件：/etc/proxysql.cnf
+    主程序：/usr/bin/proxysql
+proxysql使用：
+    proxysql本身是个小型的数据库，启动后在数据库中配置即可
+</code></pre><h3 id="ProxySQL的读写分离实现"><a href="#ProxySQL的读写分离实现" class="headerlink" title="ProxySQL的读写分离实现"></a>ProxySQL的读写分离实现</h3><pre><code>1.实现读写分离前，先实现主从复制
+    注意：slave节点需要设置read_only=1
+    如果不加，proxysql是无法判断该服务器是负责读还是负责写的
+2.启动ProxySQL：service proxysql start
+    启动后会监听两个默认端口
+    6032：ProxySQL的管理端口，也就是配置端口，在数据库中配置即可
+    6033：ProxySQL是读写分离的调度服务器发布在外网的端口
+    使用mysql客户端连接到ProxySQL的管理接口6032，默认管理员用户和密码都
+    是admin：
+        mysql -uadmin -padmin -P6032 -h127.0.0.1
+3.配置proxysql
+    在main和monitor数据库中的表：
+        1.runtime_开头的是运行时的配置，不能修改；即生效的表
+        2.mysql_开头的是配置的表，配置完生效的就是runtime_开头的表了
+        3.修改mysql_开头的表后必须执行LOAD … TO RUNTIME才能加载到RUNTIME生效；
+        4.执行save … to disk将配置持久化保存到磁盘
+4.向ProxySQL中添加MySQL节点，以下操作不需要use main也可成功
+    MySQL &gt; select * from mysql_servers;
+    MySQL &gt; insert into mysql_servers(hostgroup_id,hostname,port)values(10,&apos;10.10.0.5&apos;,3306);
+    MySQL &gt; insert into mysql_servers(hostgroup_id,hostname,port)values(10,&apos;10.10.0.6&apos;,3306);
+    MySQL &gt; insert into mysql_servers(hostgroup_id,hostname,port)
+    values(10,&apos;10.10.0.7&apos;,3306);
+    MySQL &gt; load mysql servers to runtime;
+    MySQL &gt; save mysql servers to disk;
+    意思是先把所有的服务器节点都加入到一个主机组中，然后proxysql会根据my.cnf配置文件中的read-only,自动区分哪些是只读的，哪些是只写的数据库服务器
+
+5.配置监控账号：
+    a.在主节点上，创建监控账号
+        grant replication client on *.* to monitor@&apos;10.10.0.%&apos; identified by &apos;root123&apos;;
+        备注：replication client权限是负责监控的，和replication slave是不同的权限
+    b.Proxysql上配置监控
+        实际上是保存在global_variables表中，可以查看是否修改成功
+        MySQL [main]&gt; set mysql-monitor_username=&apos;monitor&apos;;
+        MySQL [main]&gt; set mysql-monitor_password=&apos;root123&apos;;
+    c.使global_variables表生效
+        MySQL [mian]&gt; load mysql variables to runtime;
+        MySQL [mian]&gt; save mysql variables to disk;
+6.监控模块的指标保存在monitor库的log表中
+    MySQL [monitor]&gt; use monitor
+    MySQL [monitor]&gt; select * from mysql_server_ping_log;
+        类似于ping命令，测试所有的数据库是不是连接成功的
+    mysql&gt; select * from mysql_server_connect_log;
+    mysql&gt; select * from mysql_server_read_only_log;
+    mysql&gt; select * from mysql_server_replication_lag_log;
+        查看read_only和replication_lag的监控日志
+7.设置分组信息和读写规则
+    main库中的mysql_replication_hostgroups表是writer_hostgroup，reader_hostgroup，comment, 指定写组的id为10，读组的id为20
+    插入读写组的编号：
+        insert into mysql_replication_hostgroups values(10,20,&quot;test&quot;);
+        +------------------+------------------+---------+
+        | writer_hostgroup | reader_hostgroup | comment |
+        +------------------+------------------+---------+
+        | 10               | 20               | test    |
+        +------------------+------------------+---------+
+    生效和保存：
+        MySQL [monitor]&gt; load mysql servers to runtime;
+        MySQL [monitor]&gt; save mysql servers to disk;
+    再次查看
+        select hostgroup_id,hostname,port,status,weight from mysql_servers;
+        +--------------+-----------+------+--------+--------+
+        | hostgroup_id | hostname  | port | status | weight |
+        +--------------+-----------+------+--------+--------+
+        | 10           | 10.10.0.5 | 3306 | ONLINE | 1      |
+        | 20           | 10.10.0.6 | 3306 | ONLINE | 1      |
+        | 20           | 10.10.0.7 | 3306 | ONLINE | 1      |
+        +--------------+-----------+------+--------+--------+
+8.创建用于测试读写分离的账号
+    主节点上创建访问用户：
+        grant all on *.* to sqluser2@&apos;10.10.0.%&apos; identified by &apos;root1234&apos;;
+    在ProxySQL配置，将用户sqluser添加到mysql_users表中：
+        insert into mysql_users(username,password,default_hostgroup)values(&apos;sqluser2&apos;,&apos;root1234&apos;,10);
+    生效和保存：
+        MySQL [monitor]&gt; load mysql users to runtime;
+        MySQL [monitor]&gt; save mysql users to disk;
+    此时通过mysql -usqluser2 -proot1234 -h127.0.0.1 -P6033可以测试
+        创建和读取数据库信息，但是读写没有分离出来
+9.配置路由规则，实现读写分离
+    与规则相关的表：mysql_qeury_rules
+    插入路由规则,实现读写分离的规则
+        insert into mysql_query_rules
+        (rule_id,active,match_digest,destination_hostgroup,apply)
+        VALUES(1,1,&apos;^SELECT.*FOR UPDATE$&apos;,10,1),(2,1,&apos;^SELECT&apos;,20,1);
+    分析：
+    将select语句分离到20的读组中,
+    但是在select语句中有一个特殊语句SELECT...FOR UPDATE它会申请写锁，应该属于写
+        组，所以应该排除在读组之外，放到写组中，放在前面是先匹配到后就放到写组了
+        (类似于iptables规则，谁在前，谁生效不看接下来的规则)
+    生效和保存到磁盘：
+        load mysql query rules to runtime;
+        save mysql query rules to disk;
+10.用sqluser2测试读写分离效果
+    读：
+    mysql -usqluser2 -proot1234 -h127.0.0.1 -P6033 -e &apos;select @@server_id&apos;
+    因为是读操作会在2和3上随机选择
+    写：
+    mysql -usqluser2 -proot1234 -h127.0.0.1 -P6033 -e &apos;begin;select @@server_id;commit&apos;
+    事务是非select开头的，所以查询的都是1上
+11.路由的信息：查询stats库中的stats_mysql_query_digest表
+    MySQL [monitor]&gt; use stats 
+    MySQL [stats]&gt; SELECT hostgroup hg,sum_time, count_star, digest_text FROM stats_mysql_query_digest ORDER BY sum_time DESC;
+    +----+----------+------------+-----------------------------------+
+    | hg | sum_time | count_star | digest_text                       |
+    +----+----------+------------+-----------------------------------+
+    | 10 | 100685   | 5          | select @@server_id                |
+    | 10 | 39916    | 2          | select @@server_id                |
+    | 20 | 25787    | 23         | select @@server_id                |
+    +----+----------+------------+-----------------------------------+
+    可以看到通过不同的命令具体被调度到哪个数据上的信息
+</code></pre><h3 id="复制的问题和解决方案"><a href="#复制的问题和解决方案" class="headerlink" title="复制的问题和解决方案"></a>复制的问题和解决方案</h3><pre><code>1. 数据损坏或丢失
+    Master： MHA + semi repl
+    Slave： 重新复制
+2. 混合使用存储引擎
+    MyISAM：不支持事务
+    InnoDB： 支持事务
+3. 不惟一的server id
+    重新复制
+4. 复制延迟
+    需要额外的监控工具的辅助
+    一从多主:mariadb10版后支持
+    多线程复制：对多个数据库复制
+</code></pre>
       
     </div>
 
@@ -641,7 +797,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/文本三剑客/" rel="tag"><i class="fa fa-tag"></i> 文本三剑客</a>
+            <a href="/tags/database/" rel="tag"><i class="fa fa-tag"></i> database</a>
           
         </div>
       
@@ -708,8 +864,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/18/文本三剑客之awk/" rel="next" title="文本三剑客之awk">
-                <i class="fa fa-chevron-left"></i> 文本三剑客之awk
+              <a href="/2017/07/06/DHCP和PXE/" rel="next" title="DHCP和PXE">
+                <i class="fa fa-chevron-left"></i> DHCP和PXE
               </a>
             
           </div>
@@ -718,8 +874,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/06/ansible/" rel="prev" title="ansible">
-                ansible <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
+                旧事-大好河山 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -765,8 +921,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -944,6 +1109,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql的读写分离"><span class="nav-number">1.</span> <span class="nav-text">Mysql的读写分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProxySQL安装"><span class="nav-number">2.</span> <span class="nav-text">ProxySQL安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProxySQL的读写分离实现"><span class="nav-number">3.</span> <span class="nav-text">ProxySQL的读写分离实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制的问题和解决方案"><span class="nav-number">4.</span> <span class="nav-text">复制的问题和解决方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
