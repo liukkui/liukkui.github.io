@@ -147,7 +147,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/LAMP架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/haha.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/wordpress.png">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.357Z">
+<meta property="og:updated_time" content="2019-01-11T10:37:35.037Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编译安装LAMP">
 <meta name="twitter:description" content="LAMP">
@@ -545,7 +545,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.1k</span>
+                <span title="本文字数">6.5k</span>
               
 
               
@@ -690,7 +690,9 @@
             cd php-7.1.18
             cp php.ini-production /etc/php.ini
                 可以修改当前时区和按照生产环境修改并发连接数等信息
-        c.准备php的conf文件
+        c.创建nginx用户
+            useradd -s /sbin/nologin nginx
+        d.准备php的conf文件
             cd /data/php
             cp php-fpm.conf.default php-fpm.conf
             cp php-fpm.d/www.conf.default php-fpm.d/www.conf
@@ -698,7 +700,9 @@
                 vim php-fpm.d/www.conf
                     listen = 127.0.0.1:9000
                     ;listen.allowed_clients = 127.0.0.1
-        d.准备服务脚本:
+                    user = nginx
+                    group = nginx
+        e.准备服务脚本:
             cp /data/src/php-7.1.18/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
             chmod +x /etc/init.d/php-fpm
             chkconfig --add php-fpm
@@ -731,11 +735,17 @@
                 define(&apos;DB_USER&apos;, &apos;php&apos;);
                 define(&apos;DB_PASSWORD&apos;, &apos;php123&apos;);
                 define(&apos;DB_HOST&apos;, &apos;192.168.34.105&apos;);
+        修改/data/httpd24/htdocs的所有者和所属组
+            cd /data/httpd24
+            chown -R nginx.nginx htdocs/
     到此所以的编译安装和准备工作都做完了，把mysql,php-fpm,httpd启动即可
             apachectl start
             systemctl start php-fpm
             systemctl start mysqld
         http://192.168.34.105 配置wordpress即可
+    备注：
+        创建的文章和账户是放在wordpress数据库中的;
+        图片是放在/data/httpd24/htdocs/wp-content/uploads下的
 </code></pre><p><font size="4" color="#23238E"><br>然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的<br>不过推荐使用LNMP架构，毕竟Nginx的强大可不是吹出来的..<br></font> </p>
 <p><font size="4" color="#FF0000">安装完成后，开启了一个新的世界，就可以开心的玩耍了,helloworld！</font><br><img src="/2018/12/10/编译安装LAMP/haha.png"><br><img src="/2018/12/10/编译安装LAMP/wordpress.png" width="80%" height="80%"></p>
 
@@ -871,8 +881,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Dockerfile/" rel="next" title="Dockerfile">
-                <i class="fa fa-chevron-left"></i> Dockerfile
+              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
+                <i class="fa fa-chevron-left"></i> Docker镜像
               </a>
             
           </div>
@@ -1160,7 +1170,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">199k</span>
+    <span title="站点总字数">200k</span>
   
 
   
