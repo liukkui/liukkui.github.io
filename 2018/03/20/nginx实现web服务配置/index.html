@@ -136,23 +136,24 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
-<meta name="keywords" content="iptables防火墙">
+  <meta name="description" content="nginx安装和配置文件Nginx下载安装和模块使用说明手册">
+<meta name="keywords" content="Web服务">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iptables之FORWARD和NAT">
-<meta property="og:url" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/index.html">
+<meta property="og:title" content="nginx实现web服务配置">
+<meta property="og:url" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
+<meta property="og:description" content="nginx安装和配置文件Nginx下载安装和模块使用说明手册">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.386Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/正则表达式优先级.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/官网rewrite1.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/官网rewrite2.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/rewrite规则.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/referer防盗机制.png">
+<meta property="og:updated_time" content="2019-01-14T14:11:38.514Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iptables之FORWARD和NAT">
-<meta name="twitter:description" content="iptables/netfilter网络防火墙：        在FORWARD链上定义规则，注意以下几个问题：            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
+<meta name="twitter:title" content="nginx实现web服务配置">
+<meta name="twitter:description" content="nginx安装和配置文件Nginx下载安装和模块使用说明手册">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/正则表达式优先级.png">
 
 
 
@@ -161,7 +162,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/">
 
 
 
@@ -171,7 +172,7 @@
   };
 </script>
 
-  <title>iptables之FORWARD和NAT | Coool's Blog</title>
+  <title>nginx实现web服务配置 | Coool's Blog</title>
   
 
 
@@ -457,7 +458,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/10/iptables之FORWARD和NAT/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -474,7 +475,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">iptables之FORWARD和NAT
+          <h1 class="post-title" itemprop="name headline">nginx实现web服务配置
               
             
           </h1>
@@ -500,7 +501,7 @@
                 
               
 
-              <time title="创建时间：2018-10-10 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-10T08:00:00+08:00">2018-10-10</time>
+              <time title="创建时间：2018-03-20 08:00:00" itemprop="dateCreated datePublished" datetime="2018-03-20T08:00:00+08:00">2018-03-20</time>
             
 
             
@@ -518,7 +519,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iptables/" itemprop="url" rel="index"><span itemprop="name">iptables</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web服务/" itemprop="url" rel="index"><span itemprop="name">web服务</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web服务/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a></span>
 
                 
                 
@@ -546,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.7k</span>
+                <span title="本文字数">16k</span>
               
 
               
@@ -560,7 +568,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">9 分钟</span>
+                <span title="阅读时长">15 分钟</span>
               
             </div>
           
@@ -580,147 +588,514 @@
       
 
       
-        <p>iptables/netfilter网络防火墙：<br>        在FORWARD链上定义规则，注意以下几个问题：<br>            (1) 请求-响应均经由FORWARD链，要注意规则的方向性；<br>            (2) 如果可以启用conntrack机制，建议将双方向的状态为ESTABLISHED的报文直接放行；<br><a id="more"></a></p>
-<h3 id="网络防火墙原理及示例"><a href="#网络防火墙原理及示例" class="headerlink" title="网络防火墙原理及示例"></a>网络防火墙原理及示例</h3><p>本地通信：两个主机在没有网关或者路由下进行通信，所有的本地通信是通过MAC地址进行通信的<br>        name–&gt;IP–&gt;MAC地址基于广播机制<br>        如果有交换机，交换机会查找MAC地址表(是通过源地址学习得到的),<br>        将数据报文直接发送到连接到交换机的目标主机上<br>网络通信：其实就是多个本地通信实现的，由多个路由器进行中继转发最后到达目标主机的<br>    而把linux服务器扮演成路由器的角色，则这台linux服务器充当是网关，就需要打开核心转发功能</p>
-<h3 id="FORWARD链"><a href="#FORWARD链" class="headerlink" title="FORWARD链"></a>FORWARD链</h3><p>右边是生产环境<br>左边是研发测试环境：</p>
-<p>隧道VPN</p>
-<p>实验模拟：<br>    sysctl -w net.ipv4.ip_forward=1<br>    A:<br>    route add -net 192.168.10.10/24 gw 192.168.34.103<br>    B:<br>    route add -net 192.168.34.0/24 gw 192.168.10.10<br>    情景一：客户端确定服务端不确定；源地址确定，目标地址不确定<br>    情景二：服务端确定，客户端不确定；源地址不确定，目标地址确定</p>
-<p>对于情景一的情况：<br>    客户端确定,服务端不确定；即源地址确定，目标地址不确定<br>示例1:<br>    1.先在FORWARD链上默认为拒绝<br>    如控制客户端只能访问httpd和ping操作，就可以在FORWARD链上添加如下规则<br>    tcp:80端口限制:<br>    iptables -A FORWARD 1 -s 192.168.34.0/24 -p tcp –dport 80 -j ACCEPT<br>    iptables -I FORWARD 2 -d 192.168.34.0/24 -p tcp –sport 80 -j ACCEPT<br>    icmp的ping限制：<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -j ACCEPT<br>    iptables -I FORWARD 4 -d 192.168.34.0/24 -p icmp –icmp-type 0 -j ACCEPT<br>    默认拒绝策略：<br>        iptables -I FORWARD 5 -j REJECT<br>    2.因为之前介绍过state的状态追踪功能：<br>    就可以简化成这样的规则：<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -A FORWARD 2 -s 192.168.34.0/24 -p tcp –dport 80 -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -j ACCEPT<br>    iptables -I FORWARD 4 -j REJECT<br>    3.情景一因为都是内网的服务器，是不能接收外网的请求的<br>    所以对于ping和tcp只允许从内网出去的，外网是不能进来的，规则如下<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -R FORWARD 2 -s 192.168.34.0/24 -p tcp –dport 80 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp –icmp-type 8 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 4 -j REJECT</p>
-<p>示例2：控制访问ping,httpd：80,vsftp：21,dns：53<br>    规则如下：<br>    iptables -I FORWARD 1 -m state –state ESTABLISHED -j ACCEPT<br>    iptables -R FORWARD 2 -s 192.168.34.0/24 -p tcp -m multiport –dport 80,21,53 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 3 -s 192.168.34.0/24 -p udp –dport 53 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 4 -s 192.168.34.0/24 -p icmp –icmp-type 8 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 5 -s 192.168.34.0/24 -p tcp -m state –state RELATED -j ACCEPT<br>    iptables -I FORWARD 6 -j REJECT<br>在这里需要指定-s 源，不然外网向内网主动发送报文请求也是可以到达内网的！</p>
-<font size="3" color="#FF0000"><br>结论：<br>    1.所以说有时服务器ping不通不代表服务不能访问，而且通过内网ping外网时，在外网服务器<br>    进行抓包时，可以看出源地址是内网IP,非网关IP，目标地址是外网IP地址<br>[root@centos7 data]# tcpdump -i ens33 -nn icmp<br>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode<br>listening on ens33, link-type EN10MB (Ethernet), capture size 262144 bytes<br>21:10:24.541810 IP 192.168.34.107 &gt; 192.168.10.10: ICMP echo request, id 1764, seq 3, length 64<br>21:10:24.541877 IP 192.168.10.10 &gt; 192.168.34.107: ICMP echo reply, id 1764, seq 3, length 64<br>    2.用linux防火墙做网关网络防火墙，有一个问题，内网的机器是保护了，但是这台linux服务<br>        是没有防护的，所以还需要在这台网络防火墙上在INPUT和OUTPUT链上加上规则，来防护<br>        这台linux网关网络防火墙！所以当用一台linux服务器做网络防火墙时，INPUT,OUTPUT<br>        FORWARD链是都需要设置规则的！<br></font>
+        <h3 id="nginx安装和配置文件"><a href="#nginx安装和配置文件" class="headerlink" title="nginx安装和配置文件"></a>nginx安装和配置文件</h3><p><a href="http://nginx.org/en/docs/" target="_blank" rel="noopener">Nginx下载安装和模块使用说明手册</a><br><a id="more"></a></p>
+<pre><code>nginx安装：
+    源码编译,二进制安装，yum安装，要注意使用次版本为偶数的版本
+        nginx所说的高度模块化是指静态模块，如果编译安装了很多模块，启动时不管在配
+        置文件是否使用该模块，默认都是加载的，不过在Nginx的新版本中少量的动态模块
+        是可以按需加载的
+        而httpd是可以通过modprobe安装加载模块的
+配置文件的组成部分：
+    主配置文件：
+        /etc/nginx/nginx.conf 还包括 conf.d/*.conf和default.d/*.conf
+            对于同以功能的配置最好放到一个*.conf中，方便管理
+        /usr/lib/systemd/system/nginx.service   Unit file文件
+        /usr/sbin/nginx                         主程序文件
+        /usr/share/nginx/html/404.html
+        /usr/share/nginx/html/50x.html
+        /usr/share/nginx/html/index.html        页面文件
+            fastcgi， uwsgi，scgi等协议相关的配置文件
+            mime.types：支持的mime类型   
+启动和配置：
+    yum install nginx -y （编译时按需加载模块即可）
+    systemctl start nginx / nginx
+备注：
+    在生产环境下只要是修改nginx相关的配置文件,一定要nginx -t先进行测试
+    再nginx -s reload使配置文件生效
 
-<p>对于情景二的情况：<br>右边的图则控制：源地址不确定，目标地址确定<br>示例3：控制允许互联网的主机访问ping,httpd：80,vsftp：21,dns：53<br>    所以规则应该如下：<br>    iptables -I FORWARD 1 -p tcp -m state –state ESTABLISHED -j ACCEPT<br>    iptables -I FORWARD 2 -d 192.168.10.0/24 -p tcp -m multiport –dports 80,53,21 -m state –state NEW -j ACCEPT<br>    iptables -I FORWARD 3 -d 192.168.10.0/24 -p udp –dport 53 -j ACCEPT<br>    iptables -I FORWARD 4 -d 192.168.10.0/24 -p icmp –icmp-type 8 -m state –state ESTABLISHED  -j ACCEPT<br>    iptables -I FORWARD 5 -d 192.168.10.0/24 -m state –state RELATED -j ACCEPT<br>    iptables -I 6 FORWARD -j REJECT</p>
-<h3 id="NAT："><a href="#NAT：" class="headerlink" title="NAT："></a>NAT：</h3><font size="3" color="#FF0000"><br>    当然NAT规则还是建立在FORWARD的基础上做地址转换，不能转发做NAT也没意义，所以放行和控制限制还是需要在FORWARD链上去做的<br></font>
+配置：
+    主配置文件的配置指令：
+    指定生效的范围，三个上下文中
+        directive value [value2 ...];
+        注意：
+            (1) 指令必须以分号结尾；
+            (2) 支持使用配置变量；
+                内建变量：由Nginx模块引入，可直接引用；
+                自定义变量：由用户使用set命令定义；
+                    set variable_name value;
+                    引用变量：$variable_name
+主配置文件结构：
+        main block：主配置段，也即全局配置段；都是顶格写的
+        event {
+                ...
+            }：事件驱动相关的配置；
+        http {
+            server {}
+                root
+                proxy_pass
+            server {}
+            ...
+        }：http/https 协议相关的配置段；
+        mail {
+            ...
+        }
+        stream {
+            ...
+        }
+主配置段都不管是web服务、mail服务还是四层代理是都需要配置的，而且这三个功能一般是
+    不会一起使用的，至少http和mail功能是不一起使用的
+</code></pre><h3 id="Nginx的全局配置和优化必调参数项"><a href="#Nginx的全局配置和优化必调参数项" class="headerlink" title="Nginx的全局配置和优化必调参数项"></a>Nginx的全局配置和优化必调参数项</h3><pre><code>配置指令：
+    main配置段常见的配置指令：全局配置
+        分类：
+            正常运行必备的配置
+            优化性能相关的配置
+            用于调试及定位问题相关的配置
+            事件驱动相关的配置        
+正常运行必备的配置：
+    1、user，group,是默认运行nginx的用户和组，按需修改
+    2、pid /PATH/TO/PID_FILE;
+        指定存储nginx主进程进程号码的文件路径；
+    3、include file | mask;
+        指明包含进来的其它配置文件片断；
+    4、load_module file;
+        指明要装载的动态模块；
 
-<pre><code>NAT: network address translation，地址转换
-NAT技术的产生核心原因：隐藏本不需要公开的主机
-    1.请求报文的源地址地址转换是人为在NAT上加规则实现的
-    2.响应报文中的目标地址转换，是基于连接追踪功能实现的，不需要人为干预
-比如内网的机器要访问互联网，就必然留下IP地址或者端口信息，则有些攻击木马通过真正的
-    地址来扫描这些内网机器，如果有漏洞，则可能就会被攻击，所以NAT的技术的出现，就
-    会隐藏我们内网机器访问互联网时的真正IP地址和端口。
-实现隐藏的原理：
-    1.将数据报文中的源地址IP，修改为具有很强防护能力的IP地址，比如网关等,这样的话，互联网上的主机看到的源地址就会是网关的地址，即使被攻击也是攻击网关，而网关一般是具有很高的防护能力的，所以就达到了隐藏源地址的目的.
-    2.一般来说请求报文经过防火墙时，会拆掉以太网帧首部，看到目标地址不是自己时，会转发出去，但是对于NAT的情况，防火墙会修改数据报文的IP首部的源地址或者目标地址，然后重新封装数据报文，再到达目标主机，这样就会达到保护源主机和目标主机被攻击的风险，在这个过程中，请求报文由手动修改的，响应报文是由NAT连接追踪功能实现的。
-NAT的方式：SNAT,DNAT,FullNAT,PortNAT
-NAT规则可加的链：
-    支持PREROUTING INPUT OUTPUT POSTROUTING,但是一般只在PREROUTING和
-    POSTROUTING上做NAT规则，INPUT和OUTPUT只有在特殊情况下才做NAT。
-</code></pre><p>那么在netfilter上是如何实现的？<br>    SNAT的实现<br>        数据报文经过防火墙时，如上图示，只有当数据报文进入防火墙时，才知道目标地址不是<br>        自己，还是需要转发，所以不适合在PREROUTING链上做地址转发，如果目标地址不是当前<br>        主机，就要经由FORWARD链进行转发，而FORWARD链本身确不支持地址转换功能，所以只<br>        有在离开本机再一次进行路由选择，路由完之后才扔给网卡发送队列中，所以只能在POSTROUTING链上加地址转换规则<br>    DNAT的实现</p>
-<h3 id="SNAT：POSTROUTING源地址转换"><a href="#SNAT：POSTROUTING源地址转换" class="headerlink" title="SNAT：POSTROUTING源地址转换"></a>SNAT：POSTROUTING源地址转换</h3><p><img src="/2018/10/10/iptables之FORWARD和NAT/" alt="SNAT原理"></p>
-<pre><code>原理：
-    请求报文发生了源地址修改：人为介入修改
-    响应报文经过防火墙的NAT规则时，同连接追踪机制自动修改目标地址
-    所以源地址转换适合隐藏服务端
-作用：
-    1.隐藏内网主机的IP地址，防止被攻击
-    2.SNAT可以解决IPV4端口不够用的问题：
-        IPV4的地址短缺的问题使得SNAT技术更加流行，因为私网地址使用一个公网地址，
-        所以通过SNAT地址转换，报文通过公网IP出去的时候，都会把源地址(私网地址)转
-        换成公网地址，才能与公网通信，响应报文回来的时候是发给公网IP的，则通过连接
-        追踪功能返回给原来的私网地址。
+性能优化相关的配置：
+    1、worker_processes number | auto;
+        worker进程的数量；通常应该等于小于当前主机的cpu的物理核心数；
+        auto：当前主机物理CPU核心数；
+    2、worker_cpu_affinity cpumask ...;
+        worker_cpu_affinity auto [cpumask];
+        nginx进程的CPU亲缘性；
+        由于cpu的一级和二级缓存问题，将worker进程与cpu绑定，起到刚好的负载效果和性能
+        CPU MASK：
+            00000000：
+            0000 0001：0号CPU
+            0000 0010：1号CPU
+            0000 0100：2号CPU
+            0000 1000：3号CPU
+            ... ...
+            0000 0111：表示0和1号和2号CPU；
+    3、worker_priority number;
+        指定worker进程的nice值，设定worker进程优先级；[-20,19]            
+    4、worker_rlimit_nofile number;
+        worker进程所能够打开的文件数量上限；
+        对于高并发的服务器来说至关重要，每一个连接都需要打开一个套接字，每一个套接
+        字的维持都需要一个文件描述符，默认情况下linux限制每个用户最多同时打开1024
+        个文件，所以并发数量很高时，并发数量受限于文件数量，因此对于高并发服务器来
+        说都需要修改ulimit数量(ulmit -a/-n number)
+事件驱动相关的配置:
+    events {
+        ...
+    }
 
-SNAT实验：
-    192.168.34.0/24网段SNAT到192.168.10.11上，且只限制80和ping操作能进行
-    规则如下：
-    NAT的POSTROUTING链规则：
-        iptables -t nat -I POSTROUTING 1 -s 192.168.34.0/24 ! -d 192.168.34.0/24 -j SNAT --to-source 192.168.10.11
-    注意：这里的source是一个固定的地址，如果这个地址是变动的呢？
-        那么可能下次这条规则就不生效了！--&gt;
-    控制和放行还是需要在FORWARD链上做规则的
-        iptables -I FORWARD -s 192.168.34.0/24 -m state --state ESTABLISHED -j ACCEPT
-        iptables -I FORWARD 2 -s 192.168.34.0/24 -p tcp --dport 80 -m state --state NEW -j ACCEPT
-        iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp --icmp-type 8 -m state --state NEW -j ACCPET
-        iptables -I  FORWARD 4 -j REJECT
+    1.worker_connections number;
+        事件驱动决定了单个worker进程所能够打开的最大并发连接数数量；
+        所以nginx最大并发连接上限=
+            [worker_processes] * [worker_connections]   
+        在要求高并发的服务器上这两个是必调参数
+    2.use method;
+        指明并发连接请求的处理方法；
+            use epoll；是事件驱动模型得以运行的根本                   
+    3.accept_mutex on | off;是否打开mutex互斥锁
+        处理新的连接请求的方法；
+            on意味着由各worker轮流处理新请求，默认为on
+            Off意味着每个新请求的到达都会通知所有的worker进程；会造成进程抢夺请求的情况
+调试、定位问题：
+    1、daemon on|off;    
+        是否以守护进程方式运行Nignx；默认为on            
+    2、master_process on|off;
+        是否以master/worker模型运行nginx；默认为on；
+        调试时，把只有主进程处理请求和以前台运行来查找错误原因          
+    3、error_log file [level];
+        默认级别
+</code></pre><h3 id="Nginx实现web服务的全局配置和主要模块"><a href="#Nginx实现web服务的全局配置和主要模块" class="headerlink" title="Nginx实现web服务的全局配置和主要模块"></a>Nginx实现web服务的全局配置和主要模块</h3><pre><code>1.Nginx无论是作为web服务器或者是web服务器的代理服务器，所有配置都在http的上下文
+2.location和directory的区别
+    1.httpd和nginx作为web服务器都可以对用户访问的资源进行限制
+    2.&lt;Directory &quot;/var/www/html/images/&quot;&gt; 也可以写成
+        &lt;Location &quot;/images/&quot;&gt;
+</code></pre><h3 id="http协议的全局配置"><a href="#http协议的全局配置" class="headerlink" title="http协议的全局配置"></a>http协议的全局配置</h3><p>匹配检查顺序：server_name和Port–&gt;location–&gt;if in location–&gt;匹配路径(root和alias)</p>
+<h3 id="ngx-http-core-module-Nginx的核心模块"><a href="#ngx-http-core-module-Nginx的核心模块" class="headerlink" title="ngx_http_core_module:Nginx的核心模块"></a>ngx_http_core_module:Nginx的核心模块</h3><p>Nginx不管作为什么功能，都要使用core核心模块</p>
+<pre><code>http协议上下文的相关配置：
+    http {
+        ... ...  是http的全局配置，共享给多个server使用
+        server {
+            ...
+            listen
+            server_name
+            root/proxy_pass 
+                (root是作为web服务器的，proxy_pass是作为代理服务器使用的)
+            location [OPERATOR] /uri/ (类似于httpd的directory）
+                ...
+            }
+        }
+        server {
+            ...
+        }
+    }
+与套接字相关的配置：
+    1、server { ... }
+        配置一个虚拟主机；    
+        server {
+            listen address[:PORT]|PORT;
+            server_name SERVER_NAME;
+            root /PATH/TO/DOCUMENT_ROOT;                            
+        }  
+        server只能出现在http的上下文中，而且不能嵌套server
 
-如上图：通过在192.168.10.10上抓icmp包和http日志也可以看出，确实是做了SNAT地址转换的
-    [root@node7-3 data]#tcpdump -i ens33 -nn icmp
-    14:56:14.315375 IP 192.168.10.11 &gt; 192.168.10.10: ICMP echo request, id 1373, seq 1, length 64
-    14:56:14.315473 IP 192.168.10.10 &gt; 192.168.10.11: ICMP echo reply, id 1373, seq 1, length 64
+    2、listen PORT|address[:port]|unix:/PATH/TO/SOCKET_FILE
+          listen address[:port] [default_server] [ssl] [http2 | spdy]  [backlog=number] [rcvbuf=size] [sndbuf=size]
+        特殊设置：前两个尤为重要
+            default_server：设定为默认虚拟主机；
+                如httpd基于主机名配置的多个虚拟主机，访问时是由上而下匹配的
+            ssl：强制只能通过ssl连接提供服务；
+            backlog=number：后援队列长度；
+            rcvbuf=size：接收缓冲区大小；
+            sndbuf=size：发送缓冲区大小；(默认值足以满足需求)
 
-    [root@node7-3 data]#tail /var/log/httpd/access_log 
-    192.168.10.11 - - [29/Dec/2018:15:20:45 +0800] &quot;GET / HTTP/1.1&quot; 200 19 &quot;-&quot; &quot;curl/7.29.0&quot;
-</code></pre><h3 id="DNAT：PREROUTING和OUTPUT目标地址转换"><a href="#DNAT：PREROUTING和OUTPUT目标地址转换" class="headerlink" title="DNAT：PREROUTING和OUTPUT目标地址转换"></a>DNAT：PREROUTING和OUTPUT目标地址转换</h3><p><img src="/2018/10/10/iptables之FORWARD和NAT/" alt="DNAT原理"></p>
-<pre><code>原理:
-    请求报文的目标地址需要修改成真正的IP地址
-    响应报文经过防火墙的NAT规则，通过连接追踪机制，自动修改目标地址
-作用：
-    1.隐藏提供服务的服务器的真实IP地址，防止被服务被劫持，如DNS劫持，http服务等
-    2.DNAT也通过PortNAT方式可以解决IPV4地址不够用的问题
-DNAT实验：
-    访问192.168.10.10的http服务时，只需要访问防火墙NAT服务器的地址即可
-    即把192.168.10.10DNAT到192.168.34.103上，这里只做简单的DNAT不做portnat
-    规则如下：
-    NAT的POSTROUTING链规则：
-        ptables -t nat -R PREROUTING 1 -d 192.168.34.103 -p tcp --dport 80 -j DNAT --to-destination 192.168.10.10
-    控制和放行还是需要在FORWARD链上做规则的
-        iptables -I FORWARD -s 192.168.34.0/24 -m state --state ESTABLISHED -j ACCEPT
-        iptables -I FORWARD 2 -s 192.168.34.0/24 -p tcp --dport 80 -m state --state NEW -j ACCEPT
-        iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp --icmp-type 8 -m state --state NEW -j ACCPET
-        iptables -I  FORWARD 4 -j REJECT
-验证：在192.168.34.107上获取192.168.10.10的页面信息：curl 192.168.10.10
-    因为DNAT是隐藏192.168.10.10的真实地址的，在互联网上只会暴露防火墙的192.168.34.103地址是提供http服务的，真正的地址得以保护，所以这里curl 192.168.34.103即可
-    [root@node7-2 data]#curl 192.168.34.103
-    haha
-    192.168.10.10
-    而在192.168.10.10查看http日志
-    [root@node7-3 data]#tail /var/log/httpd/access_log 
-    192.168.34.107 - - [29/Dec/2018:17:24:20 +0800] &quot;GET / HTTP/1.1&quot; 200 19 &quot;-&quot; &quot;curl/7.29.0&quot;
-    192.168.34.107 - - [29/Dec/2018:17:26:42 +0800] &quot;GET / HTTP/1.1&quot; 200 19 &quot;-&quot; &quot;curl/7.29.0&quot;
-从实验也可以看出DNAT的规则生效了，达到了隐藏真正提供服务的192.168.10.10地址
-    从而保证了服务器被攻击的风险
-</code></pre><h3 id="PortNAT-端口映射"><a href="#PortNAT-端口映射" class="headerlink" title="PortNAT:端口映射"></a>PortNAT:端口映射</h3><p><img src="/2018/10/10/iptables之FORWARD和NAT/" alt="PortNAT原理"><br>端口映射在docker容器中的实现方式更加方便，直接加-p选项即可,而且源端口和目标端口可以指定</p>
-<pre><code>进程与进程的通信，实际上就是端口号之间的通信
-1.对于SNAT来说，因为访问是互联网的随机端口，所以都转换即可
-2.而对于DNAT的情况来说：
-    a.很多情况下，并不是说只要访问防火墙F的地址，都通过DNAT转换成主机A的IPA，
-    而是当访问主机A的某个服务特定端口时，才进行地址转换
-    b.而访问F的端口和要转换的IPA的端口不一定需要一样
-        即IPF：port1--&gt;IPA:port2，port1和port2可以不一样
-3.DNAT也可以解决IPV4地址不够用的情况：如下图
-那么就可以说地址转换可以发生在网络层，而且借助端口映射也可以发生在传输层首部(端口)
+    3、server_name name ...;
+        必然要使用通配符来设置虚拟主机名和设置优先级
+        1.支持*通配任意长度的任意字符；server_name *.baidu.com  www.baidu.*
+        2.支持~起始的字符做正则表达式模式匹配；server_name ~^www\d+\.baidu\.com$   (\d匹配单个数字)
+        匹配机制优先级：
+            (1) 首先是字符串精确匹配;
+            (2) 左侧*通配符；
+            (3) 右侧*通配符；
+            (4) 正则表达式；
+            (并发访问多时，不建议使用正则表达式匹配主机名，对服务器性能有很大消耗)
+    4、tcp_nodelay on | off;
+        在keepalived模式下的连接是否启用TCP_NODELAY选项
+        当为off时，延迟发送，合并多个请求后再发送
+        默认On时，不延迟发送
+        可用于：http, server, location
 
-DNAT端口映射实验：如上图
-访问192.168.10.10：8080的http服务时，只需要访问防火墙NAT服务器的地址即可
-    即把192.168.10.10:8080DNAT到192.168.34.103:80上,在上面的DAT基础上做修改即可
-    规则如下：
-    NAT的POSTROUTING链规则：
-        ptables -t nat -R PREROUTING 1 -d 192.168.34.103 -p tcp --dport 80 -j DNAT --to-destination 192.168.10.10:8080
-    控制和放行还是需要在FORWARD链上做规则的
-        iptables -I FORWARD -s 192.168.34.0/24 -m state --state ESTABLISHED -j ACCEPT
-        iptables -I FORWARD 2 -s 192.168.34.0/24 -p tcp --dport 80 -m state --state NEW -j ACCEPT
-        iptables -I FORWARD 3 -s 192.168.34.0/24 -p icmp --icmp-type 8 -m state --state NEW -j ACCPET
-        iptables -I  FORWARD 4 -j REJECT
-验证：curl 192.168.34.103:80查看是否能获取到192.168.10.10：8080的页面
-    [root@node7-2 data]#curl 192.168.34.103
-    haha
-    192.168.10.10
-    [root@node7-2 data]#curl 192.168.10.10:8080
-    haha
-    192.168.10.10
-    [root@node7-3 data]#tail /var/log/httpd/access_log 
-    192.168.34.107 - - [29/Dec/2018:17:27:01 +0800] &quot;GET / HTTP/1.1&quot; 200 19 &quot;-&quot; &quot;curl/7.29.0&quot;
-从实验也可以看出DNAT的端口映射规则生效了，映射的端口不一样也可以访问到页面
-</code></pre><font size="3" color="#FF0000"><br>    1.这里只模拟同一台服务器上的一个服务的DNAT端口映射情景<br>    2.对于同一台服务上的多个服务DNAT端口映射也是同样道理，加上对应的PORTNAT规则即可<br>    3.对于多台服务器上的多个服务DNAT端口映射同样是这样的，只需要在NAT服务器上添加多个地址，然后将对应地址进行多台服务器的服务映射即可<br></font>
+    5.tcp_nopush on|off;
+        在sendfile模式下，是否启用TCP_CORK选项；
 
+    5.sendfile on | off;
+        是否启用sendfile功能；
 
-<h3 id="FullNAT：源地址和目标地址都修改"><a href="#FullNAT：源地址和目标地址都修改" class="headerlink" title="FullNAT：源地址和目标地址都修改"></a>FullNAT：源地址和目标地址都修改</h3><pre><code>既是网关又是NAT
-fullnat能实现网关和主机不在同一个网段
-FullNAT的存在是为了弥补SNAT和DNAT模式下，主机和NAT服务器必须在同一个网段的缺点
-    SNAT和DNAT都受限于NAT服务器和客户端都在一个网段
-    1.在SNAT中，主机的网关都是需要指向NAT服务器的，不然如果在主机和防火墙之间存在路由器的话，那么出去的请求报文就不一定经由NAT服务器了，也就达不到地址转换的目的
-    2.在DNAT中，如果提供服务器的主机和防火墙NAT服务器之间有路由器，那么响应的报文
-    也不一定经由NAT服务器，也达不到转换目标地址的目的。
-    3.所以FullNAT的存在就弥补了SNAT和DNAT的缺点
-FullNAT的地址转换原理：
-    如下图示
-FullNAT实验：
-    FullNAT的实验原理和SNAT,DNAT,PORTNAT实验方式一样，这里就不做演示了
-</code></pre><p><img src="/2018/10/10/iptables之FORWARD和NAT/" alt="FullNAT原理"></p>
-<h3 id="MASQUERADE"><a href="#MASQUERADE" class="headerlink" title="MASQUERADE"></a>MASQUERADE</h3><pre><code>只能作用在POSTROUTING链上，对SNAT的缺点弥补
-外网地址是动态的就用MASQUERADE,如果是静态的就用SNAT；
-因为MASQUERADE会消耗更多的系统资源，能用SNAT就用SNAT，特殊场景才使用MASQUERADE
-</code></pre>
+和定义路径相关的配置：
+    6.root path; 
+        设置web资源路径映射；用于指明用户请求的url所对应的本地文件系统上的文档所在目录路径；
+        root可以作用在http, server, location, if in location上下文中，
+        如果多有多层级的root，则精确到最内层的root生效
+
+    7.location [ = | ^~ | ~ | ~* ] uri { ... }            
+        在一个server中location配置段可存在多个，用于实现从uri到文件系统的路径映射；ngnix会根据用户请求的URI来检查定义的所有location，并找出一个最佳匹配，而后应用其配置；
+        用户请求server_name--&gt;server--&gt;Location--&gt;if in Location
+                    会根据正则表达式匹配的优先级匹配到一个最佳的路径
+    修饰符号： 修饰符匹配优先级：=, ^~, ~/~*，不带符号；
+        1.=：对URI做精确匹配；
+        2.^~：对URI的左半部分做匹配检查，不区分字符大小写；
+            左半部分是指scheme中不包含path和它之后的部分
+            如https://www.lk.tech/images/1.jpg的左半部分是https://www.lk.tech
+        3.~：对URI做正则表达式模式匹配，区分字符大小写；
+        4.~*：对URI做正则表达式模式匹配，不区分字符大小写；
+        5.不带符号：以URI为前缀的所有uri；通配性最高级location /            
+    还可以在location中定义if这种三级路由选择
+        root /vhosts/www/htdocs/
+        http://www.lk.tech/index.html --&gt; /vhosts/www/htdocs/index.html 
+        server {
+            root  /vhosts/www/htdocs/
+
+            location /admin/ {
+                root /webapps/app1/data/
+            }
+        }
+</code></pre><p>–官方示例<br><img src="/2018/03/20/nginx实现web服务配置/正则表达式优先级.png" alt="nginx的正则表达式优先级"></p>
+<pre><code>    8.alias path;
+        定义路径别名，文档映射的另一种机制；仅能用于location上下文；
+
+        注意：location中使用root指令和alias指令的意义不同；
+            (a) root，给定的路径对应于location中的/uri/左侧的/；
+            (b) alias，给定的路径对应于location中的/uri/右侧的/；
+            如：
+                location /images/ 
+                alias &quot;/data/www/&quot;; 
+            alias定义的意思是即 /images/* = /data/www/*
+                location /images/ {
+                alias &quot;/data/www/&quot;; 
+            root定义的意思就是访问 /data/www/images/*
+
+    9、设置默认主页：index file ...;
+        默认资源；http, server, location；
+
+    10、error_page code ... [=[response]] uri;
+       例如：error_page 404 /404.html;
+            location = /404.html {
+                root &quot;/www/error_pages&quot;;
+            }                       
+    11、try_files file ... uri;
+        定义客户端请求的相关配置
+
+定义客户端请求的相关配置
+    12、keepalive_timeout timeout [header_timeout];
+        设定保持连接的超时时长，0表示禁止长连接；默认为75s；
+
+    13、keepalive_requests number;
+        在一次长连接上所允许请求的资源的最大数量，默认为100; 
+
+    14、keepalive_disable none | browser ...;
+        对哪种浏览器禁用长连接；
+
+    15、send_timeout time;
+        向客户端发送响应报文的超时时长，此处，是指两次写操作之间的间隔时长；
+
+    16、client_body_buffer_size size;
+        用于接收客户端请求报文的body部分的缓冲区大小；默认为16k；超出此大小时，其将被暂存到磁盘上的由client_body_temp_path指令所定义的位置；
+
+    17、client_body_temp_path path [level1 [level2 [level3]]];
+        设定用于存储客户端请求报文的body部分的临时存储路径及子目录结构和数量；
+
+            16进制的数字；
+
+            client_body_temp_path   /var/tmp/client_body  1 2 2
+                1：表示用一位16进制数字表示一级子目录；0-f
+                2：表示用2位16进程数字表示二级子目录：00-ff
+                2：表示用2位16进程数字表示三级子目录：00-ff
+
+对客户端进行限制的相关配置：
+    18、limit_rate rate;
+        限制响应给客户端的传输速率，单位是bytes/second，0表示无限制；
+
+    19、limit_except method ... { ... }
+        限制对指定的请求方法之外的其它方法的使用客户端；
+
+        limit_except GET {
+            allow 192.168.1.0/24;
+            deny  all;
+        }
+
+ 文件操作优化的配置
+</code></pre><h4 id="访问控制和认证的两个模块"><a href="#访问控制和认证的两个模块" class="headerlink" title="访问控制和认证的两个模块"></a>访问控制和认证的两个模块</h4><pre><code>ngx_http_access_module模块：实现基于ip的访问控制功能，比httpd的控制更简单
+
+    1.allow address | CIDR | unix: | all;
+    2.deny address | CIDR | unix: | all;
+
+        http, server, location, limit_except
+
+ngx_http_auth_basic_module模块
+    实现基于用户的访问控制，使用basic机制进行用户认证；
+    1.auth_basic string | off;
+    2.auth_basic_user_file file;
+    需要先生成账号密码，而且htpasswd命令由httpd-tools所提供；
+        htpasswd -c -m /data/.nginxpasswd tom
+        htpasswd -b -m /data/.nginxpasswd haha haha123
+        如：
+            location /admin/ {
+            auth_basic &quot;需要提供用户密码&quot;;(提示信息)
+            auth_basic_user_file /etc/nginx/.ngxpasswd;
+            }
+</code></pre><h4 id="ngx-http-stub-status-module模块：状态监控"><a href="#ngx-http-stub-status-module模块：状态监控" class="headerlink" title="ngx_http_stub_status_module模块：状态监控"></a>ngx_http_stub_status_module模块：状态监控</h4><pre><code>一般和监控系统一起用，可以在编译安装nginx时加上这个选项
+可以通过脚本函数监控这七个数值，纳入到zabbix中进行图形化监控
+为了不影响其他location，一般定义专用的location来监控nginx状态，放在server内即可
+用于输出nginx的基本状态信息；
+    Active connections: 291         当前的活动连接
+    server accepts handled requests  连接数，接收并处理的，，
+        16630948 16630948 31070465 
+    Reading: 6 Writing: 179 Waiting: 106
+        中间三个是统计数据，其他四个是当前数据；
+        Active connections: 正在处理活动状态的连接数；
+        accepts：已经接受的客户端请求的总数；(tcp建立的连接数)
+        handled：已经处理完成的客户端请求的总数；(客户端发送，nginx处理过的)
+        requests：客户端发来的总的请求数；(建立tcp连接并发送的请求数)
+        Reading：处于读取客户端请求报文首部的连接的连接数；(接收报文)
+        Writing：处于向客户端发送响应报文过程中的连接数；(nginx发送报文)
+        Waiting：处于等待客户端发出请求的空闲连接数； (已经读取未发送的)
+        用于监控nginx的连接数脚本
+    1.stub_status;
+        配置示例：
+            location = /status {
+                stub_status;
+            }
+</code></pre><h4 id="ngx-http-log-module模块：日志分析展示"><a href="#ngx-http-log-module模块：日志分析展示" class="headerlink" title="ngx_http_log_module模块：日志分析展示"></a>ngx_http_log_module模块：日志分析展示</h4><p><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#var_remote_addr" target="_blank" rel="noopener">nginx官方日志变量说明</a></p>
+<pre><code>1.log_format name string ...;
+    string可以使用nginx核心模块及其它模块内嵌的变量；
+    日志格式：
+        $remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+              &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+              &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;
+        http_x_forward_for 表示被代理服务器的日志记录的访问的IP地址是代理服务器，为了在后端服务器上记录真实的客户端，需要启用这一项
+
+    实现：1.为nginx定义使用类似于httpd的combined格式的访问日志；
+         2.把combined的日志格式定义输出成json格式(KV键值对)
+
+2.access_log path [format [buffer=size] [gzip[=level]] [flush=time] [if=condition]];
+    access_log off;
+
+    访问日志文件路径，格式及相关的缓冲的配置；
+        buffer=size
+        flush=time 
+
+3.open_log_file_cache max=N [inactive=time] [min_uses=N] [valid=time];
+    open_log_file_cache off;
+    缓存各日志文件相关的元数据信息；
+
+    max：缓存的最大文件描述符数量；
+    min_uses：在inactive指定的时长内访问次数低于min_uses就认为是无效的；
+    inactive：非活动时长；
+    valid：验正缓存中各缓存项是否为活动项的时间间隔；检查inactive的间隔
+</code></pre><h4 id="ngx-http-gzip-module：文本资源压缩传输节约带宽"><a href="#ngx-http-gzip-module：文本资源压缩传输节约带宽" class="headerlink" title="ngx_http_gzip_module：文本资源压缩传输节约带宽"></a>ngx_http_gzip_module：文本资源压缩传输节约带宽</h4><pre><code>在CPU等硬件资源不稀缺的情况下，带宽流量的稀缺使得资源压缩必须启用
+启用资源压缩功能，虽然可以大大减小了带宽的消耗，要注意适用的场景；
+    1.比如当前服务器CPU负载较大，压缩功能本身就会消耗更多的CPU资源，如果启用
+        对服务器的压力就会更大
+    2.应该只对文本内容进行压缩，视频、图片、流媒体等本身就已经是有压缩比的资源
+    3.实现逻辑：先使用压缩过滤器过滤出来有很好压缩比的资源(css,js,html)等文本
+        再定义压缩规则
+
+    1.gzip on | off;
+        需要先开启gzip压缩功能
+    2.gzip_comp_level level;
+        设置压缩比1~9,压缩比越大对CPU的消耗越大
+    3.gzip_disable regex ...;
+         过滤User_Agent浏览器类型，禁用较老的浏览器版本不启用压缩功能。
+    4.gzip_min_length length;
+        当响应报文大小达到某个值，才压缩，太小就不值得压缩了
+        比如：低于100k不压缩，高于这个值才进行资源压缩，单位:byte字节
+    5.gzip_buffers number size;
+        支持实现压缩功能时为其配置的缓冲区数量(number)及每个缓存区的大小(size)；
+        在服务器的内存资源充沛时，启用缓冲区可以更快的对资源进行压缩
+    6、gzip_proxied off | expired | no-cache | no-store | private | 
+        no_last_modified | no_etag | auth | any ...;
+        nginx作为代理服务器接收到从被代理服务器发送的响应报文后，在何种条件下启用压缩功能的；
+            off：对代理的请求不启用
+            no-cache, no-store，private：表示从被代理服务器收到的响应报文首部的Cache-Control的值为此三者中任何一个，则启用压缩功能；
+            any:任何内容不压缩
+    7.gzip_types mime-type ...;
+        压缩过滤器，仅对此处设定的MIME类型的内容启用压缩功能；
+        过滤需要压缩的类型，纯文本和html不需要，因为默认就对其压缩
+    示例：
+        gzip  on;
+        gzip_comp_level 6;
+        gzip_min_length 64;
+        gzip_proxied any;
+        gzip_types text/xml text/css  application/javascript; 
+</code></pre><h4 id="ngx-http-ssl-module模块："><a href="#ngx-http-ssl-module模块：" class="headerlink" title="ngx_http_ssl_module模块："></a>ngx_http_ssl_module模块：</h4><pre><code>如上图，代理服务用nginx不采用LVS的一个原因就是LVS不支持SSL的代理，nginx可以实现
+    面对客户端使用https协议，面对后端服务器集群使用http协议，所以有时nginx反代也叫https的会话卸载器
+如果是四层调度，https访问必须是客户端与后端服务器之间建立；
+如果两段式连接，对内调度是明文的，把压力放在前端代理服务器上，本身前端调度器
+岁CPU资源消耗不是很大
+
+    1.ssl on | off;
+        Enables the HTTPS protocol for the given virtual server.  
+    2.ssl_certificate file;
+        当前虚拟主机使用PEM格式的证书文件；
+    3.ssl_certificate_key file;
+        当前虚拟主机上与其证书匹配的私钥文件；
+    4.ssl_protocols [SSLv2] [SSLv3] [TLSv1] [TLSv1.1] [TLSv1.2];
+        支持ssl协议版本，默认为后三个；
+    5.ssl_session_cache off | none | [builtin[:size]] [shared:name:size];
+        nginx的ssl会话有两种：
+        1.builtin[:size]：使用OpenSSL内建的缓存，此缓存为每worker进程私有；
+        2.[shared:name:size]：在各worker之间使用一个共享的缓存；
+        ssl的session建立是很慢的,所以要启用ssl的缓存，而且还是shared类型的共享缓存方式
+    6、ssl_session_timeout time;
+        客户端一侧的连接可以复用ssl session cache中缓存 的ssl参数的有效时长；
+
+实现https加密：        
+    生成私钥和证书：
+        openssl genrsa -out nginx.key 2048
+        openssl req -new -x509 -key nginx.key -out nginx.crt -days 3650 -subj &quot;/CN=www.lk.tech&quot;
+    配置https主体：
+        server {
+            listen 443 ssl;
+            server_name www.lk.tech;
+            root /data/lk;
+            ssl on;
+            ssl_certificate /etc/nginx/ssl/nginx.crt;
+            ssl_certificate_key /etc/nginx/ssl/nginx.key;
+            ssl_session_cache shared:sslcache:20m;
+            ssl_session_timeout 10m;
+        }                           
+</code></pre><h4 id="ngx-http-rewrite-module模块：实现URL重写"><a href="#ngx-http-rewrite-module模块：实现URL重写" class="headerlink" title="ngx_http_rewrite_module模块：实现URL重写"></a>ngx_http_rewrite_module模块：实现URL重写</h4><p><img src="/2018/03/20/nginx实现web服务配置/官网rewrite1.png" alt="rewrite官方示例1"><br><img src="/2018/03/20/nginx实现web服务配置/官网rewrite2.png" alt="rewrite官方示例2"></p>
+<pre><code>什么是url重写？为什么要用到url重写？
+    1.客户端访问URL被重写到另外一个路径了
+    http://www.lk.tech/photos/1.jpg ---&gt; http://images.lk.tech/1.jpg
+    2.全站ssl加密时，将用户访问的http://请求全部被重写到https://的虚拟主机上
+    http://www.lk.tech/images/1.jpg---&gt;https://www.lk.tech/1.jpg
+rewirte的处理逻辑：
+    1.将用户请求的URL基于(regex)正则表达式的查找，而后完成替换即可(replacement)
+    2.如果出现server中两个location互相rewrite，则会出现死循环的现象，所以就引入
+        了last和break的两个机制
+    3.last表示接着检查其他rewrite，break表示匹配到当前的rewrite.就不检查其他的
+        rewrite了这样就避免了死循环。
+
+1.rewrite regex replacement [flag]
+    a.将用户请求的URI基于regex所描述的模式进行检查，匹配到时将其替换为replacement
+        指定的新的URI；
+    b.rewrite重写的路径可以是相对路径也可以是绝对路径
+
+    注意：如果在同一级配置块中存在多个rewrite规则，那么会自下而下逐个检查；被某条件规则替换完成后，会重新一轮的替换检查，因此，隐含有循环机制；[flag]所表示的标志位用于控制此循环机制；
+
+    如果replacement是以http://或https://开头，则替换结果会直接以重向返回给客户端
+    ；用的比较多的是301和302
+        301：permanent,永久重定向；
+        302：redirect,临时重定向；
+
+    [flag]：
+        last：重写完成后停止对当前URI在当前location中后续的其它重写操作，而后对新的URI启动新一轮重写检查；提前重启新一轮循环； 
+        break：重写完成后停止对当前URI在当前location中后续的其它重写操作，而后直接跳转至重写规则配置块之后的其它配置；结束循环；
+        redirect：重写完成后以临时重定向方式直接返回重写后生成的新URI给客户端，由客户端重新发起请求；302
+        permanent:重写完成后以永久重定向方式直接返回重写后生成的新URI给客户端，由客户端重新发起请求；301       
+2.return：类似于重定向的操作
+    return code [text];
+    return code URL;
+    return URL;
+    Stops processing and returns the specified code to a client. 
+
+3.rewrite_log on | off;
+    是否开启重写日志；可能出现安全风险，所以没有必要时不用开启
+
+4.if (condition) { ... }
+    引入一个新的配置上下文 ；条件满足时，执行配置块中的配置指令；
+    一般用于server, location；
+
+    condition：
+        比较操作符：
+            ==
+            !=
+            ~：模式匹配，区分字符大小写；
+            ~*：模式匹配，不区分字符大小写；
+            !~：模式不匹配，区分字符大小写；
+            !~*：模式不匹配，不区分字符大小写；
+        文件及目录存在性判断：
+            -e, !-e
+            -f, !-f
+            -d, !-d
+            -x, !-x            
+5.set $variable value;
+    用户自定义变量；
+示例：
+    location ~* ^/(photos|pictures) {
+    ##      rewrite ^/photos/(.*)$ /image/$1 last;
+    #       rewrite ^/photos/(.*)$ http://images.lk.tech:8081/$1;
+    #       rewrite ^/(photos|pictures)/(.*)$ http://images.lk.tech:8081/$2 permanent;                                   
+    #       }
+</code></pre><p>-redirect和permanent的示例演示<br><img src="/2018/03/20/nginx实现web服务配置/rewrite规则.png" alt="rewrite机制"></p>
+<h4 id="ngx-http-referer-module模块：网站防盗链"><a href="#ngx-http-referer-module模块：网站防盗链" class="headerlink" title="ngx_http_referer_module模块：网站防盗链"></a>ngx_http_referer_module模块：网站防盗链</h4><pre><code>检查客户端的请求数据报文首部，实际就是防盗链的过滤器，所以在日志中记录referer
+    referer来源：
+        1.
+        2.
+    1.valid_referers none | blocked | server_names | string ...;
+        定义referer首部的合法有效的值    
+        none：请求报文首部没有referer首部；
+        blocked：请求报文的referer首部没有值；
+        server_names：参数，其可以有值作为主机名或主机名模式；
+            arbitrary_string：直接字符串，但可使用*作通配符；
+            regular expression：被指定的正则表达式模式匹配到的字符串；
+                要使用~打头，例如 ~.*\.lk.com；
+
+使用说明和示例：
+    先定义valid_referers的允许连接网站，再通过if判断如果不是在
+    valid_referers中定义的网站，就返回一张图片或者文字说明
+
+        valid_referers none block server_names *.lk.com lk.* ~\.lk\.;
+        if ($invalid_referer) {
+            return http://www.lk.tech/hello.html;
+        } 
+</code></pre><p><img src="/2018/03/20/nginx实现web服务配置/referer防盗机制.png" alt="referer防盗机制"></p>
+
       
     </div>
 
@@ -786,7 +1161,7 @@ FullNAT实验：
       
         <div class="post-tags">
           
-            <a href="/tags/iptables防火墙/" rel="tag"><i class="fa fa-tag"></i> iptables防火墙</a>
+            <a href="/tags/Web服务/" rel="tag"><i class="fa fa-tag"></i> Web服务</a>
           
         </div>
       
@@ -853,8 +1228,8 @@ FullNAT实验：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/06/iptables/" rel="next" title="iptables">
-                <i class="fa fa-chevron-left"></i> iptables
+              <a href="/2018/03/06/ansible/" rel="next" title="ansible">
+                <i class="fa fa-chevron-left"></i> ansible
               </a>
             
           </div>
@@ -863,8 +1238,8 @@ FullNAT实验：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
-                docker存储卷 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/06/iptables/" rel="prev" title="iptables">
+                iptables <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1114,7 +1489,7 @@ FullNAT实验：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络防火墙原理及示例"><span class="nav-number">1.</span> <span class="nav-text">网络防火墙原理及示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FORWARD链"><span class="nav-number">2.</span> <span class="nav-text">FORWARD链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NAT："><span class="nav-number">3.</span> <span class="nav-text">NAT：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNAT：POSTROUTING源地址转换"><span class="nav-number">4.</span> <span class="nav-text">SNAT：POSTROUTING源地址转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNAT：PREROUTING和OUTPUT目标地址转换"><span class="nav-number">5.</span> <span class="nav-text">DNAT：PREROUTING和OUTPUT目标地址转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PortNAT-端口映射"><span class="nav-number">6.</span> <span class="nav-text">PortNAT:端口映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FullNAT：源地址和目标地址都修改"><span class="nav-number">7.</span> <span class="nav-text">FullNAT：源地址和目标地址都修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MASQUERADE"><span class="nav-number">8.</span> <span class="nav-text">MASQUERADE</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx安装和配置文件"><span class="nav-number">1.</span> <span class="nav-text">nginx安装和配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx的全局配置和优化必调参数项"><span class="nav-number">2.</span> <span class="nav-text">Nginx的全局配置和优化必调参数项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx实现web服务的全局配置和主要模块"><span class="nav-number">3.</span> <span class="nav-text">Nginx实现web服务的全局配置和主要模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议的全局配置"><span class="nav-number">4.</span> <span class="nav-text">http协议的全局配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngx-http-core-module-Nginx的核心模块"><span class="nav-number">5.</span> <span class="nav-text">ngx_http_core_module:Nginx的核心模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#访问控制和认证的两个模块"><span class="nav-number">5.1.</span> <span class="nav-text">访问控制和认证的两个模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-stub-status-module模块：状态监控"><span class="nav-number">5.2.</span> <span class="nav-text">ngx_http_stub_status_module模块：状态监控</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-log-module模块：日志分析展示"><span class="nav-number">5.3.</span> <span class="nav-text">ngx_http_log_module模块：日志分析展示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-gzip-module：文本资源压缩传输节约带宽"><span class="nav-number">5.4.</span> <span class="nav-text">ngx_http_gzip_module：文本资源压缩传输节约带宽</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-ssl-module模块："><span class="nav-number">5.5.</span> <span class="nav-text">ngx_http_ssl_module模块：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-rewrite-module模块：实现URL重写"><span class="nav-number">5.6.</span> <span class="nav-text">ngx_http_rewrite_module模块：实现URL重写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ngx-http-referer-module模块：网站防盗链"><span class="nav-number">5.7.</span> <span class="nav-text">ngx_http_referer_module模块：网站防盗链</span></a></li></ol></li></ol></div>
             
 
           </div>
