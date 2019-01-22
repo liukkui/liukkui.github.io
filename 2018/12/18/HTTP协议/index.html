@@ -146,11 +146,14 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web服务请求处理步骤.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/web访问响应的四种模型.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTP协议/http请求报文头部.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTP协议/http响应报文头部.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/请求报文头部.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/响应报文头部.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/Prefork.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/Worker.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/event.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/进程角色切换原理.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/12/18/HTTP协议/HTTPD的prefork模型.png">
-<meta property="og:updated_time" content="2019-01-14T13:53:39.720Z">
+<meta property="og:updated_time" content="2019-01-22T11:55:18.830Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP协议">
 <meta name="twitter:description" content="HTTP协议和APACHE原理Apache官网：软件基金会组成：apache名下有很多项目，如HTTP，Kafka，tomcat等本文说的是HTTP SERVERapache">
@@ -315,7 +318,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">11</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
 
   </li>
         
@@ -334,7 +337,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">13</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">14</span></a>
 
   </li>
         
@@ -353,7 +356,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">19</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">22</span></a>
 
   </li>
         
@@ -559,7 +562,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">27k</span>
+                <span title="本文字数">30k</span>
               
 
               
@@ -573,7 +576,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">24 分钟</span>
+                <span title="阅读时长">27 分钟</span>
               
             </div>
           
@@ -785,7 +788,7 @@ session与cookie的区别：
 session与cookie的联系：
 　　session是需要借助cookie才能正常工作的，如果客户端完全禁止cookie，session将失
     效
-</code></pre><h3 id="Http应用层的报文头部-又分请求报文和响应报文两种"><a href="#Http应用层的报文头部-又分请求报文和响应报文两种" class="headerlink" title="Http应用层的报文头部:又分请求报文和响应报文两种"></a>Http应用层的报文头部:又分请求报文和响应报文两种</h3><p><img src="HTTP协议/http请求报文头部.png" alt="HTTP请求报文头部"></p>
+</code></pre><h3 id="Http应用层的报文头部-又分请求报文和响应报文两种"><a href="#Http应用层的报文头部-又分请求报文和响应报文两种" class="headerlink" title="Http应用层的报文头部:又分请求报文和响应报文两种"></a>Http应用层的报文头部:又分请求报文和响应报文两种</h3><p>-HTTP请求报文头部<br><img src="/2018/12/18/HTTP协议/请求报文头部.png" alt="HTTP请求报文头部"></p>
 <pre><code>开始行
     方法：method
         GET： 从服务器获取一个资源
@@ -798,7 +801,7 @@ session与cookie的联系：
     URL:路径
 首部行
 实体行
-</code></pre><p><img src="HTTP协议/http响应报文头部.png" alt="HTTP响应报文头部"></p>
+</code></pre><p>-HTTP响应报文头部<br><img src="/2018/12/18/HTTP协议/响应报文头部.png" alt="HTTP响应报文头部"></p>
 <pre><code>开始行
     版本：version
         HTTP/&lt;major&gt;.&lt;minor&gt;1.1/2等等
@@ -880,12 +883,97 @@ elinks工具：
 </code></pre><h3 id="HTTP介绍"><a href="#HTTP介绍" class="headerlink" title="HTTP介绍"></a>HTTP介绍</h3><p>特性：<br>高度模块化：core + modules<br>DSO: Dynamic Shared Object 动态加/卸载<br>MPM：multi-processing module多路处理模块</p>
 <h3 id="HTTP的三种工作模型：MPM工作模式"><a href="#HTTP的三种工作模型：MPM工作模式" class="headerlink" title="HTTP的三种工作模型：MPM工作模式"></a>HTTP的三种工作模型：MPM工作模式</h3><font size="3" color="#FF0000"><br>多用途的处理模块，三种模型分别是，默认使用prefork模型<br>因为http很多软件是只支持prefork模型而不支持woker或者event模型的，所以一般都是使用prefork模型<br></font>
 
-<ul>
-<li>1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型<br>  一个主进程：生成和回收n个子进程，创建套接字，不响应请求<br>  多个子进程：工作work进程，每个子进程处理一个请求；系统初始时，预先生成多个空闲进程，等待请求，最大不超过1024个，消耗比较大内存资源</li>
-<li>2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型<br>  一个主进程生成m个子进程，每个子进程又负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n，支持高并发性<br>  缺点：线程消耗资源比进程要小很多，但是如果子进程中的线程出现问题，则会影响整个子进程，从这个方面考虑，没有prefork稳定！</li>
-<li>3.event：事件驱动模型（worker模型的优化,worker模型的变种）<br>  event模型在httpd-2.4：event 稳定版，centos7默认版本开始使用<br>  一个主进程：生成m个子进程，每个进程直接响应n个请求，并发响应请求：m*n<br>  相比较worker的有点：<br>  有专门的线程来监控管理这些keep-alive类型的线程，当有真实请求时，将请求传递给服务线程，执行完毕后，又允许释放。这样增强了高并发场景下的请求处理能力</li>
-</ul>
-<h3 id="进程工作的角色切换"><a href="#进程工作的角色切换" class="headerlink" title="进程工作的角色切换"></a>进程工作的角色切换</h3><p><img src="/2018/12/18/HTTP协议/进程角色切换原理.png" alt="进程间的角色切换"></p>
+<h3 id="1-prefork：多进程I-O模型，每个进程响应一个请求，默认模型"><a href="#1-prefork：多进程I-O模型，每个进程响应一个请求，默认模型" class="headerlink" title="1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型"></a>1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型</h3><pre><code>一个主进程：生成和回收n个子进程，创建套接字，不响应请求
+多个子进程：工作work进程，每个子进程处理一个请求；系统初始时，预先生成多个空闲进程，等待请求，最大不超过
+1024个，消耗比较大内存资源
+受限于并发访问控制的内部系统调用机制：
+        select()；内生使用限制最多只能使用1024个描述符，所以最多也就1024个进程
+        epoll();
+Prefork MPM: 预派生模式，有一个主控制进程，然后生成多个子进程，使用select模型，最
+大并发1024，每个子进程有一个独立的线程响应用户请求，相对比较占用内存，但是比较稳定
+，可以设置最大和最小进程数，是最古老的一种模式，也是最稳定的模式，适用于访问量不是很大的场景。
+优点：稳定
+缺点：慢，占用资源，不适用于高并发场景
+
+配置文件原内容：
+&lt;IfModule mpm_prefork_module&gt;
+    StartServers           5 #定义apache服务在启动时启动的子进程数量
+    MinSpareServers         5 #定义最小空闲进程数，空闲进程就是没有处理用户请求的进程数
+    MaxSpareServers        10 #定义最大空闲进程数
+    MaxRequestWorkers      250 #定义在prefork模式下的最大并发连接数，表示了apache的最大并发处理能力，超过的连接请求将被排队等候处理。
+    MaxConnectionsPerChild   0  #进程生命周期内，处理的最大请求数目。达到该数目后，进程将死掉。如果设置
+    为0，表示没有限制。该参数的意义在于，避免了可能存在的内存泄露带来的系统问题。
+&lt;/IfModule&gt;
+
+如果确定合适的MaxRequestWorkers呢？
+首先，通过top命令查看apache进程占用的资源，主要看%CPU和%MEM这两个指标，例如，每个进程的CPU占用率不超过
+1%，每个进程的内存占用率不超过2%，考虑内存限制，比较合适的apache进程数量为50个，然后，逐步测试最大值。
+通过观测得来的CPU和内存的指标有一定的误差，一般可以适当调节这个数值，例如调到1.5或者2倍，再通过峰值场景下的机器是否卡顿来判断是继续上调还是下调。
+</code></pre><p><img src="/2018/12/18/HTTP协议/Prefork.png" alt="Prefork"></p>
+<h3 id="2-worker：复用的多进程I-O模型-多进程多线程，IIS使用此模型"><a href="#2-worker：复用的多进程I-O模型-多进程多线程，IIS使用此模型" class="headerlink" title="2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型"></a>2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型</h3><pre><code>一个主进程生成m个子进程，每个子进程又负责生个n个线程，每个线程响应一个请求，并发响应请求：m*n，支持高并发性
+缺点：线程消耗资源比进程要小很多，但是如果子进程中的线程出现问题，则会影响整个子进程，从这个方面考虑，没有prefork稳定！
+
+woker MPM：是一种多进程和多线程混合的模型，有一个控制进程，启动多个子进程，每个子进程里面包含固定的线程
+，使用线程程来处理请求，当线程不够使用的时候会再启动一个新的子进程，然后在进程里面再启动线程处理请求，
+由于其使用了线程处理请求，因此可以承受更高的并发。
+
+优点：相比prefork 占用的内存较少，可以同时处理更多的请求
+
+缺点：使用keep-alive的长连接方式，某个线程会一直被占据，即使没有传输数据，也需要一直等待到超时才会被释放
+。如果过多的线程，被这样占据，也会导致在高并发场景下的无服务线程可用。（该问题在prefork模式下，同样会发生）
+
+配置文件原内容详解：
+&lt;IfModule mpm_worker_module&gt;
+    StartServers         3   # #定义apache服务在启动时启动的子进程数量，默认是3个 
+    MinSpareThreads      75   # 整个控制进程保持最小数的空闲线程数
+    MaxSpareThreads      250  # 整个控制进程保持最大数的空闲线程数
+    #ThreadLimit        64   # 每个子进程可以启动的线程数量上限值，默认没有设置
+    ThreadsPerChild      25   # 每个子进程启动的线程默认数量，开启启动两个子进程每个子进程25个 线程，就是apache 启动后开启25个线程。
+    MaxRequestWorkers    400   # 所有子进程加起来的线程数量最大值，数量等于最大启动的进程数*ThreadsPerChild(每个进程的线程数)
+    MaxConnectionsPerChild   0  # 每个子进程被请求多少次服务后被kill掉重新生成一个新的子进程，为了解决内存回收方面的问题，0为不设置
+&lt;/IfModule&gt;
+</code></pre><p><img src="/2018/12/18/HTTP协议/Worker.png" alt="Worker"></p>
+<h3 id="3-event：事件驱动模型（worker模型的优化-worker模型的变种）"><a href="#3-event：事件驱动模型（worker模型的优化-worker模型的变种）" class="headerlink" title="3.event：事件驱动模型（worker模型的优化,worker模型的变种）"></a>3.event：事件驱动模型（worker模型的优化,worker模型的变种）</h3><pre><code>event模型在httpd-2.4：event 稳定版，centos7默认版本开始使用
+每一个cpu核心生成一个进程；
+一个主进程：生成m个子进程，每个进程直接响应n个请求，并发响应请求：m*n
+            注意这里的m*n和work的m*n是不同的机制
+相比较worker的有点：
+有专门的线程来监控管理这些keep-alive类型的线程，当有真实请求时，将请求传递给服务线程，执行完毕后，又允许
+释放。这样增强了高并发场景下的请求处理能力
+
+event MPM：Apache中最新的模式，属于事件驱动模型(epoll)，每个进程响应多个请求，在现在版本里的已经是稳定
+可用的模式。它和worker模式很像，最大的区别在于，它解决了keep-alive场景下，长期被占用的线程的资源浪费问题
+（某些线程因为被keep-alive，空挂在哪里等待，中间几乎没有请求过来，甚至等到超时）。event MPM中，会有一个
+专门的线程来管理这些keep-alive类型的线程，当有真实请求过来的时候，将请求传递给服务线程，执行完毕后，
+又允许它释放。这样增强了高并发场景下的请求处理能力。
+
+event只在有数据发送的时候才开始建立连接，连接请求才会触发工作线程，即使用了TCP的一个选项，叫做延迟接受连
+接TCP_DEFER_ACCEPT，加了这个选项后，若客户端只进行TCP连接，不发送请求，则不会触发Accept操作，也就不会
+触发工作线程去干活，进行了简单的防攻击（TCP连接）,可以使用Telnet进行测试验证：
+主机192.168.10.130为客户端机器，192.168.10.131为apache服务器机器使用event模式：     
+在192.168.10.130上telnet 192.168.10.131 80，然后在192.168.10.130客户端机器上使用netstat查看，发现连
+接已经建立，处于ESTABLISHED状态，然后再到apache服务器192.168.10.131使用netstat查看，发现是处于
+SYN_RECV状态。
+
+优点：单线程响应多请求，占据更少的内存，高并发下表现更优秀，会有一个专门的线程来管理keep-alive类型的线程，
+当有真实请求过来的时候，将请求传递给服务线程，执行完毕后，又允许它释放 
+缺点：没有线程安全控制
+配置文件内容：
+&lt;IfModule mpm_event_module&gt;
+    StartServers           3  #apache服务启动的子进程数，默认3个
+    MinSpareThreads         75  #控制进程保持最小的空闲线程数
+    MaxSpareThreads        250  #控制进程保持的最大空闲线程数
+    ThreadsPerChild         25  #每个子进程启动的线程数
+    MaxRequestWorkers       400  #并发最大请求数，也就是所有子进程加起来的线程数量，woker模式下的
+    400就是并发400，但是由于是异步处理请求的，因此这里的400比woker模型下的并发处理速度要快很多，因为event省略了工作线程的会话保持。
+    MaxConnectionsPerChild    0  #每个子进程请求多少次以后被kill掉重新生成一个新的子进程。
+&lt;/IfModule&gt;
+</code></pre><p><img src="/2018/12/18/HTTP协议/event.png" alt="event"></p>
+<pre><code>注意：
+    event模型的强大的I/O机制
+    httpd从设计上就默认支持prefork
+    而nginx从设计上就支持event事件驱动模型
+</code></pre><h3 id="进程工作的角色切换"><a href="#进程工作的角色切换" class="headerlink" title="进程工作的角色切换"></a>进程工作的角色切换</h3><p><img src="/2018/12/18/HTTP协议/进程角色切换原理.png" alt="进程间的角色切换"></p>
 <h3 id="Httpd的功能特性"><a href="#Httpd的功能特性" class="headerlink" title="Httpd的功能特性"></a>Httpd的功能特性</h3><p>httpd的常见特性：</p>
 <ul>
 <li>虚拟主机：在一个物理服务器上搭建多个网站<br>  IP、Port、FQDN</li>
@@ -1498,7 +1586,7 @@ HOST: www.a.com
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1537,7 +1625,9 @@ HOST: www.a.com
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1572,7 +1662,9 @@ HOST: www.a.com
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1675,7 +1767,7 @@ HOST: www.a.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http协议"><span class="nav-number">5.</span> <span class="nav-text">Http协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Session和Cookie的区别"><span class="nav-number">6.</span> <span class="nav-text">Session和Cookie的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http应用层的报文头部-又分请求报文和响应报文两种"><span class="nav-number">7.</span> <span class="nav-text">Http应用层的报文头部:又分请求报文和响应报文两种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http常见的状态码和状态码分类"><span class="nav-number">8.</span> <span class="nav-text">Http常见的状态码和状态码分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因"><span class="nav-number">9.</span> <span class="nav-text">curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">10.</span> <span class="nav-text">HTTP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">11.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">12.</span> <span class="nav-text">进程工作的角色切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">13.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">14.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">15.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">16.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP协议和APACHE原理"><span class="nav-number">1.</span> <span class="nav-text">HTTP协议和APACHE原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http协议-应用层协议-主流http-1-1版本"><span class="nav-number">2.</span> <span class="nav-text">http协议:应用层协议,主流http/1.1版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#http协议的版本区别"><span class="nav-number">2.1.</span> <span class="nav-text">http协议的版本区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP工作机制"><span class="nav-number">3.</span> <span class="nav-text">HTTP工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web服务请求处理步骤"><span class="nav-number">4.</span> <span class="nav-text">Web服务请求处理步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一次完整的http请求处理过程"><span class="nav-number">4.1.</span> <span class="nav-text">一次完整的http请求处理过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http协议"><span class="nav-number">5.</span> <span class="nav-text">Http协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Session和Cookie的区别"><span class="nav-number">6.</span> <span class="nav-text">Session和Cookie的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http应用层的报文头部-又分请求报文和响应报文两种"><span class="nav-number">7.</span> <span class="nav-text">Http应用层的报文头部:又分请求报文和响应报文两种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http常见的状态码和状态码分类"><span class="nav-number">8.</span> <span class="nav-text">Http常见的状态码和状态码分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因"><span class="nav-number">9.</span> <span class="nav-text">curl和elinks工具：网站测试工具，更专业测试出网络不通是什么原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP介绍"><span class="nav-number">10.</span> <span class="nav-text">HTTP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP的三种工作模型：MPM工作模式"><span class="nav-number">11.</span> <span class="nav-text">HTTP的三种工作模型：MPM工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-prefork：多进程I-O模型，每个进程响应一个请求，默认模型"><span class="nav-number">12.</span> <span class="nav-text">1.prefork：多进程I/O模型，每个进程响应一个请求，默认模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-worker：复用的多进程I-O模型-多进程多线程，IIS使用此模型"><span class="nav-number">13.</span> <span class="nav-text">2.worker：复用的多进程I/O模型,多进程多线程，IIS使用此模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-event：事件驱动模型（worker模型的优化-worker模型的变种）"><span class="nav-number">14.</span> <span class="nav-text">3.event：事件驱动模型（worker模型的优化,worker模型的变种）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程工作的角色切换"><span class="nav-number">15.</span> <span class="nav-text">进程工作的角色切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd的功能特性"><span class="nav-number">16.</span> <span class="nav-text">Httpd的功能特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4新特性和安装以及配置"><span class="nav-number">17.</span> <span class="nav-text">Httpd2.4新特性和安装以及配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的具体安装和配置"><span class="nav-number">18.</span> <span class="nav-text">Httpd2.4的具体安装和配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Httpd2-4的常见配置"><span class="nav-number">19.</span> <span class="nav-text">Httpd2.4的常见配置</span></a></li></ol></div>
             
 
           </div>
@@ -1709,7 +1801,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">227k</span>
+    <span title="站点总字数">253k</span>
   
 
   
@@ -1720,7 +1812,7 @@ HOST: www.a.com
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">3:27</span>
+    <span title="站点阅读时长">3:50</span>
   
 </div>
 
