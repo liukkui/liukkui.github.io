@@ -144,12 +144,12 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="DockerFile：构建镜像">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/区别">
-<meta property="og:updated_time" content="2019-01-07T11:42:05.036Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/三者区别.png">
+<meta property="og:updated_time" content="2019-01-22T08:38:18.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerfile">
 <meta name="twitter:description" content="DockerFile：构建镜像">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/区别">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/三者区别.png">
 
 
 
@@ -329,7 +329,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">16</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">13</span></a>
 
   </li>
         
@@ -550,7 +550,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">8k</span>
+                <span title="本文字数">6.8k</span>
               
 
               
@@ -564,7 +564,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">7 分钟</span>
+                <span title="阅读时长">6 分钟</span>
               
             </div>
           
@@ -601,6 +601,7 @@
     docker镜像不是很大的原因。
     6.所以在制作镜像时，完全不必基于某个基础镜像显示启动一个新容器，然后在上面创建
     修改可写层并打包成镜像；commit只是一种方式，也可以使用dokcerfile
+    7.如果再本地将软件源码编译/二进制编译到容器也是可以的
 </code></pre><h3 id="dockerfile基本要求"><a href="#dockerfile基本要求" class="headerlink" title="dockerfile基本要求"></a>dockerfile基本要求</h3><pre><code>1.dockerfile的工作逻辑：
     制作镜像无非就是基于某个基础镜像创建一个可写层修改后再commit成一层新的镜像
     这个过程可以由docker自身完成，只需要在dockerfile配置文件中写清楚，基于哪个基础镜像，
@@ -728,7 +729,7 @@ ARG：
 
     如：在build时更改home的值
     docker image build --build-arg home=&quot;/webdata/&quot; /data/dockerfile/ -t myimg:v0.4
-</code></pre><h4 id="RUN-CMD-ENTRYPOINT的区别"><a href="#RUN-CMD-ENTRYPOINT的区别" class="headerlink" title="RUN,CMD,ENTRYPOINT的区别"></a>RUN,CMD,ENTRYPOINT的区别</h4><p><img src="/2018/10/18/Dockerfile/区别" alt="三者的区别"></p>
+</code></pre><h4 id="RUN-CMD-ENTRYPOINT的区别"><a href="#RUN-CMD-ENTRYPOINT的区别" class="headerlink" title="RUN,CMD,ENTRYPOINT的区别"></a>RUN,CMD,ENTRYPOINT的区别</h4><p><img src="/2018/10/18/Dockerfile/三者区别.png" alt="三者的区别"></p>
 <p>区别：</p>
 <pre><code>RUN：
     用于指定docker build过程中运行的程序，可以是任何命令
@@ -765,53 +766,6 @@ ENTRYPOINT：
     ENTRYPOINT命令最后做为其参数使用
     Dockerfile文件中也可以存在多个ENTRYPOINT指令，但仅有最后一个会生效
 </code></pre><p>示例：<br>    docker run –name c1 -P -d myimg:v0.1 以后台运行容器</p>
-<h3 id="docker-image-build命令"><a href="#docker-image-build命令" class="headerlink" title="docker image build命令"></a>docker image build命令</h3><pre><code>docker image build [options] [dockerfile文件的副目录]
-    --quiet 制作镜像时，不把制作过程显示在屏幕上
-    --rm: build的默认选项，制作镜像时默认启动一个容器，制作完成后自动删除
-    -t：给制作完的镜像打标签
-    --build-arg list 在制作镜像时给镜像传
-
-
-2.dockerfile instructions:
-        from:
-        maintanier:
-        copy:
-            当前目录下或当前子目录，支持使用tar和URL路径
-            1.
-        add:
-            类似于copy指令
-        workdir:工作目录
-            workdir的作用范围是当前workdir到下一个workdir区间
-        volume：存储卷
-                将容器的数据保存在宿主机上的磁盘文件
-        expose: 端口暴露
-            只能通过动态机制的绑定
-        env: 定义环境变量
-            是在build阶段使用的
-        arg：
-        RUN,CMD,ENTRYPOINT的区别！
-            run在是build
-            RUN:
-                1.默
-                2.
-                3.
-            CMD:
-                1.默认是/bin/sh,但是可以指定默认的服务
-            ENTRYPOINT:
-                1.entrypoint可以避免被覆盖
-                2.强制覆盖
-                    run --entrypoint &quot;command&quot;
-                3.entrypoint脚本是第一个运行的程序
-            两个阶段一个是在build一个是在run的，但是都可以传env
-        user:
-        healthcheck:容器健康状态监测
-            1.--interval=DURATION(default 30s)
-            2.--timeout=DURATION
-            3.--start-period=DURATION
-            4.--reties=N
-         shell: 
-         onbuild：
-</code></pre><p>可以用源码编译安装到镜像中</p>
 
       
     </div>
@@ -945,8 +899,8 @@ ENTRYPOINT：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
-                <i class="fa fa-chevron-left"></i> Docker镜像
+              <a href="/2018/10/18/Docker网络/" rel="next" title="Docker网络">
+                <i class="fa fa-chevron-left"></i> Docker网络
               </a>
             
           </div>
@@ -955,8 +909,8 @@ ENTRYPOINT：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/10/编译安装LAMP/" rel="prev" title="编译安装LAMP">
-                编译安装LAMP <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
+                docker存储卷 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1068,13 +1022,7 @@ ENTRYPOINT：
                     
                       
                     
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1212,7 +1160,7 @@ ENTRYPOINT：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">5.1.</span> <span class="nav-text">RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-build命令"><span class="nav-number">6.</span> <span class="nav-text">docker image build命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">5.1.</span> <span class="nav-text">RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1246,7 +1194,7 @@ ENTRYPOINT：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">229k</span>
+    <span title="站点总字数">227k</span>
   
 
   
@@ -1257,7 +1205,7 @@ ENTRYPOINT：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">3:28</span>
+    <span title="站点阅读时长">3:27</span>
   
 </div>
 
