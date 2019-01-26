@@ -136,22 +136,21 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="LAMP">
-<meta name="keywords" content="web">
+  <meta name="description" content="Docker资源限制">
+<meta name="keywords" content="容器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="编译安装LAMP">
-<meta property="og:url" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/index.html">
+<meta property="og:title" content="Docker的资源限制">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/18/Docker的资源限制/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="LAMP">
+<meta property="og:description" content="Docker资源限制">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/LAMP架构.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/haha.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/wordpress.png">
-<meta property="og:updated_time" content="2019-01-22T08:46:48.428Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker的资源限制/docker-stats.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker的资源限制/top命令.png">
+<meta property="og:updated_time" content="2019-01-26T13:44:29.460Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="编译安装LAMP">
-<meta name="twitter:description" content="LAMP">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/12/10/编译安装LAMP/LAMP架构.png">
+<meta name="twitter:title" content="Docker的资源限制">
+<meta name="twitter:description" content="Docker资源限制">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Docker的资源限制/docker-stats.png">
 
 
 
@@ -160,7 +159,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/12/10/编译安装LAMP/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/18/Docker的资源限制/">
 
 
 
@@ -170,7 +169,7 @@
   };
 </script>
 
-  <title>编译安装LAMP | Coool's Blog</title>
+  <title>Docker的资源限制 | Coool's Blog</title>
   
 
 
@@ -456,7 +455,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/12/10/编译安装LAMP/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/18/Docker的资源限制/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -473,7 +472,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">编译安装LAMP
+          <h1 class="post-title" itemprop="name headline">Docker的资源限制
               
             
           </h1>
@@ -499,7 +498,7 @@
                 
               
 
-              <time title="创建时间：2018-12-10 08:00:00" itemprop="dateCreated datePublished" datetime="2018-12-10T08:00:00+08:00">2018-12-10</time>
+              <time title="创建时间：2018-10-18 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-18T08:00:00+08:00">2018-10-18</time>
             
 
             
@@ -517,14 +516,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web服务/" itemprop="url" rel="index"><span itemprop="name">web服务</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/虚拟化/" itemprop="url" rel="index"><span itemprop="name">虚拟化</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web服务/个人博客搭建/" itemprop="url" rel="index"><span itemprop="name">个人博客搭建</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/虚拟化/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a></span>
 
                 
                 
@@ -552,7 +551,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.5k</span>
+                <span title="本文字数">1.8k</span>
               
 
               
@@ -566,7 +565,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">6 分钟</span>
+                <span title="阅读时长">2 分钟</span>
               
             </div>
           
@@ -586,175 +585,54 @@
       
 
       
-        <p>LAMP<br><a id="more"></a></p>
-<p><img src="/2018/12/10/编译安装LAMP/LAMP架构.png" alt=""></p>
-<h3 id="Centos7上编译安装LAMP"><a href="#Centos7上编译安装LAMP" class="headerlink" title="Centos7上编译安装LAMP"></a>Centos7上编译安装LAMP</h3><pre><code>    备注：本文编译PHP是基于fastCGI方式，php-fpm
-编译准备：
-    在192.168.34.105上实现，准备安装包都放在/data/src下
-        apr-1.6.5.tar.bz2
-        apr-util-1.6.1.tar.bz2
-        httpd-2.4.37.tar.bz2
-        php-7.1.18.tar.bz2
-        wordpress-5.0-zh_CN.zip
-        mariadb-10.2.19-linux-x86_64.tar.gz
-    准备开发包组：
-        yum install &apos;develoment tools&apos; -y
+        <h3 id="Docker资源限制"><a href="#Docker资源限制" class="headerlink" title="Docker资源限制"></a>Docker资源限制</h3><a id="more"></a>
+<pre><code>docker容器得以实现的三个组件：
+    Namespace:内核中的名称空间是实现容器技术非常重要的组件
+    CGroups：实现容器的资源配额
+        1.如果没有资源配额的限定，比如恶意代码会占用宿主机上的很多资源，会造成其他容器无法运行的情况，
+        默认是宿主机上的所有资源.
+        2.cgroup允许将宿主机上的所有技术资源(CPU,内存等)做资源分割,以指定方式进行分配，而CPU和内存又分别支持两种不同的配额方式
+        3.CPU属于可压缩型资源，如果程序运行的cpu不够，只需要等待cpu资源即可，不会造成容器崩溃。
+        4.内存属于不可压缩型资源，如果一个进程依赖于3g内存来运行，宿主机只分配给它1g，则会造成OOM，这个进程就会因为内存耗尽而被终止.
 
-    1.编译安装httpd和apr
-        准备依赖包和解压安装包
-        yum install pcre-devel openssl-devel expat-devel apr-util-devel -y
-        tar xvf apr-1.6.5.tar.bz2
-        tar xvf apr-util-1.6.1.tar.bz2 
-        tar xvf httpd-2.4.37.tar.bz2
-        cp -r apr-1.6.5 httpd-2.4.37/srclib/apr
-        cp -r apr-util-1.6.1 httpd-2.4.37/srclib/apr-util
-        a.编译
-            cd httpd-2.4.37
-            ./configure \
-            --prefix=/data/httpd24 \
-            --enable-so \
-            --enable-ssl \
-            --enable-cgi \
-            --enable-rewrite \
-            --with-zlib \
-            --with-pcre \
-            --with-included-apr \
-            --enable-modules=most \
-            --enable-mpms-shared=all \
-            --with-mpm=prefork
-            make &amp;&amp; make install
-        b.准备环境变量
-            用自带的服务控制脚本：/app/httpd24/bin/apachectl就需要设置环境变量了
-            echo &apos;PATH=/mysql/httpd24/bin:$PATH&apos; &gt; /etc/profile.d/httpd24.sh
-            . /etc/profile.d/httpd24.sh
-        c.修改配置文件，为了安全以apache用户运行，并监听在本地
-            useradd -r -s /sbin/nologin apache
-            vim /data/httpd24/conf/httpd.conf
-                User apache
-                Group apache
-                ServerName localhost:80
+内存的限制方式：
+    -m|--memory= 限制容器的最大内存使用量，进程并不是一启动就占用最大内存的，而是
+            运行一段时间慢慢增长的，所以要分配给进程运行的最大内存.
+    --memory-swap * 当前容器所允许使用的交换分区大小(生产环境是禁止启用交换内存
+            的，因为性能会急剧下降.)
+    --memory-swappiness 使用交换分区的倾向性：因为使用交换分区会极大影响性能，
+        只有到万不得已才使用交换分区，数值越小,越会较晚使用交换分区，所以一般这个
+        值建议调小，默认是0-100
+    --memory-reservation 为系统保留多的内存空间，保证系统的正常运行
+    --kernel-memory  为内核保留多少内存空间
+    --oom-kill-disable  一旦某个容器发生OOM是否立刻kill这个容器，建议设置，因为
+        会造成整个宿主机的崩溃，也可以事先设定好内核和系统的内存空间，然后手动处理
+            发生OOM的容器，以便分析发生OOM的原因.
+    注意：
+        1.在容器内使用free命令可以看到的swap空间并不具有其所展现的空间指示意义.
+        2.-m|--memory=和 --memory-swap *一般是结合起来生效的
 
-    2.二进制安装mariadb-10.2.19
-        a.准备用户和mysql数据库目录
-                useradd -r -s /sbin/nologin -d /data/mysql mysql
-                mkdir /data/mysql
-                chown mysql.mysql mysql/
-        b.解压二进制安装包：
-            tar xvf mariadb-10.2.19-linux-x86_64.tar.gz -C /usr/local/
-            cd /usr/local
-            ln -s mariadb-10.2.19-linux-x86_64/ mysql
-            chown -R root.mysql /usr/local/mysql/
-        c.创建数据库文件:(通过自带脚本工具)
-            cd /usr/local/mysql/
-            scripts/mysql_install_db --datadir=/mysql/data --user=mysql
-        d.准备配置文件(不修改/etc/my.cnf)拷贝解压完的文件
-            mkdir /etc/mysql/
-            cp support-files/my-huge.cnf /etc/mysql/my.cnf
-                                路径优先级高于/etc/my.cnf
-                根据性能来拷贝配置文件
-            [mysqld]中添加三个选项：/etc/mysql/my.cnf
-            datadir = /mysql/data
-            innodb_file_per_table = on
-            skip_name_resolve = on 禁止主机名解析，建议使用
-        e.准备服务脚本，并启动服务
-            cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
-            chkconfig --add mysqld
-            service mysqld start
-        f.准备PATH路径
-            echo &apos;PATH=/usr/local/mysql/bin:$PATH&apos; &gt; /etc/profile.d/mysql.sh
-            . /etc/profile.d/mysql.sh
-            systemctl start mysqld
-        为wordpress准备数据库和账号密码
-            mysql -e &apos;create database wordpress&apos;
-            mysql -e &quot;grant all on *.* to php1@&apos;192.168.34.%&apos; identified by &apos;php123&apos;&quot;
-
-    3.FastCGI方式编译安装php-7.1.18
-        tar xf php-7.1.18.tar.bz2
-        安装依赖包
-            yum install libxml2-devel bzip2-devel libmcrypt-devel -y 
-        a.编译，指定安装数据路劲和配置文件路径       
-            cd php-7.1.18
-            ./configure --prefix=/data/php \
-            --enable-mysqlnd \
-            --with-mysqli=mysqlnd \
-            --with-openssl \
-            --with-pdo-mysql=mysqlnd \
-            --enable-mbstring \
-            --with-freetype-dir \
-            --with-jpeg-dir \
-            --with-png-dir \
-            --with-zlib \
-            --with-libxml-dir=/usr \
-            --enable-xml \
-            --enable-sockets \
-            --enable-fpm \
-            --with-config-file-path=/etc \
-            --with-config-file-scan-dir=/etc/php.d \
-            --enable-maintainer-zts \
-            --disable-fileinfo
-            make &amp;&amp; make install
-        b.准备php配置文件
-            cd php-7.1.18
-            cp php.ini-production /etc/php.ini
-                可以修改当前时区和按照生产环境修改并发连接数等信息
-        c.创建nginx用户
-            useradd -s /sbin/nologin nginx
-        d.准备php的conf文件
-            cd /data/php
-            cp php-fpm.conf.default php-fpm.conf
-            cp php-fpm.d/www.conf.default php-fpm.d/www.conf
-            修改监听地址和允许连接地址，因为是在一台编译的，监听地址不用改了
-                vim php-fpm.d/www.conf
-                    listen = 127.0.0.1:9000
-                    ;listen.allowed_clients = 127.0.0.1
-                    user = nginx
-                    group = nginx
-        e.准备服务脚本:
-            cp /data/src/php-7.1.18/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-            chmod +x /etc/init.d/php-fpm
-            chkconfig --add php-fpm
-            chkconfig php-fpm on
-
-    4.修改httpd文件，支持php和启用代理
-        编辑apache配置文件httpd.conf，以使apache支持php,并启用代理
-        vim /data/httpd24/conf/httpd.conf
-            1.取消下面两行的注释
-                LoadModule proxy_module modules/mod_proxy.so
-                LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
-            2.定位至DirectoryIndex index.html
-                修改为DirectoryIndex index.php index.html
-            3.最后添加4行
-        AddType application/x-httpd-php .php
-        AddType application/x-httpd-php-source .phps
-        ProxyRequests Off
-        ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/app/httpd24/htdocs/$1
-             重启apache服务，apachectl restart
-    5.准备wordpress,把wordpress文件全部移动到httpd24/htdocs下
-        cd /data/src
-        unzip wordpress-5.0-zh_CN.zip
-        cd wordpress
-        mv * /data/httpd24/htdocs
-        为wordpress准备配置文件和数据库连接
-            cd /data/httpd24/htdocs
-            mv wp-config-sample.php wp-config.php
-            vim wp-config.php
-                define(&apos;DB_NAME&apos;, &apos;wordpress&apos;);
-                define(&apos;DB_USER&apos;, &apos;php&apos;);
-                define(&apos;DB_PASSWORD&apos;, &apos;php123&apos;);
-                define(&apos;DB_HOST&apos;, &apos;192.168.34.105&apos;);
-        修改/data/httpd24/htdocs的所有者和所属组
-            cd /data/httpd24
-            chown -R nginx.nginx htdocs/
-    到此所以的编译安装和准备工作都做完了，把mysql,php-fpm,httpd启动即可
-            apachectl start
-            systemctl start php-fpm
-            systemctl start mysqld
-        http://192.168.34.105 配置wordpress即可
-    备注：
-        创建的文章和账户是放在wordpress数据库中的;
-        图片是放在/data/httpd24/htdocs/wp-content/uploads下的
-</code></pre><p><font size="4" color="#23238E"><br>然后把这套系统搬到自己的云服务上就可以轻松的实现了,本文是基于LAMP架构实现的<br>不过推荐使用LNMP架构，毕竟Nginx的强大可不是吹出来的..<br></font> </p>
-<p><font size="4" color="#FF0000">安装完成后，开启了一个新的世界，就可以开心的玩耍了,helloworld！</font><br><img src="/2018/12/10/编译安装LAMP/haha.png"><br><img src="/2018/12/10/编译安装LAMP/wordpress.png" width="80%" height="80%"></p>
+CPU的限制方式：
+    主流的分两种：共享式和CPU绑定式
+    --cpu-shares 共享方式是基于权重分配的，而且是根据容器的数量和CPU的权重动态
+            分配调整的.如果只有一个容器在运行，那么这个容器也会尽可能的占用宿主机的CPU资源，这种分配方式依然会有可能造成系统崩溃.
+    --cpus &lt;value&gt; 定义容器最多跑满宿主机的几个核心数，例如宿主机有8核，限制容器
+        最多跑满2个核心数，而且这个2核可以跑在8个核心上加起来是2个核心数，也可以是
+        在2个核心上跑满.真正限制了容器使用的最大核心数.
+        docker的1.13版以后都使用这个选项来定义.
+    --cpuset-cpus 
+        定义容器只能跑在宿主机核心的几号核心上，例如只允许跑在1号和3号核心上，那么
+        这个容器最多也就只能跑满这两个核心,也叫CPU绑定.
+</code></pre><p>所以在创建启动容器一定要做资源限制，即使不清楚容器中某个程序要占用多大的资源时，也应该设置只允许占用宿主机一半的资源.</p>
+<h3 id="资源限制压测"><a href="#资源限制压测" class="headerlink" title="资源限制压测"></a>资源限制压测</h3><pre><code>在docker hub上的lorel/docker-stress-ng镜像
+    -c N 启动几个进程对CPU进行压测
+    -vm N 启动几个进程对内存做压测
+示例：通过该镜像进行压测
+    限制只能跑在cpu的0号和3号上，最多只能跑满2个核心数
+    限制最多占用512m的内存大小
+docker run --name stress --cpus 2 --cpuset-cpus 0,3 -m 512m --rm lorel/docker-stress-ng -c 2 -vm 2
+</code></pre><p>-docker stats命令查看结果<br><img src="/2018/10/18/Docker的资源限制/docker-stats.png" alt="docker status"></p>
+<p>-top命令显示宿主机资源(安装1显示全部的CPU核心数信息)<br><img src="/2018/10/18/Docker的资源限制/top命令.png" alt="top命令"></p>
 
       
     </div>
@@ -821,7 +699,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
+            <a href="/tags/容器/" rel="tag"><i class="fa fa-tag"></i> 容器</a>
           
         </div>
       
@@ -888,8 +766,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker网络/" rel="next" title="Docker网络">
-                <i class="fa fa-chevron-left"></i> Docker网络
+              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
+                <i class="fa fa-chevron-left"></i> Docker镜像
               </a>
             
           </div>
@@ -898,8 +776,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/18/HTTP协议/" rel="prev" title="HTTP协议">
-                HTTP协议 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/Docker网络/" rel="prev" title="Docker网络">
+                Docker网络 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1155,7 +1033,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Centos7上编译安装LAMP"><span class="nav-number">1.</span> <span class="nav-text">Centos7上编译安装LAMP</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker资源限制"><span class="nav-number">1.</span> <span class="nav-text">Docker资源限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源限制压测"><span class="nav-number">2.</span> <span class="nav-text">资源限制压测</span></a></li></ol></div>
             
 
           </div>
