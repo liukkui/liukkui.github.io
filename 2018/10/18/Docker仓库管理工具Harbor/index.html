@@ -136,17 +136,28 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="童话镇-暗杠        Till I reach the end, then I’ll start again  联系方式：  Email: liukui_work@163.com QQ: 645150765 WeChat: wechat？  关于本站Author：   喜欢科幻电影，喜欢旅游，喜欢动漫，fresh air 喜欢刷微博，喜欢看推理书，喜欢刷大佬们的博客和公众号 去过大半个中国，">
-<meta property="og:type" content="website">
-<meta property="og:title" content="&lt;font size=6 color=&quot;#CFB53B&quot;&gt;自由即责任，世人多畏之&lt;&#x2F;font&gt;">
-<meta property="og:url" content="https://www.liukui.tech/about/index.html">
+  <meta name="description" content="Docker仓库管理工具Harbor">
+<meta name="keywords" content="容器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker仓库管理工具Harbor">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="童话镇-暗杠        Till I reach the end, then I’ll start again  联系方式：  Email: liukui_work@163.com QQ: 645150765 WeChat: wechat？  关于本站Author：   喜欢科幻电影，喜欢旅游，喜欢动漫，fresh air 喜欢刷微博，喜欢看推理书，喜欢刷大佬们的博客和公众号 去过大半个中国，">
+<meta property="og:description" content="Docker仓库管理工具Harbor">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-20T11:47:17.600Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor安装过程.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/和harbor相关的所有容器.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/登录页面.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/登录报错.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/成功登录.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传镜像.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/拉取镜像.png">
+<meta property="og:updated_time" content="2019-01-26T12:14:24.169Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="&lt;font size=6 color=&quot;#CFB53B&quot;&gt;自由即责任，世人多畏之&lt;&#x2F;font&gt;">
-<meta name="twitter:description" content="童话镇-暗杠        Till I reach the end, then I’ll start again  联系方式：  Email: liukui_work@163.com QQ: 645150765 WeChat: wechat？  关于本站Author：   喜欢科幻电影，喜欢旅游，喜欢动漫，fresh air 喜欢刷微博，喜欢看推理书，喜欢刷大佬们的博客和公众号 去过大半个中国，">
+<meta name="twitter:title" content="Docker仓库管理工具Harbor">
+<meta name="twitter:description" content="Docker仓库管理工具Harbor">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png">
 
 
 
@@ -155,7 +166,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/about/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/">
 
 
 
@@ -165,7 +176,7 @@
   };
 </script>
 
-  <title><font size="6" color="#CFB53B">自由即责任，世人多畏之</font> | Coool's Blog</title>
+  <title>Docker仓库管理工具Harbor | Coool's Blog</title>
   
 
 
@@ -276,7 +287,7 @@
         
         
           
-          <li class="menu-item menu-item-about menu-item-active">
+          <li class="menu-item menu-item-about">
 
     
     
@@ -431,93 +442,423 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline"><font size="6" color="#CFB53B">自由即责任，世人多畏之</font></h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <h1 id="童话镇-暗杠"><a href="#童话镇-暗杠" class="headerlink" title="童话镇-暗杠"></a>童话镇-暗杠</h1><audio id="audio" controls preload="none"><br>      <source id="mp3" src="http://other.web.ri01.sycdn.kuwo.cn/resource/n1/99/48/804839052.mp3"><br></audio>
-
-<blockquote class="blockquote-center"><font size="5" color="#FF0000">Till I reach the end, then I’ll start again</font><br></blockquote>
-
-<p>联系方式：</p>
-<ul>
-<li>Email: <a href="mailto:liukui_work@163.com" target="_blank" rel="noopener">liukui_work@163.com</a></li>
-<li>QQ: 645150765</li>
-<li>WeChat: wechat？</li>
-</ul>
-<h3 id="关于本站"><a href="#关于本站" class="headerlink" title="关于本站"></a>关于本站</h3><font size="4" color="#FF0000">Author：</font>
-
-<ul>
-<li>喜欢科幻电影，喜欢旅游，喜欢动漫，fresh air</li>
-<li>喜欢刷微博，喜欢看推理书，喜欢刷大佬们的博客和公众号</li>
-<li>去过大半个中国，感受不同地区的地域风情，期待以不同心境再次去的时候发现不同以往的美好事物.</li>
-<li>不喜欢关注的有趣的博主很久不更新文章..</li>
-<li>不喜欢说出来不喜欢的事物，上一条除外，当然这一条也除外…</li>
-</ul>
-<font size="4" color="#FF0000">文章：</font>记录技术相关文档和生活琐事.<br><font size="4" color="#FF0000">相册：</font>生活也许不是都是美好的，但要有发现和记录生活的心<br><font size="4" color="#FF0000">书单：</font> 只是为了拾起之前的书籍感悟(喜欢东野圭吾、福尔摩斯探案集、文艺范的陪安东尼度过漫长岁月系列)<br><font size="4" color="#FF0000">Music：</font>重度音乐爱好者：电音，民谣是必须的 Zedd，暗杠 ，Jay<br><br><font size="3" color="#23238E">本博客文章只是为了个人学习以及记录生活感悟，其中可能会有引用到其他文章经典的部分，本人大部分都会加上引用或者在文章底部的参考文献中注明，如果不慎引用了你的文章但是却没有注明的请联系我，谢谢！<br><br>博客内文章欢迎转载，但转载请保留出处和作者，谢谢！</font>
+          <h1 class="post-title" itemprop="name headline">Docker仓库管理工具Harbor
+              
+            
+          </h1>
         
-      </div>
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-18 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-18T08:00:00+08:00">2018-10-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/虚拟化/" itemprop="url" rel="index"><span itemprop="name">虚拟化</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/虚拟化/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">4.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">4 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h3 id="Docker仓库管理工具Harbor"><a href="#Docker仓库管理工具Harbor" class="headerlink" title="Docker仓库管理工具Harbor"></a>Docker仓库管理工具Harbor</h3><a id="more"></a>
+<p><img src="/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png" alt="harbor架构"></p>
+<p><a href="https://goharbor.io/" target="_blank" rel="noopener">HARBOR</a><br><a href="https://github.com/goharbor/harbor" target="_blank" rel="noopener">github上的harbor</a></p>
+<pre><code>harbor官方功能介绍：
+    1.基于角色的访问控制 - 用户与Docker镜像仓库通过“项目”进行组织管理，一个用户可
+        以对多个镜像仓库在同一命名空间（project）里有不同的权限。
+    2.镜像复制 - 镜像可以在多个Registry实例中复制（同步）。尤其适合于负载均衡，
+        高可用，混合云和多云的场景。
+    3.图形化用户界面 - 用户可以通过浏览器来浏览，检索当前Docker镜像仓库，
+        管理项目和命名空间.
+    4.Harbor支持安装在多个Registry节点的镜像资源复制，镜像全部保存在私有Registry中， 确保数据和知识产权在公司内部网络中管控。
+    5.AD/LDAP 支持 - Harbor可以集成企业内部已有的AD/LDAP，用于鉴权认证管理。
+    6.审计管理 - 所有针对镜像仓库的操作都可以被记录追溯，用于审计管理。
+
+依赖环境和使用介绍：
+    1.harbor是基于distribution二次开发的企业级私有仓库，云原生registry，多租户机制，允许用户创建自己的名称空间
+    2.因为harbor内置了mysql,nginx等服务才能构建一个harbor,所以依赖于docker-compose进行容器编排和依赖于至少docker-17.03.0版本
+    3.harbor为了安全，也需要以https运行，需要在harbor服务器提供证书，而且也需要为
+        其他客户端提供证书，为harbor验证使用，当然可以关闭https功能
+    4.因为需要实时下载镜像，提供了离线安装和在线安装，也可以安装到vSphere平台(OVA方式)虚拟设备。
+</code></pre><h3 id="离线版安装和配置："><a href="#离线版安装和配置：" class="headerlink" title="离线版安装和配置："></a>离线版安装和配置：</h3><p><a href="https://storage.googleapis.com/harbor-releases/release-1.7.0/harbor-online-installer-v1.7.1.tgz" target="_blank" rel="noopener">harbor离线安装包下载</a><br><a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">离线版安装部署文档</a></p>
+<pre><code>1.先安装docker-compose，docker-ce
+    yum install docker-compose docker-ce -y
+2.tar xf harbor-offline-installer-v1.4.0.tgz -C /usr/local/
+3.cd /usr/local/harbor并修改主配置文件harbor.cfg
+    [root@mysql_2 harbor]# grep &quot;^[a-Z]&quot; harbor.cfg 
+        hostname = mysql_2      #设置主机名/IP
+        ui_url_protocol = http      #访问协议，支持http和https
+        max_job_workers = 10        #最大进程连接数
+    #####设置使用https协议的证书和路径#####
+        customize_crt = on          #是否使用自定义证书
+        ssl_cert = /data/cert/server.crt
+        ssl_cert_key = /data/cert/server.key
+        secretkey_path = /data
+        log_rotate_count = 50       #本地最多保存50次日志滚动
+        log_rotate_size = 200M      #当日志达到200M时滚动一次
+        http_proxy =                #是否使用代理
+        https_proxy =
+        no_proxy = 127.0.0.1,localhost,core,registry
+    ####设置用户上下载镜像时，是否启用发邮件功能#########
+        email_identity = 
+        email_server = smtp.mydomain.com
+        email_server_port = 25
+        email_username = sample_admin@mydomain.com
+        email_password = abc
+        email_from = admin &lt;sample_admin@mydomain.com&gt;
+        email_ssl = false
+        email_insecure = false
+    ####使用互联网上的邮箱##############
+        harbor_admin_password = Harbor12345    #harbor默认的管理员密码
+        auth_mode = db_auth                    #默认使用的数据库类型
+        db_host = mysql         #设置连接mysql的端口和用户密码
+        db_password = root123
+        db_port = 3306
+        db_user = root         #这里还支持 ldap 以及 本地文件存储方式。
+    #####修改数据库类型和用户和密码#########
+4.运行install.sh
+    因为是离线安装包，会从tar文件中装入所需的镜像文件并启动，启动时会检查
+    docker-ce和docker-compose的版本开始加载镜像(mysql,redis,nginx等等)
+    [root@mysql_2 harbor]# ./install.sh 
+    [Step 0]: checking installation environment ...
+    Note: docker version: 18.09.0
+    Note: docker-compose version: 1.18.0
+    [Step 1]: loading Harbor images ...
+</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/harbor安装过程.png" alt="创建并启动的所有容器"><br><img src="/2018/10/18/Docker仓库管理工具Harbor/和harbor相关的所有容器.png" alt="创建并启动的所有容器2"></p>
+<pre><code>5.启用的容器可能会使用宿主机的名称空间
+6.通过docker-compose管理harbor
+    cd /usr/local/harbor/
+    docker-compose stop
+    docker-compose start
+</code></pre><p>登录web管理界面：<a href="http://x.x.x.x，默认用户名：admin，密码为配置文件中自定义的密码" target="_blank" rel="noopener">http://x.x.x.x，默认用户名：admin，密码为配置文件中自定义的密码</a><br><img src="/2018/10/18/Docker仓库管理工具Harbor/登录页面.png" alt="登录页面"></p>
+<pre><code>7.创建用户和测试仓库：
+    创建lk用户，测试登录
+    创建test仓库用于测试上传镜像 直接创建test仓库即可
+</code></pre><h3 id="内网服务器登录harbor"><a href="#内网服务器登录harbor" class="headerlink" title="内网服务器登录harbor"></a>内网服务器登录harbor</h3><p>-登录报错<br>–Docker自从1.3.X之后docker registry交互默认使用的是HTTPS，但是搭建私有镜像默认使用的是HTTP服务，所以与私有镜像交时出现以上错误。<br>如果配置文件中启用了https，而且也有证书等信息，就不会有这个报错<br><img src="/2018/10/18/Docker仓库管理工具Harbor/登录报错.png" alt="docker login报错"></p>
+<pre><code>解决方法：
+    1.在所有的内网需要上传下载镜像的服务器上都创建daemon.json文件
+        vim /etc/docker/daemon.json
+        {
+           &quot;insecure-registries&quot;:[&quot;192.168.100.17&quot;]
+           ###该选项表示从不安全的仓库下载或上传镜像
+        }
+    2.还要注意：
+        如果[&quot;192.168.100.17&quot;]中使用的主机名，那么需要在本地hosts文件或者局域网DNS
+        服务器上进行主机名解析
+    3.也可以修改vim /usr/lib/systemd/system/docker.service文件
+        vim /usr/lib/systemd/system/docker.service 
+            ExecStart=/usr/bin/dockerd  --insecure-registry 192.168.100.17
+        重启docker
+            systemctl daemon-reload
+            systemctl restart docker
+</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/成功登录.png" alt="成功登录"></p>
+<pre><code>4.制作镜像并测试上传
+    制作镜像：docker tag httpd:v0.1 192.168.100.17/test/httpd:v1
+                将之前制作好的镜像改标签再上传上去
+            docker image build . -t 192.168.100.17/test/httpd:v2.0
+                也可以通过dockerfile重新制作一个再上传
+    上传到test仓库中: docker push 192.168.100.17/test/httpd:v1
+</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/上传.png" alt="上传镜像"><br><img src="/2018/10/18/Docker仓库管理工具Harbor/上传镜像.png" alt="上传镜像"></p>
+<pre><code>5.测试拉取镜像
+    在页面上点击复按钮，在命令行中就可以拉取镜像了
+</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/拉取镜像.png" alt="拉取镜像"></p>
+<h3 id="如何修改配置："><a href="#如何修改配置：" class="headerlink" title="如何修改配置："></a>如何修改配置：</h3><pre><code>[root@linux-host1 harbor]# /usr/local/harbor
+[root@linux-host1 harbor]# docker-compose   stop #先停止服务
+[root@linux-host1 harbor]# vim harbor.cfg  #编辑配置
+[root@linux-host1 harbor]# docker-compose start #重新启动服务
+</code></pre>
       
     </div>
-    
-
-
 
     
+
     
     
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/容器/" rel="tag"><i class="fa fa-tag"></i> 容器</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/18/Dockerfile/" rel="next" title="Dockerfile">
+                <i class="fa fa-chevron-left"></i> Dockerfile
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/18/Docker镜像/" rel="prev" title="Docker镜像">
+                Docker镜像 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
   </div>
 
 
@@ -757,7 +1098,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#童话镇-暗杠"><span class="nav-number">1.</span> <span class="nav-text">童话镇-暗杠</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于本站"><span class="nav-number">1.0.1.</span> <span class="nav-text">关于本站</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker仓库管理工具Harbor"><span class="nav-number">1.</span> <span class="nav-text">Docker仓库管理工具Harbor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#离线版安装和配置："><span class="nav-number">2.</span> <span class="nav-text">离线版安装和配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内网服务器登录harbor"><span class="nav-number">3.</span> <span class="nav-text">内网服务器登录harbor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何修改配置："><span class="nav-number">4.</span> <span class="nav-text">如何修改配置：</span></a></li></ol></div>
             
 
           </div>
