@@ -149,7 +149,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/官网rewrite2.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/rewrite规则.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/referer防盗机制.png">
-<meta property="og:updated_time" content="2019-01-22T10:45:30.859Z">
+<meta property="og:updated_time" content="2019-01-26T05:59:19.759Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx实现web服务配置">
 <meta name="twitter:description" content="nginx安装和配置文件Nginx下载安装和模块使用说明手册">
@@ -554,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">16k</span>
+                <span title="本文字数">17k</span>
               
 
               
@@ -666,8 +666,10 @@
         auto：当前主机物理CPU核心数；
     2、worker_cpu_affinity cpumask ...;
         worker_cpu_affinity auto [cpumask];
-        nginx进程的CPU亲缘性；
-        由于cpu的一级和二级缓存问题，将worker进程与cpu绑定，起到刚好的负载效果和性能
+        nginx进程的CPU亲缘性解释；
+        1.因为CPU有三级缓存，一级和二级是每个CPU所独有的，只有三级缓存是共享的；
+        2.将worker进程与cpu绑定，这个进程会在cpu本地缓存很多数据和状态信息
+        3.如果把这个进程调到其他cpu上，那么之前的缓存就失效了，从而影响了性能，而cpu的绑定则起到刚好的负载效果和性能
         CPU MASK：
             00000000：
             0000 0001：0号CPU
@@ -1238,8 +1240,8 @@ rewirte的处理逻辑：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/22/基于lnnmp搭建个人博客/" rel="prev" title="基于lnnmp搭建个人博客">
-                基于lnnmp搭建个人博客 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/22/nginx实现反向代理功能/" rel="prev" title="nginx实现反向代理功能">
+                nginx实现反向代理功能 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

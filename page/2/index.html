@@ -1674,7 +1674,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/TCP三次握手、四次断开与十一种状态/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/搭建内网yum源/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -1694,7 +1694,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/10/18/TCP三次握手、四次断开与十一种状态/" class="post-title-link" itemprop="https://www.liukui.tech/page/2/index.html">TCP三次握手、四次断开与十一种状态</a>
+                <a href="/2017/10/18/搭建内网yum源/" class="post-title-link" itemprop="https://www.liukui.tech/page/2/index.html">搭建内网yum源</a>
               
             
           </h1>
@@ -1742,7 +1742,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/TCP协议/" itemprop="url" rel="index"><span itemprop="name">TCP协议</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux基础/" itemprop="url" rel="index"><span itemprop="name">linux基础</span></a></span>
 
                 
                 
@@ -1770,7 +1770,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">5k</span>
+                <span title="本文字数">692</span>
               
 
               
@@ -1784,7 +1784,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">5 分钟</span>
+                <span title="阅读时长">1 分钟</span>
               
             </div>
           
@@ -1805,150 +1805,18 @@
 
       
         
+          <p>创建文章的默认模板，可根据实际情况修改</p>
+<p><blockquote class="blockquote-center">Till I reach the end, then I’ll start again<br>《Try Everything》<br></blockquote><br><!-- HTML方式: 直接在 Markdown 文件中编写 HTML 来调用 --></p>
+<p><blockquote class="blockquote-center">1</blockquote><br></p>
+          <!--noindex-->
           
-            <h3 id="TCP三次握手、四次断开与十一种状态"><a href="#TCP三次握手、四次断开与十一种状态" class="headerlink" title="TCP三次握手、四次断开与十一种状态"></a>TCP三次握手、四次断开与十一种状态</h3><p>OSI模型由下到上分别为物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</p>
-<pre><code>1：第七层：应用层的功能：
-
-为应用软件提供接口，使应用程序能够使用网络服务。常见的应用层协议：
-http(80)、ftp(20/21)、smtp(25)、pop3(110)、telnet(23)、dns(53)等
-
-2：第六层：表示层的功能：
-
-数据的编码和解码、数据的加密和解密、数据和压缩和解压缩，常见的标准有JPEG/ASCII等
-
-3：第五层：会话层的功能：
-
-建立、管理和终止表示层实体之间的会话连接，在设各或节点之间提供会话控制，它在系统之间协调通信过程,并提供3种
-不同的方式来组织它们之间的通信:单工、半双工和全双工
-
-4：第四层：传输层的功能：
-
-负责建立端到端的连接，保证报文在端到端之间的传输。提供可靠TCP及不可靠UDP的传输机制,服务点编址、分段与重组
-、连接控制、流量控制、差错控制。
-
-5：第三层：网络层的功能：
-
-定义逻辑地址,逻辑寻址，将数据分组从源传输到目的,路径选择、路由发现、维护路由表，功能是隔离广播域；隔离广播
-,路由选择；维护路由表,寻址及转发,流量管理并连接广域网
-
-6：第二层：数据链路层的功能：
-
-组帧、物理编址，将数据帧从链路上的一个节点传递到另一个节点，流量控制、差错控制、接入控制
-
-7：第一层：物理层的功能：
-
-在介质上传递比特流，定义接口和媒体的物理特性，定义比特的表示、数据传输速率、信号的传输模式（单工、半双工、全
-双工），定义网络物理拓扑（网状、星型、环型、总线型等）
-</code></pre><h3 id="TCP协议简介："><a href="#TCP协议简介：" class="headerlink" title="TCP协议简介："></a>TCP协议简介：</h3><p>TCP，全称Transfer Control Protocol，中文名为传输控制协议，它工作在OSI的传输层，提供面向连接的可靠传输服务，TCP的工作主要是建立连接，然后从应用层程序中接收数据并进行传输。TCP采用虚电路连接方式进行工作，在发送数据前它需要在发送方和接收方建立一个连接，数据在发送出去后，发送方会等待接收方给出一个确认性的应答，否则发送方将认为此数据丢失，并重新发送此数据。<br>TCP的报文头部结构：<br>-TCP的报文头部结构<br><img src="/2017/10/18/TCP三次握手、四次断开与十一种状态/TCP报文头部.png" alt="TCP的报文头部结构"></p>
-<h3 id="TCP三次握手："><a href="#TCP三次握手：" class="headerlink" title="TCP三次握手："></a>TCP三次握手：</h3><pre><code>在建立连接的时候，所谓的客户端与服务端是相对应的，即要看是谁主动连接的谁，如果A主动连接B那么A就是客户端
-而B是服务端，如果返过来B主动连接A，那么B就是客户端而A就成了服务端。
-
-1:连接过程：
-
-第一次握手：客户端发送SYN标志位为1的请求到服务端，并随机生成一个seq 序列号x，其中seq是随机产生的数据包的序列号。
-
-第二次握手：服务器收到客户端请求并返回SYN=1，ACK=1，seq=y，ack=x+1，其中ACK=1表示是响应报文，seq=y是
-服务器随机产生的数据包序列号，ack=x+1是确认客户端序列号有效并返回给客户端确认。
-
-第三次握手：客户端收到服务器的确认ack=x+1有效的验证信息，即在自己发送的序列号基础之上加了1表示服务器收到
-并返回，表示第二次连接有效，然后客户端恢回复ACK=1，seq=x+1，ack=y+1，这是讲服务器发来+1后的序列号当做自
-己的seq序列号，确认号ack使用服务器的随机号y再加1即ack=y+1，这样客户端就完成了第三次的验证在讲数据包发给
-服务器，服务器收到后验证确认号是在自己的seq之上加了1，表示没有问题就开始传输数据。
-
-注：
-
-ACK :TCP协议规定，只有ACK=1时有效，也规定连接建立后所有发送的报文的ACK必须为1
-
-Seq:序号,4字节，范围为0^32—1^32,共4284967296，达到时重新开始计算
-
-在第三次的时候SYN等于0，因为SYN(SYNchronization) 只i在连接建立时用来同步序号,当SYN=1而ACK=0时,表明这
-是一个连接请求报文,对方若同意建立连接,则应在响应报文中使SYN=1和ACK=1. 因此, 
-SYN置1就表示这是一个连接请求或连接接受报文，链路建立成功之后就将标志位置为0。
-
-SYN(synchronous建立联机)             ACK(acknowledgement 确认)
-PSH(push传送)                    FIN(finish结束)
-RST(reset重置)                   URG(urgent紧急)                      
-Sequence number(顺序号码)            Acknowledge number(确认号码)
-</code></pre><p>-TCP三次握手<br><img src="/2017/10/18/TCP三次握手、四次断开与十一种状态/TCP三次握手.jpg" alt="TCP三次握手"></p>
-<h3 id="TCP的四次断开："><a href="#TCP的四次断开：" class="headerlink" title="TCP的四次断开："></a>TCP的四次断开：</h3><pre><code>TCP断开要四次是因为TCP传输数全双工的，即数据是在同一时间内两条数据链路双向互相传输的，因此每个方向都要单
-独关闭一次，断开需要客户端到服务端断开一次，而服务端到客户端也需要断开一次，这样的断开才是完整的断开，
-
-第一次断开：客户方发给服务器一个FIN为1的请求，FIN为1表示是一个断开连接的请求，即表示数据传输完毕请求断开
-，并发送seq序列号和Ack确认号。
-第二次断开：服务器收到客户端请求并返回ACK标志位为1，Ack为Seq+1等于201，并将对方的Ack作为自己的Seq序列号
-的确认数据包，biao 接收到请求同意断开。
-第三次断开：服务器发送ACK=1，FIN=1，Seq等于客户端第一次请求断开的Ack确认号+1，即Seq等于501的断开请求给客户端。
-
-第四次断开：客户端发送ACK=1，Ack在上一步Seq上+1等于502，并使用在第二次断开中服务器发送的Ack确号201作为
-本次的序列号发给服务器表示同意断开，服务器收到后验证序列号是第二次的，验证Ack是第三次+1的，确认没有问题后
-同意断开，然后将端口置为TIME_WAIT状态，等待2 MSL时间后置为关闭状态，被动方收到主动方的报文确认Ack确认号没有问题后将端口置为CLOSED，至此端口g。
-
-SYN(synchronous建立联机)             ACK(acknowledgement 确认)
-PSH(push传送)                    FIN(finish结束)
-RST(reset重置)                    URG(urgent紧急)                  
-Sequence number(顺序号码)            Acknowledge number(确认号码)
-四次断开的图形示意如下：
-</code></pre><p>-TCP四次挥手<br><img src="/2017/10/18/TCP三次握手、四次断开与十一种状态/TCP四次挥手.png" alt="TCP四次挥手"></p>
-<h3 id="TCP端口的十一种连接状态："><a href="#TCP端口的十一种连接状态：" class="headerlink" title="TCP端口的十一种连接状态："></a>TCP端口的十一种连接状态：</h3><pre><code>TCP端口一共有十一种状态，CLOSE_WAIT表示是程序y关闭连接，而TIME_WAIT只占用一个socket连接，到时间之后会
-释放，因此大量的CLOSE_WAIT是比大量的TIME_WAIT影响更大，另外还有FIN_WAIT1和FIN_WAIT2，如果有
-FIN_WAIT2也表示服务有问题，以下是每个端口状态的含义：
-
-1：CLOSED：端口默认是关闭状态。
-
-2：LISTEN： 服务器程序开始监听一个端口，就是LISTEN状态。
-
-3：SYN_RCVD：三次握手的第二次握手后的端口状态，是收到了客户端发送的SYN_SENT数据包之后的状态，这个状态很
-短暂，正常在服务器上是很少看到的，除非服务器故意不发送最后一次握手数据包，服务器返回给客户端SYN确认之后就
-会将在自己的端口置为SYN_RCVD。
-
-4：SYN_SENT：SYN_SENT状态表示客户端已发送SYN=1的请求连接报文，发送之后客户端就会将自己的端口状态置为SYN_SENT。
-
-5：ESTABLISHED：表示已经连接成功，客户端收到服务器的确认报文会回复服务器，然后就将端口置为ESTABLISHED，
-服务器第三次收到客户端的Ack确认就会将端口置为ESTABLISHED并开始传输数据。
-
-6：FIN_WAIT_1：出现在主动关闭方，FIN_WAIT_1状态实际上是当SOCKET在ESTABLISHED状态时，当任意一方想主动
-关闭连接，向对方发送了FIN=1的断开连接请求报文，此时该SOCKET即 进入到FIN_WAIT_1状态。而当对方回应ACK报文
-后，则进入到FIN_WAIT_2状态，当然在实际的正常情况下，无论对方何种情况下，都应该马 
-上回应ACK报文，所以FIN_WAIT_1状态一般是比较难见到的，而FIN_WAIT_2状态还有时常常可以用netstat看到。
-
-7：FIN_WAIT_2：出现在主动关闭方，当被动方回应FIN_WAIT_1的ACK报文后，则进入到FIN_WAIT_2状态
-
-8：TIME_WAIT：出现在主动关闭方，表示收到了对方的FIN请求关闭报文，并发送出了ACK报文，就等2MSL后即可回到
-CLOSED可用状态了。如果FIN_WAIT_1状态下，收到了对方同时带FIN标志和ACK标志的报文时，可以直接进入到
-TIME_WAIT状态，而无须经过FIN_WAIT_2状态。
-
-9：CLOSING： 这种状态比较特殊，实际情况中应该是很少见，属于一种比较罕见的例外状态。正常情况下，当你发送
-FIN报文后，按理来说是应该先收到（或同时收到）对方的 ACK报文，再收到对方的FIN报文。但是CLOSING状态表示你
-发送FIN报文后，并没有收到对方的ACK报文，反而却也收到了对方的FIN报文。什 么情况下会出现此种情况呢？其实细
-想一下，也不难得出结论：那就是如果双方几乎在同时close一个SOCKET的话，那么就出现了双方同时发送FIN报 
-文的情况，也即会出现CLOSING状态，表示双方都正在关闭SOCKET连接。
-
-10：CLOSE_WAIT： 表示在等待关闭端口，这种状态存在于被动关闭的一方。
-
-11：LAST_ACK： 是被动关闭方在主动关闭一方在发送FIN报文后，最后等待对方的ACK报文，当再次收到ACK报文后，也即可以进入到CLOSED可用状态了。
-
-12：区分主动断开和被动端口方的端口状态：
-
-主动端口方：SYN_SENT、FIN_WAIT1、FIN_WAIT2、CLOSING、TIME_WAIT 。
-被动断开方：LISTEN、SYN_RCVD、CLOSE_WAIT、LAST_ACK 。
-都具有的：CLOSED 、ESTABLISHED 。
-</code></pre><p>-TCP的11种状态<br><img src="/2017/10/18/TCP三次握手、四次断开与十一种状态/TCP的11种状态.png" alt="TCP的11种状态"></p>
-<h3 id="关于优化："><a href="#关于优化：" class="headerlink" title="关于优化："></a>关于优化：</h3><pre><code>socket就是一个TCP连接，包括源地址、源端口、目标地址、目标端口和协议(TCP|UDP),0端口是保留不能使用的，
-因此服务器的最大端口使用数量为63353个，最大65536个端口是因为TCP报文头部有个端口长度为2^16次方等于
-65536，查看当前打开的端口范围# cat /proc/sys/net/ipv4/ip_local_port_range，单个IP地址能接受的最大并
-发为六万多，1万个TIME_WAIT大约使用1MB的内存CPU占用更小，因此资源使用很小可以忽略不计，但是会占用一个
-socket，可以通过在负载上配置多个公网IP地址以提高高并发的问题， 
-
-[root@localhost ~]# cat /proc/sys/net/ipv4/tcp_tw_recycle  
-0  #用于快速回收处于TIME_WAIT状态的socket以便重新分，在负载服务器不能打开，会导致通过nat上网的后续用户
-无法打开网页，因为后面的访问用户时间戳小于前面的用户，会导致数据包被负载服务器丢弃，可以在内网使用，但是通常建议关闭。
-[root@localhost ~]# cat /proc/sys/net/ipv4/tcp_tw_reuse 
-0  #kernel会复用处于TIME_WAIT状态的socket，即允许将TIME_WAIT状态得socket用于直接新的TCP连接，负载服务器建议打开
-
-[root@localhost ~]# cat /proc/sys/net/ipv4/tcp_timestamps 
-1 #记录数据包的时间戳，判断是新的数据包还是旧的，如果是旧的就丢弃，配合上面两个选项的时候一定要打开才生效。
-</code></pre>
-          
+            <div class="post-button text-center">
+              <a class="btn" href="/2017/10/18/搭建内网yum源/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
         
       
     </div>
