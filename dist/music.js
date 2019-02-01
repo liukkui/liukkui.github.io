@@ -3,7 +3,13 @@ const ap = new APlayer({
     fixed: true,
     autoplay: false,
     audio: [
-    	{
+       {
+        name: 'Jerome',
+        artist: 'Zella Day',
+        url: 'http://other.web.ri01.sycdn.kuwo.cn/resource/n2/68/32/1946235506.mp3',
+        cover: 'https://www.liukui.tech/images/haha.gif',
+      },
+      {
         name: '小小恋歌',
         artist: '新垣結衣',
         url: 'http://other.web.re01.sycdn.kuwo.cn/resource/n2/52/46/3541559003.mp3',

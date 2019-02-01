@@ -153,7 +153,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传镜像.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/拉取镜像.png">
-<meta property="og:updated_time" content="2019-01-26T12:14:24.169Z">
+<meta property="og:updated_time" content="2019-01-27T03:25:41.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker仓库管理工具Harbor">
 <meta name="twitter:description" content="Docker仓库管理工具Harbor">
@@ -558,7 +558,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">4.1k</span>
+                <span title="本文字数">4.2k</span>
               
 
               
@@ -683,6 +683,8 @@
         重启docker
             systemctl daemon-reload
             systemctl restart docker
+    4.docker login 192.168.100.17|主机名 #登录私有harbor仓库
+      docker logout 192.168.100.17|主机名 #退出私有harbor仓库
 </code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/成功登录.png" alt="成功登录"></p>
 <pre><code>4.制作镜像并测试上传
     制作镜像：docker tag httpd:v0.1 192.168.100.17/test/httpd:v1
@@ -831,8 +833,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/docker存储卷/" rel="next" title="docker存储卷">
-                <i class="fa fa-chevron-left"></i> docker存储卷
+              <a href="/2018/10/18/Docker网络/" rel="next" title="Docker网络">
+                <i class="fa fa-chevron-left"></i> Docker网络
               </a>
             
           </div>
@@ -841,8 +843,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/18/Docker镜像/" rel="prev" title="Docker镜像">
-                Docker镜像 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
+                docker存储卷 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

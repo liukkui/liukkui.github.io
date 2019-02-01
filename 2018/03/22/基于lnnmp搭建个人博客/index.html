@@ -150,7 +150,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/基于lnnmp搭建个人博客/上传图片测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/基于lnnmp搭建个人博客/后台日志.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/基于lnnmp搭建个人博客/用户登录测试.png">
-<meta property="og:updated_time" content="2019-01-24T14:05:15.287Z">
+<meta property="og:updated_time" content="2019-01-28T06:49:21.656Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于lnnmp搭建个人博客">
 <meta name="twitter:description" content="基于openstack/docker搭建LNNMP">
@@ -809,6 +809,9 @@
     rsync -avrlopg /nfsdata/images/* 192.168.100.17:/nfsdata/images/
 
 在nginx+pfp-fpm的两台服务器挂载nfs的共享目录
+    showmount -e 192.168.100.16
+    显示该主机上可以挂载的nfs目录
+
 1.挂载目录并设置开机自动挂载
     因为wordpress的图片是保存在/data/nginx/wordpress/wp-content/uploads中的
     所以要把该目录用nfs共享
@@ -1011,8 +1014,8 @@ server {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/22/nginx实现反向代理功能/" rel="next" title="nginx实现反向代理功能">
-                <i class="fa fa-chevron-left"></i> nginx实现反向代理功能
+              <a href="/2018/03/20/nginx实现web服务配置/" rel="next" title="nginx实现web服务配置">
+                <i class="fa fa-chevron-left"></i> nginx实现web服务配置
               </a>
             
           </div>
@@ -1021,8 +1024,8 @@ server {
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/26/nginx实现四层和七层负载均衡/" rel="prev" title="nginx实现四层和七层负载均衡">
-                nginx实现四层和七层负载均衡 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/22/nginx实现反向代理功能/" rel="prev" title="nginx实现反向代理功能">
+                nginx实现反向代理功能 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
