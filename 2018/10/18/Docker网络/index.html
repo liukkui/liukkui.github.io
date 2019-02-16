@@ -149,7 +149,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/bridge网络.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/共享桥网络.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker网络/host网络.png">
-<meta property="og:updated_time" content="2019-01-07T11:45:06.265Z">
+<meta property="og:updated_time" content="2019-02-15T08:21:33.861Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker网络">
 <meta name="twitter:description" content="Docker Network">
@@ -600,13 +600,14 @@
         NAT桥：在路由桥的基础上，在宿主机上做SNAT规则，即可访问外网地址    
 
 Docker提供的四种网络：
-    桥网络：bridge，默认就是docker0桥，docker0是SNAT桥
+    桥网络：桥接网络
+            bridge，默认就是docker0桥，docker0是SNAT桥
             查看网络定义：docker network inspect bridge
             大多数的容器还是使用bridge网络
             而且这是个SNAT网络，容器只能访问外网，外网主机确无法访问该容器
-    共享桥：
+    共享桥：联盟式网络 
         每一个容器都是靠在内核级虚拟资源分配的独立的6种名称空间来支撑的
-        这6种名称空间是IPC,Net,Mount,UPS,PID,USER
+        这6种名称空间是IPC,Net,Mount,UTS,PID,USER
         虽然每个容器都有各自独立的名称空间，但是确可以共享，于是就有了这种方式
         共享桥的原理：    
             共享Net UTS(主机名) IPC,使用同一个网络地址，主机名和网络协议栈
@@ -614,7 +615,7 @@ Docker提供的四种网络：
         这样做的效果就可以构建出一个模型
             httpd---&gt;fpm127.0.0.1:9000---&gt;mysql127.0.0.1:3306
             那么对于fpm和mysql来说只监听在本地端口上，保证了安全性
-    host宿主机网络：
+    host宿主机网络：共享宿主机网络
         既然多个容器可以使用同一个容器的网络名称空间，而且宿主机在内核中也有自己的
         网络名称空间，那么容器也理所当然的可以使用宿主机的网络名称空间
         容器使用宿主机的网络和DNAT方式有关系
