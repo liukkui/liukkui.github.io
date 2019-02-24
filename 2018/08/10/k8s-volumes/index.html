@@ -136,18 +136,21 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="PXE安装只是实现BIOS系统的自动化安装，对于UEFI的不支持，对于UEFI的可以使用cobblercobbler实现系统自动化安装cobbler自动化系统安装">
-<meta name="keywords" content="运维，linux，windows">
+  <meta name="description" content="Kubernetes Volumes">
+<meta name="keywords" content="k8s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DHCP和PXE">
-<meta property="og:url" content="https://www.liukui.tech/2017/07/06/DHCP和PXE/index.html">
+<meta property="og:title" content="k8s-volumes">
+<meta property="og:url" content="https://www.liukui.tech/2018/08/10/k8s-volumes/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="PXE安装只是实现BIOS系统的自动化安装，对于UEFI的不支持，对于UEFI的可以使用cobblercobbler实现系统自动化安装cobbler自动化系统安装">
+<meta property="og:description" content="Kubernetes Volumes">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.372Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/08/10/k8s-volumes/k8s支持的存储卷类型.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/08/10/k8s-volumes/SC.png">
+<meta property="og:updated_time" content="2019-02-24T06:06:38.645Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DHCP和PXE">
-<meta name="twitter:description" content="PXE安装只是实现BIOS系统的自动化安装，对于UEFI的不支持，对于UEFI的可以使用cobblercobbler实现系统自动化安装cobbler自动化系统安装">
+<meta name="twitter:title" content="k8s-volumes">
+<meta name="twitter:description" content="Kubernetes Volumes">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/08/10/k8s-volumes/k8s支持的存储卷类型.png">
 
 
 
@@ -156,7 +159,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/07/06/DHCP和PXE/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/08/10/k8s-volumes/">
 
 
 
@@ -166,7 +169,7 @@
   };
 </script>
 
-  <title>DHCP和PXE | Coool's Blog</title>
+  <title>k8s-volumes | Coool's Blog</title>
   
 
 
@@ -452,7 +455,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/07/06/DHCP和PXE/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/08/10/k8s-volumes/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -469,7 +472,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">DHCP和PXE
+          <h1 class="post-title" itemprop="name headline">k8s-volumes
               
             
           </h1>
@@ -495,30 +498,12 @@
                 
               
 
-              <time title="创建时间：2017-07-06 08:00:00" itemprop="dateCreated datePublished" datetime="2017-07-06T08:00:00+08:00">2017-07-06</time>
+              <time title="创建时间：2018-08-10 08:00:00" itemprop="dateCreated datePublished" datetime="2018-08-10T08:00:00+08:00">2018-08-10</time>
             
 
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/系统安装/" itemprop="url" rel="index"><span itemprop="name">系统安装</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -541,7 +526,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.6k</span>
+                <span title="本文字数">10k</span>
               
 
               
@@ -555,7 +540,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">9 分钟</span>
+                <span title="阅读时长">10 分钟</span>
               
             </div>
           
@@ -575,299 +560,336 @@
       
 
       
-        <p>PXE安装只是实现BIOS系统的自动化安装，对于UEFI的不支持，对于UEFI的可以使用cobbler<br>cobbler实现系统自动化安装<a href="https://www.liukui.tech/2017/05/06/Cobbler/">cobbler自动化系统安装</a><br><a id="more"></a></p>
-<h3 id="DHCP服务-amp-PXE自动化安装系统"><a href="#DHCP服务-amp-PXE自动化安装系统" class="headerlink" title="DHCP服务&amp;PXE自动化安装系统"></a>DHCP服务&amp;PXE自动化安装系统</h3><h3 id="DHCP服务-著名的Inter系统协会组织：研发的DHCP和DNS技术"><a href="#DHCP服务-著名的Inter系统协会组织：研发的DHCP和DNS技术" class="headerlink" title="DHCP服务:(著名的Inter系统协会组织：研发的DHCP和DNS技术)"></a>DHCP服务:(著名的Inter系统协会组织：研发的DHCP和DNS技术)</h3><p>DHCP官方文档：<a href="http://www.isc.org/downloads/DHCP/" target="_blank" rel="noopener">DHCP文档</a><br>BIND官网文档：<a href="https://www.isc.org/downloads/BIND/" target="_blank" rel="noopener">BIND文档</a><br>DNS搭建的相关文档:<a href="https://www.jianshu.com/p/50c8105fae32" target="_blank" rel="noopener">DNS原理解析&amp;搭建</a></p>
-<p>PXE安装只是实现BIOS系统的自动化安装，对于UEFI的不支持，对于UEFI的可以使用cobbler<br>cobbler实现系统自动化安装<a href="">cobbler自动化系统安装</a></p>
-<p>全文只有二个实验：搭建DHCP和在centos7实现基于PXE安装centos7和centos6(centos6上原理类似)</p>
-<h3 id="搭建DHCP服务器：基于UDP协议-dhcp服务器端口：67、dhcp客户端端口：68"><a href="#搭建DHCP服务器：基于UDP协议-dhcp服务器端口：67、dhcp客户端端口：68" class="headerlink" title="搭建DHCP服务器：基于UDP协议(dhcp服务器端口：67、dhcp客户端端口：68)"></a>搭建DHCP服务器：基于UDP协议(dhcp服务器端口：67、dhcp客户端端口：68)</h3><pre><code>DHCP: （Dynamic Host Configuration Protocol）
-    动态主机配置协议
-    局域网协议，UDP协议(67端口)
-主要用途：
-    用于内部网络和网络服务供应商自动分配IP地址给用户
-    用于内部网络管理员作为对所有电脑作集中管理的手段
-使用场景
-    自动化安装系统
-    解决IPV4资源不足问题
-</code></pre><h3 id="DHCP申请网络地址是通过四个过程实现的：四个数据报文"><a href="#DHCP申请网络地址是通过四个过程实现的：四个数据报文" class="headerlink" title="DHCP申请网络地址是通过四个过程实现的：四个数据报文"></a>DHCP申请网络地址是通过四个过程实现的：四个数据报文</h3><pre><code>DHCP共有八种报文
-    1.DHCP DISCOVER：客户端到服务器
-    2.DHCP OFFER ：服务器到客户端
-    3.DHCP REQUEST：客户端到服务器
-    4.DHCP ACK ：服务器到客户端
-    DHCP NAK：服务器到客户端,通知用户无法分配合适的IP
-    地址
-        DHCP DECLINE ：客户端到服务器，指示地址已被使用
-        DHCP RELEASE：客户端到服务器，放弃网络地址和取消
-    剩余的租约时间
-        DHCP INFORM：客户端到服务器, 客户端如果需要从DHCP
-        服务器端获取更为详细的配置信息，则发送Inform报文向
-        服务器进行请求，极少用到
-    同网段多DHCP服务
-        DHCP服务必须基于本地
-        先到先得的原则
-    跨网段
-        RFC 1542 Compliant Routers
-        dhcrelay: 中继
-    相关协议
-        Arp
-        rarp
-</code></pre><h3 id="DHCP服务器的实现方式：搭建DHCP服务器"><a href="#DHCP服务器的实现方式：搭建DHCP服务器" class="headerlink" title="DHCP服务器的实现方式：搭建DHCP服务器"></a>DHCP服务器的实现方式：搭建DHCP服务器</h3><pre><code>Linux DHCP协议的实现程序：dhcp, dnsmasq（dhcp,dns）
-    1.实现DHCP的软件有两个：dnsmasp,这个软件是安装系统是默认的一个
-        可以同时提供dns和dhcp两种服务，不是很专业
-        如：ss -ntl 看到的默认就有dnsmasp服务
-        LISTEN     0      5                  192.168.122.1:53  
-        users:((&quot;dnsmasq&quot;,pid=1506,fd=6))
-    2.DHCP更专业：下面主要介绍
-</code></pre><h3 id="实验：DHCP服务的搭建"><a href="#实验：DHCP服务的搭建" class="headerlink" title="实验：DHCP服务的搭建"></a>实验：DHCP服务的搭建</h3><pre><code>实验前提：
-    1.把vmware虚拟机的主机都设置成仅主机模式，要不然会影响所在的
-        工作中的DHCP服务器，其他人可能会获取到实验配置的DHCP服务
-        获取到一个不能上网的IP地址
-    2.编辑vmware的虚拟网络编辑器，将仅主机的DHCP服务关闭，这样当前
-        就只有自己配置的DHCP服务器了
+        <h3 id="Kubernetes-Volumes"><a href="#Kubernetes-Volumes" class="headerlink" title="Kubernetes Volumes"></a>Kubernetes Volumes</h3><a id="more"></a>
+<p><img src="/2018/08/10/k8s-volumes/k8s支持的存储卷类型.png" alt="k8s支持的存储卷类型"></p>
+<pre><code>k8s上的volumes和docker中的volumes都是为了保存数据，但还是有区别的：
+    1.docker上因为是在单机上运行容器的，删除容器只要加载本地之前挂载的卷就可以了。
+    2.在k8s集群上，如果删除一个Pod,则这个pod的卷数据会保存在之前的这个node节点上了，而scheduler的调度是随机的，
+        有可能不会运行在之前的node上，那么之前保存的数据是无意义，不能利用的.
+    3.k8s是分布式集群，如果所有节点都挂载网络文件系统，那么数据就可以跨节点使用了.
 
-Dhcp Server相关配置文件：
-    /etc/dhcp/dhcpd.conf  ---&gt;主要配置文件
-    /usr/lib/systemd/system/dhcpd.service  ---&gt;服务名
-    /usr/sbin/dhcpd        ---&gt;dhcp的主程序
-    /etc/dhcp/dhcpd.conf --&gt; /etc/rc.d/init.d/dhcpd
-    /etc/dhcp/dhcpd6.conf--&gt; /etc/rc.d/init.d/dhcpd6
-    /var/lib/dhcpd/dhcpd.leases   ---&gt;租出去的地址信息库文件
-    /usr/sbin/dhcrelay
-    /etc/rc.d/init.d/dhcrelay
-    dhcp server:67/udp
-    dhcp client: 68/udp
-    dhcpv6 client:546/udp
-Dhcp client
-    dhclient
-    自动获取的IP信息： /var/lib/dhclient
-</code></pre><h3 id="dhcp-conf配置文件内容设置："><a href="#dhcp-conf配置文件内容设置：" class="headerlink" title="dhcp.conf配置文件内容设置："></a>dhcp.conf配置文件内容设置：</h3><pre><code>安装DHCP完,默认是启动不了的，因为配置文件dhcpd.conf是空的
-1.先通过模板生成新的配置文件
-    cp /usr/share/doc/dhcp*/dhcpd.conf.example /etc/dhcp/dhcpd.conf
-2.模板里的网段地址不对，需要修改，网段和IP范围
-    question：那么如何修改dhcd.conf配置文件？
-    answer：根据上面的模板文件中的信息自改自定义的一些值
-    该文件中定义了：
-        1.默认续租时间和最长租期
-        2.DHCP默认分配的网段和分配的IP地址范围
-        3.DHCP服务提供的默认网关地址和DNS地址
-3.前两项设置其他主机只是通过DHCP自动获取地址的需求，如果通过dhcp实现系统的
-    自动化安装，就不仅仅获取到地址，还需要从DHCP获取能启动计算机的文件，即
-    dhcp的配置文件中要有配置的地址：类似于grub的文件
+数据冗余实现方式：
+    1.存储设备做镜像，主备模式
+    2.分布式存储
+        不会对存储节点设备做冗余，而是在软件数据管理级别上对每个数据对象做冗余；
+        根据调度规则和冗余级别在当前集群的多个节点上都存放一份数据
+        还支持向外扩展
 
-    其它配置选项：
-        filename: 指明引导文件名称
-        next-server：提供引导文件的服务器IP地址
-    示例：
-        filename &quot;pxelinux.0&quot;;
-        next-server 192.168.100.100; 
-            网络中下载文件的主机地址，带有tftp功能
-    备注：如果网卡有pxe的功能即自带tftp的功能
+如何挂载：
+    1.pod中是有个基础容器pause的,同一个pod中是共享pause容器的UTS(主机名),Network(网络名称空间),IPC(进程间通信，网络协议栈).
+    2.因为在节点上的pod是共享节点内核的，驱动也是在内核，所以节点本身需要先识别适配外部的各种存储系统.
+    3.节点是可以挂载多种外部存储系统的，所以pause挂载存储时，需要指明挂载的是哪种文件系统类型的存储并有相应的存储插件驱动.
+    4.同一Pod中的其他容器要想使用pause中的volumes,需要先通过volumes定义pause中定义卷，pod再通过volumeMounts复制并挂载pause定义的卷.
 
-所以具有完整的功能的dhcp配置文件dhcp.conf内容类似；
-    default-lease-time 600;
-    max-lease-time 7200;
-    subnet 192.168.34.0 netmask 255.255.255.0 {
-        range 192.168.34.20 192.168.34.100; 
-        option routers 192.168.34.1;
-        option domain-name-servers 6.6.6.6;
-        ext-server 192.168.34.103;
-        filename &quot;pxelinux.0&quot;;  PXE安装相关的配置  
-    } 
-上面是主要配置内容，在dhcpd.conf中还可以把指定的mac地址与IP绑定
-    host passacaglia {
-        hardware ethernet 00:0c:29:af:45:f7;
-        fixed-address 192.168.34.80
-    }
-</code></pre><h3 id="安装tftp服务-UDP协议：69端口"><a href="#安装tftp服务-UDP协议：69端口" class="headerlink" title="安装tftp服务:(UDP协议：69端口)"></a>安装tftp服务:(UDP协议：69端口)</h3><pre><code>    yum install tftp-server -y
-    [root@node7-1 tftpboot]#rpm -ql tftp-server
-    /etc/xinetd.d/tftp                   
-    /usr/lib/systemd/system/tftp.service
-    /usr/lib/systemd/system/tftp.socket
-    /usr/sbin/in.tftpd
-    /var/lib/tftpboot   存放下载上传的路径:系统所需要的文件
-centos7和centos6上安装tftp是由区别的
-    centos7上需要安装tftp-server服务--&gt;UDP69端口
-        yum install tftp-server
-        systemctl start tftp
-    在centos6上安装和telnet是一个道理，都依赖于xinetd
-        chkconfig tftp on--&gt; /etc/xinetd.d/tftp配置文件
-        service restart xinted
-</code></pre><h3 id="PXE介绍"><a href="#PXE介绍" class="headerlink" title="PXE介绍"></a>PXE介绍</h3><pre><code>PXE：
-    Preboot Excution Environment 预启动执行环境
-    Intel公司研发
-    基于Client/Server的网络模式，支持远程主机通过网络从远端服务器下载
-        映像，并由此支持通过网络启动操作系统
-    PXE可以引导和安装Windows,linux等多种操作系统
-</code></pre><h3 id="实验：在centos7实现基于PXE安装centos7和centos6"><a href="#实验：在centos7实现基于PXE安装centos7和centos6" class="headerlink" title="实验：在centos7实现基于PXE安装centos7和centos6"></a>实验：在centos7实现基于PXE安装centos7和centos6</h3><pre><code>自动化安装步骤：
-1.安装前准备：关闭防火墙和SELINUX，DHCP服务器静态IP
-2.安装软件包
-    httpd tftp-server dhcp syslinux system-config-kickstart
-    httpd:实现yum源
-    tftp-server：实现网络下载的文件
-    syslinux: 准备pxelinux.0文件 
-        备注：centos6上是安装syslinux-nonlinux
-    system-config-kickstart制作kickstart软件，建议自己制作
+CSI:
+    Container Storage interface，通过容器存储接口自定义存储卷
+    k8s中内置的存储卷类型
+        kubectl explain pod.spec.volumes
 
-3.配置文件共享服务：
-    准备centos7&amp;centos6的yum源
-        systemctl enable httpd
-        systemctl start httpd
-        mkdir -pv /var/www/html/centos/{6,7}/os/x86_64
-        mount /dev/sr0 /var/www/html/centos/7/os/x86_64
-        mount /dev/sr1 /var/www/html/centos/6/os/x86_64
-4.准备kickstart文件
-    拷贝已经安装机器上的anaconda文件，按照自定义稍微修改，放到http目录下
-    注意：644权限
-    cp anaconda-ks.cfg /var/www/html/ksdir/ks7-min.cfg
-    cp anaconda-ks.cfg /var/www/html/ksdir/ks7-min.cfg
+定义存储卷
+    详见：kubectl explain pod.spec.volumes #如何定义挂载卷
+    要用存储卷需要现在pod.spec字段定义挂载卷类型和目录等信息
+挂载存储：
+    详见：
+        kubectl explain pod.spec.containers.volumeMounts #定义如何挂载卷
+        是使用挂载卷，需要在pod.spec.containers中挂载上去才能用
 
-    ks应答文件的内容可以用system-config-kickstart或者anaconda修改就行了
-    最好是通过system-config-kickstart做一个应答文件，通过界面更深刻理解
-        每一项代表的意义
-    大概内容如下：(最后附件的有详细的ks文件内容)
-        url --url=http://192.168.34.7/centos/7/os/x86_64/
-        text
-        firewall --disabled
-        selinux --disabled
-        clearpart --all --initlabel
-        zerombr
-        reboot
-        %packages
-        @core
-        %end
+spec中的详细定义说明：
+    spec:
+      volumes:          #先定义pause中的挂载卷
+      - name                    #必须定义存储卷名称,以便挂载时引用
+    下面根据存储类型不同定义方式也不同，按需修改
+        hostPath/nfs            #必须指定存储类型
+        - path                  #定义宿主机或者网络存储的路径
+          type                  #指定的目录/文件不存在时，应该怎么创建
+            DirectoryOrCreate   #不存在则创建
+            Directory           #目录必须事先存在
+            File                #文件可以挂载，但是必须事先存在
+            FileOrCreate        #文件不存在则自动创建
+            Socket              #必须是套接字文件，必须事先存在
+            CharDevice          #字符设备文件，必须事先存在
+            BlockDevice         #块设备文件，必须事先存在
+      containers:
+      - name:
+        image:
+        volumeMounts:   #复制并挂载pause中定义的卷
+        - name:                 #引用volumes中定义的1个或多个卷的卷名
+          mountPath             #挂载在容器的哪个路径(应用程序的文件路径)
+          readOnly：true|false  #挂载的路径是否只读，默认是读写权限
+          mountPropagation      #
+</code></pre><h3 id="本地存储：hostPath和local"><a href="#本地存储：hostPath和local" class="headerlink" title="本地存储：hostPath和local"></a>本地存储：hostPath和local</h3><pre><code>示例1：hostPath类型            #节点级的目录
+    vim myapp-hostpath-volumes.yaml 
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: myapp
+          namespace: volumes-test
+        spec:
+          containers:
+          - name: myapp
+            image: ikubernetes/myapp:v1
+            volumeMounts:
+            - name: website
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+          volumes:
+          - name: website
+            hostPath:
+              path: /volumes/myapp
+              type: DirectoryOrCreate
+示例2：local类型
+    k8s1.10版本之后的类型，且是节点级的设备或者节点级目录
+</code></pre><h3 id="临时存储：emptyDir"><a href="#临时存储：emptyDir" class="headerlink" title="临时存储：emptyDir"></a>临时存储：emptyDir</h3><pre><code>临时存储作用：
+    1.为容器提供缓存存储空间
+        1.支持在节点的内存中切分一部分空间作为缓存来用
+    2.为没有持久存储必要的同一Pod中的两个容器共享数据
+    3.临时存储随着Pod的删除自动删除
+用法：
+    kubectl explain pod.spec.volumes.emptyDir
+        medium      #默认是disk磁盘，还可以是Memory内存
+        sizeLimit   #当medium是memory时，则必须进行限制
+简单示例：
+    volumes:
+    - name: ceshi
+#      emptyDir: {}  #如果medium和sizelimit都不定义，则为磁盘的任意空间
+      emptyDir:
+        medium: Memeory  #使用内存当空间
+        sizeLimit: 200Mi #使用内存空间为200M
+</code></pre><h3 id="网络存储：NFS"><a href="#网络存储：NFS" class="headerlink" title="网络存储：NFS"></a>网络存储：NFS</h3><pre><code>用法：
+    kubectl explain pods.spec.volumes.nfs
+        path：                #nfs的共享目录：如/vols/v1
+        readOnly：true|false  #是否只读，默认读写
+        server:               #nfs服务IP或者主机名
+缺点：
+    1.需要事先知道nfs服务器的地址
+    2.nfs导出的存储空间目录
+示例：
+    先准备nfs的共享目录:在10.10.0.29上测试
+    vim /etc/exports
+        /vols/v1 10.10.0.0/8(rw,no_root_squash)
+[root@master01 manifsets]# vim redis-nfs-volumes.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  namespace: volumes-test
+spec:
+  nodeName: node03
+  containers:
+  - name: redis
+    image: redis:alpine
+    ports:
+    - name: redis
+      containerPort: 6379
+    volumeMounts:
+    - name: redisdata
+      mountPath: /data
+      readOnly: false
+  volumes:
+  - name: redisdata
+    nfs:
+      path: /vols/v1     #nfs导出的共享目录
+      server: 10.10.0.29 #nfs服务器的地址
+</code></pre><h3 id="持久卷申请存储：PV-amp-PVC"><a href="#持久卷申请存储：PV-amp-PVC" class="headerlink" title="持久卷申请存储：PV&amp;PVC"></a>持久卷申请存储：PV&amp;PVC</h3><pre><code>为了使用存储方便，为volumeMounts和后端存储设备加加了两个中间层
+在spec.volumes和存储间加了一个persistentVolume中间层
+把存储系统的所提供的存储能力抽象成k8s上的标准资源：persistentVolume持久存储卷
+persistentVolume：
+    1.PV和存储系统之间不是一一对应关系，而是与对应后端存储系统上可被单独访问的逻辑单元；
+    2.一个PV对应nfs的一个导出目录、ceph的一个image、云存储的一个云盘;
+    3.把后端存储的一个个逻辑单元映射为k8s上的一个个PV;
+    4.PV是集群级别的资源，不属于任何名称空间;
+PV的lifecycle:
+    provisioning: #PV的动态供给
+    bingding      #PV被绑定
+    using         #PV被使用
+    reclaiming    #PV被回收
+PV的供给方式：
+    动态供给：
+        1.存储系统上需要事先有逻辑存储单元，根据PVC的空间需求，在底层存储上选择适合空间需求的存储单元动态得创建为PV.
+        2.底层存储的逻辑单元不存在，只有存储空间
+            1.PVC向SC请求调用存储系统的API存储接口，临时创建需求空间大小的逻辑存储单元.
+            2.然后在SC内部把此存储单元创建为PV，与PVC进行binding.
+        3.动态供给是创建SC，而不是PV
+    静态供给：
+        存储系统上事先有存储，手动创建PV，再手动创建PVC与之绑定.
+PV的回收策略：reclaim
+    Pod删除时，PVC也可以删除，则引用的PV就处于回收状态，PV删除有二种策略
+        Delete:   #PVC删除时连带PV一起删除
+        Retain    #PV和PV上的数据都保留
+    备注：
+        1.如果是retain的，PV上仍然会有数据，但是不能被其他PVC所绑定了
+        2.可以手动删除PV，并手动删除存储上逻辑单元下的数据
 
-5.配置tftp服务
-    systemctl enable tftp.socket
-    systemctl start tftp.socket 
-6.配置DHCP服务
-    cp /usr/share/doc/dhcp-4.2.5/dhcpd.conf.example /etc/dhcpd/dhcpd.conf
-    vim /etc/dhcp/dhcpd.conf
-        option domain-name &quot;example.com&quot;;
-        default-lease-time 600;
-        max-lease-time 7200;
-        subnet 192.168.34.0 netmask 255.255.255.0 {
-            range 192.168.34.20 192.168.34.100; 
-            option routers 192.168.34.1;
-            option domain-name-servers 6.6.6.6;
-            next-server 192.168.34.103;
-            filename &quot;pxelinux.0&quot;;   
-        }
-    systemctl enable dhcpd
-    systemctl start dhcpd
-7.准备PXE相关文件
-    放pxelinux.0的专用目录，启动菜单
-        mkdir /var/lib/tftpboot/pxelinux.cfg/
-    分别存放6和7的vmliuz和initrd.img文件    
-        mkdir linux{6,7}
-    拷贝6和7安装必要文件
-        cp /var/www/html/centos/6/os/x86_64/isolinux/{vmlinuz,initrd.img} 
-            /var/lib/tftpboot/linux6/
-        cp /var/www/html/centos/7/os/x86_64/isolinux/{vmlinuz,initrd.img} 
-            /var/lib/tftpboot/linux7/
-    cp /usr/share/syslinux/{pxelinux.0,menu.c32} /var/lib/tftpboot/
-    将光盘里的启动菜单拷贝到并改名为default
-        cp /var/www/html/centos/7/os/x86_64/isolinux.cfg /var/lib/tftpboot/
-            pxelinux.cfg/default 
-拷贝完所有文件,文件列表如下：
-    /var/lib/tftpboot/
-    .
-    ├── linux6
-    │   ├── initrd.img
-    │   └── vmlinuz
-    ├── linux7
-    │   ├── initrd.img
-    │   └── vmlinuz
-    ├── menu.c32
-    ├── pxelinux.0
-    └── pxelinux.cfg
-        └── default
+persistentVolumeClaim
+    1.PV属于集群级别资源，Pod属于名称空间级别资源，如果pod想使用PV就需要把PV注册到名称空间中;
+    2.Pod是通过PVC请求占用PV，来使用PV的，一旦名称空间A占用PV1，其他名称空间就不能再用PV1了;
+    3.PVC占用PV称为binding;为被PVC占用的PV称为avaiable(可用的PV);
+    4.Pod通过volumes.persistentVolumeClaim使用PVC，进而间接使用PVC所占用的PV的.
+    5.PVC是属于某个名称空间，可以由管理员手动创建的.
 
-8.准备启动菜单
-菜单项可以自定义多个，如只有mini7和mini6的，还有必须要有本地硬盘启动的菜单项
-    但是要在文件内把各个的linuz和initrd路径
-vim /var/lib/tftpboot/pxelinux.cfg/default
-default menu.c32
-timeout 100
-menu title PXE Install CentOS
+PVC和存储系统的多路访问模型：
+    1.单路读写： RW0:ReadWriteOnce      iscsi
+    2.多路读写: RWX:ReadWriteMany
+    3.多路只读: ROX:ReadOnlyMany
+    作用：
+        PV是与后端存储的逻辑单元做映射的，存储系统是否支持多路读写应该体现在PV的定义上，才能避免PVC关联PV是否能多路读写出现存储故障.
 
-label mini7
-  menu label ^Auto Install Mini CentOS 7
-  kernel linux7/vmlinuz
-  append initrd=linux7/initrd.img ks=http://192.168.34.7/ksdir/ks7-mini.cfg
+PV和PVC的删除保护：
+    当PVC和PV被Pod使用时，在k8s的1.10版本之后，即使PVC和PV被删除，此时也不会真的被删除，只有Pod被删除时，
+    PVC和PV才会被允许删除，这就是PVC和PV的删除保护.
 
-label mini6
-  menu label ^Auto Install Mini CentOS 6
-  kernel linux6/vmlinuz
-  append initrd=linux6/initrd.img ks=http://192.168.34.7/ksdir/ks6-mini.cfg
+定义PV：
+    pv.spec和pod.spec.volumes是一样的，这样在创建pod时就不要再定义volumes了直接在containers.volumeMounts进行复制挂载就行了.
+    kubectl explain persistentVolume.spec
+    spec:
+      accessModes               #定义存储系统的访问模型的字符串列表
+            RW0/RWZ/ROX
+      capacity:                 #定义存储容量
+        storage   #单位是Ki Mi Gi等等
+      volumeMode:               #存储设备的访问接口(文件系统接口和块设备接口)
+            Fileystem|block
+      persistentVolumeReclaimPolicy  #定义PV的回收策略
+            Delete|Retain
+      storageClassName:           #定义使用哪种存储类
+      mountOptions:          #自定义挂载选项,下面这两项是默认的
+        - hard
+        - nfsvers=4.1
+      nfs/ceph:                  #定义PV关联的存储类型
+        下面选项根据不同存储系统定义不同的属性值
+        server:           
+        path:        
+定义PVC：
+    kubectl explain pvc.spec
+        accessModes          #访问权限必须要要绑定的PV权限的子集
+        volumeMode           #存储设备的访问接口(文件系统接口和块设备接口)
+        resources            #资源请求
+            requests:               #资源需求
+                storage:   #具体的需求存储空间大小
+            limit                  #资源上限
+        storageClassName     #存储类(PVC和PV必须在同一存储类中)
+        selector             #通过标签选择器去选PV
+                不定义选择器，则从所有PV中选择合适的PV
+        volumeName           #
+        dataSource           #
+</code></pre><h3 id="存储类SC：StorageClass"><a href="#存储类SC：StorageClass" class="headerlink" title="存储类SC：StorageClass"></a>存储类SC：StorageClass</h3><p><img src="/2018/08/10/k8s-volumes/SC.png" alt="SC"></p>
+<pre><code>SC:Storageclass是k8s上的标准资源
+    SC是实现PVC动态创建存储单元PV的基础
+        1.SC上定义了如何连接外部存储API管理接口的方式
+        2.PVC只能向同一个SC中的PV请求绑定，不能跨SC.
+定义SC：
+    详见：kubectl explain sc
+        apiVersion
+        kind
+        metadata
+        parameters     #对接外部存储时的参数
+        reclaimPolicy  #在此SC中的PV回收策略
+        provisioner    #指明后端存储设备-----必须项
 
-label local
-  menu default
-  menu label Boot from ^local drive
-  localboot 0xffff.
-
-  9.准备完所有的文件和软件后，启动所有的服务，就可以测试PXE安装了。
-</code></pre><h3 id="附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks-cfg文件"><a href="#附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks-cfg文件" class="headerlink" title="附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks.cfg文件"></a>附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks.cfg文件</h3><h3 id="ks6-mini-cfg"><a href="#ks6-mini-cfg" class="headerlink" title="ks6-mini.cfg"></a>ks6-mini.cfg</h3><pre><code>install
-url --url=http://192.168.34.103/centos/6/os/x86_64/
-    #httpd的yum源路径
-lang en_US.UTF-8
-keyboard us
-text      #纯文本安装
-reboot    #安装完重启
-network --onboot yes --device eth0 --bootproto dhcp --noipv6
-rootpw  --iscrypted $6$6zeqEsKimGywyY3J$ngSoHUIrLaydTMIwnYX9tg4HOeOCXogU03miaQIc8sOwmq5N6.fPk3Jrmouns8VOekZkn0YQjQkt
-JjA57WrZO0
-firewall --service=ssh      关闭防火墙
-authconfig --enableshadow --passalgo=sha512
-selinux --enforcing         关闭selinux
-timezone Asia/Shanghai      时区信息
-bootloader --location=mbr --driveorder=sda --append=&quot;crashkernel=auto rhgb quiet&quot; 
-# The following is the partition information you requested
-# Note that any partitions you deleted are not expressed
-# here so unless you clear all partitions first, this is
-# not guaranteed to work
-clearpart --all        清空分区信息
-zerombr                清空mbr
-#自定义的分区信息
-part /boot --fstype=ext4 --size=1024
-part / --fstype=ext4 --size=50000
-part /data --fstype=ext4 --size=30000
-part swap --size=2048
-#自定义的分区信息
-
-%packages
-@core
-%end   只安装最基本的核心包，后面也可以加上安装后脚本
-</code></pre><h3 id="ks7-mini-cfg：类似centos6的只是稍微的区别"><a href="#ks7-mini-cfg：类似centos6的只是稍微的区别" class="headerlink" title="ks7-mini.cfg：类似centos6的只是稍微的区别"></a>ks7-mini.cfg：类似centos6的只是稍微的区别</h3><pre><code>auth --enableshadow --passalgo=sha512
-url --url=http://192.168.34.103/centos/7/os/x86_64/
-text
-firstboot --enable                                                                                                  
-ignoredisk --only-use=sda
-keyboard --vckeymap=us --xlayouts=&apos;us&apos;
-lang en_US.UTF-8
-
-network  --bootproto=dhcp --device=ens33 --onboot=off --ipv6=auto --activate
-network  --hostname=centos7.localdomain
-
-rootpw --iscrypted $6$j2QVLmDO2xasQEW0$xEvr1jyj1mHs0HBtCc7jD73r6u4NrQCxwVoAu.SMXhwm8GiKBHq5ETZ2zFxP4rFsNavYbG0u6Gq13
-Igxrn1Ry.
-firewall --disabled
-selinux --disabled
-services --enabled=&quot;chronyd&quot;
-timezone Asia/Shanghai --isUtc
-user --name=test --password=$6$Awcwirg.mougtUlL$Yr1a9e2Vfs2k/Nizdn/ZeiunlsU.rJAmI1vhp1iafeccRt48h3PVIlnVwGvKPPt4dVum
-a/W32jzYIsn1XCrva. --iscrypted --gecos=&quot;test&quot;
-bootloader --append=&quot; crashkernel=auto&quot; --location=mbr --boot-drive=sda
-clearpart --all --initlabel
-zerombr
-reboot
-
-part / --fstype=&quot;xfs&quot; --ondisk=sda --size=51200
-part /boot --fstype=&quot;xfs&quot; --ondisk=sda --size=1024
-part swap --fstype=&quot;swap&quot; --ondisk=sda --size=4096
-part /data --fstype=&quot;xfs&quot; --ondisk=sda --size=30720
-
-%packages
-@core
-%end
+        volumeBindingMode #后端存储支持的访问模型(RWX,ROX,RWO)
+        allowVolumeExpansion   #后端存储系统是否支持空间拉伸
+官方示例：
+    glusterfs类型的SC  
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: slow
+        provisioner: kubernetes.io/glusterfs
+        parameters:
+          resturl: &quot;http://127.0.0.1:8081&quot;
+          clusterid: &quot;630372ccdc720a92c681fb928f27b53f&quot;
+          restauthenabled: &quot;true&quot;
+          restuser: &quot;admin&quot;
+          secretNamespace: &quot;default&quot;
+          secretName: &quot;heketi-secret&quot;
+          gidMin: &quot;40000&quot;
+          gidMax: &quot;50000&quot;
+          volumetype: &quot;replicate:3&quot;
+    ceph-rbd类型的SC:
+        kind: StorageClass
+        apiVersion: storage.k8s.io/v1
+        metadata:
+          name: fast
+        provisioner: kubernetes.io/rbd
+        parameters:
+          monitors: 10.16.153.105:6789
+          adminId: kube
+          adminSecretName: ceph-secret
+          adminSecretNamespace: kube-system
+          pool: kube
+          userId: kube
+          userSecretName: ceph-secret-user
+          userSecretNamespace: default
+          fsType: ext4
+          imageFormat: &quot;2&quot;
+          imageFeatures: &quot;layering&quot;
+</code></pre><h3 id="示例-创建静态供给PV和PVC"><a href="#示例-创建静态供给PV和PVC" class="headerlink" title="示例-创建静态供给PV和PVC"></a>示例-创建静态供给PV和PVC</h3><pre><code>以nfs为例定义一个PV：
+    [root@master01 manifsets]# vim pv-test.yaml
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: pv-nfs-v1
+      labels:
+        storagefs: nfs
+    spec:
+    #  accessModes: [&quot;ReadWriteOnce&quot;,&quot;ReadWriteMany&quot;,&quot;ReadOnlyMany&quot;]
+      accessModes:
+      - ReadWriteMany
+      - ReadWriteOnce
+      - ReadOnlyMany
+      capacity:
+        storage: 1Gi                #定义PV能提供多大存储空间
+      volumeMode: Filesystem
+      persistentVolumeReclaimPolicy: Retain     #定义PV回收策略
+      nfs:
+        path: /vols/v2
+        server: 10.10.0.29
+创建PVC：
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: redis-pvc            #定义PVC的名称，以便Pod中引用
+      namespace: volumes-test
+    spec:
+      selector:   #定义关联到哪个PV，不指定则根据需求空间找相近空间大小的PV
+        matchLabels:
+          storagefs: nfs2
+      accessModes:
+      - ReadWriteMany
+      volumeMode: Filesystem
+      resources:
+        requests:
+          storage: 500Mi          #根据PV的存储空间定义PVC有多少空间
+创建Pod挂载PVC
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: redis
+      namespace: volumes-test
+    spec:
+      nodeName: node03
+      containers:
+      - name: redis
+        image: redis:alpine
+        ports:
+        - name: redis
+          containerPort: 6379
+        volumeMounts:              #容器复制挂载volumes
+        - name: redisdata
+          mountPath: /data
+          readOnly: false
+      volumes:
+      - name: redisdata
+        persistentVolumeClaim:
+          claimName: redis-pvc           #挂载PVC
+测试：
+    [root@master01 ~]# kubectl get pv
+    NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                      STORAGECLASS   REASON   AGE
+    pv-nfs-v1   1Gi        RWO,ROX,RWX    Retain           Available                                                      8m14s
+    pv-nfs-v2   2Gi        RWO,ROX,RWX    Retain           Released    volumes-test/redis-pvc-1                           8m14s
+    pv-nfs-v3   3Gi        RWO,ROX,RWX    Retain           Bound       volumes-test/redis-pvc                             8m14s
+    [root@master01 ~]# kubectl get pvc -n volumes-test
+    NAME        STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+    redis-pvc   Bound    pv-nfs-v3   3Gi        RWO,ROX,RWX                   5m55s
 </code></pre>
       
     </div>
@@ -934,7 +956,7 @@ part /data --fstype=&quot;xfs&quot; --ondisk=sda --size=30720
       
         <div class="post-tags">
           
-            <a href="/tags/运维，linux，windows/" rel="tag"><i class="fa fa-tag"></i> 运维，linux，windows</a>
+            <a href="/tags/k8s/" rel="tag"><i class="fa fa-tag"></i> k8s</a>
           
         </div>
       
@@ -1001,8 +1023,8 @@ part /data --fstype=&quot;xfs&quot; --ondisk=sda --size=30720
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/20/mysql高可用/" rel="next" title="mysql高可用">
-                <i class="fa fa-chevron-left"></i> mysql高可用
+              <a href="/2018/03/26/nginx实现四层和七层负载均衡/" rel="next" title="nginx实现四层和七层负载均衡">
+                <i class="fa fa-chevron-left"></i> nginx实现四层和七层负载均衡
               </a>
             
           </div>
@@ -1011,8 +1033,8 @@ part /data --fstype=&quot;xfs&quot; --ondisk=sda --size=30720
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
-                旧事-大好河山 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/06/iptables/" rel="prev" title="iptables">
+                iptables <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1274,7 +1296,7 @@ part /data --fstype=&quot;xfs&quot; --ondisk=sda --size=30720
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP服务-amp-PXE自动化安装系统"><span class="nav-number">1.</span> <span class="nav-text">DHCP服务&amp;PXE自动化安装系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP服务-著名的Inter系统协会组织：研发的DHCP和DNS技术"><span class="nav-number">2.</span> <span class="nav-text">DHCP服务:(著名的Inter系统协会组织：研发的DHCP和DNS技术)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搭建DHCP服务器：基于UDP协议-dhcp服务器端口：67、dhcp客户端端口：68"><span class="nav-number">3.</span> <span class="nav-text">搭建DHCP服务器：基于UDP协议(dhcp服务器端口：67、dhcp客户端端口：68)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP申请网络地址是通过四个过程实现的：四个数据报文"><span class="nav-number">4.</span> <span class="nav-text">DHCP申请网络地址是通过四个过程实现的：四个数据报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DHCP服务器的实现方式：搭建DHCP服务器"><span class="nav-number">5.</span> <span class="nav-text">DHCP服务器的实现方式：搭建DHCP服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验：DHCP服务的搭建"><span class="nav-number">6.</span> <span class="nav-text">实验：DHCP服务的搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dhcp-conf配置文件内容设置："><span class="nav-number">7.</span> <span class="nav-text">dhcp.conf配置文件内容设置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装tftp服务-UDP协议：69端口"><span class="nav-number">8.</span> <span class="nav-text">安装tftp服务:(UDP协议：69端口)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PXE介绍"><span class="nav-number">9.</span> <span class="nav-text">PXE介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验：在centos7实现基于PXE安装centos7和centos6"><span class="nav-number">10.</span> <span class="nav-text">实验：在centos7实现基于PXE安装centos7和centos6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks-cfg文件"><span class="nav-number">11.</span> <span class="nav-text">附带centos7和centos6的ks应答文件模板：建议通过ystem-config-kickstart做一个应答文件，通过界面更深刻理解每一项代表的意义，当然也可以修改anaconda-ks.cfg文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ks6-mini-cfg"><span class="nav-number">12.</span> <span class="nav-text">ks6-mini.cfg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ks7-mini-cfg：类似centos6的只是稍微的区别"><span class="nav-number">13.</span> <span class="nav-text">ks7-mini.cfg：类似centos6的只是稍微的区别</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-Volumes"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes Volumes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地存储：hostPath和local"><span class="nav-number">2.</span> <span class="nav-text">本地存储：hostPath和local</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#临时存储：emptyDir"><span class="nav-number">3.</span> <span class="nav-text">临时存储：emptyDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络存储：NFS"><span class="nav-number">4.</span> <span class="nav-text">网络存储：NFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久卷申请存储：PV-amp-PVC"><span class="nav-number">5.</span> <span class="nav-text">持久卷申请存储：PV&amp;PVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储类SC：StorageClass"><span class="nav-number">6.</span> <span class="nav-text">存储类SC：StorageClass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-创建静态供给PV和PVC"><span class="nav-number">7.</span> <span class="nav-text">示例-创建静态供给PV和PVC</span></a></li></ol></div>
             
 
           </div>
