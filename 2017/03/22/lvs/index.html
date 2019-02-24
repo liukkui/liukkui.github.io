@@ -136,20 +136,20 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="Cluster的集群的概念Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统 Linux Cluster集群的类型：     LB：Load Balancing，负载均衡     HA：High Availiablity，高可用，SPOF（single Point Of failure）          MTBF:Mean Time Between Failure 平均无">
+  <meta name="description" content="Linux Virtual Server">
 <meta name="keywords" content="LB">
 <meta property="og:type" content="article">
 <meta property="og:title" content="lvs">
 <meta property="og:url" content="https://www.liukui.tech/2017/03/22/lvs/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="Cluster的集群的概念Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统 Linux Cluster集群的类型：     LB：Load Balancing，负载均衡     HA：High Availiablity，高可用，SPOF（single Point Of failure）          MTBF:Mean Time Between Failure 平均无">
+<meta property="og:description" content="Linux Virtual Server">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs工作原理">
 <meta property="og:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs的调度算法模块.png">
-<meta property="og:updated_time" content="2019-02-11T10:05:14.434Z">
+<meta property="og:updated_time" content="2019-02-24T06:13:26.796Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="lvs">
-<meta name="twitter:description" content="Cluster的集群的概念Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统 Linux Cluster集群的类型：     LB：Load Balancing，负载均衡     HA：High Availiablity，高可用，SPOF（single Point Of failure）          MTBF:Mean Time Between Failure 平均无">
+<meta name="twitter:description" content="Linux Virtual Server">
 <meta name="twitter:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs工作原理">
 
 
@@ -578,7 +578,8 @@
       
 
       
-        <h3 id="Cluster的集群的概念"><a href="#Cluster的集群的概念" class="headerlink" title="Cluster的集群的概念"></a>Cluster的集群的概念</h3><pre><code>Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统
+        <h3 id="Linux-Virtual-Server"><a href="#Linux-Virtual-Server" class="headerlink" title="Linux Virtual Server"></a>Linux Virtual Server</h3><a id="more"></a>
+<h3 id="Cluster的集群的概念"><a href="#Cluster的集群的概念" class="headerlink" title="Cluster的集群的概念"></a>Cluster的集群的概念</h3><pre><code>Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统
 Linux Cluster集群的类型：
     LB：Load Balancing，负载均衡
     HA：High Availiablity，高可用，SPOF（single Point Of failure）
@@ -1125,7 +1126,7 @@ session保持的三种方式：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster的集群的概念"><span class="nav-number">1.</span> <span class="nav-text">Cluster的集群的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LB-Cluster的实现"><span class="nav-number">2.</span> <span class="nav-text">LB Cluster的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡和会话保持"><span class="nav-number">3.</span> <span class="nav-text">负载均衡和会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的模型原理-Linux-Virtual-Server"><span class="nav-number">4.</span> <span class="nav-text">LVS的模型原理:Linux Virtual Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的组成和相关术语"><span class="nav-number">5.</span> <span class="nav-text">LVS的组成和相关术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的调度算法"><span class="nav-number">6.</span> <span class="nav-text">LVS的调度算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux-Virtual-Server"><span class="nav-number">1.</span> <span class="nav-text">Linux Virtual Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster的集群的概念"><span class="nav-number">2.</span> <span class="nav-text">Cluster的集群的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LB-Cluster的实现"><span class="nav-number">3.</span> <span class="nav-text">LB Cluster的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡和会话保持"><span class="nav-number">4.</span> <span class="nav-text">负载均衡和会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的模型原理-Linux-Virtual-Server"><span class="nav-number">5.</span> <span class="nav-text">LVS的模型原理:Linux Virtual Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的组成和相关术语"><span class="nav-number">6.</span> <span class="nav-text">LVS的组成和相关术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的调度算法"><span class="nav-number">7.</span> <span class="nav-text">LVS的调度算法</span></a></li></ol></div>
             
 
           </div>
