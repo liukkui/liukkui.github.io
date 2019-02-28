@@ -146,7 +146,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/08/10/k8s-volumes/k8s支持的存储卷类型.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/08/10/k8s-volumes/SC.png">
-<meta property="og:updated_time" content="2019-02-24T06:09:09.343Z">
+<meta property="og:updated_time" content="2019-02-28T12:31:00.917Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s-volumes">
 <meta name="twitter:description" content="Kubernetes Volumes">
@@ -544,7 +544,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">10k</span>
+                <span title="本文字数">19k</span>
               
 
               
@@ -558,7 +558,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">10 分钟</span>
+                <span title="阅读时长">17 分钟</span>
               
             </div>
           
@@ -908,6 +908,240 @@ PV和PVC的删除保护：
     [root@master01 ~]# kubectl get pvc -n volumes-test
     NAME        STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS   AGE
     redis-pvc   Bound    pv-nfs-v3   3Gi        RWO,ROX,RWX                   5m55s
+</code></pre><h3 id="特殊存储：ConfigMap和Secret"><a href="#特殊存储：ConfigMap和Secret" class="headerlink" title="特殊存储：ConfigMap和Secret"></a>特殊存储：ConfigMap和Secret</h3><p>都是为pod中的容器提供配置变更，扮演了k8s系统上一组控制器控制的pod的配置中心</p>
+<pre><code>docker中的应用程序根据不同的环境配置不同的配置文件是依靠两种方式：
+    1.应用程序镜像是云原生或者支持通过enterpoint脚本可以传递环境变量来适应不同的场景使用.
+        缺点是：要修改传的值需要删除容器重新创建
+    2.先配置好不同的配置文件，通过挂载卷将文件传递到容器中.
+        缺点是：在本地映射的路径下修改了配置文件，容器是不会自动加载新的配置文件的.        
+k8s上面临相同的问题，为了解决修改配置文件或参数值能够使Pod自动重载配置信息，就将配置文件做成了k8s上的configMap资源.
+
+ConfigMap和Secret
+    1.Pod中的容器提供配置信息
+    2.配置中心：配置发生变更，测试完成后，通知方式(灰度)
+    区别：
+        configMap用来保存非敏感数据，Secret用来保存敏感数据的
+
+configMap和Secret是如何将配置传递至Pod中的？
+    先定义configMap和secret类型的资源，而这种资源时K/V键值对存在的
+        1.如果是环境变量，则定义这两种资源时，指定key和value
+        2.如果是配置文件，则文件名为Key,文件内容为值value
+创建pod时，只需要引用此资源的Key即可：
+    1.把configmap和secret资源的key映射给pod容器中的环境变量或者文件名
+    2.给环境变量传key的名称，通过k/v替换，获得v的值，如果想变更配置，只需要修改pod外部configmap中的value的值即可
+    ，pod会在一段时间内自动传递新的value值，进行配置更新.
+</code></pre><h3 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h3><pre><code>注意：
+    1.命令行创建configmap比资源清单更简单，但是配置清单更易维护.
+    2.通过资源清单配置的configMap中嵌套的是K/V数值还比较简单如果嵌套的是文件内容
+    的话，配置格式还是有些麻烦的.
+
+创建ConfigMap的两种方式
+    1.基于命令行的
+    kubectl create configmap -h
+        --from-literal  #手动指定K/V值，定义多个K/V值需要有多个--from-literal
+        --from-file     #从文件中读取创建
+    2.配置清单(比命令行麻烦，但是更易维护)
+        kubectl explain configmap
+            data:       #只有data字段，而没有spec字段
+
+两种引用configMap的方式: pod和configMap必须在同一名称空间
+    1.基于环境变量方式引用configMap (用于传递环境变量)
+    [root@master01 ~]#pod.spec.containers.env
+        env       #直接手动给变量
+        - name         #镜像中所能接收的变量名
+          value        #手动给值(一般用valuefrom)
+          valuefrom    #从其他位置引用值
+            configMapKeyRef     #引用一个configMap的键key
+                name                 #configMap的名称
+                key                  #configMap中的一个键名
+                optional        #被引用的configMap资源存在就可以，不存在则报错
+                    true|false  #默认是必须存在
+            secretKeyRef        #引用一个Secret的键key,用于敏感数据传输
+        envfrom   #从其他地方加载环境变量
+    缺点：
+        1.如果修改configmap中的环境变量的值，pod是不会更新环境变量的，除非删除重建pod，新的环境变量才会生效.
+
+    2.基于存储卷方式引用configMap (用于传递文件)
+        是把configmap资源当成存储卷来用的
+        kubectl explain pods.spec.volumes.configMap
+        volumes:
+        - name           #定义存储卷名称以便挂载时使用
+          configMap:
+            name         #configMap资源的名称
+            items        #要引用configmap中的那些键映射为本地的文件
+            - key          #configmap中的键名
+              mode         #映射的文件权限时多少，没定义则使用外部的defaultMode
+              path      #映射到pod中叫什么文件名(可以和key一样，也可以随意更改)
+                    必须是相对路径，而且是相对于挂载点而言
+            defaultMode  #映射到本地的文件权限为多少
+                        默认是0644读写权限，可以自己指定
+            optional     #引用的configMap资源或者引用的键不存在是否报错
+注意：
+    1.相对于环境变量方式引用configmap，存储卷方式的pod会根据configmap内容的变化而更新自己pod中的配置信息.
+    2.如果一个deploy控制的多个pod，并定义挂载了configMap类型的存储，如果修改configMap文件中的内容，这些pod一般会在一分钟之内都更新到最新configmap中新的值.
+    3.在deploy控制的后端pod众多的情况下，需要借助互联网上的配置中心组件实现pod的滚动更新或者金丝雀更新.
+    4.后端pod较少的情况下，可以用ansible或者puppet进行灰度更新.
+</code></pre><h4 id="创建并引用ConfigMap示例"><a href="#创建并引用ConfigMap示例" class="headerlink" title="创建并引用ConfigMap示例"></a>创建并引用ConfigMap示例</h4><pre><code>1.基于命令行的--from-literal创建
+    kubectl create configmap filebeat-cfg -n config-ns --from-literal=redis_host=&quot;filebeat.defalut.svc.cluster.local&quot; --from-literal=log_level=&quot;Info&quot;
+    创建名为filebeat-cfg的cm,并设定两个key和他的值
+2.基于命令行的--from-file创建
+    kubectl create cm nginx-cfg --from-file=nginx-./server1.conf --from-file=server-zhihui.conf=./nginx-server2.conf -n config-ns
+
+引用示例：
+    1.基于环境变量引用configMap
+        此处手动创建一个Pod，用来演示使用env属性值引用configMap：filebeat-cfg
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: filebeat
+          namespace: config-ns    #pod和configMap必须在同一名称空间
+        spec:
+          containers:
+          - name: filebeat
+            image: ikubernetes/filebeat:5.6.5-alpine
+            env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: filebeat-cfg
+                  key: redis_host
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: filebeat-cfg
+                  key: log_level
+    2.基于存储卷方式引用configMap
+        此处手动创建一个Pod，用来演示挂载configMap类型的存储
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx
+          namespace: config-ns    #pod和configMap必须在同一名称空间
+        spec:
+          containers:
+          - name: nginx
+            image: ikubernetes/myapp:v1
+            volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d     #挂载的目录
+          volumes:
+          - name: config
+            configMap:
+              name: nginx-cfg            
+              items:
+              - key: nginx-server1.conf          #本地文件名
+                path: server1.conf      #映射到pod中的文件名
+              - key: server-zhihui.conf          #本地文件名
+                path: server2.conf      #映射到pod中的文件名
+测试：
+    通过手动修改configmap的值，查看pod中的文件是否也会发生改变
+    kubectl edit cm/nginx-cfg -n config-ns
+    测试看出基于存储卷方式引用configMap的pod的文件内容也会自动更新.
+</code></pre><h3 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h3><pre><code>1.Secret和configMap在功能上是一样的，只不过Secret是保存敏感数据的.
+2.Secret的数据是通过base64编码处理过的，不是真正意义上的加密，可以通过base64进行解码.
+3.Secret资源一般是通过命令行创建，而不是配置清单，因为如果通过配置清单配置时，需要
+手动将敏感数据(密码)进行base64编码，是很麻烦的，而命令行创建，会自动把敏感数据进行
+base64编码后保存到secret中.
+
+Secret的三种类型：
+    详见：kubectl create secret -h
+    1.docker-registry 
+        私有镜像仓库需要登录才能够访问，docker-registry就是将账号密码进行加密认证，以便kubelet可以认证到镜像仓库服务器上.
+        认证方式有两种：
+            1.kubectl explain pod.spec.imagePullSecrets
+                name:可以定义多个列表用于认证
+                缺点：如果想使用不同的账户时，是不易修改Secret的
+            2.kubectl explain pod.spec.serviceAccountName
+                服务账号：可以使用pod之外的系统认证方式
+                即使修改账号只需要修改serviceAccountName就可以了.
+    2.generic
+        非证书的私有敏感信息都用generic类型,通用型
+    3.tls  
+        #tls是专用于把ssl的tls中的x509格式的证书和私钥打包到一个secret中
+        而且不管原来的*.key和*.crt都被转成名为tls.key和tls.crt
+
+创建secret-generic资源:
+    1.命令行创建，类似于configmap
+        kubectl create secret [secret类型] secret名称 --from-literal=
+        --from-file=[key=]source
+    2.资源清单创建，要注意将密码进行base64编码后填到data资源中的key:value中
+        kubectl explain secret
+创建secret-tls资源:
+    1.命令行创建：
+        kubectl create secret tls NAME --cert=path/to/cert/file --key=path/to/key/file -n namespace
+        #需要先创建证书和私钥，再在创建secret-tls时引用即可.
+创建docker-registry资源:
+    1.命令行创建：
+        kubectl create secret docker-registry my-secret --docker-server=DOCKER_REGISTRY_SERVER --docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL      
+    # 创建docker-registry类型的资源时，要指定连接的私有docker仓库的IP/域名，用户名，密码，注册时使用的账号
+
+引用secret的方式
+    1.通过env环境变量引用
+        kubectl explain pod.spec.containers.env
+            env:
+            - name                  #Pod镜像中的存在的变量名
+              valueFrom:
+                secretKeyRef:       #表示从secret类型资源引用键
+                  name:           #引用的Secret资源的名称
+                  key             #secret资源中的键名
+                  optional:   #secret资源或者引用的key不存在时报错
+                    true|false
+    2.通过存储卷引用Secret资源
+        kubectl explain pod.spec.volumes.secret
+        volumes:
+        - name:              #定义存储卷名称以便挂载时使用
+          secret:
+            secretName        #引用的secret资源名称
+              items:           #引用的多个键对象
+              - key            #引用的secret资源中的键名
+                mode:    #文件权限，私密数据建议600权限，不指定则使用外部默认的
+                path:    #映射到pod中叫什么文件名(可以和key一样，也可以随意更改)
+          defaultMode      #引用资源的默认权限，0644
+          optional
+注意：
+    1.tls类型的证书和私钥一般要用存储卷方式进行引用，不然value的值太长的.
+
+示例：
+    1.generic类型的secret引用示例
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: mysql
+          namespace: config-ns
+        spec:
+          containers:
+          - name: mysql
+            image: mysql:5.6
+            env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root-password
+                  key: passwd
+                  optional: true
+    2.tls类型secret引用示例
+        apiVersion: v1
+            kind: Pod
+            metadata:
+              name: nginx
+              namespace: config-ns
+            spec:
+              containers:
+              - name: nginx
+                image: nginx:1.14-alpine    
+            volumeMounts:
+            - name: tls
+              mountPath: /etc/nginx/ssl
+          volumes:
+          - name: tls
+            secret:
+            - secretName: nginx-tls
+              items:
+              - key: nginx.crt              #原来的证书名
+                path: nginx-server.crt #映射到pod中的证书名
+              - key: nginx.key              #原来的私钥名
+                path: nginx-server.key  #映射到pod中的私钥名    
+                mode: 0600
 </code></pre>
       
     </div>
@@ -1316,7 +1550,7 @@ PV和PVC的删除保护：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-Volumes"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes Volumes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地存储：hostPath和local"><span class="nav-number">2.</span> <span class="nav-text">本地存储：hostPath和local</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#临时存储：emptyDir"><span class="nav-number">3.</span> <span class="nav-text">临时存储：emptyDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络存储：NFS"><span class="nav-number">4.</span> <span class="nav-text">网络存储：NFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久卷申请存储：PV-amp-PVC"><span class="nav-number">5.</span> <span class="nav-text">持久卷申请存储：PV&amp;PVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储类SC：StorageClass"><span class="nav-number">6.</span> <span class="nav-text">存储类SC：StorageClass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-创建静态供给PV和PVC"><span class="nav-number">7.</span> <span class="nav-text">示例-创建静态供给PV和PVC</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-Volumes"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes Volumes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地存储：hostPath和local"><span class="nav-number">2.</span> <span class="nav-text">本地存储：hostPath和local</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#临时存储：emptyDir"><span class="nav-number">3.</span> <span class="nav-text">临时存储：emptyDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络存储：NFS"><span class="nav-number">4.</span> <span class="nav-text">网络存储：NFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久卷申请存储：PV-amp-PVC"><span class="nav-number">5.</span> <span class="nav-text">持久卷申请存储：PV&amp;PVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储类SC：StorageClass"><span class="nav-number">6.</span> <span class="nav-text">存储类SC：StorageClass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-创建静态供给PV和PVC"><span class="nav-number">7.</span> <span class="nav-text">示例-创建静态供给PV和PVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特殊存储：ConfigMap和Secret"><span class="nav-number">8.</span> <span class="nav-text">特殊存储：ConfigMap和Secret</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConfigMap"><span class="nav-number">9.</span> <span class="nav-text">ConfigMap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建并引用ConfigMap示例"><span class="nav-number">9.1.</span> <span class="nav-text">创建并引用ConfigMap示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Secret"><span class="nav-number">10.</span> <span class="nav-text">Secret</span></a></li></ol></div>
             
 
           </div>
@@ -1350,7 +1584,7 @@ PV和PVC的删除保护：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">281k</span>
+    <span title="站点总字数">290k</span>
   
 
   
@@ -1361,7 +1595,7 @@ PV和PVC的删除保护：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:16</span>
+    <span title="站点阅读时长">4:23</span>
   
 </div>
 
