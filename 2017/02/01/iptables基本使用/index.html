@@ -136,21 +136,18 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
+  <meta name="description" content="iptables的命令使用格式">
 <meta name="keywords" content="iptables防火墙">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iptables">
-<meta property="og:url" content="https://www.liukui.tech/2018/10/06/iptables/index.html">
+<meta property="og:title" content="iptables基本使用">
+<meta property="og:url" content="https://www.liukui.tech/2017/02/01/iptables基本使用/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
+<meta property="og:description" content="iptables的命令使用格式">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/06/iptables/doubi.jpg">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/06/iptables/">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.404Z">
+<meta property="og:updated_time" content="2019-03-09T08:59:01.267Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iptables">
-<meta name="twitter:description" content="iptables的处理逻辑和命令  对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；  规则意味着iptables是如何通过命令和各种选项进行规则编写的   对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/10/06/iptables/doubi.jpg">
+<meta name="twitter:title" content="iptables基本使用">
+<meta name="twitter:description" content="iptables的命令使用格式">
 
 
 
@@ -159,7 +156,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/10/06/iptables/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/02/01/iptables基本使用/">
 
 
 
@@ -169,7 +166,7 @@
   };
 </script>
 
-  <title>iptables | Coool's Blog</title>
+  <title>iptables基本使用 | Coool's Blog</title>
   
 
 
@@ -349,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">29</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">30</span></a>
 
   </li>
         
@@ -455,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/06/iptables/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/02/01/iptables基本使用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -472,7 +469,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">iptables
+          <h1 class="post-title" itemprop="name headline">iptables基本使用
               
             
           </h1>
@@ -502,7 +499,7 @@
                 
               
 
-              <time title="创建时间：2018-10-06 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-06T08:00:00+08:00">2018-10-06</time>
+              <time title="创建时间：2017-02-01 08:00:00" itemprop="dateCreated datePublished" datetime="2017-02-01T08:00:00+08:00">2017-02-01</time>
             
 
             
@@ -548,7 +545,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">19k</span>
+                <span title="本文字数">17k</span>
               
 
               
@@ -562,7 +559,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">17 分钟</span>
+                <span title="阅读时长">16 分钟</span>
               
             </div>
           
@@ -582,102 +579,17 @@
       
 
       
-        <p><img src="/2018/10/06/iptables/doubi.jpg" alt=""></p>
-<p>iptables的处理逻辑和命令</p>
-<ul>
-<li><p>对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；</p>
-</li>
-<li><p>规则意味着iptables是如何通过命令和各种选项进行规则编写的</p>
-</li>
-</ul>
-<p>对于防火墙而言，原理和设置规则尤其重要，原理意味着怎么对数据报文的走向进行规则限制，规则</p>
-<a id="more"></a>
-<h3 id="Linux防火墙"><a href="#Linux防火墙" class="headerlink" title="Linux防火墙"></a>Linux防火墙</h3><p>防火墙的概念<br>iptables的基本认识<br>iptables的组成:iptables的处理逻辑<br>iptables的基本语法<br>iptables之forward的概念<br>iptables之地址转换法则<br>SNAT源地址转换的具体实现<br>DNAT目标地址转换的具体实现</p>
-<p>不理解的地方：5个表的优先级和规则的优先级<br>什么是显示扩展和隐式扩展</p>
-<p>iptables的处理逻辑和命令</p>
-<ul>
-<li><p>对于防火墙而言，原理和设置规则尤其重要，了解原理意味着清楚防火墙是如何在数据报文的必经之路上进行规则限制即iptables的处理逻辑；</p>
-</li>
-<li><p>规则意味着iptables是如何通过命令和各种选项进行规则编写的</p>
-</li>
-</ul>
-<h3 id="安全技术："><a href="#安全技术：" class="headerlink" title="安全技术："></a>安全技术：</h3><pre><code>防火墙：
-    防范非授权网络访问；隔离功能，工作在网络或主机边缘，对进出网络或主机的数据包基
-    于一定的规则检查，并在匹配某规则时由规则定义的行为进行处理的一组功能的组件，
-    基本上的实现都是默认情况下关闭所有的通过型访问，只开放允许访问的策略
-入侵检测机制和管理系统：
-    当病毒或者网络攻击绕过防火墙进入系统后的入侵检测机制，告知管理员采取手段提供有针对性的指导措施和安全决策依据。
-杀毒软件：病毒入侵后的防御软件
-入侵防御系统：
-    入侵检测系统检测到网络攻击或者病毒时，通过入侵防御系统进行准确的分析判断，
-    在判定为攻击行为后立即予以阻断，主动而有效的保护网络的安全，一般采用在线部署方式
-</code></pre><h3 id="防火墙作用："><a href="#防火墙作用：" class="headerlink" title="防火墙作用："></a>防火墙作用：</h3><pre><code>作用：
-数据报文发到服务器的以太网卡的二种访问行为
-1.linux中，数据报文从服务器的以太网卡经过内核空间走一遭，不与用户空间交互，再从网卡出去，穿墙而过
-2.或者数据报文达到网卡，到达内核空间，进而与本地用户空间的进程进行通讯，大多数网络通讯发生的目标所在，如httpd的访问，vsftp通讯，ssh通讯
+        <h3 id="iptables的命令使用格式"><a href="#iptables的命令使用格式" class="headerlink" title="iptables的命令使用格式"></a>iptables的命令使用格式</h3><a id="more"></a>
+<pre><code>获取帮助：
+                    CentOS 7：man iptables-extensions
+                    CentOS 6：man iptables
 
-究竟数据报文会以哪种方式怎么选择，会根据主机内部的路由表来选择，内核从网卡拿到请求报文，对linux而言tcp/ip协议栈是在内核中
-意味着报文的处理是在内核中处理的，也就是说防火墙必须工作在内核中，防火墙必须在内核中完成tcp/ip报文所流进的位置，用规则取检查，才能真正工作起来；
-根据内核的网络协议栈处理逻辑，会先拆除IP层的封装，获取到目标IP，如果是则拆除ip地址的首部封装，获取传输层封装(传输层的tcp的源端口，目标端口，几个标记位等信息；)
-这里所说端口是指进程地址，防火墙通常是在这个地方做限制的，只有通过防火墙设置的规则，才能进而与用户空间的应用程序进行数据报文的传输.
-</code></pre><p>这里就要说到网络间的主机通信过程了：<br>如：主机A–&gt;R1路由—&gt;R2路由—&gt;R3路由–&gt;主机B的过程：<br>怎么知道报文是从哪到哪的？<br>在整个网络中，主机A发往主机B的数据报文是一般是经过很多路由转发才到达主机B的<br>而主机A上只会标记出报文的源IP:sipA，目标IP：dipB<br>因为要经过很多路由，所以主机A到达下一个路由设备的时候会在报文的最外层加一层以太网帧首部<br>标记出源MAC(主机A)和目标MAC(R1路由Mac)，将数据报文送到R1，R1会拆除外层的以太网帧头部<br>信息，R1看到目标IP不是自己，则会选择将数据报文继续转发R2，此时数据报文则又被封装源MAC(R1的MAC)和目标MAC(R2的MAC),到达R2，R2则继续拆封以太网帧头部，发现目标IP不是自己，则继续封装以太网帧首部转发出去，最终到达主机B，主机B拆封以太网帧首部，看到目标IP是自己，则继续拆分传输层TCP首部，应用层等进行数据的交换<br>这就是为什么数据报文会从主机A成功发送到主机B上去，在数据报文传输的过程中，IP首部的信息不会变，而MAC层首部会连续换很多次！</p>
-<p>真正通信的不是主机而是主机内的进程，数据报文中还会标识出是从主机A的哪个地址，发往主机B<br>的哪个地址，这里的地址就是端口，而端口(2^16-1=65535,0是)则是动态分配的，<br>当原主机上的端口在进行通信的时候，会临时向内核申请端口：叫端口注册，这个端口叫源端口，<br>而目标端口则是如httpd80;ssh22端口，这些服务的端口是固定的，必须有一端的端口是固定的，<br>否则无法进行通讯，当主机B真正收到数据报文时，拆分IP首部后，则会看到传输层信息，看到端口<br>信息，主机B根据那个服务在内核注册的端口信息，将数据报文交给注册端口的这个服务，即交给用户空间的这个服务对应的进程，比如http继续看到httpd的首部，这个过程是在不是在内核空间处理<br>的，而是在用户空间的进程上处理的</p>
-<p>所以这里就会发现在linux内，tcp的五层模型的前四层物理层 数据链路层 网络层 传输层这些<br>都是内核空间处理的，叫传输子网，因为都是在内核中完成的，使用的都是是公共资源模块，为了避免程序员造轮子，把公共资源模块做成了库*.so文件<br>只有应用层是在用户空间处理的，由客户端的浏览器等封装的，叫资源子网的组成部分</p>
-<p>而数据报文达到内核中拆分IP头信息后看到目标IP不是自己，因为主机一般不会作为路由器来使用的，所以数据报文则会被丢弃，但是主机都有核心转发功能，如果核心转发功能是开启的forward,<br>则会查本机的路由表，将数据报文转发能到达目标主机的下一个设备，则数据报文在本机的内核中<br>绕一圈被转发出去</p>
-<h3 id="主机防火墙和网络防火墙"><a href="#主机防火墙和网络防火墙" class="headerlink" title="主机防火墙和网络防火墙"></a>主机防火墙和网络防火墙</h3><pre><code>所以防火墙的防火功能则是数据报文的必经之路上放上所谓的墙，其实就是iptables很多规则，只有墙上事先设置的白名单规则，数据报文才允许经过，其他的报文则都被丢弃。
-前面说的是单台主机上的防火墙：主机防火墙
+规则的编写格式：
+iptables [-t table] COMMAND chain [rulesnum][-m matchname [per-match-options]] [-j targetname [per-target-options]]
+表--&gt;命令--&gt;chain--&gt;对链
 
-然而在一个大的局域网内，通常会有一个大的网络防火墙，因为局域网内的数据报文都是经由
-网络防火墙的,负责整个网络的防护机制
-</code></pre><h3 id="硬件防火墙和软件防火墙"><a href="#硬件防火墙和软件防火墙" class="headerlink" title="硬件防火墙和软件防火墙"></a>硬件防火墙和软件防火墙</h3><pre><code>硬件防火墙：实现逻辑：专业的硬件级防护设备 非通用CPU
-    一般电脑上的CPU可以处理很多软件，而
-    使用的专业CPU，只负责管理防火这类的功能
-    通用CPU：可以完成诸多的功能
-软件防火墙：
-    通过特殊的防火软件来实现
-而单纯的硬件防火墙一般是达不到防火目的的，纯软件却可以达到防火目的，一般都是软硬件一起来实现防火目的的
-</code></pre><p>网络防火墙:检测TCP协议的下4层的协议报文(传输层极其以下的层数)<br>应用层防火墙：只是适用于某种服务和协议</p>
-<h3 id="linux上的防火墙实现"><a href="#linux上的防火墙实现" class="headerlink" title="linux上的防火墙实现"></a>linux上的防火墙实现</h3><pre><code>linux的防火墙是模仿OpenBSD实现的防火墙
-    1.传软件实现
-    2.内核级实现的，只负责TCP协议的下4层的协议报文(传输层极其以下的层数)中工作和防护
-    也就是在前文所说的传输子网上进行工作和防护的
-</code></pre><p>内核级的防火机制：<br>在数据报文经过的路径上仔细选择5个钩子：hook，因为是必经之地，所以每个通过的报文都会<br>被hook勾住，然而这里只设置了hook，而没有设置规则，这些规则是由主机的管理员来设置的<br>只有满足设置的规则的数据报文才允许通过<br>当然这个hook不单单是防火功能，有时把经过的数据报文勾起来，修改它的目标地址源地址<br>信息，这个功能叫地址转换，NAT<br>所以对linux而言，防火墙的功能不单单是防火这一个功能，还包括地址转换，报文修改和<br>连接追踪的关闭等几项功能</p>
-<h3 id="Netfilter框架的组成和负责的功能"><a href="#Netfilter框架的组成和负责的功能" class="headerlink" title="Netfilter框架的组成和负责的功能"></a>Netfilter框架的组成和负责的功能</h3><p>Netfilter只是内核级的framework<br>通过系统调用实现：syscall:iptables<br>由5个钩子基本实现了linux的防火墙<br>而这5个hook统称netfilter,只是内核中的一个框架framework，hook只是勾住数据报文，规则<br>则由用户管理员添加，只需要在5个hook的位置上添加相应规则即可</p>
-<p>前3个hook是防火功能<br>    input+output+forward<br>        访问本机内部的应用<br>后2个hook:是实现地址转换，报文修改和连接追踪的关闭<br>    prerouting:在进入本机网卡接收队列前的瞬间：路由前<br>    postrouting:由本机发出或者forward转发的离开本机网卡接收队列的瞬间：路由后<br>    而prerouting是不能做过滤的</p>
-<p>三种报文流向：<br>流入的报文：<br>    prerouting–&gt;路由–&gt;input–&gt;进入用户空间进程<br>流出的报文：这里说的流出报文是指由本机主动发出的请求报文<br>    用户空间进程 –&gt;output–&gt;postrouting<br>转发的报文：<br>    prerouting–&gt;forward–&gt;postrouting</p>
-<p>而数据报文是有来有往的，有请求报文就应该有响应报文，所以整个通信的过程报文流向应该是<br>    先流入报文：请求报文<br>        prerouting–&gt;路由–&gt;input–&gt;进入用户空间进程<br>    再出去：响应报文<br>        用户空间进程 –&gt;output–&gt;postrouting<br>转发报文：请求<br>    prerouting–&gt;forward–&gt;postrouting<br>转发报文的：响应<br>    也是prerouting–&gt;forward–&gt;postrouting<br>这里要搞清楚，因为客户端和服务端是相对的，进来的都是prerouting出去的都是postrouting</p>
-<p>而请求和响应的数据报文，因为方向不同，数据报文内封装的源IP+端口和目标IP+端口是相反的<br>客户端和服务端则是相对的，转发报文也是类似的，也是有来有往的<br>而为了服务器资源来说，如果要阻止报文，控制的是请求报文而非响应报文</p>
-<h3 id="什么是iptables？"><a href="#什么是iptables？" class="headerlink" title="什么是iptables？"></a>什么是iptables？</h3><h3 id="实现规则的工具iptables和firewalld"><a href="#实现规则的工具iptables和firewalld" class="headerlink" title="实现规则的工具iptables和firewalld"></a>实现规则的工具iptables和firewalld</h3><p>因为Netfilter只是框架，规则由用户来设置，而Netfilter是内核中的，用户是无法直接与内核<br>进行交流的，所以linux创建了一个在用户空间的工具iptables,iptables是一个规则编辑器，<br>能调用内核级的Netfilter的系统调用接口，把写的规则送到内核上的hook上，并立即生效，而<br>内核的数据是保存在内存中的，关机则会丢失定义好的规则，要想规则永久生效，就需要保存在<br>系统reboot时自动加载的文件中，或者由启动的软件间接调用这个规则文件(iptables-server).</p>
-<p>而ipfirewall–&gt;ipchains–&gt;iptables–&gt;nfstables</p>
-<p>iptables是工作在网络层，可以通过隐式扩展工作在传输层，通过显示扩展的string工作在应用层<br>但是不能识别应用层http协议，ftp协议的请求方法，可以识别报文中的字串</p>
-<h3 id="iptables的组成"><a href="#iptables的组成" class="headerlink" title="iptables的组成"></a>iptables的组成</h3><p>iptables由五个表和五个链以及一些规则组成</p>
-<pre><code>五个表table：filter、nat、mangle、raw、security
 
-filter表：过滤规则表，根据预定义的规则过滤符合条件的数据包
-nat表：network address translation 地址转换规则表
-mangle：修改数据标记位规则表
-raw：关闭NAT表上启用的连接跟踪机制，加快封包穿越防火墙速度
-security：用于强制访问控制（MAC）网络规则，由Linux安全模块（如SELinux）实现
-优先级由高到低的顺序为:security --&gt;raw--&gt;mangle--&gt;nat--&gt;filter
-</code></pre><p>如果把规则放在input和output上称为主机防火墙，只防护当前主机内部的进程是如何访问的</p>
-<h3 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a>iptables</h3><p>netfilter内核级的框架，内核framework，过滤器<br>syacall：iptables工具，管理规则：</p>
-<p>centos7上：默认安装firewall<br>    系统内自带的前端工具firewall;默认启用，建议关闭或卸载即可<br>        firewalld:系统守护进程，firewall-cmd<br>    在真正的防火墙管理时，建议用iptables来管理的<br>        iptables：<br>    保存iptabels规则的命令包<br>        iptables-services 需要自己手动安装<br>        用iptables-save restore管理加载事先设定好的防火墙规则即可</p>
-<h3 id="Netfilter表和链对应关系"><a href="#Netfilter表和链对应关系" class="headerlink" title="Netfilter表和链对应关系"></a>Netfilter表和链对应关系</h3><p><img src="/2018/10/06/iptables/" alt="Netfilter表的优先次序"></p>
-<p>报文流向：</p>
-<pre><code>* 流入报文路径：到本机内部
-* 流出报文路径：由本机发出
-* 转发报文路径：转发
-</code></pre><p>tables <--> chains链:在通过iptables引用是是需要大写的</--></p>
-<pre><code>* filter: INPUT,FORWARD,OUTPUT只有3个链
-* nat: PREROUTING,INPUT,OUTPUT,POSTROUTING 4个链
-* mangle: PREROUTING,INPUT,FORWARD,OUTPUT,POSTROUTING
-* raw: PREROUTING,OUTPUT
-</code></pre><p>就算filter和nat上都在同一个input链上，因为不属于一个table的，规则是各自生效的<br>那么input上同时有filter和nat表的规则时，则是有优先级的</p>
-<p>为了实验，要先关闭firewalld设置开机不启动<br>systemctl stop firewalld<br>systemctl disabled firewalld<br>systemctl is-enabled firewalld</p>
-<p>规则顺序很重要<br>因为有些规则具有一票否则权比如drop，一旦报文匹配到drop规则，后面的规则都不看<br>因为有些规则具有一票否则权比如accept，一旦报文匹配到drop规则，即使后面有drop也无效<br>从这两条来说<br>把检查条件苛刻的规则放前面<br>规则调用的模块化管理：自定义链，由主链取调用才会生效，删除或更改时方便管理</p>
-<h3 id="iptables的命令使用格式"><a href="#iptables的命令使用格式" class="headerlink" title="iptables的命令使用格式"></a>iptables的命令使用格式</h3><p>获取帮助：<br>                    CentOS 7：man iptables-extensions<br>                    CentOS 6：man iptables</p>
-<p>规则的编写格式：<br>iptables [-t table] COMMAND chain [rulesnum][-m matchname [per-match-options]] [-j targetname [per-target-options]]<br>表–&gt;命令–&gt;chain–&gt;对链</p>
-<pre><code>-t table：
+-t table：
     默认为filter；其它可用的有raw, mangle, nat；
 
 子命令COMMAND:
@@ -715,6 +627,8 @@ security：用于强制访问控制（MAC）网络规则，由Linux安全模块�
 chain：
     (1) 内建链；INPUT OUTPUT FORWARD PREROUTING POSTROUTING
     (2) 自定义链；
+            自定义连只存在于iptables的上下文，只有被主链调用时，才会
+            存在于netfilter的上下文和5个hook挂上钩，才会生效。
 
 匹配条件：matchname
     多重条件：逻辑关系为“与”；
@@ -741,7 +655,8 @@ chain：
 
     匹配条件又分为：通用匹配和扩展匹配
     通用匹配条件：
-        5种检查方式：源 目标 协议 流入 流出 
+        检查的是下四层协议，对网络层的源地址-s，目标地址-d，协议类型-p进行检查
+            对数据链路层对从网卡的流入-i,流出-o进行检查
         [!] -s, --sip,--source-ip报文源地址
             其值可以是单个IP，或者连续IP，可以是网络地址，不能是离散的地址
         [!] -d, --destination address[/mask][,...]：检查报文中的目标IP地址是否符合此处指定的地址或范围；
@@ -760,12 +675,15 @@ chain：
     正常情况下，网络防火墙是用来检查网络层首部来获得相关信息的
 
     扩展匹配条件：又分为隐式扩展和显示扩展
+        扩展匹配是为了更精准的条件过滤，比如httpd传输时是需要资源压缩的，
+        而只有文本文件才适合压缩，所以在扩展中才能进行过滤。
+
         /lib/modules/$(uname -r)/net/netfilter/下xt开头的就是扩展模块
             默认没有载入到内核中，只有当用时才加载的，就叫隐式扩展
         netfilter为了做深入的条件检查，通过特定的模块来实现检查功能
 
         隐式扩展：不用-m选项指出matchname即可使用此match的专用选项进行匹配；
-            -p tcp：隐含了-m tcp；
+            -p tcp：隐含了-m tcp； 
                 [!] --source-port,--sport port[:port]
                     匹配报文中传输层的源端口；
                     可以使用单个端口或者连续端口，但是不能使用离散端口
@@ -802,7 +720,7 @@ chain：
                 CentOS 6：man iptables
 
             1、multiport扩展
-                以离散或连续的方式定义多端口匹配条件；
+                离散方式的多端口匹配
                 离散最多为15个，以冒号隔开的算一个，所以连续的端口用冒号隔开
                  [!] --source-ports,--sports port[,port|,port:port]...：指定多个源端口；
                  [!] --destination-ports,--dports port[,port|,port:port]...：指定多个目标端口；
@@ -863,24 +781,39 @@ chain：
 
             7、limit扩展
                 基于收发报文的速率进行匹配；
-
+                基于令牌桶算法：bucket
                 --limit rate[/second|/minute|/hour|/day]：平均速率
-                --limit-burst number：峰值速率
+                --limit-burst number：峰值速率,突发速率，最大速率
 
-            8、state扩展
-                状态检测；连接追踪机制（conntrack）；
+            8、state扩展：有状态追踪的防火墙
+                stateful有状态；stateless无状态；
+                状态检测；连接追踪的状态监测机制（conntrack）；
+            a.ip报文是无状态的，客户端向当前主机第一次发出请求，而第二次再发出请    求，对于服务器来说都当成第一次
+            b.对于服务器在IP层控制上来说，服务器响应报文和服务器主动发出请求报文    是没有区别的
+            c.基于以上两点，可以让第二次的报文和第一次关联起来，让IP报文有记忆功 能，让当前主机能识别一个新的连接请求是否和之前的连接有关联关系，记忆功能就是把之前的连接请求记录在内核的连接追踪表中，但是这个表是占用内核的    内存中，所以还需要进行连接数和时长的限制
+            d.因为需要查追踪表，所以效率是比之前慢的
+            e.然而是使用hash方式查找的，1w和10w查找时间是大概一致的，效率不会太低
+            f.对tcp,udp.icmp.stmp都是可以进行追踪的，和tcp的状态是没什么实际关系的.
 
-                 INVALID：无法识别的状态； 
-                 ESTABLISHED：已建立的连接；
-                 NEW：新连接； 
-                 RELATED：相关联的连接；
-                 UNTRACKED：未追踪的连接；
+             NEW：新连接；这个新连接是和协议无关的，独立于四层协议之外的
+             ESTABLISHED：已建立的连接； 
+             RELATED：相关联的连接；FTP
+             INVALID：无法识别的状态； 
+             UNTRACKED：未追踪的连接；
+             SNAT：
+             DNAT：
 
                 nf_conntrack内核模块；记忆是由内核空间的conntrack模块实现的
                     追踪到的连接：/proc/net/nf_conntrack文件中；
 
                     能追踪的最大连接数量定义在：/proc/sys/net/nf_conntrack_max
-                        此值可自行定义，建议必要时调整到足够大；
+        此值可自行定义，当主机作为网关网络防火墙时，更应该必要时调整到足够大；
+
+                    要想永久保存修改的值需要保存到
+                            vim /etc/sysctl.d/nf_conntrack_max.conf
+                                net.nf_conntrack_max = 1000000
+                            再加载一次就行了
+                            sysctl -p /etc/sysctl.d/nf_conntrack_max.conf   
 
                     不同的协议的连接追踪的时长：
                         /proc/sys/net/netfilter/
@@ -888,8 +821,9 @@ chain：
                 [!] --state STATE
 
                 如何开放被模式的ftp服务： 
+                    21端口是命令连接，
                     (1) 装载追踪ftp协议的模块；
-                        # modprobe nf_conntrack_ftp
+                        modprobe nf_conntrack_ftp
 
                     (2) 放行命令连接
                         ~] # iptables -A INPUT -d 172.16.100.67 -p tcp -m state --state ESTABLISHED -j ACCEPT
@@ -900,6 +834,7 @@ chain：
 
         处理动作（目标）
             -j targetname [per-target-options] 
+            j是jump的意思，自定义链也可以放在target上，即主链跳转到自定义链
 
             targetname：
             简单：
@@ -928,18 +863,19 @@ chain：
     比如：string检查规则(具体看示例)等
 </code></pre><h3 id="iptables的使用规范"><a href="#iptables的使用规范" class="headerlink" title="iptables的使用规范"></a>iptables的使用规范</h3><pre><code>iptables -F 即清空filter表的所有链，因为默认是filter表
 iptables -F INPUT，清空filter表上的INPUT链的所有规则
-定义防火墙要设置白名单
+服务器要设置黑名单
 极端清空下所有链都是drop的
 如果主机有多个网卡，当网关来用的时，forward链就是用来当网络防火墙来用的
     规则优化：
-    (1) 注意规则的优先顺序，检查严格的放到前面，
-    (1) 可安全放行所有入站及出站，且状态为ESTABLISHED的连接；
-    (2) 服务于同一类功能的规则，匹配条件严格的放前面，宽松放后面；
-    (3) 服务于不同类功能的规则，匹配报文可能性较大扩前面，较小放后面；
-    (4) 设置默认策略；
+    (1) 注意规则的优先顺序，检查严格的要放到前面
+    (2) 可安全放行所有入站及出站，且状态为ESTABLISHED的连接；
+    (3) 服务于同一类功能的规则，匹配条件严格的放前面，宽松放后面；
+    (4) 服务于不同类功能的规则，匹配报文可能性较大扩前面，较小放后面；
+    (5) 设置默认策略；
         (a) 最后一条规则设定；
-        (b) 默认策略设定；
-</code></pre><h5 id="隐式扩展示例："><a href="#隐式扩展示例：" class="headerlink" title="隐式扩展示例："></a>隐式扩展示例：</h5><pre><code>隐式扩展示例1：SSH服务
+        (b) 默认策略设定；可以使用-P或者-A ，建议使用-A
+    (6)对于一类的规则限制，最好只写一条规则
+</code></pre><h3 id="隐式扩展示例："><a href="#隐式扩展示例：" class="headerlink" title="隐式扩展示例："></a>隐式扩展示例：</h3><pre><code>隐式扩展示例1：SSH服务
     因为是ssh连接的，如果要设置默认策略为DROP，就一定要先开启SSH服务的请求和回应
     iptables -A INPUT -i ens33 -s 192.168.34.0/24 -d 192.168.34.103 -p tcp --dport 22 -j ACCEPT
     再设置默认INPUT链策略为DROP：两种写法：下文会表示自定义链的写法好处
@@ -973,15 +909,19 @@ iptables -t filter -A OUTPUT -j REJECT(代替默认策略的写法)
 如何设置当前主机可以ping其他主机，加在最后一条的前面
     在之前的基础上此时主机主动ping其他主机也是受控的
     icmp是有类型的,见下图，8 echo-request;  0 echo reply
-    iptables -I OUTPUT 3 -p icmp --icmp-type 8 -j ACCEPT
-    iptables -I INPUT 3 -p icmp --icmp-type 0 -j ACCEPT
+    当前主机主动ping其他主机：
+        iptables -I OUTPUT 3 -p icmp --icmp-type 8 -j ACCEPT
+        iptables -I INPUT 3 -p icmp --icmp-type 0 -j ACCEPT
+    其他主机ping防火请主机：
+        iptables -I INPUT 3 -p icmp --icmp-type 8 -j ACCEPT
+        iptables -I OUTPUT 3 -p icmp --icmp-type 0 -j ACCEPT
 
 隐式扩展示例5：DNS -p udp
     如何设置开放本机可以通过DNS解析域名
     从本机出去，到达互联的DNS服务器，再接收回应的报文
     iptables -I OUTPUT -p udp --dport 53 -j ACCEPT 出去的报文
     iptables -I INPUT -p udp --sport 53 -j ACCEPT 回来的报文
-</code></pre><h5 id="自定义链的使用示例-N-E-X-F"><a href="#自定义链的使用示例-N-E-X-F" class="headerlink" title="自定义链的使用示例(-N -E -X -F)"></a>自定义链的使用示例(-N -E -X -F)</h5><p>以在自定义链中加入samba服务为例</p>
+</code></pre><h3 id="自定义链的使用示例-N-E-X-F"><a href="#自定义链的使用示例-N-E-X-F" class="headerlink" title="自定义链的使用示例(-N -E -X -F)"></a>自定义链的使用示例(-N -E -X -F)</h3><p>以在自定义链中加入samba服务为例</p>
 <pre><code>-N：新建一条自定义的规则链
 只不过在自定义链上是由计数器的
 iptables -N new_rules 新建自定义链
@@ -1001,7 +941,7 @@ iptables -E new_rules cifs_rules 改自定义链，必须要0引用的，0 refer
         iptables -D INPUT 5
         iptables -F cifs_rules
         iptables -X cifs_rules
-</code></pre><h5 id="显示扩展示例"><a href="#显示扩展示例" class="headerlink" title="显示扩展示例"></a>显示扩展示例</h5><p>必须使用-m选项指出matchname，有的match可能存在专用的选项</p>
+</code></pre><h3 id="显示扩展示例"><a href="#显示扩展示例" class="headerlink" title="显示扩展示例"></a>显示扩展示例</h3><p>必须使用-m选项指出matchname，有的match可能存在专用的选项</p>
 <pre><code>显示扩展示例1：multiport扩展 --多端口匹配
 将21 22 80 139 445一起开启允许访问：
 iptables -I INPUT -p tcp -m multiport --dports 21:22,80,139,445 -j ACCEPT
@@ -1027,8 +967,69 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
     （因为这个规则比较严格，所以记得要放到允许访问httpd规则的前面！）
     iptables -I INPUT -p tcp --dport 80 -m string --string &quot;sex&quot; --algo bm -j REJECT
     iptables -I OUTPUT -p tcp --sport 80 -m string --string &quot;sex&quot; --algo bm -j REJECT
+    但是如果httpd有多个页面，只有访问特定页面时才拒绝时，其他的页面还是需要能访问
+    iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+    iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
 
 显示扩展示例5：time扩展
+    比如1：控制httpd服务访问时间为8:00-18:00
+    iptables -I INPUT 1 -p tcp --dport 80 -s 192.168.34.107 -m time --timestart 08:00:00 --timestop 20:00:00 --kerneltz -j ACCEPT
+    iptables -I OUTPUT 1 -p tcp --sport 80 -d 192.168.34.107 -m time --timestart 08:00:00 --timestop 20:00:00 --kerneltz -j ACCEPT
+    比如2：控制对IP:192.168.34.107的ping命令访问时间为8:00-16:00
+    iptables -I INPUT 3 -p icmp --icmp-type 8 -s 192.168.34.107 -m time --timestart 08:00:00 --timestop 16:00:00 --kerneltz -j ACCEPT
+    iptables -I OUTPUT 3 -p icmp --icmp-type 0 -d 192.168.34.107 -m time --timestart 08:00:00 --timestop 16:00:00 --kerneltz -j ACCEPT
+
+显示扩展示例6：connlimit扩展
+    以SSH服务为例，当当连接数大于3时，拒绝连接
+    iptables -I INPUT 1 -p tcp --dport 22 -m connlimit --connlimit-above 3 -j REJECT
+    对于一类的规则限制，最好只写一条规则
+
+显示扩展示例7：limit扩展
+    比如：限制192.168.34.105ping防火墙主机为每分钟20个，最大峰值速率为5
+    iptables -R INPUT 3 -p icmp --icmp-type 8 -s 192.168.34.105 -m limit --limit 20/minute --limit-burst 5 -j ACCEPT
+    iptables -I OUTPUT 2 -p icmp --icmp-type 0 -j ACCEPT
+
+显示扩展示例8：state扩展
+1.使用state就可以简化之前的所有规则了，这里对21,22,80,53,139,445做连接追踪功能
+    先建立入栈的ESTABLISHED的规则
+        iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+    再建立出栈的ESTABLISHED的规则
+        iptables -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
+    再建立入栈的NEW的规则
+        iptables -A INPUT -p tcp -m multiport --dports 21:22,80,53,139,445 -m state --state NEW -j ACCEPT
+2.对于FTP来说，因为是被动模式，服务端还开启一个随机端口，但是之前并没有建立
+    随机端口的NEW规则，也没有创建RELATED的规则，所以这里要新建一条RELATED规则
+    a.ftp的RELATD,依赖于nf_conntrack_ftp模块
+    b.创建FTP的RELATED规则
+        iptables -I INPUT 3 -p tcp -m state --state RELATED -j ACCEPT
+        因为端口是不确定的，所以用RELATED
+    这样就建立了FTP的访问限制了
+</code></pre><font size="3" color="#FF0000">通过state的显示扩展，可以看出上面所有的规则都可以简化成NEW,ESTABLISHED,RELATED的状态<br>具体可以参考下面的各种服务进行规则控制写法示例<br></font>
+
+<h3 id="通过iptables规则对下面服务实现控制："><a href="#通过iptables规则对下面服务实现控制：" class="headerlink" title="通过iptables规则对下面服务实现控制："></a>通过iptables规则对下面服务实现控制：</h3><pre><code>基于连接追踪功能对下面服务进行控制
+dns httpd：互联网
+nfs samba vsftpd 仅允许loaclnet
+mysql:loaclhost
+ping :all 限制速率为10/min
+ssh:IP最大并发连接数3，工作时间的8:00-18:00允许连接
+要求默认策略为拒绝
+
+iptables -I INPUT 1 -m state --state ESTABLISHED -j ACCEPT
+iptables -I INPUT 2 -p tcp -m multiport --dports 53,80 -m state --state NEW -j ACCEPT
+iptables -I INPUT 3 -p udp --dport 53 -m state --state NEW -j ACCEPT
+iptables -I INPUT 4 -p tcp --dport 22 -m connlimit --connlimit-above 3 -m time --timestart 08:00:00 --timestop 18:00:00 --weekday 1,2,3,4,5  -j REJECT
+iptables -I INPUT 5 -p tcp -s 192.168.34.0/24 -m multiport --dports 21:22,2049,139,445 -m state --state NEW -j ACCEPT
+iptables -I INPUT 6 -p tcp -s 127.0.0.1 --dport 3306 -m state --state NEW -j ACCEPT
+modprobe nf_conntrack_ftp
+iptables -I INPUT 7 -p tcp -m state --state RELATED -j ACCEPT
+iptables - I INPUT 8 -p icmp --icmp-type 8 -m limit --limit 10/minute --limit-burst 1 -j ACCEPT
+iptables -I INPUT 9 -p icmp --icmp-type 0 -j ACCEPT
+iptables -A INPUT -j REJECT
+
+iptables -I OUTPUT 1 -m state --state ESTABLISHED -j ACCEPT
+iptables -A OUTPUT 2 -p tcp -m tcp --sport 10000:65535 -j ACCEPT
+iptables -I OUTPUT 3 -p icmp --icmp-type 8 -j ACCEPT
+iptables -A OUTPUT -j REJECT
 </code></pre>
       
     </div>
@@ -1162,8 +1163,8 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/10/k8s-volumes/" rel="next" title="k8s-volumes">
-                <i class="fa fa-chevron-left"></i> k8s-volumes
+              <a href="/2017/02/01/linux防火墙实现原理/" rel="next" title="linux防火墙实现原理">
+                <i class="fa fa-chevron-left"></i> linux防火墙实现原理
               </a>
             
           </div>
@@ -1172,8 +1173,8 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/10/iptables之FORWARD和NAT/" rel="prev" title="iptables之FORWARD和NAT">
-                iptables之FORWARD和NAT <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/01/iptables-NAT表管理/" rel="prev" title="iptables-NAT表管理">
+                iptables-NAT表管理 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1246,7 +1247,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1439,7 +1440,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux防火墙"><span class="nav-number">1.</span> <span class="nav-text">Linux防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全技术："><span class="nav-number">2.</span> <span class="nav-text">安全技术：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙作用："><span class="nav-number">3.</span> <span class="nav-text">防火墙作用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主机防火墙和网络防火墙"><span class="nav-number">4.</span> <span class="nav-text">主机防火墙和网络防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件防火墙和软件防火墙"><span class="nav-number">5.</span> <span class="nav-text">硬件防火墙和软件防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux上的防火墙实现"><span class="nav-number">6.</span> <span class="nav-text">linux上的防火墙实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Netfilter框架的组成和负责的功能"><span class="nav-number">7.</span> <span class="nav-text">Netfilter框架的组成和负责的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是iptables？"><span class="nav-number">8.</span> <span class="nav-text">什么是iptables？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现规则的工具iptables和firewalld"><span class="nav-number">9.</span> <span class="nav-text">实现规则的工具iptables和firewalld</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的组成"><span class="nav-number">10.</span> <span class="nav-text">iptables的组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">11.</span> <span class="nav-text">iptables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Netfilter表和链对应关系"><span class="nav-number">12.</span> <span class="nav-text">Netfilter表和链对应关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的命令使用格式"><span class="nav-number">13.</span> <span class="nav-text">iptables的命令使用格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境下如何设置防火墙？："><span class="nav-number">14.</span> <span class="nav-text">生产环境下如何设置防火墙？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的使用规范"><span class="nav-number">15.</span> <span class="nav-text">iptables的使用规范</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#隐式扩展示例："><span class="nav-number">15.0.1.</span> <span class="nav-text">隐式扩展示例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#自定义链的使用示例-N-E-X-F"><span class="nav-number">15.0.2.</span> <span class="nav-text">自定义链的使用示例(-N -E -X -F)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#显示扩展示例"><span class="nav-number">15.0.3.</span> <span class="nav-text">显示扩展示例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的命令使用格式"><span class="nav-number">1.</span> <span class="nav-text">iptables的命令使用格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境下如何设置防火墙？："><span class="nav-number">2.</span> <span class="nav-text">生产环境下如何设置防火墙？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的使用规范"><span class="nav-number">3.</span> <span class="nav-text">iptables的使用规范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐式扩展示例："><span class="nav-number">4.</span> <span class="nav-text">隐式扩展示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义链的使用示例-N-E-X-F"><span class="nav-number">5.</span> <span class="nav-text">自定义链的使用示例(-N -E -X -F)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示扩展示例"><span class="nav-number">6.</span> <span class="nav-text">显示扩展示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过iptables规则对下面服务实现控制："><span class="nav-number">7.</span> <span class="nav-text">通过iptables规则对下面服务实现控制：</span></a></li></ol></div>
             
 
           </div>
@@ -1473,7 +1474,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">308k</span>
+    <span title="站点总字数">307k</span>
   
 
   
@@ -1484,7 +1485,7 @@ iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:40</span>
+    <span title="站点阅读时长">4:39</span>
   
 </div>
 

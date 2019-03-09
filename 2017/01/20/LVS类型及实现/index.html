@@ -148,8 +148,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR网络模型.jpg">
 <meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR模型的工作原理.jpg">
 <meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-TUN模型的工作原理.jpg">
-<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
-<meta property="og:updated_time" content="2019-03-09T08:18:52.909Z">
+<meta property="og:updated_time" content="2019-03-09T08:25:50.405Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVS类型及实现">
 <meta name="twitter:description" content="LVS">
@@ -352,7 +351,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">29</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">30</span></a>
 
   </li>
         
@@ -752,8 +751,7 @@ lvs-dr：
     由于MTU的最大值是1500字节，留给IP层、TCP层、传输层、首部的也就40字节，而IPIP类型则会多出一个IP层首部，
     即1520字节，而很多路由器设备会将1520的传输单元进行切片才能进行传输,所以对于TUN类型的必须人为指定最大传
     输单元，留出额外需要封装的IP首部大小而不超过1500.
-</code></pre><h3 id="FullNat"><a href="#FullNat" class="headerlink" title="FullNat"></a>FullNat</h3><p><img src="/2017/01/20/LVS类型及实现/" alt="FullNat"></p>
-<pre><code>FullNat类型没有收录到linux内核中；需要打补丁;
+</code></pre><h3 id="FullNat"><a href="#FullNat" class="headerlink" title="FullNat"></a>FullNat</h3><pre><code>FullNat类型没有收录到linux内核中；需要打补丁;
 FullNAT工作原理：
     为了弥补NAT类型的DNAT中的RS网关必须指向DIP，FullNAT则在转发给RS时的源IP和目标IP由CIP-&gt;VIP修改为
     DIP-&gt;RIP,RS的响应报文则由RS直接响应给DIP，即使中间跨多个路由器，也会转发给Director,Director最终响应给CIP
@@ -1175,8 +1173,8 @@ PPC:单个端口
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/22/mysql读写分离/" rel="prev" title="mysql读写分离">
-                mysql读写分离 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/01/linux防火墙实现原理/" rel="prev" title="linux防火墙实现原理">
+                linux防火墙实现原理 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1249,7 +1247,7 @@ PPC:单个端口
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1476,7 +1474,7 @@ PPC:单个端口
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">308k</span>
+    <span title="站点总字数">307k</span>
   
 
   
@@ -1487,7 +1485,7 @@ PPC:单个端口
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:40</span>
+    <span title="站点阅读时长">4:39</span>
   
 </div>
 
