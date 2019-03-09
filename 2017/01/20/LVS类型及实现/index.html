@@ -136,21 +136,24 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="Linux Virtual Server">
-<meta name="keywords" content="SLB">
+  <meta name="description" content="LVS">
+<meta name="keywords" content="LB负载均衡">
 <meta property="og:type" content="article">
-<meta property="og:title" content="lvs">
-<meta property="og:url" content="https://www.liukui.tech/2017/03/22/lvs/index.html">
+<meta property="og:title" content="LVS类型及实现">
+<meta property="og:url" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="Linux Virtual Server">
+<meta property="og:description" content="LVS">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs工作原理">
-<meta property="og:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs的调度算法模块.png">
-<meta property="og:updated_time" content="2019-02-25T00:46:17.683Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR网络模型.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR模型的工作原理.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-TUN模型的工作原理.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
+<meta property="og:updated_time" content="2019-03-09T08:18:52.909Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lvs">
-<meta name="twitter:description" content="Linux Virtual Server">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/03/22/lvs/ipvs工作原理">
+<meta name="twitter:title" content="LVS类型及实现">
+<meta name="twitter:description" content="LVS">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg">
 
 
 
@@ -159,7 +162,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/03/22/lvs/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
 
 
 
@@ -169,7 +172,7 @@
   };
 </script>
 
-  <title>lvs | Coool's Blog</title>
+  <title>LVS类型及实现 | Coool's Blog</title>
   
 
 
@@ -330,7 +333,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">16</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">17</span></a>
 
   </li>
         
@@ -349,7 +352,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">28</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">29</span></a>
 
   </li>
         
@@ -455,7 +458,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/03/22/lvs/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -472,7 +475,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">lvs
+          <h1 class="post-title" itemprop="name headline">LVS类型及实现
               
             
           </h1>
@@ -498,7 +501,7 @@
                 
               
 
-              <time title="创建时间：2017-03-22 08:00:00" itemprop="dateCreated datePublished" datetime="2017-03-22T08:00:00+08:00">2017-03-22</time>
+              <time title="创建时间：2017-01-20 08:00:00" itemprop="dateCreated datePublished" datetime="2017-01-20T08:00:00+08:00">2017-01-20</time>
             
 
             
@@ -516,7 +519,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/SLB/" itemprop="url" rel="index"><span itemprop="name">SLB</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/" itemprop="url" rel="index"><span itemprop="name">负载均衡</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/LVS/" itemprop="url" rel="index"><span itemprop="name">LVS</span></a></span>
 
                 
                 
@@ -544,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.2k</span>
+                <span title="本文字数">16k</span>
               
 
               
@@ -558,7 +568,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">6 分钟</span>
+                <span title="阅读时长">14 分钟</span>
               
             </div>
           
@@ -578,146 +588,450 @@
       
 
       
-        <h3 id="Linux-Virtual-Server"><a href="#Linux-Virtual-Server" class="headerlink" title="Linux Virtual Server"></a>Linux Virtual Server</h3><a id="more"></a>
-<h3 id="Cluster的集群的概念"><a href="#Cluster的集群的概念" class="headerlink" title="Cluster的集群的概念"></a>Cluster的集群的概念</h3><pre><code>Cluster：集群,为解决某个特定问题将多台计算机组合起来形成的单个系统
-Linux Cluster集群的类型：
-    LB：Load Balancing，负载均衡
-    HA：High Availiablity，高可用，SPOF（single Point Of failure）
-         MTBF:Mean Time Between Failure 平均无故障时间
-         MTTR:Mean Time To Restoration（ repair）平均恢复前时间
-         A=MTBF/（MTBF+MTTR） (0,1)：99%, 99.5%, 99.9%, 99.99%, 99.999%
-    HPC：High-performance computing，高性能 www.top500.org
-调度算法：
-分布式系统：
-作用：因为seesion和cookie的
-</code></pre><h3 id="LB-Cluster的实现"><a href="#LB-Cluster的实现" class="headerlink" title="LB Cluster的实现"></a>LB Cluster的实现</h3><pre><code>根据工作的网络层次ISO模型可以分：
-通信子网和资源子网
-    四层调度器：在内核级中，即ISO模型的下四层，完成请求报文的分析
-                转发，交换
-                LVS(ipvs),nginx(stream模块),HAProxy(mode tcp)
-    七层调度器：在用户空间中，即ISO模型的应用层上的
-                代理：proxy
-                nginx(http_upstream)，HAProxy,ATS,Envoy,Traefik
+        <h3 id="LVS"><a href="#LVS" class="headerlink" title="LVS"></a>LVS</h3><a id="more"></a>
+<h3 id="LVS集群的4种网络模型"><a href="#LVS集群的4种网络模型" class="headerlink" title="LVS集群的4种网络模型"></a>LVS集群的4种网络模型</h3><pre><code>LVS Type是指lvs工作的拓扑结构和转发机制
 
-硬负载：F5,BigIP,Netscaler,Citrix 
+1.NAT:多目标DNAT，通过修改请求报文的目标IP和Port为经由调度算法挑选出的某后端RS的
+    RIP和PORT，再发送到POSTROUTING链上 
 
-四层调度的工作过程：
-    因为tcp/ip协议栈是在内核中的，四层调度是工作在下四层的,四层调度器只需要分析用
-    户的请求报文中的网络层(目标IP)和传输(目标端口)是什么，就可以做出调度决策，这个
-    请求报文就不会进入到调度器的用户空间中，而只是在内核空间中分析进而又通过内核进
-    行转发传输出去了.而用户的请求报文是没有被更改过的，因为调度是在内核中完成的，所以四层调度也叫内核级调度.
-    四层调度不受限于客户端套接字，最大支持400w个并发
-七层调度的工作原理：
-    详见nginx七层调度工作原理
-    七层调度因为要与后端服务器进行通信，就需要使用套接字，则最大能使用4W个socket
-    而绝大多数的网站最多也就4W个并发，即使七层调度最大支持4w个并发，如果是使用短连接，长连接默认60s，所以网站一天也可以有4w*2*86400个请求，弹性计算可以支持峰值
-    过去之后的服务器资源伸缩.
-</code></pre><h3 id="负载均衡和会话保持"><a href="#负载均衡和会话保持" class="headerlink" title="负载均衡和会话保持"></a>负载均衡和会话保持</h3><pre><code>只要提到负载均衡那么会话保持也是必然要提到的问题
+2.DR:不动源IP、源端口、目标IP、目标端口，即传输层TCP/UDP首部保持不变，转发方式通过
+    先拆除帧首部再在IP报文外封装新的以太网帧首部(源MAC-DIPmac,目标MAC-RIPmac)扔回给交换机，由交换机通过MAC地址完成调度，
+    目标MAC是由调度算法挑选出的某后端
+    RS的MAC地址; 而MAC地址通信就意味着是在本地网络中，所以DR模型就限制了DIP和RIP在同一个二层网络设备中，
+    中间不能隔路由器和网关只能由交换机来进行交换，来实现调度.
 
-session保持的三种方式：
-    session sticky:seesion粘性
-        1.基于客户端IP做hash将seesion保存在一台服务器上，如果是SNAT网络则IP是
-            一样的，seesion的颗粒度过于粗糙.(SH算法)
-        2.cookie机制即使是在通过SNAT网络中，不同的浏览器客户端也会被识别为不同
-            客户端，seesion的颗粒度精细的多.nginx可以识别应用层的cookie信息，
-            完全可以基于cookie信息做会话绑定的.而cookie是应用层数据，工作在四层的LVS是识别不了的，而七层的nginx只有商业版支持.但是同样是七层的HAproxy可以实现！！！
-        seesion既损害负载均衡效果，又可能造成seesion丢失(后端服务器down机)
-    seesion replication server(cluster):seesion复制集群
-        在同一集群中，session是共享的，但是对内存的消耗比较大,但传输是由延迟的
-        把自己的seesion复制给集群的其他主机，这样seesion集群中的每个主机都会拥有
-        集群中所有服务器的seesion.
-        只适合于网站架构初创阶段！！！
-    session server:
-        把用户访问的seesion保存单独的一台服务器，通过api调用这个服务器，如redis,
-        memcached，squid等，还是做redis集群保证seesion的安全
-        但是session的冗余实现比较麻烦和cookie(seesion sticky的另外一种表现)
-</code></pre><h3 id="LVS的模型原理-Linux-Virtual-Server"><a href="#LVS的模型原理-Linux-Virtual-Server" class="headerlink" title="LVS的模型原理:Linux Virtual Server"></a>LVS的模型原理:Linux Virtual Server</h3><p><img src="/2017/03/22/lvs/ipvs工作原理" alt="ipvs工作原理"></p>
-<pre><code>1.LVS是工作四层，也就是内核中完成调度的,而且源代码也被整合到内核中，就像iptables的
-    netfilter一样，需要把写的规则送到内核中才能够生效.
-2.依赖于内核中的LVS模块和LVS的调度算法模块，需要将集群的定义发送到内核中，并指明
-    使用哪种调度算法.    
-3.ipvs在内核中类似netfilter的框架，而ipvsadm是工作在用户空间用来生成规则的命令行
-    工具，然后送到内核的ipvs上，进而生效的
-4.ipvs是工作在INPUT链上的，因为客户端请求的是调度器的VIP地址，必然会被送到INPUT链
-    而ipvs发现请求的是某个集群服务的，会强行将请求报文送到FORWARD链上，这样就实现
-    了转发的效果，而不进入LVS的用户空间.
-5.所以需要事先在ipvs上放置一些集群的规则，才能实现转发FORWARD或者POSTROUTING链
-    所以iptables和ipvs在INPUT最好不要同时存在规则.
-</code></pre><h3 id="LVS的组成和相关术语"><a href="#LVS的组成和相关术语" class="headerlink" title="LVS的组成和相关术语"></a>LVS的组成和相关术语</h3><pre><code>LVS 由2部分程序组成，包括 ipvs 和 ipvsadm。
-    1.ipvs(ip virtual server)：一段代码工作在内核空间，叫ipvs，
-        是真正生效实现调度的代码。
-    2. ipvsadm：另外一段是工作在用户空间，叫ipvsadm，负责为ipvs内核框架编写规则，
-        定义谁是集群服务，而谁是后端真实的服务器(Real Server)
-相关术语：
-    1. DS：Director Server。指的是前端负载均衡器节点。
-    2. RS：Real Server。后端真实的工作服务器。
-    3. VIP：向外部直接面向用户请求，作为用户请求的目标的IP地址。
-    4. DIP：Director Server IP，主要用于和内部主机通讯的IP地址。
-    5. RIP：Real Server IP，后端服务器的IP地址。
-    6. CIP：Client IP，访问客户端的IP地址。
-</code></pre><h3 id="LVS的调度算法"><a href="#LVS的调度算法" class="headerlink" title="LVS的调度算法"></a>LVS的调度算法</h3><p><img src="/2017/03/22/lvs/ipvs的调度算法模块.png" alt="ip_vs在内核中的算法模块"><br>WLC是LVS的默认调度算法</p>
-<pre><code>在定义调度算法时，要根据实际情况使用合适的调度算法.
-    lsmod | grep ipvs
-    modinfo ip_vs
-静态算法和动态算法的区别：
-    动态算法对系统资源消耗更多，调度效果更慢，但调度效果要好的多.原因在于动态算法
-    讲究结果公平，静态算法讲究起点公平
-静态算法：
-    区别：
-        1.仅根据算法本身和请求报文特征进行调度，实现短连接
-    静态算法的实现：
-        1.RR:round-robin,是对RS群的轮询，按依次循环的方式将请求调度到不同的服务器上,该算法最大的特点就是实现简单且假设所有的服务器处理请求的能力都一样，调度器会将所有的请求平均分配给每个RS,只关注RS群的个数
+3.TUN:IP隧道方式;转发方式：
+    不修改请求报文的IP首部（源IP为CIP，目标IP为VIP），而是在原IP报文之外再封装
+    一个新的IP首部（源IP是DIP，目标IP是RIP），这样报文就有两个IP首部(内部一个，外部还一个)，这就叫做IP隧道，将报文发往挑选出的目标
+    RS；RS直接响应给客户端（源IP是VIP，目标IP是CIP）,这样就弥补了DR模型必须在同
+    一个物理网络的限制，TUN模型不受限于网络.
 
-        2.WRR:weighted rr,权重/加权轮询，加权轮调是对轮询算法的一种优化与补充，LVS会考虑每台服务器的性能，并给每台服务器添加一个权值，如果服务器A的权值为1，服务器B的权值为2，则调度器调度到服务器B的请求会是服务器A的两倍。权值越高的服务器，处理的请求越多。短连接
-静态算法中的hash算法
-    对源地址/目标地址进行hash(md5,sha1等)计算然后对后端服务器集群的权重取模，模是
-    多少，就被调度到哪台后端服务器上.
-        3.SH: source ip hashing 源地址hash
-            地址绑定：对访问的源地址进行hash值计算(所谓hash就是IP的MD5或者SHA计算的值)，而只要访问的IP地址不变那么hash的结果对权重之和取模的结果一定也是不变的，如果再次访问时就会再被调度到RS上，所以地址绑定机制实现了session的sticky的会话保持。
-            缺点：
-                对于SNAT网络来说，地址绑定的机制会对LVS的工作造成极大的问题在权重模型下的工作逻辑是一样的
-            适用场景：
-                在没有使用会话共享的又需要保存会话的环境下（如电子商务网站），建议使用此算法。
-        4.DH: destination ip hashing 目标地址hash
-            sh是为了追踪并保持会话的，而DH
-            对访问的解析的地址，进行hash值计算/权重，根据权重分配到某个RS上
+4.FULLNAT:默认不支持，需要打内核补丁
+    通过修改请求报文的源IP和目标IP为经由调度算法挑选出的某后端的RS的RIP和PORT；
+    不过一般不修改源端口和目标端口。CIP--&gt;DIP;VIP--&gt;RIP、
+</code></pre><h3 id="LVS-NAT模式和特性"><a href="#LVS-NAT模式和特性" class="headerlink" title="LVS-NAT模式和特性"></a>LVS-NAT模式和特性</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg" alt="LVS-NAT模式"></p>
+<p>NAT:多目标DNAT，通过修改请求报文的目标IP和Port为经由调度算法挑选出的某后端RS的<br>        RIP和PORT，再发送到POSTROUTING链上 </p>
+<pre><code>1.DIP和各个RIP必须在同一个网段内；
+2.RS应该使用私有地址，且RS的网关必须指向DIP;RIP:GW---&gt;DIP；
+3.支持端口映射(转换)；VIP:80---&gt;RIP:8080,而后端有多个RS，所以也叫多目标IP的DNAT
+4.请求和响应报文都必须经过Director Server转发,高负载场景中，Director Server易成为性能瓶颈；
+    DNAT的工作原理：
+        请求报文中的源IP(CIP)--&gt;目标IP(VIP);而响应报文中的源IP(RIP)--&gt;目标IP(CIP),
+        对于客户端来说并未访问RIP，所以响应报文必须经由DIP(网关)，将源IP(RIP)改成VIP，对CIP来说才能接收
+        到正常的响应报文，这就是为什么RIP的网关必须指向DIP，而这个过程是由NAT内部的连接追踪功能自动完成的.
+5.LVS必须是linux系统，因为LVS只支持linux,而RS可以使用任意操作系统,因为只是应用层协议的交互调度.
 
-动态算法：
-    区别：
-        1.不仅根据算法本身和请求报文特征进行调度
-        2.还要额外考虑后端各RS服务器当前的负载状态，消耗的资源更多
-        3.动态算法需要对后端服务集群的状态进行采样,考虑到后端每一台服务器的活动连接和非活动连接数以及空闲连接数，统计的值叫overhead=value较小的RS将被调度，这样就实现资源的均衡调度
-    负载(overhead)的计算公式:
-            overhead=activeconn(服务器当前活动连接数)*256+inactiveconns
-            正常情况下我们认为活动连接数消耗的资源是非活动连接的256倍，所以要乘以256，这样就可以得出后端服务器的当前负载情况了。
-    动态算法的实现：
-        5.LC:least connections 适用于长连接应用
-            Overhead=activeconns*256+inactiveconns
-            把新的连接请求分配到当前连接数最小的服务器，通过服务器当前活跃的连接数来估计服务器的情况。调度器需要记录各个服务器已建立连接的数目，当一个请求被调度到某台服务器，其连接数加1；当连接中断或者超时，其连接数减1。
-            当然实际情况下，后端服务器的权重有可能是不一样的，所以就引入了WLC算法
-        6.WLC：Weighted LC，LVS的默认调度方法
-            叫加权最少连接，算法是：
-                Overhead=(activeconns*256+inactiveconns)/weight
-            加权最少连接数是最小连接调度的优化，各个服务器相应的权值表示其处理性能。服务器的缺省权值为1，系统管理员可以动态地设置服务器的权值。加权最小连接调度在调度新连接时尽可能使服务器的已建立连接数和其权值成比例。调度器可以自动问询真实服务器的负载情况，并动态地调整其权值。
+缺陷：
+    1.对Director Server压力会比较大，因为请求和响应都需经过director server
+    一般来说web应用的GET中用户的请求报文很轻，而响应报文中要承载用户资源数据(很大)，由于NAT模型的原因响应报文还必须经由Director Server,
+    那么Director Server服务器的压力就很大，后端的RS最多也就5、6个而已，这就是为什么有DR模型的存在了.
+    2.DIP和RIP必须在同一个IP网段，中间不能隔路由器，Director和RS的位置就不能距离太远，一般是在同一个机架上.
 
-        7.SED：Shortest Expection Delay,初始连接高权重优先，最短期望延迟
-            Overhead=(activeconns+1)*256/weight
-            WLC算法表面上是合理的，但是当出现计算的overhead值(权重一样)是一样的或者集群刚刚启动时(此时activeconn和inactiveconn都是0，
-            那么overhead也都是0,那么第一个请求应该发给哪个后端服务器？
-                如果权重一样可以自上而下发送给后端服务器即可，如果权重不一样，而且刚好权重最小的在最上面，如果把请求分配给它，那么处理速度就会慢
-                而我们期望的是由权重大的是处理第一个请求，所有就有了SED算法的出现.
-            SED是如何实现让权重最大的接收处理第一个请求的？
-                Overhead=(activeconns+1)*256/weight
-                SED算法不再考虑非活动连接状态，把当前活动连接的数目+1除以服务器的权值，此时的计算方法会因为权重大的值反而overhead值越小，这样就实现了让权重大的优先处理请求的目的.
-            缺点：
-                如果权重比较大(1:9),那么前8个请求都是让权重为9的服务器来处理的，
-                如果刚好只有7个请求，那么权重为1的又会闲着，但是我们又不期望有服务器空闲，就有了nq算法.
-        8.nq:Never Queue，第一轮均匀分配，后续SED,SED的增强版
-            nq算法是对SED算法的弥补，第一轮都需要处理一个请求，后面再进来的请求再进行权重进行分配，这样所有的服务器都不会空闲,也叫永不排队算法
-        9.lblc:locality-Base LC，基于本地的最少连接算法，是DH算法的动态版
-            正向代理情形下的cache server的调度，该算法根据请求的目标IP地址找出该目标IP地址最近使用的服务器，若该服务器是可用的且没有超载，将请求发送到该服务器;若服务器不存在，或者该服务器超载且有服务器处于一半的工作负载，则用“最少链接”的原则选出一个可用的服务器，将请求发送到该服务器｡
-        10.lblcr：Locality-Based Least-Connection with Replication
-            带复制功能的LBLC算法，它与LBLC算法的不同之处是它要维护从一个目标IP地址到一组服务器的映射，而LBLC算法维护从一个目标IP地址到一台服务器的映射｡该算法根据请求的目标IP地址找出该目标IP地址对应的服务器组，按”最小连接”原则从服务器组中选出一台服务器，若服务器没有超载，将请求发送到该服务器；若服务器超载，则按“最小连接”原则从这个集群中选出一台服务器，将该服务器加入到服务器组中，将请求发送到该服务器｡同时，当该服务器组有一段时间没有被修改，将最忙的服务器从服务器组中删除，以降低复制的程度。
+lvs-nat：    
+    设计要点：
+        (1) RIP与DIP在同一IP网络, RIP的网关要指向DIP；
+        (2) 支持端口映射；
+        (3) Director要打开核心转发功能；
+
+    实践作业（博客）：负载均衡两个php应用（wordpress，discuzx）；
+        测试：(1) 是否需要会话保持；(2) 是否需要共享存储；
+</code></pre><h3 id="LVS-DR模式和特性"><a href="#LVS-DR模式和特性" class="headerlink" title="LVS-DR模式和特性"></a>LVS-DR模式和特性</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-DR网络模型.jpg" alt="LVS-DR模式"><br><img src="/2017/01/20/LVS类型及实现/LVS-DR模型的工作原理.jpg" alt="LVS-DR模式"></p>
+<pre><code>1.DR模型是如何解决NAT模型中Director Server易成为性能瓶颈的问题的？
+    响应报文是不需要不经由Director Server的，所以极大的缓解了
+Director只需要有一个网卡和RS在同一个二层网络中(可以连不同交换机，交换机在连接)
+特点：
+    1.Director Server和RS在同一个二层网络中(可以在同一个交换机也可以在不同
+        交换机，但交换机是相连的),中间是不能隔路由器的！
+    2.Director Server只有VIP，没有DIP
+    3.响应报文由RS直接通过交换机--&gt;路由器发送给客户端，所以就要求各个RS有两个IP
+        一个是RIP，一个是VIP，而且响应报文发出时的源IP必须是VIP不能是RIP.
+    4.RS和Director必须在同一物理网络，因为需要MAC地址完成地址解析报文转发的;
+    5.RS的RIP可以使用私网地址，也可以是公网地址，RIP与DIP在同一IP网络(因为要apr的广播应答找到某一RS的MAC地址完成报文传输)，
+    RIP的网关一定不能指向Director(一旦指定DIP，那么响应报文就会经由Director进行转发了!)
+    6.请求报文必须先经由Director，但响应报文不能经由Director(理由同上5)，而是由RS直接发往客户端;
+    7.不支持端口映射；因为报文是由RS直接发往客户端的，如果Director转发时将端口进行映射80:8080，那么RS的VIP响应时也是8080端口响应的！
+
+LVS-DR模型必须要解决地址冲突问题：
+    1.Director Server和RS是在同一个网络中的，如何解决地址冲突问题的？
+        由于ARP本地工作逻辑和地址解析协议，每个主机加入到网络中来时，一般来说会有两类ARP报文发送；
+        即通告和广播请求，但arp解析地址缓存有效时长是5min(IP和
+        MAC的对应关系)，再次需要通信时，就需要arp_request请求，而请求是广播式的，
+        由于本地有多个VIP，就会产生arp冲突。
+    解决arp冲突的办法：
+        1.在前端的路由器上把VIP和Director的MAC进行绑定，如果LVS使用keepalived做
+        高可用，备用的LVS的MAC地址肯定和主LVS的MAC地址不一样，所以切换时还需要重新绑定，这样可用性就很差了，无法实现.
+        2.让RS的VIP地址的ARP通告和广播应答出不去即可，而方式又有两种
+            a.arptables就是arp防火墙，但是依赖第三方工具.
+            b.通过修改各个RS服务器的内核参数达到不让RS的VIP进行ARP通告和响应的目的；而linux内核从2.4.x，
+            2.6.x只要是linux系统都可以修改内核参数中的apr通告和应答方式就能做到加入到当前网络时，
+            不与通告apr信息,不与应答前端路由器和网关发送的apr路由信息;
+    2.RS是如何做到响应报文源IP是VIP而不是RIP的？
+        因为Director将源报文(CIP-VIP)进行封装一次以太网帧首部(DIP-MAC--&gt;RIP-MAC),RS收到报文后拆除
+        以太网帧首部后看到的IP层的源IP是CIP，目标IP是本机的VIP，所以响应时的源IP是本机的VIP，目标IP是CIP，完成报文传输.
+缺点：
+    DR类型，DIP和RIP是通过MAC地址传输报文的，所以和NAT类型一样也需要在同一物理网络中，而且不能隔路由器，不易于异地容灾.
+
+lvs-dr：
+    设计要点：    
+    dr模型中，各主机上均需要配置VIP，解决地址冲突的方式有三种：
+        (1) 在前端网关做静态绑定；
+        (2) 在各RS使用arptables；
+        (3) 在各RS修改内核参数，来限制arp响应和通告的级别；
+            限制响应级别：arp_ignore
+                0：默认值，表示可使用本地任意接口上配置的任意地址进行响应；
+                1: 仅在请求的目标IP配置在本地主机的接收到请求报文接口上时，才给予响应；
+            限制通告级别：arp_announce
+                0：默认值，把本机上的所有接口的所有信息向每个接口上的网络进行通告；
+                1：尽量避免向非直接连接网络进行通告；
+                2：必须避免向非本网络通告；
+    注意：
+        arp_ignore和arp_announce这两个参数是接口级别的，应该在服务器所在的所有接口上都配置，避免出现问题；
+</code></pre><h4 id="LVS-DR类型实现之-调整内核中的APR参数"><a href="#LVS-DR类型实现之-调整内核中的APR参数" class="headerlink" title="LVS-DR类型实现之-调整内核中的APR参数"></a>LVS-DR类型实现之-调整内核中的APR参数</h4><pre><code>APR通告和应答：
+    1.如果服务器有多个网卡，当加入到某个网络，默认会把IP和MAC地址的对应关系通告给每一个网络；
+    2.2.4.x kernels和2.6.x kernels都支持修改内核中的apr参数来限制apr的通告和应答，避免各个RS的lo回环网卡在配置上VIP时通告给其他网络.
+    3.arp_ignore参数是关闭了前端直连网关的arp应答；
+    4.arp_announce参数，由于VIP是配置在lo上的，arp通告只是通告给其直接连接的所在网络，而lo所在网络是
+    专有网关不是直连网络所以不会进行arp通告.
+注意：
+    1.为了避免出现问题，最好是在/proc/sys/net/ipv4/conf下的all和lo网卡上都对这两项参数做限制；
+    2.Director的VIP的设置需要注意的是使用255.255.255.255netmask，使用此掩码是为了避免与其他主机进行多余
+    通信，然后广播只发给自己broadcat VIP》
+
+脚本实现：
+    各个RS都执行此脚本，方便关闭和启用：
+    [root@node03 ~]# lvs_dr_rs.sh
+    #!/bin/bash
+    vip=172.18.140.10         #VIP地址
+    mask=&apos;255.255.255.255&apos;    #
+    interface=&quot;lo:0&quot;
+    #rpm -q httpd &amp;&gt; /dev/null || yum -y install httpd &amp;&gt;/dev/null
+    #service httpd start &amp;&gt; /dev/null &amp;&amp; echo &quot;The httpd Server is Ready!&quot;
+    #echo &quot;&lt;h1&gt;`hostname`&lt;/h1&gt;&quot; &gt; /var/www/html/index.html
+
+    case $1 in
+    start)
+        echo 1 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 1 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        ifconfig $interface $vip netmask $mask broadcast $vip up
+        route add -host $vip dev $interface   #添加到达VIP的路由信息
+        echo &quot;The RS Server is Ready!&quot;
+        ;;
+    stop)
+        ifconfig $interface down   
+            #VIPdown后，路由和IP也就没有了只需清楚内核参数即可
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        echo &quot;The RS Server is Canceled!&quot;
+        ;;
+    *) 
+        echo &quot;Usage: $(basename $0) start|stop&quot;
+        exit 1
+        ;;
+    esac
+</code></pre><h3 id="IPIP-LVS-TUN：异地容灾"><a href="#IPIP-LVS-TUN：异地容灾" class="headerlink" title="IPIP:LVS-TUN：异地容灾"></a>IPIP:LVS-TUN：异地容灾</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-TUN模型的工作原理.jpg" alt="LVS-TUN模式"></p>
+<pre><code>目的：
+    不管是NAT还是DR类型，由于其特点限制必须在同一个机房中，不易于容灾，所以就需要有IP隧道(TUN)类型的.
+
+转发方式：
+    1.Director不修改请求报文的IP首部(源IP为CIP，目标IP为VIP)，而在原IP报文之外再
+        封装一个IP首部(源IP是DIP，目标IP是RIP,将报文发往挑选出的目标RS；
+        RS直接响应给客户端(源IP是VIP，目标IP是CIP);
+    2.当RS收到报文后，拆除第一层IP首部(VIP-RIP)看到的是(CIP-VIP),那么所有的RS都需要配置一个VIP,
+    但此时确不会出现DR模型的apr冲突的问题，因为这些服务器在不同的机房中，不存在这种情况.
+特点：
+    1.DIP,VIP,RIP都需要是公网地址；
+    2.由于距离的限制，RS的网关也不能指向DIP的；
+    3.请求报文要经由Director，但响应报文不能经由Director(同DR模型)；
+    4.不支持端口映射(同DR模型原理)；
+    5.RS的操作系统需要支持IP隧道功能；
+缺点：
+    由于MTU的最大值是1500字节，留给IP层、TCP层、传输层、首部的也就40字节，而IPIP类型则会多出一个IP层首部，
+    即1520字节，而很多路由器设备会将1520的传输单元进行切片才能进行传输,所以对于TUN类型的必须人为指定最大传
+    输单元，留出额外需要封装的IP首部大小而不超过1500.
+</code></pre><h3 id="FullNat"><a href="#FullNat" class="headerlink" title="FullNat"></a>FullNat</h3><p><img src="/2017/01/20/LVS类型及实现/" alt="FullNat"></p>
+<pre><code>FullNat类型没有收录到linux内核中；需要打补丁;
+FullNAT工作原理：
+    为了弥补NAT类型的DNAT中的RS网关必须指向DIP，FullNAT则在转发给RS时的源IP和目标IP由CIP-&gt;VIP修改为
+    DIP-&gt;RIP,RS的响应报文则由RS直接响应给DIP，即使中间跨多个路由器，也会转发给Director,Director最终响应给CIP
+优点：
+    既有DR模型中不受限于距离限制的，又可以通过NAT模型不直接将RS暴露在公网的完全有点.
+</code></pre><h3 id="LVS的实现：ipvsadm"><a href="#LVS的实现：ipvsadm" class="headerlink" title="LVS的实现：ipvsadm"></a>LVS的实现：ipvsadm</h3><pre><code>1.ip_vs:先启用内核中的ip_vs模块，默认是没启用的
+2.生成ipvs规则：使用ipvsadm工具
+    1.先定义集群服务：service
+        三种定义集群服务的方式：
+            1.TCP协议+端口
+            2.UDP协议+端口
+            3.FireWall Mark：混合上面两种方式
+    2.编辑管理集群服务的RS Server
+        RIP+端口
+3.安装ipvsadm，
+    [root@node01 ~]# yum -y install ipvasdm
+    [root@node01 ~]# rpm -ql ipvsadm
+    /etc/sysconfig/ipvsadm-config
+    /usr/lib/systemd/system/ipvsadm.service  #Unitfile文件
+    /usr/sbin/ipvsadm                        #二进制主程序
+    /usr/sbin/ipvsadm-restore                #重载规则
+    /usr/sbin/ipvsadm-save                   #保存现有规则
+
+4.负载均衡集群设计时要注意的问题：
+    (1) 是否需要会话保持；
+    (2) 是否需要共享存储；
+        共享存储：NAS， SAN， DS（分布式存储）
+        数据同步：
+            课外作业：rsync+inotify实现数据同步 
+5.健康状态检测缺点：
+    1.LVS的Director不会对后端RS集群的健康状态做检测，不像Nginx或者HAproxy可以对后端集群对健康状态检测，
+    并根据检测结果动态的添加或移除某个RS，这也是LVS的极大缺陷.
+    2.但可以通过其他软件实现，如keepalived高可用IPVS，顺便为ipvs添加了多个checks检测器，从而周期性的检测
+    后端RS是否为健康的.
+</code></pre><h3 id="FireWall-Mark：防火墙标记"><a href="#FireWall-Mark：防火墙标记" class="headerlink" title="FireWall Mark：防火墙标记"></a>FireWall Mark：防火墙标记</h3><pre><code>为服务提供分类器，从而实现将多个服务归类一个服务；
+1.比如对80和443端口的访问，如果不用防火墙标记的话，需要定义两个LVS集群;但是这两个端口对应的又是一个服务，
+我们不希望区别对待,就可以对进来的报文进行标记;
+2.iptables的mangle表(修改报文格式)，对报文进行分类，在PREROUTING链上对进来的报文进行标记，对80和443端口
+的报文都定义为一类服务，然后再ipvsadm进行firewalld mark进行定义.
+
+示例：
+    1.标记
+    iptables -t mangle -A PREROUTING -d 172.18.140.10 -p -m multiport --dports 80,443 -j MARK --set-mark 6
+        #在刚进入linux服务器时，对进来对172.18.140.10的80和8080的访问都归于6号mark中
+    2.添加集群：
+        ipvsadm -A -f 6 -s wrr
+        #对FWM为6的设置一个集群，因为FWM=6已经有IP了只需要指定算法就行了.
+    3.添加RS
+        ipvsadm -a -f 6 172.18.140.5 -g -w 1
+        ipvsadm -a -f 6 172.18.140.6 -g -w 1
+        #因为访问的端口有80和8080，所以后端RS是不能写端口的
+    4.查看规则：
+    [root@node01 data]# ipvsadm -Ln     
+    FWM  6 wrr
+      -&gt; 172.18.140.5:0               Route   1      0          0         
+      -&gt; 172.18.140.6:0               Route   1      0          0    
+      #因为0端口代表通配，用于通配FWM 6中的80和8080端口
+</code></pre><h3 id="ipvsadm命令："><a href="#ipvsadm命令：" class="headerlink" title="ipvsadm命令："></a>ipvsadm命令：</h3><pre><code>核心功能：
+    集群服务管理：增、删、改；
+    集群服务的RS管理：增、删、改；
+    查看：
+##大写的命令是用来管理集群服务的，后面必须跟集群服务地址
+##小写的命名是用来管理后端RS集群的；
+
+ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]] [-M netmask] [--pe persistence_engine] [-b sched-flags]
+ipvsadm -D -t|u|f service-address
+ipvsadm -C
+ipvsadm -R
+ipvsadm -S [-n]
+ipvsadm -a|e -t|u|f service-address -r server-address [options]
+ipvsadm -d -t|u|f service-address -r server-address
+ipvsadm -L|l [options]
+ipvsadm -Z [-t|u|f service-address]  #清空集群的连接数计算器
+
+管理集群服务：增、改、删；
+    增、改：
+        ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]]
+
+    删：
+        ipvsadm -D -t|u|f service-address
+
+    service-address：
+        -t|u|f：
+            -t: TCP协议的端口，VIP:TCP_PORT
+            -u: UDP协议的端口，VIP:UDP_PORT
+            -f：firewall MARK，是一个数字；
+
+    [-s scheduler]：指定集群的调度算法，默认为wlc；
+
+管理集群上的RS：增、改、删；
+    增、改：
+        ipvsadm -a|e -t|u|f service-address -r server-address [-g|i|m] [-w weight]
+
+    删：
+        ipvsadm -d -t|u|f service-address -r server-address
+
+    server-address：
+        rip[:port]
+
+    选项：
+        lvs类型：
+            -g: gateway, DR类型
+            -i: ipip, TUN类型
+            -m: masquerade, NAT类型
+
+        -w weight：权重；
+
+清空定义的所有内容：
+    ipvsadm -C
+
+查看：
+    ipvsadm -L|l [options]
+        --numeric, -n：numeric output of addresses and ports 
+        --exact：expand numbers (display exact values)
+
+        --connection， -c：output of current IPVS connections
+        --stats：统计计算器的总和值
+        --rate ：统计速率值
+保存和重载：
+    ipvs和iptables一样，规则写完是送到内核内存中保存的，内核一旦关闭，规则也就没有了，所以必要时一定要将规则保存起来.
+    保存：
+        ipvsadm -S = ipvsadm-save &gt; /etc/sysconfig/ipvsadm
+    重载：
+        ipvsadm -R = ipvsadm-restore 
+    设置开机自启：
+        systemctl enable ipvsadm  #启动时自动加载保存好的规则
+##因为ipvsadm启动时加载的文件是/etc/sysconfig/ipvsadm，只需要将规则保
+存到此文件中，就会启动时自动加载，规则就不会丢失了.
+[root@node01 data]# vim /usr/lib/systemd/system/ipvsadm.service
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c &quot;exec /sbin/ipvsadm-restore &lt; /etc/sysconfig/ipvsadm&quot;
+ExecStop=/bin/bash -c &quot;exec /sbin/ipvsadm-save -n &gt; /etc/sysconfig/ipvsadm&quot;
+</code></pre><h3 id="LVS-NAT类型实验-Docker上实现-："><a href="#LVS-NAT类型实验-Docker上实现-：" class="headerlink" title="LVS-NAT类型实验(Docker上实现)："></a>LVS-NAT类型实验(Docker上实现)：</h3><pre><code>1.先在docker上启动两个容器作为RS，为了方便区别，分别在web页面下创建index.html文件以示区别
+    [root@node01 ~]# docker run --name c1  -it -v /data/vols/vol1:/data/web/html busybox
+    cd /data/web/html
+    vim index.html
+    nginx1
+    [root@node01 ~]# docker run --name c2  -it -v /data/vols/vol2:/data/web/html busybox
+    cd /data/web/html
+    vim index.html
+    nginx2
+2.定义集群，以宿主机的桥接IP为VIP
+    [root@node01 vols]# ipvsadm -A -t 172.18.140.6:80 -s wrr
+        #创建一个集群，并指定调度算法为wrr加权轮询
+3.向集群添加两个RS
+    #向集群添加RS，并指定-m为NAT类型，权重为都是1
+    [root@node01 vols]# ipvsadm -a -t 172.18.140.6:80 -r 172.17.0.2:80 -m -w 1
+    [root@node01 vols]# ipvsadm -a -t 172.18.140.6:80 -r 172.17.0.3:80 -m -w 1
+    #查看定义好的集群
+    [root@node01 vols]# ipvsadm -Ln
+    IP Virtual Server version 1.2.1 (size=4096)
+    Prot LocalAddress:Port Scheduler Flags
+      -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+    TCP  172.18.140.6:80 wrr
+      -&gt; 172.17.0.2:80                Masq    1      0          0         
+      -&gt; 172.17.0.3:80                Masq    1      0          0  
+4.在其他服务器进行测试
+    [root@node02 ~]# while true;do curl 172.18.140.6; done
+    nginx1
+    nginx2
+    nginx1
+    nginx2
+    nginx1
+    nginx2
+    #可以看到是根据wrr算法进行调度的
+5.修改其中一个RS的权重：
+    修改：
+    [root@node01 vols]# ipvsadm -e -t 172.18.140.6:80 -r 172.17.0.2:80 -m -w 2
+    #此时权重就为2：
+    [root@node01 vols]# ipvsadm -Ln 
+    IP Virtual Server version 1.2.1 (size=4096)
+    Prot LocalAddress:Port Scheduler Flags
+      -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+    TCP  172.18.140.6:80 wrr
+      -&gt; 172.17.0.2:80                Masq    2      0          37        
+      -&gt; 172.17.0.3:80                Masq    1      0          36  
+    测试：
+        [root@node02 ~]# while true;do curl 172.18.140.6; done
+        nginx2
+        nginx1
+        nginx1
+        nginx2
+    #可以看到权重比和调度的关系
+6.终止其中一个后端RS：
+    docker kill c2   #终止RS-c2
+    [root@node02 ~]# while true;do curl --connect-timeout 1 172.18.140.6 sleep .5; done
+    curl: (28) Connection timed out after 1001 milliseconds
+    curl: (28) Resolving timed out after 1517 milliseconds
+    curl: (6) Could not resolve host: .5; Unknown error
+    nginx2
+    curl: (28) Resolving timed out after 1517 milliseconds
+    #因为LVS没有对后端RS健康状态检测的功能，所以即使后端的RSdown了，也会被调度上去,这也是LVS的一个重要缺点.
+</code></pre><h3 id="LVS-DR类型实验："><a href="#LVS-DR类型实验：" class="headerlink" title="LVS-DR类型实验："></a>LVS-DR类型实验：</h3><pre><code>1.环境准备：
+    4台物理机：
+    node01 172.18.140.6
+    node02 172.18.140.5
+    node03 172.18.140.7
+    #都关闭防火墙
+    [root@node01 ~]# systemctl stop firewalld.service
+    [root@node01 ~]# systemctl disable firewalld.service
+2.安装httpd
+    [root@node01 ~]# yum install httpd -y
+    [root@node01 ~]# systemctl start httpd
+3.为node2和ndoe3进行内核参数设置
+    [root@node03 ~]# lvs_dr_rs.sh
+    #!/bin/bash
+    vip=172.18.140.10         #VIP地址
+    mask=&apos;255.255.255.255&apos;    #
+    interface=&quot;lo:0&quot;
+    #rpm -q httpd &amp;&gt; /dev/null || yum -y install httpd &amp;&gt;/dev/null
+    #service httpd start &amp;&gt; /dev/null &amp;&amp; echo &quot;The httpd Server is Ready!&quot;
+    #echo &quot;&lt;h1&gt;`hostname`&lt;/h1&gt;&quot; &gt; /var/www/html/index.html
+
+    case $1 in
+    start)
+        echo 1 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 1 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        ifconfig $interface $vip netmask $mask broadcast $vip up
+        route add -host $vip dev $interface   #添加到达VIP的路由信息
+        echo &quot;The RS Server is Ready!&quot;
+        ;;
+    stop)
+        ifconfig $interface down   
+            #VIPdown后，路由和IP也就没有了只需清楚内核参数即可
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        echo &quot;The RS Server is Canceled!&quot;
+        ;;
+    *) 
+        echo &quot;Usage: $(basename $0) start|stop&quot;
+        exit 1
+        ;;
+    esac
+4.为node1设置VIP
+    ifconfig ens37:0 172.18.140.10 netmask 255.255.255.255 broadcast 172.18.140.10
+5.添加集群和RS
+    ipvsadm -A -t 172.18.140.10:80 -s wrr
+    ipvsadm -a -t 172.18.140.10:80 -r 172.18.140.5 -g -w 1
+    ipvsadm -a -t 172.18.140.10:80 -r 172.18.140.7 -g -w 2
+6.测试调度效果：
+    [root@node04 ~]# while true; do curl 172.18.140.10 ; done
+    node03
+    node03
+    node2
+    node03
+    node03   #显示轮询调度效果
+7.修改调度算法：
+    修改为源地址sh的算法：
+    [root@node01 data]# ipvsadm -E -t 172.18.140.10:80 -s sh
+    测试：
+    [root@node04 ~]# while true; do curl 172.18.140.10 ; done
+    node2
+    node2
+    node2
+    #可以看到同一个地址，始终会被调度到一个后端RS上.
+</code></pre><h3 id="LVS的持久连接机制实现"><a href="#LVS的持久连接机制实现" class="headerlink" title="LVS的持久连接机制实现"></a>LVS的持久连接机制实现</h3><pre><code>lvs persistence：持久连接
+    持久连接模板：实现无论使用任何调度算法，在一段时间内，能够实现将来自同一个地址的请求始终发往同一个RS；
+
+        ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]]
+
+    port Affinity：
+        每端口持久：每个端口对应定义为一个集群服务，每集群服务单独调度；
+        每防火墙标记持久：基于防火墙标记定义集群服务；可实现将多个端口上的应用统一调度，即所谓的port Affinity；
+        每客户端持久：基于0端口定义集群服务，即将客户端对所有应用的请求统统调度至后端主机，必须定义为持久模式；
+
+持久连接和算法无关系，和采用的持久连接方式有关！
+session 绑定：对共享同一组RS的多个集群服务，需要统一进行绑定，lvs sh算法无法实现
+
+
+对于sh的算法来说，某个IP地址的访问会通过hash
+PCC:所有端口
+PFWM:持久防火墙标记
+PPC:单个端口
 </code></pre>
       
     </div>
@@ -784,7 +1098,7 @@ session保持的三种方式：
       
         <div class="post-tags">
           
-            <a href="/tags/SLB/" rel="tag"><i class="fa fa-tag"></i> SLB</a>
+            <a href="/tags/LB负载均衡/" rel="tag"><i class="fa fa-tag"></i> LB负载均衡</a>
           
         </div>
       
@@ -850,6 +1164,10 @@ session保持的三种方式：
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/10/LVS调度算法/" rel="next" title="LVS调度算法">
+                <i class="fa fa-chevron-left"></i> LVS调度算法
+              </a>
             
           </div>
 
@@ -931,7 +1249,7 @@ session保持的三种方式：
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -976,7 +1294,9 @@ session保持的三种方式：
                     
                       
                     
-                    <span class="site-state-item-count">16</span>
+                      
+                    
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1122,7 +1442,7 @@ session保持的三种方式：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux-Virtual-Server"><span class="nav-number">1.</span> <span class="nav-text">Linux Virtual Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster的集群的概念"><span class="nav-number">2.</span> <span class="nav-text">Cluster的集群的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LB-Cluster的实现"><span class="nav-number">3.</span> <span class="nav-text">LB Cluster的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡和会话保持"><span class="nav-number">4.</span> <span class="nav-text">负载均衡和会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的模型原理-Linux-Virtual-Server"><span class="nav-number">5.</span> <span class="nav-text">LVS的模型原理:Linux Virtual Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的组成和相关术语"><span class="nav-number">6.</span> <span class="nav-text">LVS的组成和相关术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的调度算法"><span class="nav-number">7.</span> <span class="nav-text">LVS的调度算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS"><span class="nav-number">1.</span> <span class="nav-text">LVS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS集群的4种网络模型"><span class="nav-number">2.</span> <span class="nav-text">LVS集群的4种网络模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-NAT模式和特性"><span class="nav-number">3.</span> <span class="nav-text">LVS-NAT模式和特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-DR模式和特性"><span class="nav-number">4.</span> <span class="nav-text">LVS-DR模式和特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LVS-DR类型实现之-调整内核中的APR参数"><span class="nav-number">4.1.</span> <span class="nav-text">LVS-DR类型实现之-调整内核中的APR参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPIP-LVS-TUN：异地容灾"><span class="nav-number">5.</span> <span class="nav-text">IPIP:LVS-TUN：异地容灾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FullNat"><span class="nav-number">6.</span> <span class="nav-text">FullNat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的实现：ipvsadm"><span class="nav-number">7.</span> <span class="nav-text">LVS的实现：ipvsadm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FireWall-Mark：防火墙标记"><span class="nav-number">8.</span> <span class="nav-text">FireWall Mark：防火墙标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipvsadm命令："><span class="nav-number">9.</span> <span class="nav-text">ipvsadm命令：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-NAT类型实验-Docker上实现-："><span class="nav-number">10.</span> <span class="nav-text">LVS-NAT类型实验(Docker上实现)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-DR类型实验："><span class="nav-number">11.</span> <span class="nav-text">LVS-DR类型实验：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的持久连接机制实现"><span class="nav-number">12.</span> <span class="nav-text">LVS的持久连接机制实现</span></a></li></ol></div>
             
 
           </div>
@@ -1156,7 +1476,7 @@ session保持的三种方式：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">290k</span>
+    <span title="站点总字数">308k</span>
   
 
   
@@ -1167,7 +1487,7 @@ session保持的三种方式：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:23</span>
+    <span title="站点阅读时长">4:40</span>
   
 </div>
 
