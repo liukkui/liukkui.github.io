@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="Redis高可用">
+<meta name="keywords" content="redis高可用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis高可用">
+<meta property="og:url" content="https://www.liukui.tech/2017/07/15/redis高可用/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="Redis高可用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从复制过程.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移时sentinel信息.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移后的redis配置文件.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/当前redis状态.png">
+<meta property="og:updated_time" content="2019-03-11T05:27:33.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis高可用">
+<meta name="twitter:description" content="Redis高可用">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从复制过程.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Coool's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/07/15/redis高可用/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>redis高可用 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">18</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">19</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">33</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/07/15/redis高可用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis高可用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-07-15 08:00:00" itemprop="dateCreated datePublished" datetime="2017-07-15T08:00:00+08:00">2017-07-15</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/" itemprop="url" rel="index"><span itemprop="name">缓存</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">9.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">9 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Redis高可用"><a href="#Redis高可用" class="headerlink" title="Redis高可用"></a>Redis高可用</h3><a id="more"></a>
+<p>虽然Redis可以实现单机的数据持久化，但无论是RDB也好或者AOF也好，都解决不了单点宕机问题，即一旦redis服务器本身<br>出现系统故障、硬件故障等问题后，就会直接造成数据的丢失，因此需要使用高可用和集群技术来解决单点问题.</p>
+<h3 id="Redis主从实现"><a href="#Redis主从实现" class="headerlink" title="Redis主从实现"></a>Redis主从实现</h3><h3 id="主从复制过程"><a href="#主从复制过程" class="headerlink" title="主从复制过程"></a>主从复制过程</h3><p><img src="/2017/07/15/redis高可用/主从复制过程.png" alt="主从同步过程"></p>
+<pre><code>Redis支持主从复制分为全量同步和增量同步，首次同步是全量同步，主从同步可以让从服务器从主服务器备份数据，而且从
+服务器还可与有从服务器，即另外一台redis服务器可以从一台从服务器进行数据同步，redis 的主从同步是非阻塞的，
+其收到从服务器的sync(2.8版本之前是PSYNC)命令会fork一个子进程在后台执行bgsave命令，并将新写入的数据写入到
+一个缓冲区里面，bgsave执行完成之后并生成的将RDB文件发送给客户端，客户端将收到后的RDB文件载入自己的内存，
+然后主redis将缓冲区的内容在全部发送给从redis，之后的同步从服务器会发送一个offset的位置(等同于MySQL的binlog
+    的位置)给主服务器，主服务器检查后位置没有错误将此位置之后的数据包括写在缓冲区的积压数据发送给redis从服务
+    器，从服务器将主服务器发送的挤压数据写入内存，这样一次完整的数据同步，再之后再同步的时候从服务器只要发送
+    当前的offset位 置给主服务器，然后主服务器根据响应的位置将之后的数据发送给从服务器保存到其内存即可。
+
+Redis全量复制一般发生在Slave初始化阶段，这时Slave需要将Master上的所有数据都复制一份。具体步骤如下： 
+1）从服务器连接主服务器，发送SYNC命令； 
+2）主服务器接收到SYNC命名后，开始执行BGSAVE命令生成RDB快照文件并使用缓冲区记录此后执行的所有写命令； 
+3）主服务器BGSAVE执行完后，向所有从服务器发送快照文件，并在发送期间继续记录被执行的写命令； 
+4）从服务器收到快照文件后丢弃所有旧数据，载入收到的快照； 
+5）主服务器快照发送完毕后开始向从服务器发送缓冲区中的写命令； 
+6）从服务器完成对快照的载入，开始接收命令请求，并执行来自主服务器缓冲区的写命令；
+7）后期同步会先发送自己slave_repl_offset位置，只同步新增加的数据，不再全量同步。
+</code></pre><h3 id="主从同步优化："><a href="#主从同步优化：" class="headerlink" title="主从同步优化："></a>主从同步优化：</h3><pre><code>Redis在2.8版本之前没有提供增量部分复制的功能，当网络闪断或者slave Redis重启之后会导致主从之间的全量同步，即从2.8版本开始增加了部分复制的功能。
+
+repl-diskless-sync  no 
+    #yes为支持disk，master将RDB文件先保存到磁盘在发送给slave，no为maste直接将RDB文件发送给slave，默认
+    即为使用no，Master RDB文件不需要与磁盘交互。
+repl-diskless-sync-delay 5  
+    #Master准备好RDB文件后等等待传输时间
+repl-ping-slave-period 10  
+    #slave端向server端发送pings的时间区间设置，默认为10秒 
+repl-timeout 60 #设置超时时间
+repl-disable-tcp-nodelay no 
+    #是否启用TCP_NODELAY，如设置成yes，则redis会合并小的TCP包从而节省带宽，但会增加同步延迟（40ms），
+    造成master与slave数据不一致，假如设置成no，则redis master会立即发送同步数据，没有延迟，前者关注性能，后者关注一致性
+repl-backlog-size 1mb  
+    #master的写入数据缓冲区，用于记录自上一次同步后到下一次同步过程中间的写入命令，计算公式：
+    b repl-backlog-size = 允许从节点最大中断时长 * 主实例offset每秒写入量，比如master每秒最大写入64mb，
+    最大允许60秒，那么就要设置为64mb*60秒=3840mb(3.8G)=
+repl-backlog-ttl 3600 
+    #如果一段时间后没有slave连接到master，则backlog size的内存将会被释放。如果值为0则表示永远不释放这部份内存。 
+slave-priority 100 
+    #slave端的优先级设置，值是一个整数，数字越小表示优先级越高。当master故障时将会按照优先级来选择slave端
+    进行恢复，如果值设置为0，则表示该slave永远不会被选择。 
+#min-slaves-to-write 0 
+#min-slaves-max-lag 10  
+    #设置当一个master端的可用slave少于N个，延迟时间大于M秒时，不接收写操作。
+Master的重启会导致master_replid发生变化，slave之前的master_replid就和master不一致从而会引发所有slave的全量同步。
+</code></pre><h3 id="配置redis一主二从"><a href="#配置redis一主二从" class="headerlink" title="配置redis一主二从"></a>配置redis一主二从</h3><p><img src="/2017/07/15/redis高可用/主从架构.png" alt="主从架构"></p>
+<pre><code>客户端连接redis:
+    1.主备模式，可以实现Redis数据的跨主机备份；
+    2.程序端连接到高可用负载的VIP，然后连接到负载服务器设置的Redis后端real server
+        ，此模式不需要在程序里面配置Redis服务器的真实IP地址，当后期Redis服务器IP
+        地址发生变更只需要更改redis 相应的后端real server即可，可避免更改程序中的
+        IP地址设置.
+
+1.配置2台slave：
+    1.Redis Slave也要开启数据持久化(RDB/AOF)并设置和master同样的连接密码，
+        因为后期slave会有提升为master的可能,Slave端切换master同步后会丢失之前的所有数据。
+    2.一旦某个Slave成为一个master的slave,Redis Slave服务会清空当前redis服务器上的所有数据并将master的
+    数据导入到自己的内存，但是断开同步关系后不会删除当前已经同步过的数据；
+    redis早期的时候都是全量同步，后期支持增量同步
+
+2.修改从redis服务器的redis.conf配置文件
+    [root@node02 redis]# vim etc/redis.conf
+    replicaof 192.168.34.117 6379   #master的IP和端口
+        #注意：master的IP必须和master的bind监听的地址是一致的，如果有两个地址，而bind只监听在内网IP上，此
+        处只能写内网的IP，写外网的IP也不会同步成功的.
+    masterauth root                 #master的验证密码
+    requirepass root     #每个redis数据库的验证密码都要和master一样
+
+3.重启从redis：
+    127.0.0.1:6379&gt; INFO
+    # Replication
+    role:slave                  #显示是从节点
+    master_host:192.168.34.117  #显示master的IP
+    master_port:6379            #显示master的端口
+    master_link_status:up       #显示是否为up状态，在此状态下才是正常的
+    master_last_io_seconds_ago:9
+    master_sync_in_progress:0
+    slave_repl_offset:462
+    slave_priority:100
+    slave_read_only:1
+    connected_slaves:0
+    master_replid:1f0cd49a266eaacc5c6bdd14f5c793d065207166  #master的ID
+    master_replid2:0000000000000000000000000000000000000000 
+        #如果有主从故障转移，master_replid2就成了master_replid的编号
+        #而master_replid会重新生成一个编号
+    master_repl_offset:462
+    second_repl_offset:-1
+    repl_backlog_active:1
+    repl_backlog_size:1048576
+    repl_backlog_first_byte_offset:1
+    repl_backlog_histlen:462
+
+4.验证master上的信息
+     Replication
+    role:master
+    connected_slaves:2    #显示当前有几个slave和IP及是否正常
+    slave0:ip=192.168.34.118,port=6379,state=online,offset=630,lag=0
+    slave1:ip=172.18.0.1,port=6379,state=online,offset=630,lag=0
+    master_replid:1f0cd49a266eaacc5c6bdd14f5c793d065207166
+    master_replid2:0000000000000000000000000000000000000000
+    master_repl_offset:630
+    second_repl_offset:-1
+    repl_backlog_active:1
+    repl_backlog_size:1048576
+    repl_backlog_first_byte_offset:1
+    repl_backlog_histlen:630
+
+5.验证Slave从节点上的数据
+    127.0.0.1:6379&gt; keys *
+    1) &quot;myeky&quot;
+    2) &quot;mykey1&quot;
+    #显示已经从master上将数据同步成功了，如果slave上原来有数据，则会被清空！
+6.master和slave上的日志
+    在master和slave上的日志可以显示出是否同步成功，如果没有同步成功会显示原因，有时原因不会很清楚，需要将
+    redis.conf下的loglevel日志级别调整为debug模式.
+</code></pre><h3 id="主从复制常见问题汇总"><a href="#主从复制常见问题汇总" class="headerlink" title="主从复制常见问题汇总"></a>主从复制常见问题汇总</h3><pre><code>1.master和slave的防火墙要关闭
+2.master密码不对
+    即配置的master密码不对，导致验证不通过而无法建立主从同步关系。
+3.Redis版本不一致
+    不同的redis 版本之间存在兼容性问题，因此各master和slave之间必须保持版本一致
+4.无法远程连接
+    在开启了安全模式情况下，没有设置bind地址和密码
+</code></pre><h3 id="应用程序如何连接redis？："><a href="#应用程序如何连接redis？：" class="headerlink" title="应用程序如何连接redis？："></a>应用程序如何连接redis？：</h3><pre><code>1.java客户端连接redis是通过jedis来实现的，java代码用的时候只要创建jedis对象就可以建多个jedis连接池来连接
+    redis，应用程序再直接调用连接池即可连接Redis。
+2.而Redis为了保障高可用,服务一般都是Sentinel部署方式，当Redis服务中的主服务挂掉之后,会仲裁出另外一台Slaves
+服务充当Master。这个时候,我们的应用即使使用了Jedis连接池,Master服务挂了,我们的应用将还是无法连接新的Master服务
+3.为了解决这个问题,Jedis也提供了相应的Sentinel实现,能够在Redis Sentinel主从切换时候,通知我们的应用,
+把我们的应用连接到新的Master服务。
+4.Jedis Sentinel的使用也是十分简单的,只是在JedisPool中添加了Sentinel和MasterName参数，Jedis Sentinel
+底层基于Redis订阅实现Redis主从服务的切换通知，当Reids发生主从切换时，Sentinel会发送通知主动通知Jedis进行
+连接的切换，JedisSentinelPool在每次
+从连接池中获取链接对象的时候,都要对连接对象进行检测,如果此链接和Sentinel的Master
+服务连接参数不一致,则会关闭此连接,重新获取新的Jedis连接对象。 
+</code></pre><h3 id="redis-Sentinel-哨兵-机制实现"><a href="#redis-Sentinel-哨兵-机制实现" class="headerlink" title="redis Sentinel(哨兵)机制实现"></a>redis Sentinel(哨兵)机制实现</h3><pre><code>redis sentinel的作用：
+    1.redis主从架构中，master宕机之后，是需要人为执行slave noone将slave切换成
+        master的；
+    2.而sentinel进程是用于监控redis集群中Master主服务器工作的状态，在Master主服务器发生故障的时候，
+    可以实现Master和Slave服务器的切换，保证系统的高可用
+    3.master切换后，sentinel进程会通知给JAVA程序上一个与redis通信的jar包，java程序就会与新的master建立
+    连接池进而正常工作.
+
+sentinel工作原理：
+    1.哨兵(Sentinel) 是一个分布式系统，你可以在一个架构中运行多个哨兵(sentinel)
+        进程，这些进程使用流言协议(gossipprotocols)来接收关于Master主服务器
+        是否下线的信息，并使用投票协议(Agreement Protocols)来决定是否执行自动
+        故障迁移,以及选择哪个Slave作为新的Master；
+    2.每个哨兵(Sentinel)进程会向其它哨兵(Sentinel)、Master、Slave定时发送消息，
+        以确认对方是否”活”着，如果发现对方在指定配置时间(可配置的)内未得到回应
+        ，则暂时认为对方已掉线，也就是所谓的”主观认为宕机” 简称SDOWN;
+    3.当“哨兵群”中的多数Sentinel进程在对Master主服务器做出SDOWN 的判断，并且
+        通过 SENTINEL is-master-down-by-addr 命令互相交流之后，得出的Master 
+        Server下线判断，这种方式就是“客观宕机”，简称 ODOWN。
+    4.然后通过一定的vote算法，从剩下的slave从服务器节点中，选一台提升为Master服务
+        器节点，然后自动修改相关配置，并开启故障转移(failover);
+
+注意：
+    哨兵只是解决了人为介入master和slave角色的切换问题，在Redis服务的并行写入性能上并没有任何作用.
+</code></pre><h3 id="Sentinel实现"><a href="#Sentinel实现" class="headerlink" title="Sentinel实现"></a>Sentinel实现</h3><p>哨兵可以不和Redis服务器部署在一起</p>
+<pre><code>1.准备Sentinel的配置文件
+    [root@node01 redis]# cp /usr/local/src/redis-5.0.3/sentinel.conf /usr/local/redis/etc/
+
+2.编辑sentinel.conf配置文件
+    bind 0.0.0.0                    #修改监听的地址为0.0.0.0
+    port 26379                      #sentinel的端口
+    daemonize yes                   #修改为以守护进程方式运行
+    pidfile /var/run/redis-sentinel_26379.pid            #pid路径
+    logfile &quot;/usr/local/redis/logs/sentinel_26379.log&quot;   #log日志路径
+    dir /usr/local/redis/sentinel                       #sentinel临时文件目录
+    sentinel monitor mymaster 172.18.140.6 6379 2    
+        #master的IP和端口，以及几个哨兵人为down就是down
+    sentinel auth-pass mymaster root
+        #master的名(可同上一条)，和验证密码
+    sentinel down-after-milliseconds mymaster 15000
+        #检测时长
+    #将配置文件复制给主从架构中的其他redis服务器上
+
+3.启动哨兵sentinel
+    [root@node01 redis]# redis-sentinel /usr/local/redis/etc/sentinel.conf
+    #因为没有sentinel的Unitfile,所以启动时指定配置文件路径即可;
+
+备注：
+    只要sentinel都启动后，会在sentinel.conf配置文件中生成
+        sentinel myid 66a04f04a74bb7d728fe83dc0788582302e27f0c
+            #每个sentinel服务上的配置文件都会生成各自的集群ID号
+        protected-mode no
+        sentinel leader-epoch mymaster 1
+        sentinel known-replica mymaster 172.18.140.6 6379
+        sentinel known-sentinel mymaster 172.20.103.15 26379 
+        72eb727c9130b47a4538a9b75bf10e6a55d0676f
+        sentinel known-sentinel mymaster 172.18.140.5 26379 
+        66a04f04a74bb7d728fe83dc0788582302e27f0c
+        sentinel current-epoch 1
+        #配置文件会自动加载集群内部的sentinel群组和成员！！            
+    如果要重新设置sentinel，需要先把这些信息删除，重新创建sentinel群组！
+</code></pre><h3 id="测试：将master上的redis服务关闭"><a href="#测试：将master上的redis服务关闭" class="headerlink" title="测试：将master上的redis服务关闭"></a>测试：将master上的redis服务关闭</h3><p>–故障转移时sentinel信息<br><img src="/2017/07/15/redis高可用/故障转移时sentinel信息.png" alt="故障转移时sentinel信息"><br>–故障转移后的redis配置文件<br><img src="/2017/07/15/redis高可用/故障转移后的redis配置文件.png" alt="故障转移后的redis配置文件"><br>故障转移后redis.conf中的replicaof行的master IP会被修改，sentinel.conf中的sentinel monitor IP会被修改。</p>
+<pre><code>查看一台slave:
+    # Replication
+    role:master
+    connected_slaves:1
+    slave0:ip=172.18.140.6,port=6379,state=online,offset=335400,lag=0
+    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
+    master_replid2:7d5355ccd2638b9647d5f3c7c96116fad55ed64f
+    master_repl_offset:335400
+    second_repl_offset:178740
+    repl_backlog_active:1
+    repl_backlog_size:1048576
+    repl_backlog_first_byte_offset:18272
+    repl_backlog_histlen:317129
+        ########可以看到slave1被选择为master了
+前一个master启动后也会自动变成slave:
+    # Replication
+    role:slave
+    master_host:172.18.140.5
+    master_port:6379
+    master_link_status:up
+    master_last_io_seconds_ago:1
+    master_sync_in_progress:0
+    slave_repl_offset:239591
+    slave_priority:100
+    slave_read_only:1
+    connected_slaves:1
+    slave0:ip=172.18.0.1,port=6379,state=online,offset=239591,lag=1
+    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
+    master_replid2:0000000000000000000000000000000000000000
+第二个slave:
+    需要手动修改文件，使其成为之前slave1的slave
+    [root@master1 redis]# vim etc/redis.conf
+    replicaof 172.18.140.5 6379    #将此处的IP给成新master的IP
+然后新的master上就会有2个slave了;
+    # Replication
+    role:master
+    connected_slaves:2
+    slave0:ip=172.18.140.6,port=6379,state=online,offset=403718,lag=0
+    slave1:ip=172.18.0.1,port=6379,state=online,offset=403718,lag=0
+    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
+    master_replid2:7d5355ccd2638b9647d5f3c7c96116fad55ed64f
+    master_repl_offset:403857
+    second_repl_offset:178740
+    repl_backlog_active:1
+    repl_backlog_size:1048576
+    repl_backlog_first_byte_offset:18272
+    repl_backlog_histlen:385586
+</code></pre><p>–当前redis状态<br><img src="/2017/07/15/redis高可用/当前redis状态.png" alt="当前redis状态"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis高可用/" rel="tag"><i class="fa fa-tag"></i> redis高可用</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/06/DHCP和PXE/" rel="next" title="DHCP和PXE">
+                <i class="fa fa-chevron-left"></i> DHCP和PXE
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/20/redis-cluster集群/" rel="prev" title="redis-cluster集群">
+                redis-cluster集群 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis高可用"><span class="nav-number">1.</span> <span class="nav-text">Redis高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis主从实现"><span class="nav-number">2.</span> <span class="nav-text">Redis主从实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制过程"><span class="nav-number">3.</span> <span class="nav-text">主从复制过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步优化："><span class="nav-number">4.</span> <span class="nav-text">主从同步优化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置redis一主二从"><span class="nav-number">5.</span> <span class="nav-text">配置redis一主二从</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制常见问题汇总"><span class="nav-number">6.</span> <span class="nav-text">主从复制常见问题汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序如何连接redis？："><span class="nav-number">7.</span> <span class="nav-text">应用程序如何连接redis？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-Sentinel-哨兵-机制实现"><span class="nav-number">8.</span> <span class="nav-text">redis Sentinel(哨兵)机制实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel实现"><span class="nav-number">9.</span> <span class="nav-text">Sentinel实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试：将master上的redis服务关闭"><span class="nav-number">10.</span> <span class="nav-text">测试：将master上的redis服务关闭</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">350k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">5:18</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
