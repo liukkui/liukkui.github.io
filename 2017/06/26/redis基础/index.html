@@ -146,7 +146,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/用户请求CDN的流程.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/分布式缓存架构.png">
-<meta property="og:updated_time" content="2019-03-11T05:18:39.679Z">
+<meta property="og:updated_time" content="2019-03-13T12:24:51.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis基础">
 <meta name="twitter:description" content="缓存基础介绍">
@@ -774,94 +774,8 @@ redis相关命令:
     WantedBy=multi-user.target
 启动：
     systemctl start redis
-</code></pre><h3 id="Redis配置文件详解"><a href="#Redis配置文件详解" class="headerlink" title="Redis配置文件详解"></a>Redis配置文件详解</h3><pre><code>登录：
-    [root@node01 bin]# redis-cli  -h host (设置了bind就需要指定IP地址)
-        info   #查看redis信息
-        select  #切换数据库，默认是16个库(编号0-15)
-redis配置文件主要配置项：
-###########################基础信息配置#####################################
-bind 0.0.0.0 #监听地址，可以用空格隔开后多个监听IP
-    #一般只监听在redis服务器的内网IP上,redis强烈建议内网使用
-protected-mode yes  #redis3.2 之后加入的新特性，在没有设置bind IP和密码的时候只允许访问127.0.0.1:6379
-port 6379 #监听端口
-tcp-backlog 511 #三次握手的时候server端收到client ack确认号之后的队列值。
-timeout 0 #客户端和Redis服务端的连接超时时间，默认是0，表示永不超时，生产环境下是600。 
-tcp-keepalive 300 #tcp 会话保持时间
-daemonize no #认情况下 redis 不是作为守护进程运行的，如果你想让它在后台运行，你就把它改成 yes,
-当redis作为守护进程运行的时候，它会写一个 pid 到 /var/run/redis.pid 文件里面
-supervised no #和操作系统相关参数，可以设置通过upstart和systemd管理Redis守护进程，centos 7以后都使用systemd
-pidfile /usr/local/redis/redis_6379.pid #pid文件路径
-    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)
-loglevel notice #日志级别
-#loglevel debug  #如果日志显示不详细，可以开启debug模式，但是debug的日志会很大；
-logfile &quot;/usr/local/redis/redis_6379.log&quot; #日志路径
-    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)
-databases 16  #设置db 库数量，默认16个库
-##########################和快照相关的参数###################################
-###快照时从redis主进程复制出一个专门的进程做快照，不会影响redis的读写
-always-show-logo yes #在启动redis 时是否显示log
-save 900 1  #在900秒内有一个键内容发生更改就出就快照机制
-save 300 10
-save 60 10000  #也可以通过BGSAVE命令手工触发RDB快照保存。
-stop-writes-on-bgsave-error yes  #快照出错时是否禁止redis写入操作
-    #重要配置，一定要给成no,避免快照因为磁盘空间满了快照写不进去，使得redis
-    无法登陆；
-rdbcompression yes #持久化到RDB文件时，是否压缩，&quot;yes&quot;为压缩，&quot;no&quot;则反之
-rdbchecksum yes  #是否开启RC64校验，默认是开启
-dbfilename dump.rdb #快照生成的文件名，一般给称redis_6379.rdb
-dir ./ #快照文件保存路径;一般放在二进制编译路径下/usr/loca/redis
-##################### REPLICATION主从复制相关的参数####################
-replicaof &lt;masterip&gt; &lt;masterport&gt;  #修改为master的IP和端口
-    如：
-masterauth &lt;master-password&gt;       #修改为master的验证密码
-
-####################和安全相关的参数配置####################################
-requirepass root123456   #设置redis的登录密码
-    登录后，需要AUTH root23456验证后，才能set key
-    如果不设置密码，通过telnet就可以登录到redis进行删除等操作，所以生产环境下建议一定要设置密码.
-####################和客户端相关的参数配置###################################
-maxclients 10000    #最大的客户端连接数
-####################内存管理与数据淘汰机制##################################
-maxmemory 8589934592   #单位是字节(8g*1024*1024*1024)
-配置解析：
-    1.默认情况下，在32位OS中，Redis最大使用3GB的内存，在64位OS中则没有限制。
-    2.在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位
-    OS中Redis会无限制地占用内存（当物理内存被占满后会使用swap空间），容易引发各种各样的问题；
-    3.在内存占用达到了maxmemory后，再向Redis写入数据时，Redis会：
-        1.根据配置的数据淘汰策略尝试淘汰数据，释放空间
-        2.如果没有数据可以淘汰，或者没有配置数据淘汰策略，那么Redis会对所有写请求返回错误，但读请求仍然可以正常执行
-    4.在为Redis设置maxmemory时，需要注意：
-        1.如果采用了Redis的主从同步，主节点向从节点同步数据时，会占用掉一部分内存空间，如果maxmemory过于接
-        近主机的可用内存，导致数据同步时内存不足。所以设置的maxmemory不要过于接近主机可用的内存，留出一部分预留用作主从同步。
-#################### AOF日志相关配置 #######################################
-appendonly yes   #启用aof日志，类似于mysql的bin-log,一定要改成yes
-        #登录redis的select Set等操作就会被记录在此日志中
-appendfilename &quot;appendonly.aof&quot;  #aof日志的路径和名称
-        #注意这个路径是以上面的dir路径为根的
-    -----------------------------------------------------------
-#AOF提供了三种fsync配置，always/everysec/no，通过配置项[appendfsync]指定：
-# appendfsync always  
-        #每写入一条日志就进行一次fsync操作，数据安全性最高，但速度最慢    
-appendfsync everysec
-        #折中的做法，交由后台线程每秒fsync一次
-# appendfsync no     
-        #不进行fsync，将flush文件的时机交给OS决定，速度最快
-    ----------------------------------------------------------
-#随着AOF不断地记录写操作日志，必定会出现一些无用的日志，例如某个时间点执行了命令SET key1 “abc”，
-在之后某个时间点又执行了SET key1 “bcd”，那么第一条命令很显然是没有用的。大量的无用日志会
-让AOF文件过大，也会让数据恢复的时间过长。
-auto-aof-rewrite-percentage 100
-auto-aof-rewrite-min-size 64mb    #触发aof日志rewrite
-    #上面两行配置的含义是，Redis在每次AOF rewrite时，会记录完成rewrite后的AOF日志大小，当AOF日志大小在该基础上增长了100%后，自动进行
-    AOF rewrite。同时如果增长的大小没有达到64mb，则不会进行rewrite。
-############################# 慢日志查询相关配置 ##########################
-Slow log 是 Redis 用来记录查询执行时间的日志系统，slow log 保存在内存里面，
-读写速度非常快，因此你可以放心地使用它，不必担心因为开启 slow log 而损害 Redis 的速度。
-slowlog-log-slower-than 10000 
-        #以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作。
-slowlog-max-len 128   
-        #记录多少条慢日志保存在队列，超出后会删除最早的，以此滚动删除
-</code></pre><h3 id="Redis的数据结构和常用命令"><a href="#Redis的数据结构和常用命令" class="headerlink" title="Redis的数据结构和常用命令"></a>Redis的数据结构和常用命令</h3><pre><code>Key:
+</code></pre><h3 id="Redis配置文件详解"><a href="#Redis配置文件详解" class="headerlink" title="Redis配置文件详解"></a>Redis配置文件详解</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">登录：</span><br><span class="line">    [root@node01 bin]# redis-cli  -h host (设置了bind就需要指定IP地址)</span><br><span class="line">        info   #查看redis信息</span><br><span class="line">        select  #切换数据库，默认是16个库(编号0-15)</span><br><span class="line">redis配置文件主要配置项：</span><br><span class="line">###########################基础信息配置#####################################</span><br><span class="line">bind 0.0.0.0 #监听地址，可以用空格隔开后多个监听IP</span><br><span class="line">    #一般只监听在redis服务器的内网IP上,redis强烈建议内网使用</span><br><span class="line">protected-mode yes  #redis3.2 之后加入的新特性，在没有设置bind IP和密码的时候只允许访问127.0.0.1:6379</span><br><span class="line">port 6379 #监听端口</span><br><span class="line">tcp-backlog 511 #三次握手的时候server端收到client ack确认号之后的队列值。</span><br><span class="line">timeout 0 #客户端和Redis服务端的连接超时时间，默认是0，表示永不超时，生产环境下是600。 </span><br><span class="line">tcp-keepalive 300 #tcp 会话保持时间</span><br><span class="line">daemonize no #认情况下 redis 不是作为守护进程运行的，如果你想让它在后台运行，你就把它改成 yes,</span><br><span class="line">当redis作为守护进程运行的时候，它会写一个 pid 到 /var/run/redis.pid 文件里面</span><br><span class="line">supervised no #和操作系统相关参数，可以设置通过upstart和systemd管理Redis守护进程，centos 7以后都使用systemd</span><br><span class="line">pidfile /usr/local/redis/redis_6379.pid #pid文件路径</span><br><span class="line">    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">loglevel notice #日志级别</span><br><span class="line">#loglevel debug  #如果日志显示不详细，可以开启debug模式，但是debug的日志会很大；</span><br><span class="line">logfile &quot;/usr/local/redis/redis_6379.log&quot; #日志路径</span><br><span class="line">    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">databases 16  #设置db 库数量，默认16个库</span><br><span class="line">##########################和快照相关的参数###################################</span><br><span class="line">###快照时从redis主进程复制出一个专门的进程做快照，不会影响redis的读写</span><br><span class="line">always-show-logo yes #在启动redis 时是否显示log</span><br><span class="line">save 900 1  #在900秒内有一个键内容发生更改就出就快照机制</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000  #也可以通过BGSAVE命令手工触发RDB快照保存。</span><br><span class="line">stop-writes-on-bgsave-error yes  #快照出错时是否禁止redis写入操作</span><br><span class="line">    #重要配置，一定要给成no,避免快照因为磁盘空间满了快照写不进去，使得redis</span><br><span class="line">    无法登陆；</span><br><span class="line">rdbcompression yes #持久化到RDB文件时，是否压缩，&quot;yes&quot;为压缩，&quot;no&quot;则反之</span><br><span class="line">rdbchecksum yes  #是否开启RC64校验，默认是开启</span><br><span class="line">dbfilename dump.rdb #快照生成的文件名，一般给称redis_6379.rdb</span><br><span class="line">dir ./ #快照文件保存路径;一般放在二进制编译路径下/usr/loca/redis</span><br><span class="line">##################### REPLICATION主从复制相关的参数####################</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;  #修改为master的IP和端口</span><br><span class="line">    如：</span><br><span class="line">masterauth &lt;master-password&gt;       #修改为master的验证密码</span><br><span class="line"></span><br><span class="line">####################和安全相关的参数配置####################################</span><br><span class="line">requirepass root123456   #设置redis的登录密码</span><br><span class="line">    登录后，需要AUTH root23456验证后，才能set key</span><br><span class="line">    如果不设置密码，通过telnet就可以登录到redis进行删除等操作，所以生产环境下建议一定要设置密码.</span><br><span class="line">####################和客户端相关的参数配置###################################</span><br><span class="line">maxclients 10000    #最大的客户端连接数</span><br><span class="line">####################内存管理与数据淘汰机制##################################</span><br><span class="line">maxmemory 8589934592   #单位是字节(8g*1024*1024*1024)</span><br><span class="line">配置解析：</span><br><span class="line">    1.默认情况下，在32位OS中，Redis最大使用3GB的内存，在64位OS中则没有限制。</span><br><span class="line">    2.在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位</span><br><span class="line">    OS中Redis会无限制地占用内存（当物理内存被占满后会使用swap空间），容易引发各种各样的问题；</span><br><span class="line">    3.在内存占用达到了maxmemory后，再向Redis写入数据时，Redis会：</span><br><span class="line">        1.根据配置的数据淘汰策略尝试淘汰数据，释放空间</span><br><span class="line">        2.如果没有数据可以淘汰，或者没有配置数据淘汰策略，那么Redis会对所有写请求返回错误，但读请求仍然可以正常执行</span><br><span class="line">    4.在为Redis设置maxmemory时，需要注意：</span><br><span class="line">        1.如果采用了Redis的主从同步，主节点向从节点同步数据时，会占用掉一部分内存空间，如果maxmemory过于接</span><br><span class="line">        近主机的可用内存，导致数据同步时内存不足。所以设置的maxmemory不要过于接近主机可用的内存，留出一部分预留用作主从同步。</span><br><span class="line">#################### AOF日志相关配置 #######################################</span><br><span class="line">appendonly yes   #启用aof日志，类似于mysql的bin-log,一定要改成yes</span><br><span class="line">        #登录redis的select Set等操作就会被记录在此日志中</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;  #aof日志的路径和名称</span><br><span class="line">        #注意这个路径是以上面的dir路径为根的</span><br><span class="line">    -----------------------------------------------------------</span><br><span class="line">#AOF提供了三种fsync配置，always/everysec/no，通过配置项[appendfsync]指定：</span><br><span class="line"># appendfsync always  </span><br><span class="line">        #每写入一条日志就进行一次fsync操作，数据安全性最高，但速度最慢    </span><br><span class="line">appendfsync everysec</span><br><span class="line">        #折中的做法，交由后台线程每秒fsync一次</span><br><span class="line"># appendfsync no     </span><br><span class="line">        #不进行fsync，将flush文件的时机交给OS决定，速度最快</span><br><span class="line">    ----------------------------------------------------------</span><br><span class="line">#随着AOF不断地记录写操作日志，必定会出现一些无用的日志，例如某个时间点执行了命令SET key1 “abc”，</span><br><span class="line">在之后某个时间点又执行了SET key1 “bcd”，那么第一条命令很显然是没有用的。大量的无用日志会</span><br><span class="line">让AOF文件过大，也会让数据恢复的时间过长。</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb    #触发aof日志rewrite</span><br><span class="line">    #上面两行配置的含义是，Redis在每次AOF rewrite时，会记录完成rewrite后的AOF日志大小，当AOF日志大小在该基础上增长了100%后，自动进行</span><br><span class="line">    AOF rewrite。同时如果增长的大小没有达到64mb，则不会进行rewrite。</span><br><span class="line">############################# 慢日志查询相关配置 ##########################</span><br><span class="line">Slow log 是 Redis 用来记录查询执行时间的日志系统，slow log 保存在内存里面，</span><br><span class="line">读写速度非常快，因此你可以放心地使用它，不必担心因为开启 slow log 而损害 Redis 的速度。</span><br><span class="line">slowlog-log-slower-than 10000 </span><br><span class="line">        #以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作。</span><br><span class="line">slowlog-max-len 128   </span><br><span class="line">        #记录多少条慢日志保存在队列，超出后会删除最早的，以此滚动删除</span><br></pre></td></tr></table></figure>
+<h3 id="Redis的数据结构和常用命令"><a href="#Redis的数据结构和常用命令" class="headerlink" title="Redis的数据结构和常用命令"></a>Redis的数据结构和常用命令</h3><pre><code>Key:
 1.Redis采用Key-Value型的基本数据结构，任何二进制序列都可以作为Redis的Key使用（例如普通的字符串或一张JPEG图片）
 2.关于Key的一些注意事项：
     1.不要使用过长的Key。例如使用一个1024字节的key就不是一个好主意，不仅会消耗更多的内存，还会导致查找的效率降低
