@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/haproxy管理页面.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/日志信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/健康状态检测.png">
-<meta property="og:updated_time" content="2019-03-15T09:27:30.615Z">
+<meta property="og:updated_time" content="2019-03-15T09:37:54.117Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy高级配置">
 <meta name="twitter:description" content="Haproxy高级配置">
@@ -939,10 +939,25 @@ backend default_host
 backend static_path_host 
     mode http
     server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-</code></pre><h3 id="haproxy-自定义错误页面"><a href="#haproxy-自定义错误页面" class="headerlink" title="haproxy 自定义错误页面"></a>haproxy 自定义错误页面</h3><pre><code>errorfile 500  /usr/local/haproxy/html/500.html #自定义错误页面跳转
-errorfile 502  /usr/local/haproxy/html/502.html
-errorfile 503  /usr/local/haproxy/html/503.html
-errorloc 503  http://192.168.50.113/error_page/503.html
+</code></pre><h3 id="haproxy-自定义错误页面"><a href="#haproxy-自定义错误页面" class="headerlink" title="haproxy 自定义错误页面"></a>haproxy 自定义错误页面</h3><pre><code>自定义错误页面：
+    defaults
+    option http-keep-alive
+    option  forwardfor
+    maxconn 100000
+    mode http
+    timeout connect 300000ms
+    timeout client  300000ms
+    timeout server  300000ms
+    errorfile 500  /usr/local/haproxy/html/500.html #自定义错误页面跳转
+    errorfile 502  /usr/local/haproxy/html/502.html
+        #502是指haproxy向后端server发请求超时了！
+    errorfile 503  /usr/local/haproxy/html/503.html
+        #503是指后端的server全down了；
+    #自定义完，然后创建对应目录下的各种状态码的html文件！
+
+重定向跳转：
+    errorloc 503  http://192.168.50.113/error_page/503.html
+        #自定义跳转到事先定义的网站上
 </code></pre><h3 id="haproxy支持负载https"><a href="#haproxy支持负载https" class="headerlink" title="haproxy支持负载https"></a>haproxy支持负载https</h3><pre><code>生成证书
     # mkdir /usr/local/haproxy/certs
     # cd /usr/local/haproxy/cert
@@ -1107,8 +1122,8 @@ backend web_host
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/18/TCP三次握手、四次断开与十一种状态/" rel="next" title="TCP三次握手、四次断开与十一种状态">
-                <i class="fa fa-chevron-left"></i> TCP三次握手、四次断开与十一种状态
+              <a href="/2017/10/18/Linux下双网卡绑定及Bridge/" rel="next" title="Linux下双网卡绑定及Bridge">
+                <i class="fa fa-chevron-left"></i> Linux下双网卡绑定及Bridge
               </a>
             
           </div>
