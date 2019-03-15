@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/haproxy管理页面.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/日志信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/健康状态检测.png">
-<meta property="og:updated_time" content="2019-03-15T09:37:54.117Z">
+<meta property="og:updated_time" content="2019-03-15T09:38:40.241Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy高级配置">
 <meta name="twitter:description" content="Haproxy高级配置">
@@ -939,7 +939,7 @@ backend default_host
 backend static_path_host 
     mode http
     server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-</code></pre><h3 id="haproxy-自定义错误页面"><a href="#haproxy-自定义错误页面" class="headerlink" title="haproxy 自定义错误页面"></a>haproxy 自定义错误页面</h3><pre><code>自定义错误页面：
+</code></pre><h3 id="haproxy自定义错误页面"><a href="#haproxy自定义错误页面" class="headerlink" title="haproxy自定义错误页面"></a>haproxy自定义错误页面</h3><pre><code>自定义错误页面：
     defaults
     option http-keep-alive
     option  forwardfor
@@ -955,7 +955,7 @@ backend static_path_host
         #503是指后端的server全down了；
     #自定义完，然后创建对应目录下的各种状态码的html文件！
 
-重定向跳转：
+临时重定向跳转：
     errorloc 503  http://192.168.50.113/error_page/503.html
         #自定义跳转到事先定义的网站上
 </code></pre><h3 id="haproxy支持负载https"><a href="#haproxy支持负载https" class="headerlink" title="haproxy支持负载https"></a>haproxy支持负载https</h3><pre><code>生成证书
@@ -1421,7 +1421,7 @@ backend web_host
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Haproxy高级配置"><span class="nav-number">1.</span> <span class="nav-text">Haproxy高级配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四层和七层实现透传地址"><span class="nav-number">2.</span> <span class="nav-text">四层和七层实现透传地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于cookie实现会话保持"><span class="nav-number">3.</span> <span class="nav-text">基于cookie实现会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置HAProxy状态页"><span class="nav-number">4.</span> <span class="nav-text">配置HAProxy状态页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改报文首部"><span class="nav-number">5.</span> <span class="nav-text">修改报文首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HAProxy的日志配置–一般是不开启的"><span class="nav-number">6.</span> <span class="nav-text">HAProxy的日志配置–一般是不开启的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对HAProxy的后端服务集群检测"><span class="nav-number">7.</span> <span class="nav-text">对HAProxy的后端服务集群检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy-ACL"><span class="nav-number">8.</span> <span class="nav-text">haproxy ACL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy-自定义错误页面"><span class="nav-number">9.</span> <span class="nav-text">haproxy 自定义错误页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy支持负载https"><span class="nav-number">10.</span> <span class="nav-text">haproxy支持负载https</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Haproxy高级配置"><span class="nav-number">1.</span> <span class="nav-text">Haproxy高级配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四层和七层实现透传地址"><span class="nav-number">2.</span> <span class="nav-text">四层和七层实现透传地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于cookie实现会话保持"><span class="nav-number">3.</span> <span class="nav-text">基于cookie实现会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置HAProxy状态页"><span class="nav-number">4.</span> <span class="nav-text">配置HAProxy状态页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改报文首部"><span class="nav-number">5.</span> <span class="nav-text">修改报文首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HAProxy的日志配置–一般是不开启的"><span class="nav-number">6.</span> <span class="nav-text">HAProxy的日志配置–一般是不开启的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对HAProxy的后端服务集群检测"><span class="nav-number">7.</span> <span class="nav-text">对HAProxy的后端服务集群检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy-ACL"><span class="nav-number">8.</span> <span class="nav-text">haproxy ACL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy自定义错误页面"><span class="nav-number">9.</span> <span class="nav-text">haproxy自定义错误页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy支持负载https"><span class="nav-number">10.</span> <span class="nav-text">haproxy支持负载https</span></a></li></ol></div>
             
 
           </div>
