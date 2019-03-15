@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/haproxy管理页面.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/日志信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/健康状态检测.png">
-<meta property="og:updated_time" content="2019-03-15T09:38:40.241Z">
+<meta property="og:updated_time" content="2019-03-15T09:44:36.951Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy高级配置">
 <meta name="twitter:description" content="Haproxy高级配置">
@@ -857,18 +857,20 @@ Acl示例-匹配浏览器
     mode http
     acl php_server path_end  -i .php
     use_backend php_server_host if php_server
-    acl image_server path_end  -i .jpg .png .jpeg -gif
+        #对动态资源(php)的资源请求转发到后端的php_server_host上
+    acl image_server path_end  -i .jpg .png .jpeg -gif  
     use_backend image_server_host if image_server
-    default_backend default_host
-backend default_host
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-backend php_server_host
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-backend image_server_host
-    mode http
-    server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
+        #对图片(忽略大小写)的访问全部转发到image_server_host上
+    default_backend default_host   #其他的转发到默认的后端default_host
+    backend default_host
+        mode http
+        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
+    backend php_server_host
+        mode http
+        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
+    backend image_server_host
+        mode http
+        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
 
 Acl-匹配访问路径
     listen  web_port
@@ -877,12 +879,12 @@ Acl-匹配访问路径
     acl static_path  path_beg  -i  /static /images /javascript
     use_backend static_path_host if static_path
     default_backend default_host
-backend default_host
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-backend static_path_host 
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
+    backend default_host
+        mode http
+        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
+    backend static_path_host 
+        mode http
+        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
 
 基于策略的访问控制
     listen  web_port
@@ -892,15 +894,15 @@ backend static_path_host
     http-request deny if badguy_deny
     http-request allow
     default_backend default_host
-backend default_host
-    mode http
-    server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-backend static_path_host 
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-backend image_server_host
-    mode http
-    server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
+    backend default_host
+        mode http
+        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
+    backend static_path_host 
+        mode http
+        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
+    backend image_server_host
+        mode http
+        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
 
 预定义acl
     ACL name    Equivalent to   Usage
@@ -1466,7 +1468,7 @@ backend web_host
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">6:14</span>
+    <span title="站点阅读时长">6:15</span>
   
 </div>
 
