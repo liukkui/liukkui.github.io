@@ -146,7 +146,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy配置/公有云架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy配置/九种算法区别.png">
-<meta property="og:updated_time" content="2019-03-15T13:03:51.270Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy配置/动态修改的bug.png">
+<meta property="og:updated_time" content="2019-03-15T13:13:34.457Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy配置">
 <meta name="twitter:description" content="HAProxy">
@@ -701,7 +702,8 @@ haproxy组成：
     hash的缺点：
         不管是取模法还是一致性hash都很容易导致后端服务器负载不均衡，但是比较适合
         session保持!!!
------------------------------------------------------------------------    4.uri:--缓存
+-----------------------------------------------------------------------    
+4.uri:--缓存
     基于对用户请求的uri做hash并将请求转发到后端指定服务器
     mode http       #负载协议类型是http才能分析用户的uri
     balance   uri
@@ -768,8 +770,9 @@ server 192.168.7.102   192.168.7.102:8080   check inter 3000 fall 3 rise 5
 # echo &quot;disable server  web_host/192.168.7.101&quot; | socat stdio /var/lib/haproxy/haproxy.sock 
 # echo &quot;enable  server  web_host/192.168.7.101&quot; | socat stdio /var/lib/haproxy/haproxy.sock
     注意：
-        在新版本中动态修改一直是一个bug!
-</code></pre>
+        在v1.5之后的新版本中动态修改一直是一个bug!
+</code></pre><p>–动态修改的bug<br><img src="/2017/10/20/haproxy配置/动态修改的bug.png" alt="动态修改的bug"></p>
+
       
     </div>
 
@@ -912,8 +915,8 @@ server 192.168.7.102   192.168.7.102:8080   check inter 3000 fall 3 rise 5
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/05/zabbix监控系统/" rel="prev" title="zabbix监控系统">
-                zabbix监控系统 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/05/zabbix基础/" rel="prev" title="zabbix基础">
+                zabbix基础 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

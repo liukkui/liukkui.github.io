@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/haproxy管理页面.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/日志信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/健康状态检测.png">
-<meta property="og:updated_time" content="2019-03-15T10:00:27.777Z">
+<meta property="og:updated_time" content="2019-03-15T13:13:22.230Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy高级配置">
 <meta name="twitter:description" content="Haproxy高级配置">
@@ -557,7 +557,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">14k</span>
+                <span title="本文字数">15k</span>
               
 
               
@@ -736,6 +736,8 @@ listen  web_prot_http_nodes
         #通过request获取的头部信息进行匹配进行健康检测
      server 192.168.7.102  192.168.7.102:80  cookie web1 check inter 3000 fall 3 rise 5
      server 192.168.7.101  192.168.7.101:80  cookie web2 check inter 3000 fall 3 rise 5
+检测结果：
+    因为检测间隔较短，所以准备的特定文件很小，在日志中大小在最后是没显示的！
 </code></pre><p>–健康状态检测<br><img src="/2017/10/20/haproxy高级配置/健康状态检测.png" alt="健康状态检测.png"></p>
 <h3 id="haproxy-ACL"><a href="#haproxy-ACL" class="headerlink" title="haproxy ACL"></a>haproxy ACL</h3><pre><code>作用：
     1.对接收到的报文进行匹配和过滤，基于请求报文头部中的源地址、源端口、目标地址、目标端口、请求方法、URL、文件后缀等信息内容进行匹配并执行进一步操作;
@@ -1124,8 +1126,8 @@ backend web_host
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/18/TCP三次握手、四次断开与十一种状态/" rel="next" title="TCP三次握手、四次断开与十一种状态">
-                <i class="fa fa-chevron-left"></i> TCP三次握手、四次断开与十一种状态
+              <a href="/2017/10/18/Linux下双网卡绑定及Bridge/" rel="next" title="Linux下双网卡绑定及Bridge">
+                <i class="fa fa-chevron-left"></i> Linux下双网卡绑定及Bridge
               </a>
             
           </div>
