@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/haproxy管理页面.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/日志信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/10/20/haproxy高级配置/健康状态检测.png">
-<meta property="og:updated_time" content="2019-03-15T13:13:22.230Z">
+<meta property="og:updated_time" content="2019-03-16T13:41:59.931Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="haproxy高级配置">
 <meta name="twitter:description" content="Haproxy高级配置">
@@ -317,7 +317,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">20</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">21</span></a>
 
   </li>
         
@@ -336,7 +336,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">23</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">25</span></a>
 
   </li>
         
@@ -355,7 +355,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">38</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">39</span></a>
 
   </li>
         
@@ -557,7 +557,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">15k</span>
+                <span title="本文字数">9.6k</span>
               
 
               
@@ -571,7 +571,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">13 分钟</span>
+                <span title="阅读时长">9 分钟</span>
               
             </div>
           
@@ -591,8 +591,8 @@
       
 
       
-        <h3 id="Haproxy高级配置"><a href="#Haproxy高级配置" class="headerlink" title="Haproxy高级配置"></a>Haproxy高级配置</h3><a id="more"></a>
-<h3 id="四层和七层实现透传地址"><a href="#四层和七层实现透传地址" class="headerlink" title="四层和七层实现透传地址"></a>四层和七层实现透传地址</h3><p>–四层和七层的区别<br><img src="/2017/10/20/haproxy高级配置/四层和七层的区别.png" alt="四层和七层区别"></p>
+        <h2 id="Haproxy高级配置"><a href="#Haproxy高级配置" class="headerlink" title="Haproxy高级配置"></a>Haproxy高级配置</h2><a id="more"></a>
+<h2 id="四层和七层实现透传地址"><a href="#四层和七层实现透传地址" class="headerlink" title="四层和七层实现透传地址"></a>四层和七层实现透传地址</h2><p>–四层和七层的区别<br><img src="/2017/10/20/haproxy高级配置/四层和七层的区别.png" alt="四层和七层区别"></p>
 <p>haproxy占用内存很小 4core8G 支持几千几万的并发也就占用1~2G内存</p>
 <pre><code>四层：
     在四层负载设备中，把client发送的报文目标地址(原来是负载均衡设备的IP地址)，根据
@@ -629,7 +629,7 @@
     前提：
         前提是后端的nginx/tomcat的日志中开启支持的选项!!!
 </code></pre><p>–七层IP透传<br><img src="/2017/10/20/haproxy高级配置/七层IP透传.png" alt="七层IP透传"></p>
-<h3 id="基于cookie实现会话保持"><a href="#基于cookie实现会话保持" class="headerlink" title="基于cookie实现会话保持"></a>基于cookie实现会话保持</h3><pre><code>为什么要用到haproxy的cookie？
+<h2 id="基于cookie实现会话保持"><a href="#基于cookie实现会话保持" class="headerlink" title="基于cookie实现会话保持"></a>基于cookie实现会话保持</h2><pre><code>为什么要用到haproxy的cookie？
     1.会话保持是当用户在一段时间之内访问前端的负载均衡时，然后就把用户调度到和上次同一个后端web服务器上，实现方式有很多种，如ip_hash,hash consistent等调度
     算法！
     2.ip_hash等算法调度的颗粒度过于粗糙，对于SNAT网络模型来说就更是如此；
@@ -658,7 +658,7 @@ Cookie实现:
     server 172.20.141.42 172.20.141.42:8080 cookie web42 weight 1 check inter 2000 fall 3 rise 5
     #生产环境下的cookie我们一般在根据业务和端口来区分的!!!
 </code></pre><p>–cookie配置<br><img src="/2017/10/20/haproxy高级配置/cookie配置.png" alt="cookie配置"><br>–cookie调度效果<br><img src="/2017/10/20/haproxy高级配置/基于cookie的会话保持.png" alt="基于cookie的会话保持"></p>
-<h3 id="配置HAProxy状态页"><a href="#配置HAProxy状态页" class="headerlink" title="配置HAProxy状态页"></a>配置HAProxy状态页</h3><pre><code>stats enable            #基于默认的参数启用stats page
+<h2 id="配置HAProxy状态页"><a href="#配置HAProxy状态页" class="headerlink" title="配置HAProxy状态页"></a>配置HAProxy状态页</h2><pre><code>stats enable            #基于默认的参数启用stats page
 stats hide-version      #haproxy隐藏版本
 stats refresh &lt;delay&gt;   #设定自动刷新时间间隔
 stats uri &lt;prefix&gt;      #自定义stats page uri，默认值：/haproxy?stats 
@@ -678,7 +678,7 @@ stats admin { if | unless } &lt;cond&gt; #启用stats page中的管理功能
     stats auth    admin:admin123  #验证用户和密码
     stats admin if TRUE           #启用页面上的管理功能
 </code></pre><p>–管理页面<br><img src="/2017/10/20/haproxy高级配置/haproxy管理页面.png" alt="haproxy管理页面"></p>
-<h3 id="修改报文首部"><a href="#修改报文首部" class="headerlink" title="修改报文首部"></a>修改报文首部</h3><pre><code>注意：
+<h2 id="修改报文首部"><a href="#修改报文首部" class="headerlink" title="修改报文首部"></a>修改报文首部</h2><pre><code>注意：
     请求报文头部时http层的，所以需要定义mode http,而不是tcp
 
 在请求报文尾部添加指定首部
@@ -699,7 +699,7 @@ stats admin { if | unless } &lt;cond&gt; #启用stats page中的管理功能
     示例： 
         rspidel  server.* #从相应报文删除server信息
         rspidel X-Powered-By:.*  #从响应报文删除X-Powered-By信息
-</code></pre><h3 id="HAProxy的日志配置–一般是不开启的"><a href="#HAProxy的日志配置–一般是不开启的" class="headerlink" title="HAProxy的日志配置–一般是不开启的"></a>HAProxy的日志配置–一般是不开启的</h3><pre><code>注意：
+</code></pre><h2 id="HAProxy的日志配置–一般是不开启的"><a href="#HAProxy的日志配置–一般是不开启的" class="headerlink" title="HAProxy的日志配置–一般是不开启的"></a>HAProxy的日志配置–一般是不开启的</h2><pre><code>注意：
     1.haroxy的日志是基于rsyslog来传输的，所以需要配置rsyslog.conf
     2.haproxy虽然可以配置日志，但是不建议开启，影响haproxy性能，而且生产环境下是
         通过ELK直接收集后端nginx/tomcat的日志进行分析的！
@@ -722,7 +722,7 @@ stats admin { if | unless } &lt;cond&gt; #启用stats page中的管理功能
     server web1  127.0.0.1:8080  check inter 3000 fall 2 rise 5
 4.重启rsyslog服务和haproxy并访问haproxy状态页
 </code></pre><p>–日志信息<br><img src="/2017/10/20/haproxy高级配置/日志信息.png" alt="日志信息"></p>
-<h3 id="对HAProxy的后端服务集群检测"><a href="#对HAProxy的后端服务集群检测" class="headerlink" title="对HAProxy的后端服务集群检测"></a>对HAProxy的后端服务集群检测</h3><pre><code>option httpchk
+<h2 id="对HAProxy的后端服务集群检测"><a href="#对HAProxy的后端服务集群检测" class="headerlink" title="对HAProxy的后端服务集群检测"></a>对HAProxy的后端服务集群检测</h2><pre><code>option httpchk
 option httpchk &lt;uri&gt;
 option httpchk &lt;method&gt; &lt;uri&gt;
 option httpchk &lt;method&gt; &lt;uri&gt; &lt;version&gt;
@@ -739,211 +739,7 @@ listen  web_prot_http_nodes
 检测结果：
     因为检测间隔较短，所以准备的特定文件很小，在日志中大小在最后是没显示的！
 </code></pre><p>–健康状态检测<br><img src="/2017/10/20/haproxy高级配置/健康状态检测.png" alt="健康状态检测.png"></p>
-<h3 id="haproxy-ACL"><a href="#haproxy-ACL" class="headerlink" title="haproxy ACL"></a>haproxy ACL</h3><pre><code>作用：
-    1.对接收到的报文进行匹配和过滤，基于请求报文头部中的源地址、源端口、目标地址、目标端口、请求方法、URL、文件后缀等信息内容进行匹配并执行进一步操作;
-
-acl &lt;aclname&gt;  &lt;criterion&gt;   [flags]           [operator]        [&lt;value&gt;]
-    acl   规则名称   匹配条件     条件标记位          具体操作符     操作对象类型
-
-ACL名称：可以使用大字母A-Z、小写字母a-z、数字0-9、冒号：、点.、中横线和下划线，并且严格区分大小写，必须Image_site和image_site完全是两个acl。
-Criterion-acl
-    &lt;criterion&gt; ：匹配条件
-        dst         目标IP
-        dst_port    目标PORT
-        src         源IP
-        src_port    源PORT
-        hdr &lt;string&gt; 用于测试请求头部首部指定内容
-        hdr_dom(host)  请求的host名称，如 www.test.com
-        hdr_beg(host)  请求的host开头，如 www. img. video. download. ftp.
-        hdr_end(host)  请求的host结尾，如 .com .net .cn
-        path_beg   请求的URL开头，如/static、/images、/img、/css
-        path_end   请求的URL中资源的结尾，如 .gif  .png  .css  .js .jpg .jpeg
-    &lt;flags&gt;-条件标记
-        -i 不区分大小写
-        -m 使用指定的pattern匹配方法
-        -n 不做DNS解析
-        -u 禁止acl重名，否则多个同名ACL匹配或关系
-        --  强制flag结束. 当字符串和某个flag相似时使用
-    [operator]-操作符：
-      整数比较：eq、ge、gt、le、lt
-      字符比较：
-      - exact match     (-m str) :字符串必须完全匹配模式
-      - substring match (-m sub) :在提取的字符串中查找模式，如果其中任何一个被发现，ACL将匹配
-      - prefix match    (-m beg) :在提取的字符串首部中查找模式，如果其中任何一个被发现，ACL将匹配
-      - suffix match    (-m end) :将模式与提取字符串的尾部进行比较，如果其中任何一个匹配，则ACL进行匹配
-      - subdir match    (-m dir) :查看提取出来的用斜线分隔（“/”）的字符串，如果其中任何一个匹配，则ACL进行匹配
-      - domain match    (-m dom) :查找提取的用点（“.”）分隔字符串，如果其中任何一个匹配，则ACL进行匹配 
-    &lt;value&gt;的类型：
-        - Boolean #布尔值
-        - integer or integer range #整数或整数范围，比如用于匹配端口范围
-        - IP address / network #IP地址或IP范围
-        - string 
-             exact –精确比较
-                substring—子串    www.test.com  
-                suffix-后缀比较
-                prefix-前缀比较
-                subdir-路径， /wp-includes/js/jquery/jquery.js
-                domain-域名，www.test.com
-        - regular expression #正则表达式
-        - hex block #16进制
-acl作为条件时的逻辑关系：
-- 与：隐式（默认）使用
-- 或：使用“or” 或 “||”表示
-- 否定：使用“!“ 表示   
-示例：
-    if   invalid_src invalid_port      与关系
-    if invalid_src || invalid_port      或
-    if ! invalid_src            非
-
-Acl 示例-域名匹配：
-  listen  web_port
-  bind 192.168.50.113
-  mode http
-  log global
-  acl  test_host  hdr_dom(host)   www.test.com
-  use_backend   test_host   if   test_host
-  default_backend default_web #以上都没有匹配到的时候使用默认backend
-  backend test_host
-    mode http
-    server web1 www.test.com check inter 2000 fall 3 rise 5
-  backend default_web
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-
-Acl-源地址子网匹配
-    listen  web_port
-    bind 192.168.50.113
-    mode http
-    log global
-    acl ip_range_test src 192.168.4.0/24
-    use_backend   web2   if  ip_range_test
-    default_backend web1
-    backend web1
-      mode http
-      server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-    backend web2
-      mode http
-      server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-
-Acl示例-源地址访问控制
-    listen  web_port
-    bind 192.168.50.113
-    mode http
-    log global
-    acl block_test src 192.168.50.178 
-    block  if  block_test
-    default_backend web1
-    backend web1
-      mode http
-      log global
-      server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-
-Acl示例-匹配浏览器
-    listen  web_port
-    bind 192.168.50.113
-    mode http
-    log global
-    acl block_test src 192.168.50.178
-    acl redirect_test hdr(User-Agent) -m sub  -i &quot;Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko&quot;
-    block  if  block_test
-    redirect prefix   http://192.168.50.178:8080 if redirect_test
-    default_backend web2
-    backend web1
-      mode http
-      log global
-      server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-
-基于Acl+文件后缀实现动静分离
-    listen  web_port
-    bind 192.168.50.113:80
-    mode http
-    acl php_server path_end  -i .php
-    use_backend php_server_host if php_server
-        #对动态资源(php)的资源请求转发到后端的php_server_host上
-    acl image_server path_end  -i .jpg .png .jpeg -gif  
-    use_backend image_server_host if image_server
-        #对图片(忽略大小写)的访问全部转发到image_server_host上
-    default_backend default_host   #其他的转发到默认的后端default_host
-    backend default_host
-        mode http
-        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-    backend php_server_host
-        mode http
-        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-    backend image_server_host
-        mode http
-        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-
-Acl-匹配访问路径
-    listen  web_port
-    bind 192.168.50.113:80
-    mode http
-    acl static_path  path_beg  -i  /static /images /javascript
-    use_backend static_path_host if static_path
-    default_backend default_host
-    backend default_host
-        mode http
-        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-    backend static_path_host 
-        mode http
-        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-
-基于策略的访问控制
-    listen  web_port
-    bind 192.168.50.81:80
-    mode http    
-    acl badguy_deny src 192.168.4.1
-    http-request deny if badguy_deny
-    http-request allow
-    default_backend default_host
-    backend default_host
-        mode http
-        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-    backend static_path_host 
-        mode http
-        server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-    backend image_server_host
-        mode http
-        server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-
-预定义acl
-    ACL name    Equivalent to   Usage
-    FALSE   always_false    never match
-    HTTP    req_proto_http  match if protocol is valid HTTP
-    HTTP_1.0    req_ver 1.0 match HTTP version 1.0
-    HTTP_1.1    req_ver 1.1 match HTTP version 1.1
-    HTTP_CONTENT    hdr_val(content-length) gt 0    match an existing content-length
-    HTTP_URL_ABS    url_reg ^[^/:]*://  match absolute URL with scheme
-    HTTP_URL_SLASH  url_beg /   match URL beginning with &quot;/&quot;
-    HTTP_URL_STAR   url *   match URL equal to &quot;*&quot;
-    LOCALHOST   src 127.0.0.1/8 match connection from local host
-    METH_CONNECT    method CONNECT  match HTTP CONNECT method
-    METH_DELETE method DELETE   match HTTP DELETE method
-    METH_GET    method GET HEAD match HTTP GET or HEAD method
-    METH_HEAD   method HEAD match HTTP HEAD method
-    METH_OPTIONS    method OPTIONS  match HTTP OPTIONS method
-    METH_POST   method POST match HTTP POST method
-    METH_PUT    method PUT  match HTTP PUT method
-    METH_TRACE  method TRACE    match HTTP TRACE method
-    RDP_COOKIE  req_rdp_cookie_cnt gt 0 match presence of an RDP cookie
-    REQ_CONTENT req_len gt 0    match data in the request buffer
-    TRUE    always_true always match
-    WAIT_END    wait_end    wait for end of content analysis
-
-示例
-    listen  web_port
-    bind 192.168.50.81:80
-    mode http
-    acl static_path  path_beg  -i  /static /images /javascript
-    use_backend static_path_host if  HTTP_1.1 TRUE static_path
-    default_backend default_host
-backend default_host
-    mode http
-    server web1 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-backend static_path_host 
-    mode http
-    server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
-</code></pre><h3 id="haproxy自定义错误页面"><a href="#haproxy自定义错误页面" class="headerlink" title="haproxy自定义错误页面"></a>haproxy自定义错误页面</h3><pre><code>自定义错误页面：
+<h2 id="haproxy自定义错误页面"><a href="#haproxy自定义错误页面" class="headerlink" title="haproxy自定义错误页面"></a>haproxy自定义错误页面</h2><pre><code>自定义错误页面：
     defaults
     option http-keep-alive
     option  forwardfor
@@ -962,7 +758,7 @@ backend static_path_host
 临时重定向跳转：
     errorloc 503  http://192.168.50.113/error_page/503.html
         #自定义跳转到事先定义的网站上
-</code></pre><h3 id="haproxy支持负载https"><a href="#haproxy支持负载https" class="headerlink" title="haproxy支持负载https"></a>haproxy支持负载https</h3><pre><code>生成证书
+</code></pre><h2 id="haproxy支持负载https"><a href="#haproxy支持负载https" class="headerlink" title="haproxy支持负载https"></a>haproxy支持负载https</h2><pre><code>生成证书
     # mkdir /usr/local/haproxy/certs
     # cd /usr/local/haproxy/cert
     # openssl genrsa -out haproxy.key 2048
@@ -993,7 +789,10 @@ backend web_host
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     server web1 192.168.50.178:8080 check inter 2000 fall 3 rise 5
     server web2 192.168.50.81:8080 check inter 2000 fall 3 rise 5
-</code></pre>
+</code></pre><h2 id="将haproxy的配置文件内容类似于nginx的include方式加载"><a href="#将haproxy的配置文件内容类似于nginx的include方式加载" class="headerlink" title="将haproxy的配置文件内容类似于nginx的include方式加载"></a>将haproxy的配置文件内容类似于nginx的include方式加载</h2><pre><code>作用：
+由于haproxy默认不支持像nginx一样通过在主配置文件中include某个目录来加载该目录下
+的所有配置文件，所以可以通过对不同版本的HAProxy启动脚本达到目的！
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">###########################################################################</span><br><span class="line">                Haproxy-V1.5版本修改方式</span><br><span class="line">###########################################################################</span><br><span class="line">    1.在haproxy的1.5版本是不支持启动时加载目录的，只支持加载多文件</span><br><span class="line">        [root@node01 ~]# haproxy -h</span><br><span class="line">        HA-Proxy version 1.8.17 2019/01/08</span><br><span class="line">        Copyright 2000-2019 Willy Tarreau &lt;willy@haproxy.org&gt;</span><br><span class="line">        Usage : haproxy [-f &lt;cfgfile&gt;]*</span><br><span class="line">            #这里只支持通过多个-f &lt;文件&gt;</span><br><span class="line">    #修改haproxy-V1.5版本的启动脚本支持加载conf下的配置文件</span><br><span class="line">    [root@node03 haproxy]# vim /usr/lib/systemd/system/haproxy.service </span><br><span class="line">    [Unit]</span><br><span class="line">    Description=HAProxy Load Balancer</span><br><span class="line">    After=syslog.target network.target</span><br><span class="line">    [Service]</span><br><span class="line">    EnviromentFile=/etc/sysconfig/haproxy</span><br><span class="line">    ExecStart=/usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/web1.cfg -p /run/haproxy.pid</span><br><span class="line">        #启动时加载haproxy.cfg和/web1.cfg两个配置文件</span><br><span class="line">    ExecReload=/bin/kill -USR2 $MAINPID</span><br><span class="line">    KillMode=mixed</span><br><span class="line">    [Install]</span><br><span class="line">    WantedBy=multi-user.target   </span><br><span class="line">###########################################################################</span><br><span class="line">                Haproxy-V1.8版本修改方式</span><br><span class="line">###########################################################################</span><br><span class="line">    2.在haproxy的V1.8版本支持加载目录</span><br><span class="line">        [root@node03 ~]# haproxy -h</span><br><span class="line">        HA-Proxy version 1.8.17 2019/01/08</span><br><span class="line">        Copyright 2000-2019 Willy Tarreau &lt;willy@haproxy.org&gt;</span><br><span class="line">        Usage : haproxy [-f &lt;cfgfile&gt;]* </span><br><span class="line">            #这里只支持多文件和目录</span><br><span class="line"></span><br><span class="line">    [root@node03 ~]# cd /etc/haproxy/</span><br><span class="line">    [root@node03 haproxy]# mkdir conf   #创建一个存放配置文件的目录</span><br><span class="line">    [root@node03 haproxy]# vim conf/web1.cfg web2.cfg</span><br><span class="line">    #修改haproxy的启动脚本支持加载conf下的配置文件</span><br><span class="line">    [root@node03 haproxy]# vim /usr/lib/systemd/system/haproxy.service </span><br><span class="line">    [Unit]</span><br><span class="line">    Description=HAProxy Load Balancer</span><br><span class="line">    After=syslog.target network.target</span><br><span class="line">    [Service]</span><br><span class="line">    ExecStartPre=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf -c -q</span><br><span class="line">        #启动时加载/etc/haproxy/conf目录下的所有.cfg文件</span><br><span class="line">    ExecStart=/usr/sbin/haproxy -Ws -f /etc/haproxy/haproxy.cfg -f /etc/haproxy/conf -p /run/haproxy.pid</span><br><span class="line">    ExecReload=/bin/kill -USR2 $MAINPID</span><br><span class="line">    [Install]</span><br><span class="line">    WantedBy=multi-user.target</span><br><span class="line">        #这样就可以将haproxy的配置文件根据业务分开存放了；</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -1126,8 +925,8 @@ backend web_host
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/18/Linux下双网卡绑定及Bridge/" rel="next" title="Linux下双网卡绑定及Bridge">
-                <i class="fa fa-chevron-left"></i> Linux下双网卡绑定及Bridge
+              <a href="/2017/10/20/haproxy配置/" rel="next" title="haproxy配置">
+                <i class="fa fa-chevron-left"></i> haproxy配置
               </a>
             
           </div>
@@ -1136,8 +935,8 @@ backend web_host
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/20/haproxy配置/" rel="prev" title="haproxy配置">
-                haproxy配置 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/05/zabbix监控系统/" rel="prev" title="zabbix监控系统">
+                zabbix监控系统 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1210,7 +1009,7 @@ backend web_host
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1269,7 +1068,11 @@ backend web_host
                     
                       
                     
-                    <span class="site-state-item-count">23</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1322,7 +1125,9 @@ backend web_host
                     
                       
                     
-                    <span class="site-state-item-count">20</span>
+                      
+                    
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1437,7 +1242,7 @@ backend web_host
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Haproxy高级配置"><span class="nav-number">1.</span> <span class="nav-text">Haproxy高级配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四层和七层实现透传地址"><span class="nav-number">2.</span> <span class="nav-text">四层和七层实现透传地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于cookie实现会话保持"><span class="nav-number">3.</span> <span class="nav-text">基于cookie实现会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置HAProxy状态页"><span class="nav-number">4.</span> <span class="nav-text">配置HAProxy状态页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改报文首部"><span class="nav-number">5.</span> <span class="nav-text">修改报文首部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HAProxy的日志配置–一般是不开启的"><span class="nav-number">6.</span> <span class="nav-text">HAProxy的日志配置–一般是不开启的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对HAProxy的后端服务集群检测"><span class="nav-number">7.</span> <span class="nav-text">对HAProxy的后端服务集群检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy-ACL"><span class="nav-number">8.</span> <span class="nav-text">haproxy ACL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy自定义错误页面"><span class="nav-number">9.</span> <span class="nav-text">haproxy自定义错误页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#haproxy支持负载https"><span class="nav-number">10.</span> <span class="nav-text">haproxy支持负载https</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Haproxy高级配置"><span class="nav-number">1.</span> <span class="nav-text">Haproxy高级配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四层和七层实现透传地址"><span class="nav-number">2.</span> <span class="nav-text">四层和七层实现透传地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于cookie实现会话保持"><span class="nav-number">3.</span> <span class="nav-text">基于cookie实现会话保持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置HAProxy状态页"><span class="nav-number">4.</span> <span class="nav-text">配置HAProxy状态页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改报文首部"><span class="nav-number">5.</span> <span class="nav-text">修改报文首部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HAProxy的日志配置–一般是不开启的"><span class="nav-number">6.</span> <span class="nav-text">HAProxy的日志配置–一般是不开启的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对HAProxy的后端服务集群检测"><span class="nav-number">7.</span> <span class="nav-text">对HAProxy的后端服务集群检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#haproxy自定义错误页面"><span class="nav-number">8.</span> <span class="nav-text">haproxy自定义错误页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#haproxy支持负载https"><span class="nav-number">9.</span> <span class="nav-text">haproxy支持负载https</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将haproxy的配置文件内容类似于nginx的include方式加载"><span class="nav-number">10.</span> <span class="nav-text">将haproxy的配置文件内容类似于nginx的include方式加载</span></a></li></ol></div>
             
 
           </div>
@@ -1471,7 +1276,7 @@ backend web_host
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">415k</span>
+    <span title="站点总字数">416k</span>
   
 
   
@@ -1482,7 +1287,7 @@ backend web_host
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">6:17</span>
+    <span title="站点阅读时长">6:18</span>
   
 </div>
 

@@ -164,7 +164,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/02/05/zabbix监控系统/nginx监控模板.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/02/05/zabbix监控系统/nginx检测1.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/02/05/zabbix监控系统/nginx检测2.png">
-<meta property="og:updated_time" content="2019-03-13T09:23:13.769Z">
+<meta property="og:updated_time" content="2019-03-16T13:55:29.441Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="zabbix监控系统">
 <meta name="twitter:description" content="Zabbix监控进阶-监控常用服务(自定义模板)">
@@ -329,7 +329,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">20</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">21</span></a>
 
   </li>
         
@@ -348,7 +348,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">23</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">25</span></a>
 
   </li>
         
@@ -367,7 +367,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">38</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">39</span></a>
 
   </li>
         
@@ -583,7 +583,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">14 分钟</span>
+                <span title="阅读时长">15 分钟</span>
               
             </div>
           
@@ -772,7 +772,17 @@
     nginx_status.xml
     将此模板关联到需要监控的主机上即可!
 </code></pre><p>–nginx监控模板<br><img src="/2018/02/05/zabbix监控系统/nginx监控模板.png" alt="nginx监控模板"><br>–nginx检测1<br><img src="/2018/02/05/zabbix监控系统/nginx检测1.png" alt="nginx检测1"><br>–nginx检测2<br><img src="/2018/02/05/zabbix监控系统/nginx检测2.png" alt="nginx检测2"></p>
-<h3 id="9-编写脚本一键安装zabbix-agent"><a href="#9-编写脚本一键安装zabbix-agent" class="headerlink" title="9.编写脚本一键安装zabbix agent"></a>9.编写脚本一键安装zabbix agent</h3><pre><code>已上传网盘
+<h3 id="9-监控keepalived-haproxy"><a href="#9-监控keepalived-haproxy" class="headerlink" title="9.监控keepalived+haproxy"></a>9.监控keepalived+haproxy</h3><pre><code>1.对于keepalived的监控是放在了haproxy上了，只需要写个脚本ping一下VIP，将$0的返回码放到zabbix上进行监控报警即可！
+    #!/bin/bash
+    ping -w 2 -c 2 VIP &amp;&gt; /dev/null
+    if [ $? -eq 0 ] ; then
+        echo &quot;0&quot;
+    else
+        echo &quot;100&quot;
+    fi
+2.将脚本放在/usr/local/zabbix/etc/zabbix_agentd.conf.d/下
+3.在zabbix上创建模板，设置报警关联即可；
+</code></pre><h3 id="10-编写脚本一键安装zabbix-agent"><a href="#10-编写脚本一键安装zabbix-agent" class="headerlink" title="10.编写脚本一键安装zabbix agent"></a>10.编写脚本一键安装zabbix agent</h3><pre><code>已上传网盘
 </code></pre>
       
     </div>
@@ -906,8 +916,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/20/haproxy配置/" rel="next" title="haproxy配置">
-                <i class="fa fa-chevron-left"></i> haproxy配置
+              <a href="/2017/10/20/haproxy高级配置/" rel="next" title="haproxy高级配置">
+                <i class="fa fa-chevron-left"></i> haproxy高级配置
               </a>
             
           </div>
@@ -990,7 +1000,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1049,7 +1059,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">23</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1102,7 +1116,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">20</span>
+                      
+                    
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1217,7 +1233,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Zabbix监控进阶-监控常用服务-自定义模板"><span class="nav-number">1.</span> <span class="nav-text">Zabbix监控进阶-监控常用服务(自定义模板)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-监控TCP连接数"><span class="nav-number">2.</span> <span class="nav-text">1.监控TCP连接数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-监控memcached"><span class="nav-number">3.</span> <span class="nav-text">2.监控memcached</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-监控redis"><span class="nav-number">4.</span> <span class="nav-text">3.监控redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-监控mysql"><span class="nav-number">5.</span> <span class="nav-text">4.监控mysql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-自定义监控端口和进程"><span class="nav-number">6.</span> <span class="nav-text">5.自定义监控端口和进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-邮件报警通知功能"><span class="nav-number">7.</span> <span class="nav-text">6.邮件报警通知功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-完善zabbix系统基础监控-CPU-内存-磁盘-模板"><span class="nav-number">8.</span> <span class="nav-text">7.完善zabbix系统基础监控(CPU/内存/磁盘)模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-监控nginx"><span class="nav-number">9.</span> <span class="nav-text">8.监控nginx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-编写脚本一键安装zabbix-agent"><span class="nav-number">10.</span> <span class="nav-text">9.编写脚本一键安装zabbix agent</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Zabbix监控进阶-监控常用服务-自定义模板"><span class="nav-number">1.</span> <span class="nav-text">Zabbix监控进阶-监控常用服务(自定义模板)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-监控TCP连接数"><span class="nav-number">2.</span> <span class="nav-text">1.监控TCP连接数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-监控memcached"><span class="nav-number">3.</span> <span class="nav-text">2.监控memcached</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-监控redis"><span class="nav-number">4.</span> <span class="nav-text">3.监控redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-监控mysql"><span class="nav-number">5.</span> <span class="nav-text">4.监控mysql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-自定义监控端口和进程"><span class="nav-number">6.</span> <span class="nav-text">5.自定义监控端口和进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-邮件报警通知功能"><span class="nav-number">7.</span> <span class="nav-text">6.邮件报警通知功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-完善zabbix系统基础监控-CPU-内存-磁盘-模板"><span class="nav-number">8.</span> <span class="nav-text">7.完善zabbix系统基础监控(CPU/内存/磁盘)模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-监控nginx"><span class="nav-number">9.</span> <span class="nav-text">8.监控nginx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-监控keepalived-haproxy"><span class="nav-number">10.</span> <span class="nav-text">9.监控keepalived+haproxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-编写脚本一键安装zabbix-agent"><span class="nav-number">11.</span> <span class="nav-text">10.编写脚本一键安装zabbix agent</span></a></li></ol></div>
             
 
           </div>
@@ -1251,7 +1267,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">415k</span>
+    <span title="站点总字数">416k</span>
   
 
   
@@ -1262,7 +1278,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">6:17</span>
+    <span title="站点阅读时长">6:18</span>
   
 </div>
 
