@@ -149,7 +149,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移时sentinel信息.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移后的redis配置文件.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/当前redis状态.png">
-<meta property="og:updated_time" content="2019-03-11T05:27:33.295Z">
+<meta property="og:updated_time" content="2019-04-01T15:31:20.403Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis高可用">
 <meta name="twitter:description" content="Redis高可用">
@@ -314,7 +314,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">21</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">22</span></a>
 
   </li>
         
@@ -333,7 +333,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">25</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">27</span></a>
 
   </li>
         
@@ -352,7 +352,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">39</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">40</span></a>
 
   </li>
         
@@ -554,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.6k</span>
+                <span title="本文字数">14k</span>
               
 
               
@@ -568,7 +568,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">9 分钟</span>
+                <span title="阅读时长">13 分钟</span>
               
             </div>
           
@@ -832,7 +832,29 @@ sentinel工作原理：
     repl_backlog_first_byte_offset:18272
     repl_backlog_histlen:385586
 </code></pre><p>–当前redis状态<br><img src="/2017/07/15/redis高可用/当前redis状态.png" alt="当前redis状态"></p>
+<h3 id="redis一键安装脚本和启动脚本"><a href="#redis一键安装脚本和启动脚本" class="headerlink" title="redis一键安装脚本和启动脚本"></a>redis一键安装脚本和启动脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">[root@redis-node ~]# cd /usr/local/src/</span><br><span class="line">[root@redis-node src]# ll redis-4.0.1.tar.gz</span><br><span class="line">-rw-rw-r-- 1 root root 1711660 Aug 27 16:19 redis-5.0.3.tar.gz</span><br><span class="line">[root@redis-node src]# cat redis_install.sh</span><br><span class="line">#!/usr/bin/env bash</span><br><span class="line"># It&apos;s Used to be install redis.</span><br><span class="line"># Created on 2018/03/06 .</span><br><span class="line"># author: lk.</span><br><span class="line"># Version: 1.0</span><br><span class="line">    </span><br><span class="line">function install_redis () &#123;</span><br><span class="line">###########################################################################</span><br><span class="line">        cd /usr/local/src</span><br><span class="line">        tar -zxvf /usr/local/src/redis-5.0.3.tar.gz</span><br><span class="line">        cd redis-5.0.3</span><br><span class="line">        make PREFIX=/usr/local/redis install</span><br><span class="line">        mkdir -p /usr/local/redis/&#123;etc,var&#125;</span><br><span class="line">        rsync -avz redis.conf  /usr/local/redis/etc/</span><br><span class="line">        sed -i &apos;s@pidfile.*@pidfile /var/run/redis-server.pid@&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@logfile.*@logfile /usr/local/redis/var/redis.log@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@^dir.*@dir /usr/local/redis/var@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/daemonize no/daemonize yes/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/^# bind 127.0.0.1/bind 0.0.0.0/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line"> ##########################################################################</span><br><span class="line">&#125;</span><br><span class="line">install_redis</span><br><span class="line"></span><br><span class="line">赋予脚本执行权限,并进行安装</span><br><span class="line">[root@redis-node src]# chmod 755 /usr/local/src/redis_install.sh</span><br><span class="line">[root@redis-node src]# /bin/bash -x /usr/local/src/redis_install.sh</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">编写redis-server启动脚本</span><br><span class="line">[root@redis-node src]# cat /etc/init.d/redis-server</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line"># redis - this script starts and stops the redis-server daemon</span><br><span class="line">#</span><br><span class="line"># chkconfig:   - 85 15</span><br><span class="line"># description:  Redis is a persistent key-value database</span><br><span class="line"># processname: redis-server</span><br><span class="line"># config:      /usr/local/redis/etc/redis.conf</span><br><span class="line"># config:      /etc/sysconfig/redis</span><br><span class="line"># pidfile:     /usr/local/redis/var/redis-server.pid</span><br><span class="line">   </span><br><span class="line"># Source function library.</span><br><span class="line">. /etc/rc.d/init.d/functions</span><br><span class="line">   </span><br><span class="line"># Source networking configuration.</span><br><span class="line">. /etc/sysconfig/network</span><br><span class="line">   </span><br><span class="line"># Check that networking is up.</span><br><span class="line">[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0</span><br><span class="line">   </span><br><span class="line">redis=&quot;/usr/local/redis/bin/redis-server&quot;</span><br><span class="line">prog=$(basename $redis)</span><br><span class="line">   </span><br><span class="line">REDIS_CONF_FILE=&quot;/usr/local/redis/etc/redis.conf&quot;</span><br><span class="line">   </span><br><span class="line">[ -f /etc/sysconfig/redis ] &amp;&amp; . /etc/sysconfig/redis</span><br><span class="line">   </span><br><span class="line">lockfile=/var/lock/subsys/redis-server</span><br><span class="line">   </span><br><span class="line">start() &#123;</span><br><span class="line">    [ -x $redis ] || exit 5</span><br><span class="line">    [ -f $REDIS_CONF_FILE ] || exit 6</span><br><span class="line">    echo -n $&quot;Starting $prog: &quot;</span><br><span class="line">    daemon $redis $REDIS_CONF_FILE</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; touch $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">stop() &#123;</span><br><span class="line">    echo -n $&quot;Stopping $prog: &quot;</span><br><span class="line">    killproc $prog</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">restart() &#123;</span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">reload() &#123;</span><br><span class="line">    echo -n $&quot;Reloading $prog: &quot;</span><br><span class="line">    killproc $redis -HUP</span><br><span class="line">    RETVAL=$?</span><br><span class="line">    echo</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">force_reload() &#123;</span><br><span class="line">    restart</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status() &#123;</span><br><span class="line">    status $prog</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status_q() &#123;</span><br><span class="line">    rh_status &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">    start)</span><br><span class="line">        rh_status_q &amp;&amp; exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    stop)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    restart)</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    reload)</span><br><span class="line">        rh_status_q || exit 7</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    force-reload)</span><br><span class="line">        force_reload</span><br><span class="line">        ;;</span><br><span class="line">    status)</span><br><span class="line">        rh_status</span><br><span class="line">        ;;</span><br><span class="line">    condrestart|try-restart)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">            ;;</span><br><span class="line">    *)</span><br><span class="line">        echo $&quot;Usage: $0 &#123;start|stop|status|restart|condrestart|try-restart|reload|force-reload&#125;&quot;</span><br><span class="line">        exit 2</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<pre><code>赋予脚本执行权限,并启动redis-server
+[root@redis-node src]# /etc/init.d/redis-server start
+[root@redis-node src]# lsof -i:6379
+COMMAND     PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+redis-ser 24439 root    6u  IPv4 24642923      0t0  TCP dns02.kevin.cn:6379 (LISTEN)
 
+温馨提示:
+需要将redis.conf文件中的bind改为本机ip.不能使用默认的127.0.0.1,否则远程连接该redis就会失败
+[root@redis-node src]# vim /usr/local/redis/etc/redis.conf
+.....
+bind 192.168.34.118
+
+重启redis-server服务
+[root@redis-node src]# /etc/init.d/redis-server restart
+Stopping redis-server:                                     [  OK  ]
+Starting redis-server:                                     [  OK  ]
+[root@redis-node src]# lsof -i:6379
+COMMAND    PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
+redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LISTEN)
+
+最好在tomcat两个节点上使用&quot;telnet 192.168.34.118 6379&quot;验证下redis是否能成功连接
+</code></pre>
       
     </div>
 
@@ -1049,7 +1071,7 @@ sentinel工作原理：
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1112,7 +1134,11 @@ sentinel工作原理：
                     
                       
                     
-                    <span class="site-state-item-count">25</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1167,7 +1193,9 @@ sentinel工作原理：
                     
                       
                     
-                    <span class="site-state-item-count">21</span>
+                      
+                    
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1282,7 +1310,7 @@ sentinel工作原理：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis高可用"><span class="nav-number">1.</span> <span class="nav-text">Redis高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis主从实现"><span class="nav-number">2.</span> <span class="nav-text">Redis主从实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制过程"><span class="nav-number">3.</span> <span class="nav-text">主从复制过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步优化："><span class="nav-number">4.</span> <span class="nav-text">主从同步优化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置redis一主二从"><span class="nav-number">5.</span> <span class="nav-text">配置redis一主二从</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制常见问题汇总"><span class="nav-number">6.</span> <span class="nav-text">主从复制常见问题汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序如何连接redis？："><span class="nav-number">7.</span> <span class="nav-text">应用程序如何连接redis？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-Sentinel-哨兵-机制实现"><span class="nav-number">8.</span> <span class="nav-text">redis Sentinel(哨兵)机制实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel实现"><span class="nav-number">9.</span> <span class="nav-text">Sentinel实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试：将master上的redis服务关闭"><span class="nav-number">10.</span> <span class="nav-text">测试：将master上的redis服务关闭</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis高可用"><span class="nav-number">1.</span> <span class="nav-text">Redis高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis主从实现"><span class="nav-number">2.</span> <span class="nav-text">Redis主从实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制过程"><span class="nav-number">3.</span> <span class="nav-text">主从复制过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步优化："><span class="nav-number">4.</span> <span class="nav-text">主从同步优化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置redis一主二从"><span class="nav-number">5.</span> <span class="nav-text">配置redis一主二从</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制常见问题汇总"><span class="nav-number">6.</span> <span class="nav-text">主从复制常见问题汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序如何连接redis？："><span class="nav-number">7.</span> <span class="nav-text">应用程序如何连接redis？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-Sentinel-哨兵-机制实现"><span class="nav-number">8.</span> <span class="nav-text">redis Sentinel(哨兵)机制实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel实现"><span class="nav-number">9.</span> <span class="nav-text">Sentinel实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试：将master上的redis服务关闭"><span class="nav-number">10.</span> <span class="nav-text">测试：将master上的redis服务关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis一键安装脚本和启动脚本"><span class="nav-number">11.</span> <span class="nav-text">redis一键安装脚本和启动脚本</span></a></li></ol></div>
             
 
           </div>
@@ -1316,7 +1344,7 @@ sentinel工作原理：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">563k</span>
+    <span title="站点总字数">581k</span>
   
 
   
@@ -1327,7 +1355,7 @@ sentinel工作原理：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">8:32</span>
+    <span title="站点阅读时长">8:48</span>
   
 </div>
 
