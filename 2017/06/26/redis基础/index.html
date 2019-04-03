@@ -146,7 +146,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/用户请求CDN的流程.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/分布式缓存架构.png">
-<meta property="og:updated_time" content="2019-03-13T12:24:51.893Z">
+<meta property="og:updated_time" content="2019-04-02T12:28:09.942Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis基础">
 <meta name="twitter:description" content="缓存基础介绍">
@@ -311,7 +311,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">23</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">24</span></a>
 
   </li>
         
@@ -330,7 +330,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">27</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">28</span></a>
 
   </li>
         
@@ -349,7 +349,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">41</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">45</span></a>
 
   </li>
         
@@ -551,7 +551,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">23k</span>
+                <span title="本文字数">24k</span>
               
 
               
@@ -565,7 +565,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">21 分钟</span>
+                <span title="阅读时长">22 分钟</span>
               
             </div>
           
@@ -623,9 +623,22 @@ I/O，提高内存和硬盘（或其他I/O设备）之间的数据交换速度�
     2.第二解决不同运营商之间的互联，因为可以让联通的网络访问联通让电信的网络访问电信，起到加速用户访问的目的;
     3.第三解决用户访问的地域问题，就近返回用户资源;
 
+关于302调度：
+    如用的是是联通的网络，但是设置了一个电信的DNS，或者电信的用户设置了一个联通的DNS，在刚建立连接的时候CDN法获
+    取到用户的真实IP，而是只能获取到用户的local DNS而判定用户是联通还是电信的网络，假如设置了错误的运营商DNS会
+    被调度到错误的CDN 边缘节点，当和边缘节点连接之后就可以获取到用户的真实IP从而判断用户是联通还是电信的网络，如
+    果是电信的网络被调度到了联通的CDN边缘节点或者是电信的网络被调度到了联通的CND边缘节点，那么可以给用户再发送一
+    个302重定向的回复，用户的浏览器再根据新的地址进行连接，即可访问到正确的CND 边缘节点。
+
 用户请求CDN的流程：
-    提前对静态内容进行预缓存，避免大量的请求回源，导致主站网络带宽被打满而导致数据无法更新，另外CDN可以将数
-    据根据访问的热度不同而进行不同级别的缓存，例如访问量最高的资源访问CDN 边缘节点的内存，其次的放在SSD或者SATA，再其次的放在云存储，这样兼顾了速度与成本。
+    提前对静态内容进行预缓存，避免大量的请求回源，导致主站网络带宽被打满而导致数据无法更新，另外CDN可以将数据根
+    据访问的热度不同而进行不同级别的缓存，例如访问量最高的资源访问CDN 边缘节点的内存，其次的放在SSD或者SATA，
+    再其次的放在云存储，这样兼顾了速度与成本。
+
+内容分发与分层：
+    提前对静态内容进行预缓存，避免大量的请求回源，导致主站网络带宽被打满而导致数据无法更新，另外CDN可以将数据根
+    据访问的热度不通而进行不通级别的缓存，例如访问量最高的资源访问CDN 边缘节点的内存，其次的放在SSD或者SATA，
+    再其次的放在云存储，这样兼顾了速度与成本
 
 CDN的主要优势：
     1.提前对静态内容进行预缓存，避免当地用户大量的请求回源，导致主站网络带宽被打满而导致数据无法更新,变向的
@@ -636,9 +649,25 @@ CDN的主要优势：
     3.将用户准确调度到最近的边缘节点性能优化，加快访问速度;
     4.CDN还可以进行安全相关-抵御攻击
     5.最主要的还是节省带宽；
+
+自建CDN优缺点：
+    nginx+squid、nginx+varnish、nginx+ATS等方式可以自建
+    优点：
+        自建CDN 比较灵活，可以在访问用户较多的地方多部署服务器
+        成本比较容易控制
+    缺点：
+        费用高
+        团队技术要求高
+        问题不变排查，出问题不容易搞的定 
 </code></pre><h3 id="3-应用层缓存"><a href="#3-应用层缓存" class="headerlink" title="3.应用层缓存"></a>3.应用层缓存</h3><pre><code>Nginx、PHP、tomcat等web服务可以设置应用缓存以加速响应用户请求，另外有些解释性语言比如PHP/Python不能直接运行
 ，需要先编译成字节码，但字节码需要解释器解释为机器码之后才能执行，因此字节码也是一种缓存，有时候会出现程序代
 码上线后字节码没有更新的现象。
+
+动态页面静态化：
+    将java的动态页面静态化，比如将每个具体产品的web页面静态化为html文件，然后通过nginx 的rewrite功能发布，
+    即用户最终访问到的某个产品的web 页面是静态的页面，静态页面的访问速度是比较快的，生成的静态页面可以通过nfs、
+    rsync、分布式存储等方式推送到各web服务器，如果静态页面生成的信息是错误的，可以将信息更改后通过推送平台重新生
+    成新的web页面并同步到各web服务器，平时可以通过每间隔几个小时自动生成静态页面，比如每6小时生成一次动态页面并同步到各web服务器;
 </code></pre><h3 id="4-其他缓存"><a href="#4-其他缓存" class="headerlink" title="4.其他缓存"></a>4.其他缓存</h3><pre><code>CPU缓存(L1的数据缓存和L1的指令缓存)、二级缓存、三级缓存
 磁盘缓存
 RAID卡缓存
@@ -1319,7 +1348,7 @@ AOF模式缺点:
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">41</span>
+                    <span class="site-state-item-count">45</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1386,7 +1415,9 @@ AOF模式缺点:
                     
                       
                     
-                    <span class="site-state-item-count">27</span>
+                      
+                    
+                    <span class="site-state-item-count">28</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1445,7 +1476,9 @@ AOF模式缺点:
                     
                       
                     
-                    <span class="site-state-item-count">23</span>
+                      
+                    
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1594,7 +1627,7 @@ AOF模式缺点:
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">588k</span>
+    <span title="站点总字数">602k</span>
   
 
   
@@ -1605,7 +1638,7 @@ AOF模式缺点:
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">8:54</span>
+    <span title="站点阅读时长">9:07</span>
   
 </div>
 
