@@ -140,17 +140,17 @@
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis基础">
-<meta property="og:url" content="https://www.liukui.tech/2017/06/26/redis基础/index.html">
+<meta property="og:url" content="https://www.liukui.tech/2018/06/26/redis基础/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="缓存基础介绍">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/用户请求CDN的流程.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/06/26/redis基础/分布式缓存架构.png">
-<meta property="og:updated_time" content="2019-04-02T12:28:09.942Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/06/26/redis基础/用户请求CDN的流程.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/06/26/redis基础/分布式缓存架构.png">
+<meta property="og:updated_time" content="2019-04-06T16:08:36.854Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis基础">
 <meta name="twitter:description" content="缓存基础介绍">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/06/26/redis基础/用户请求CDN的流程.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/06/26/redis基础/用户请求CDN的流程.png">
 
 
 
@@ -159,7 +159,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/06/26/redis基础/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/06/26/redis基础/">
 
 
 
@@ -330,7 +330,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">28</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
 
   </li>
         
@@ -349,7 +349,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">47</span></a>
 
   </li>
         
@@ -455,7 +455,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/06/26/redis基础/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/06/26/redis基础/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -498,7 +498,7 @@
                 
               
 
-              <time title="创建时间：2017-06-26 08:00:00" itemprop="dateCreated datePublished" datetime="2017-06-26T08:00:00+08:00">2017-06-26</time>
+              <time title="创建时间：2018-06-26 08:00:00" itemprop="dateCreated datePublished" datetime="2018-06-26T08:00:00+08:00">2018-06-26</time>
             
 
             
@@ -551,7 +551,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">24k</span>
+                <span title="本文字数">34k</span>
               
 
               
@@ -565,7 +565,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">22 分钟</span>
+                <span title="阅读时长">31 分钟</span>
               
             </div>
           
@@ -616,7 +616,7 @@ Cache（缓存）位于CPU与内存之间的临时存储器，缓存容量比内
 Buffer（缓冲）高速缓冲存储器，通过缓存磁盘（I/O设备）数据块，加快对磁盘上数据的访问，减少
 I/O，提高内存和硬盘（或其他I/O设备）之间的数据交换速度。Buffer是即将要被写入磁盘的，
 而Cache是被从磁盘中读出来的。
-</code></pre><h3 id="2-CDN缓存"><a href="#2-CDN缓存" class="headerlink" title="2.CDN缓存"></a>2.CDN缓存</h3><p><img src="/2017/06/26/redis基础/用户请求CDN的流程.png" alt="用户请求CDN的流程"></p>
+</code></pre><h3 id="2-CDN缓存"><a href="#2-CDN缓存" class="headerlink" title="2.CDN缓存"></a>2.CDN缓存</h3><p><img src="/2018/06/26/redis基础/用户请求CDN的流程.png" alt="用户请求CDN的流程"></p>
 <pre><code>CDN内容分发网络（Content Delivery Network），通过将服务内容分发至全网加速节点，利用全球调度系统使用户能够
 就近获取，有效降低访问延迟，提升服务可用性.
     1.CDN第一降低机房的使用带宽，因为很多资源通过CDN就直接返回用户了;
@@ -673,7 +673,7 @@ CDN的主要优势：
 RAID卡缓存
 分布式缓存：redis、memcache 
 # MegaCli64 -LDinfo -Lall -aAll 此命令可以监控到物理机的raid、磁盘等信息
-</code></pre><h3 id="Redis和Memcached"><a href="#Redis和Memcached" class="headerlink" title="Redis和Memcached"></a>Redis和Memcached</h3><p><img src="/2017/06/26/redis基础/分布式缓存架构.png" alt="分布式缓存架构"></p>
+</code></pre><h3 id="Redis和Memcached"><a href="#Redis和Memcached" class="headerlink" title="Redis和Memcached"></a>Redis和Memcached</h3><p><img src="/2018/06/26/redis基础/分布式缓存架构.png" alt="分布式缓存架构"></p>
 <pre><code>1.Redis和Memcached是非关系型数据库也称为NoSQL，
 2.redis是一个开源的、遵循BSD协议的、基于内存的而且目前比较流行的键值数据库(key-value database)，是一个非关
 系型数据库，redis提供将内存通过网络远程共享的一种服务，提供类似功能的还有memcache，但相比memcache，redis还
@@ -803,7 +803,7 @@ redis相关命令:
     WantedBy=multi-user.target
 启动：
     systemctl start redis
-</code></pre><h3 id="Redis配置文件详解"><a href="#Redis配置文件详解" class="headerlink" title="Redis配置文件详解"></a>Redis配置文件详解</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">登录：</span><br><span class="line">    [root@node01 bin]# redis-cli  -h host (设置了bind就需要指定IP地址)</span><br><span class="line">        info   #查看redis信息</span><br><span class="line">        select  #切换数据库，默认是16个库(编号0-15)</span><br><span class="line">redis配置文件主要配置项：</span><br><span class="line">###########################基础信息配置#####################################</span><br><span class="line">bind 0.0.0.0 #监听地址，可以用空格隔开后多个监听IP</span><br><span class="line">    #一般只监听在redis服务器的内网IP上,redis强烈建议内网使用</span><br><span class="line">protected-mode yes  #redis3.2 之后加入的新特性，在没有设置bind IP和密码的时候只允许访问127.0.0.1:6379</span><br><span class="line">port 6379 #监听端口</span><br><span class="line">tcp-backlog 511 #三次握手的时候server端收到client ack确认号之后的队列值。</span><br><span class="line">timeout 0 #客户端和Redis服务端的连接超时时间，默认是0，表示永不超时，生产环境下是600。 </span><br><span class="line">tcp-keepalive 300 #tcp 会话保持时间</span><br><span class="line">daemonize no #认情况下 redis 不是作为守护进程运行的，如果你想让它在后台运行，你就把它改成 yes,</span><br><span class="line">当redis作为守护进程运行的时候，它会写一个 pid 到 /var/run/redis.pid 文件里面</span><br><span class="line">supervised no #和操作系统相关参数，可以设置通过upstart和systemd管理Redis守护进程，centos 7以后都使用systemd</span><br><span class="line">pidfile /usr/local/redis/redis_6379.pid #pid文件路径</span><br><span class="line">    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">loglevel notice #日志级别</span><br><span class="line">#loglevel debug  #如果日志显示不详细，可以开启debug模式，但是debug的日志会很大；</span><br><span class="line">logfile &quot;/usr/local/redis/redis_6379.log&quot; #日志路径</span><br><span class="line">    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">databases 16  #设置db 库数量，默认16个库</span><br><span class="line">##########################和快照相关的参数###################################</span><br><span class="line">###快照时从redis主进程复制出一个专门的进程做快照，不会影响redis的读写</span><br><span class="line">always-show-logo yes #在启动redis 时是否显示log</span><br><span class="line">save 900 1  #在900秒内有一个键内容发生更改就出就快照机制</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000  #也可以通过BGSAVE命令手工触发RDB快照保存。</span><br><span class="line">stop-writes-on-bgsave-error yes  #快照出错时是否禁止redis写入操作</span><br><span class="line">    #重要配置，一定要给成no,避免快照因为磁盘空间满了快照写不进去，使得redis</span><br><span class="line">    无法登陆；</span><br><span class="line">rdbcompression yes #持久化到RDB文件时，是否压缩，&quot;yes&quot;为压缩，&quot;no&quot;则反之</span><br><span class="line">rdbchecksum yes  #是否开启RC64校验，默认是开启</span><br><span class="line">dbfilename dump.rdb #快照生成的文件名，一般给称redis_6379.rdb</span><br><span class="line">dir ./ #快照文件保存路径;一般放在二进制编译路径下/usr/loca/redis</span><br><span class="line">##################### REPLICATION主从复制相关的参数####################</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;  #修改为master的IP和端口</span><br><span class="line">    如：</span><br><span class="line">masterauth &lt;master-password&gt;       #修改为master的验证密码</span><br><span class="line"></span><br><span class="line">####################和安全相关的参数配置####################################</span><br><span class="line">requirepass root123456   #设置redis的登录密码</span><br><span class="line">    登录后，需要AUTH root23456验证后，才能set key</span><br><span class="line">    如果不设置密码，通过telnet就可以登录到redis进行删除等操作，所以生产环境下建议一定要设置密码.</span><br><span class="line">####################和客户端相关的参数配置###################################</span><br><span class="line">maxclients 10000    #最大的客户端连接数</span><br><span class="line">####################内存管理与数据淘汰机制##################################</span><br><span class="line">maxmemory 8589934592   #单位是字节(8g*1024*1024*1024)</span><br><span class="line">配置解析：</span><br><span class="line">    1.默认情况下，在32位OS中，Redis最大使用3GB的内存，在64位OS中则没有限制。</span><br><span class="line">    2.在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位</span><br><span class="line">    OS中Redis会无限制地占用内存（当物理内存被占满后会使用swap空间），容易引发各种各样的问题；</span><br><span class="line">    3.在内存占用达到了maxmemory后，再向Redis写入数据时，Redis会：</span><br><span class="line">        1.根据配置的数据淘汰策略尝试淘汰数据，释放空间</span><br><span class="line">        2.如果没有数据可以淘汰，或者没有配置数据淘汰策略，那么Redis会对所有写请求返回错误，但读请求仍然可以正常执行</span><br><span class="line">    4.在为Redis设置maxmemory时，需要注意：</span><br><span class="line">        1.如果采用了Redis的主从同步，主节点向从节点同步数据时，会占用掉一部分内存空间，如果maxmemory过于接</span><br><span class="line">        近主机的可用内存，导致数据同步时内存不足。所以设置的maxmemory不要过于接近主机可用的内存，留出一部分预留用作主从同步。</span><br><span class="line">#################### AOF日志相关配置 #######################################</span><br><span class="line">appendonly yes   #启用aof日志，类似于mysql的bin-log,一定要改成yes</span><br><span class="line">        #登录redis的select Set等操作就会被记录在此日志中</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;  #aof日志的路径和名称</span><br><span class="line">        #注意这个路径是以上面的dir路径为根的</span><br><span class="line">    -----------------------------------------------------------</span><br><span class="line">#AOF提供了三种fsync配置，always/everysec/no，通过配置项[appendfsync]指定：</span><br><span class="line"># appendfsync always  </span><br><span class="line">        #每写入一条日志就进行一次fsync操作，数据安全性最高，但速度最慢    </span><br><span class="line">appendfsync everysec</span><br><span class="line">        #折中的做法，交由后台线程每秒fsync一次</span><br><span class="line"># appendfsync no     </span><br><span class="line">        #不进行fsync，将flush文件的时机交给OS决定，速度最快</span><br><span class="line">    ----------------------------------------------------------</span><br><span class="line">#随着AOF不断地记录写操作日志，必定会出现一些无用的日志，例如某个时间点执行了命令SET key1 “abc”，</span><br><span class="line">在之后某个时间点又执行了SET key1 “bcd”，那么第一条命令很显然是没有用的。大量的无用日志会</span><br><span class="line">让AOF文件过大，也会让数据恢复的时间过长。</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb    #触发aof日志rewrite</span><br><span class="line">    #上面两行配置的含义是，Redis在每次AOF rewrite时，会记录完成rewrite后的AOF日志大小，当AOF日志大小在该基础上增长了100%后，自动进行</span><br><span class="line">    AOF rewrite。同时如果增长的大小没有达到64mb，则不会进行rewrite。</span><br><span class="line">############################# 慢日志查询相关配置 ##########################</span><br><span class="line">Slow log 是 Redis 用来记录查询执行时间的日志系统，slow log 保存在内存里面，</span><br><span class="line">读写速度非常快，因此你可以放心地使用它，不必担心因为开启 slow log 而损害 Redis 的速度。</span><br><span class="line">slowlog-log-slower-than 10000 </span><br><span class="line">        #以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作。</span><br><span class="line">slowlog-max-len 128   </span><br><span class="line">        #记录多少条慢日志保存在队列，超出后会删除最早的，以此滚动删除</span><br></pre></td></tr></table></figure>
+</code></pre><h3 id="Redis配置文件详解"><a href="#Redis配置文件详解" class="headerlink" title="Redis配置文件详解"></a>Redis配置文件详解</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">登录：</span><br><span class="line">    [root@node01 bin]# redis-cli  -h host (设置了bind就需要指定IP地址)</span><br><span class="line">        info    #查看redis信息</span><br><span class="line">        select  #切换数据库，默认是16个库(编号0-15)</span><br><span class="line">redis配置文件主要配置项：</span><br><span class="line">######################## 网络配置项  #####################################</span><br><span class="line">bind 0.0.0.0 #监听地址，可以用空格隔开后多个监听IP</span><br><span class="line">    #一般只监听在redis服务器的内网IP上,redis强烈建议内网使用</span><br><span class="line">protected-mode yes  redis的保护模式</span><br><span class="line">    #redis3.2之后加入的新特性，在没有设置bind IP和密码的时候只允许访问</span><br><span class="line">    127.0.0.1:6379</span><br><span class="line">port 6379       #监听端口</span><br><span class="line">tcp-backlog 511 #三次握手的时候server端收到client ack确认号被占满后的等待队列</span><br><span class="line">                长度；</span><br><span class="line">timeout 0 </span><br><span class="line">    #客户端和Redis服务端的连接超时时间，默认是0，表示永不超时，生产环境下是600。 </span><br><span class="line">tcp-keepalive 300   #tcp会话保持超时时间</span><br><span class="line">########################### 通用配置项 ################################</span><br><span class="line">daemonize no    #默认情况下redis不是作为守护进程运行的，如果你想让它在后台</span><br><span class="line">        运行，你就把它改成yes,当redis作为守护进程运行的时候，它会写一个pid</span><br><span class="line">        到/var/run/redis.pid文件里面；</span><br><span class="line">        在centos6上是yes，在centos7上都是no</span><br><span class="line">supervised no </span><br><span class="line">        #和操作系统相关参数，可以设置通过upstart和systemd管理Redis守护进程，</span><br><span class="line">        centos 7以后都使用systemd</span><br><span class="line">pidfile /usr/local/redis/redis_6379.pid #pid文件路径</span><br><span class="line">        #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">loglevel notice     #日志级别</span><br><span class="line">#loglevel debug  #如果日志显示不详细，可以开启debug模式，但是debug的日志会很大；</span><br><span class="line">logfile &quot;/usr/local/redis/redis_6379.log&quot; #日志路径</span><br><span class="line">    #一般习惯放在编译的路径下(但是redis用户需要对此目录有读权限)</span><br><span class="line">databases 16  #设置db库数量，默认16个库，名称编号0-15</span><br><span class="line">            改成-1,表示支持无限个库</span><br><span class="line">####################### 和快照相关的参数/RBD ###############################</span><br><span class="line">###快照时从redis主进程复制出一个专门的进程做快照，不会影响redis的读写</span><br><span class="line">always-show-logo yes #在启动redis 时是否显示log</span><br><span class="line">save 900 1  #在900秒内有一个键内容发生更改就出就快照机制</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000  #也可以通过BGSAVE命令手工触发RDB快照保存。</span><br><span class="line">    #注意这是逆向生效的，启动一次全量备份</span><br><span class="line">    表示：三个策略满足其中任意一个均会触发SNAPSHOTTING操作；60s内至少有1W次key发生变化才触发备份，300s内至少</span><br><span class="line">    有10次key有变化才触发备份，900s内至少有一次key有变化，所以最迟是900s/15min分钟会做一次快照全量备份；</span><br><span class="line">stop-writes-on-bgsave-error no  #快照创建出错时是否禁止redis写入操作</span><br><span class="line">    #重要配置，一定要改成no,避免快照因为磁盘空间满了快照写不进去，使得redis</span><br><span class="line">    无法登陆；</span><br><span class="line">rdbcompression yes #持久化到RDB文件时，是否压缩，&quot;yes&quot;为压缩，&quot;no&quot;则反之</span><br><span class="line">            #启用压缩功能有时还是有必要的</span><br><span class="line">rdbchecksum yes  #是否开启RC64校验，默认是开启</span><br><span class="line">dbfilename dump.rdb #快照生成的文件名，一般给称redis_6379.rdb</span><br><span class="line">dir ./ #快照文件保存路径;一般放在二进制编译路径下/usr/loca/redis</span><br><span class="line">        #一般这个路径不会放在系统盘的而是放在数据盘/挂载存储</span><br><span class="line">        #像k8s中这个盘可能是放在ceph/nfs/glusterfs上的,即使云服务down，</span><br><span class="line">        也会自动启动一个容器/pod加载到这个盘和文件进行数据恢复</span><br><span class="line">##################### REPLICATION主从复制相关的参数####################</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;  #修改为master的IP和端口</span><br><span class="line">    如：replicaof 192.168.34.118 6379</span><br><span class="line">masterauth &lt;master-password&gt;       #master的密码</span><br><span class="line">replica-serve-stale-data yes    #当主节点down了，是否使用过期数据提供给主节点</span><br><span class="line">replica-read-only yes           #作为从服务器必须要是只读的</span><br><span class="line">repl-diskless-sync no</span><br><span class="line">    no, Disk-backed, Diskless</span><br><span class="line">        新的从节点或某较长时间未能与主节点进行同步的从节点重新与主节点通信，需要做&quot;full synchronization&quot;，此时其同步方式有两种style：</span><br><span class="line">            Disk-backend：主节点新创建快照文件于磁盘中，而后将其发送给从节点；</span><br><span class="line">            Diskless：主节占新创建快照后直接通过网络套接字文件发送给从节点；为了实现并行复制，通常需要在复制启动前延迟一个时间段；</span><br><span class="line">repl-diskless-sync-delay 5  #Diskless模式下复制启动前延迟一个时间</span><br><span class="line">        #在第一个从节点连进来后等待5s，在这5s内其他从节点都连进来之后</span><br><span class="line">        主节点主做一次复制同时传给N个从节点，加快效率</span><br><span class="line">repl-ping-replica-period 10 #默认不开启</span><br><span class="line">    #slave端向server端发送ping的时间区间设置，默认为10秒</span><br><span class="line">repl-timeout 60  </span><br><span class="line">    #设置复制的超时时长，60s,超过这个时间，从节点再连到主节点就需要重新复制了；</span><br><span class="line">repl-disable-tcp-nodelay no  #不禁止tcp nodelay，也就是启用tcp nodelay</span><br><span class="line">replica-priority 100  #从节点的优先级</span><br><span class="line">    复制集群中，主节点故障时，sentinel应用场景中的主节点选举时使用的优先级；数字越小优先级越高，但0表示不参与选举； </span><br><span class="line">    #类似于keepalived的主从priority</span><br><span class="line">min-slaves-to-write 3</span><br><span class="line">        #主节点仅允许其能够通信的从节点数量大于等于此处的值时接受写操作；</span><br><span class="line">min-slaves-max-lag 10</span><br><span class="line">        #从节点延迟时长超出此处指定的时长时，主节点会拒绝写入操作；10s</span><br><span class="line">####################和安全相关的参数配置####################################</span><br><span class="line">requirepass root123456   #设置redis的登录密码</span><br><span class="line">    登录后，需要AUTH root23456验证后，才能set key</span><br><span class="line">    如果不设置密码，通过telnet就可以登录到redis进行删除等操作，所以生产环境下建议一定要设置密码.</span><br><span class="line">################# 和客户端相关的参数配置/limits #############################</span><br><span class="line">maxclients 10000    #最大的客户端并发连接数</span><br><span class="line">        #默认值就可以了，毕竟redis是面向应用程序服务器的，而不是客户端</span><br><span class="line">############### 内存管理与数据淘汰机制/极其重要 ##############################</span><br><span class="line">maxmemory 8589934592   #单位是字节(8g*1024*1024*1024)</span><br><span class="line">        #一旦设置了最大使用内存空间，当使用空间耗尽时，就需要定义策略了；</span><br><span class="line">        #注意一定要设置最大内存，如果不设置可能会启用swap交换内存,交换内存会降低</span><br><span class="line">        redis的性能，而且swap也使用完后就会导致OOM，内核会kill掉redis进程；</span><br><span class="line">maxmemory-policy noeviction  #默认使用的淘汰策略</span><br><span class="line">    1.volatile-lru  #对设置了过期时间的key使用LRU算法进行淘汰</span><br><span class="line">    2.allkeys-lru   #对所有键key使用LRU算法进行淘汰</span><br><span class="line">    3.volatile-random  #对过期的key进行随机算法进行淘汰</span><br><span class="line">    4.allkeys-random   #对所有键key基于随机算法进行淘汰</span><br><span class="line">    5.volatile-ttl  #比较设置了过期时间的key，越短的先被淘汰</span><br><span class="line">    6.noeviction    #不淘汰任何现有的数据项</span><br><span class="line">        #redis作为database时，一定要使用noeviction</span><br><span class="line">        #redis作为缓存时，应该使用volatile-lru或者noeviction，具体使用哪种策略取决于业务中的具体情况；</span><br><span class="line">配置解析：</span><br><span class="line">    1.默认情况下，在32位OS中，Redis最大使用3GB的内存，在64位OS中则没有限制。</span><br><span class="line">    2.在使用Redis时，应该对数据占用的最大空间有一个基本准确的预估，并为Redis设定最大使用的内存。否则在64位OS中</span><br><span class="line">    Redis会无限制地占用内存（当物理内存被占满后会使用swap空间），容易引发各种各样的问题；</span><br><span class="line">    3.在内存占用达到了maxmemory后，再向Redis写入数据时，Redis会：</span><br><span class="line">        1.根据配置的数据淘汰策略尝试淘汰数据，释放空间</span><br><span class="line">        2.如果没有数据可以淘汰，或者没有配置数据淘汰策略，那么Redis会对所有写请求返回错误，但读请求仍然可以正常执行</span><br><span class="line">    4.在为Redis设置maxmemory时，需要注意：</span><br><span class="line">        1.如果采用了Redis的主从同步，主节点向从节点同步数据时，会占用掉一部分内存空间，如果maxmemory过于接近</span><br><span class="line">        主机的可用内存，导致数据同步时内存不足。所以设置的maxmemory不要过于接近主机可用的内存，留出一部分预留用作主从同步。</span><br><span class="line">maxmemory-samples 5     #淘汰算法运行时的采样样本数；</span><br><span class="line">######################### AOF相关配置 #################################</span><br><span class="line">appendonly yes   #启用aof日志，类似于mysql的bin-log,一定要改成yes</span><br><span class="line">        #登录redis的select、Set等操作就会被记录在此日志中</span><br><span class="line">appendfilename &quot;appendonly.aof&quot;  #aof日志的路径和名称</span><br><span class="line">        #注意这个路径是以上面的dir路径为根的</span><br><span class="line">        #如果要保存在一个后端存储上，最好写成绝对路径</span><br><span class="line">    -----------------------------------------------------------</span><br><span class="line">#AOF提供了三种fsync配置，always/everysec/no，通过配置项[appendfsync]指定：</span><br><span class="line">#appendfsync always  </span><br><span class="line">        #每写入一条日志就进行一次fsync操作，数据安全性最高，但速度最慢    </span><br><span class="line">appendfsync everysec</span><br><span class="line">        #折中的做法，交由后台线程每秒fsync一次</span><br><span class="line">#appendfsync no     </span><br><span class="line">        #不进行fsync，将flush文件的时机交给OS决定，速度最快</span><br><span class="line">    ----------------------------------------------------------</span><br><span class="line">#随着AOF不断地记录写操作日志，必定会出现一些无用的日志，例如某个时间点执行了命令SET key1 “abc”，在之后某个</span><br><span class="line">时间点又执行了SET key1 “bcd”，那么第一条命令很显然是没有用的。大量的无用日志会让AOF文件过大，也会让数据恢复的</span><br><span class="line">时间过长。</span><br><span class="line">auto-aof-rewrite-percentage 100</span><br><span class="line">auto-aof-rewrite-min-size 64mb    #触发aof日志rewrite</span><br><span class="line">    #上面两行配置的含义是，Redis在每次AOF rewrite时，会记录完成rewrite后的AOF日志大小，当AOF日志大小在该基础</span><br><span class="line">    上增长了100%后，自动进行AOF rewrite。同时如果增长的大小没有达到64mb，则不会进行rewrite。</span><br><span class="line">############################# 慢日志查询相关配置 ##########################</span><br><span class="line">Slow log是Redis用来记录查询执行时间的日志系统，slow log保存在内存里面，读写</span><br><span class="line">速度非常快，因此你可以放心地使用它，不必担心因为开启slow log而损害Redis的速度。</span><br><span class="line">slowlog-log-slower-than 10000(10毫秒10的负6次方)</span><br><span class="line">        #以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作</span><br><span class="line">slowlog-max-len 128   </span><br><span class="line">        #记录多少条慢日志保存在队列，超出后会删除最早的，以此滚动删除</span><br><span class="line">####################### REDIS CLUSTER集群相关 ##############################</span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file nodes-6379.conf</span><br><span class="line">    #集群节点集群信息配置文件,每个节点都有一个,由redis生成和更新,配置时避免名称冲突</span><br><span class="line">    #直接指一个文件名即可，文件内容自动生成不需要填入任何配置参数</span><br><span class="line">cluster-node-timeout 15000</span><br><span class="line">    集群节点互连超时的阈值，单位毫秒</span><br><span class="line">cluster-slave-validity-factor 10</span><br><span class="line">    进行故障转移时,salve会申请成为master。有时slave会和master失联很久导致数据较旧，这样的slave不应该成为</span><br><span class="line">    master。这个配置用来判断slave是否和master失联时间过长。</span><br><span class="line">###########################################################################</span><br></pre></td></tr></table></figure>
 <h3 id="Redis的数据结构和常用命令"><a href="#Redis的数据结构和常用命令" class="headerlink" title="Redis的数据结构和常用命令"></a>Redis的数据结构和常用命令</h3><pre><code>Key:
 1.Redis采用Key-Value型的基本数据结构，任何二进制序列都可以作为Redis的Key使用（例如普通的字符串或一张JPEG图片）
 2.关于Key的一些注意事项：
@@ -1068,8 +1068,20 @@ redis实现发布者订阅模式：
     强制清空当前库中的所有key,慎重使用！
 9.FLUSHALL
     强制清空当前redis服务器所有数据库中的所有key，即删除所有数据,慎重使用！
-</code></pre><h3 id="Redis数据持久化"><a href="#Redis数据持久化" class="headerlink" title="Redis数据持久化"></a>Redis数据持久化</h3><pre><code>redis虽然是一个内存级别的缓存程序，即redis是使用内存进行数据的缓存的，但是其可以将内存的数据按照一定的策略
-保存到硬盘上，从而实现数据持久保存的目的，redis支持两种不同方式的数据持久化保存机制，分别是RDB和AOF.
+10.CLIENT命令
+    127.0.0.1:6379[1]&gt; CLIENT LIST
+        #显示连进来的客户端
+    127.0.0.1:6379[1]&gt; CLIENT KILL
+        #关闭客户端+id或者ip+port
+
+11.redis的事务
+    1.事务操作是原子性的就是要么都执行要么都不执行，为了保证事务本身的特性，还可以撤销事务之前所做的操作；
+    2.redis也是支持事务的，虽然不支持撤销功能，但可以保证将多个命令打包成一个然后一次性的按顺序执行多个命令的机
+    制，并且在事务执行期间服务器不会中断事务而改变去执行其他客户端命令的请求，它会将事务中的所有命令执行完毕然后
+    才会处理其他命令请求；
+    3.redis通过MULTI,EXEC,WATCH等命令实现事务功能，但是仅仅是实现了将多个命令打包然后一次性的按顺序执行多个命令的机制；
+</code></pre><h3 id="Redis数据持久化"><a href="#Redis数据持久化" class="headerlink" title="Redis数据持久化"></a>Redis数据持久化</h3><pre><code>redis虽然是一个内存级别的缓存程序，即redis是使用内存进行数据的缓存的，但是其可以将内存的数据按照一定的策略保存到
+硬盘上，从而实现数据持久保存的目的，redis支持两种不同方式的数据持久化保存机制，分别是RDB和AOF.
 
 必须使用数据持久化吗？
     但通常来说，仍然建议至少开启RDB方式的数据持久化，因为：
@@ -1079,24 +1091,47 @@ redis实现发布者订阅模式：
             录的数据。这省去了手工从其他数据源（如DB）同步数据的过程，而且要比其他任何的数据恢复方式都要快
         3.现在硬盘那么大，真的不缺那一点地方.
 
-AOF：类似于数据库的binlog，将文件拷贝走，放到另外一台redis的数据目录，自动恢复
-    AOF中记录的是每次在redis的操作，和mysql的bin-log类似;
+Redis的持久化:
+    RDB：snapshotting, 二进制格式；按事先定制的策略，周期性地将数据从内存同步至磁盘；数据文件默认为dump.rdb；
+        客户端显式使用SAVE或BGSAVE命令来手动启动快照保存机制；
+            SAVE：同步，即在主线程中保存快照，此时会阻塞所有客户端请求；
+            BGSAVE：异步；backgroud
+        RDB是完全备份，所以可能会丢失数据；
+    AOF：Append Only File, fsync
+        记录每次写操作至指定的文件尾部实现的持久化；当redis重启时，可通过重新执行文件中的命令在内存中重建出数据库；
+            BGREWRITEAOF：AOF文件重写；
+                不会读取正在使用AOF文件，而是通过将内存中的数据以命令的方式保存至临时文件中，完成之后替换原来的AOF文件；
 RBD:基于时间的快照技术，在save 900 1，在900秒内有一个键内容发生更改就快照机制；
 在同时开启AOF和RBD时，因为AOF的级别比RBD高会使用AOF模式.
+AOF：类似于数据库的binlog，将文件拷贝走，放到另外一台redis的数据目录，自动恢复
+    AOF中记录的是每次在redis的操作，和mysql的bin-log类似;
 
 生产环境：
-    生产环境下，一般在Slave服务器上同时开启AOF和RDB，Master上只开启RBD.但是生产环境下是需要做集群来解决数据高可用的问题.
-</code></pre><h3 id="RDB模式"><a href="#RDB模式" class="headerlink" title="RDB模式"></a>RDB模式</h3><pre><code>RDB：基于时间的快照，默认只保留当前最新的一次快照(会把上一次的快照切换掉)，特点
+    1.生产环境下，一般在Slave服务器上同时开启AOF和RDB，Master上只开启RBD.但是生产环境下是需要做集群来解决数据高可用的问题.
+    2.不建议同时开启RBD和AOF，会对I/O性能影响很高
+    3.如果一定要同时开启两种持久化方式，最好是把他们放在两个不同的后端存储系统上；
+    4.如果同时启用时，当出现故障时一定要用AOF恢复，因为它恢复的数据量更多；
+</code></pre><h4 id="RDB模式：snapshotting"><a href="#RDB模式：snapshotting" class="headerlink" title="RDB模式：snapshotting"></a>RDB模式：snapshotting</h4><pre><code>redis的RDB的快照机制是直接把redis放在内存中的数据所占用的内存空间直接原样不动的复刻一份放到磁盘上,它是一个二进制文件;
+    即把在内存中的数据和它的结构通通转为文件格式放到磁盘上,恢复时会从文件中读取，读取到内存中恢复为在内存空间中的空间结构和数据；
+
+RDB：基于时间的快照，默认只保留当前最新的一次快照(会把上一次的快照切换掉)，特点
 是执行速度比较快，缺点是可能会丢失从上次快照到当前快照未完成之间的数据(即在两次快照时间之间redis服务可能出现故障，数据会丢失);如果是AOF模式，则不会发生此问题.
 
 RDB实现的具体过程：
-    1.Redis从主进程先fork出一个子进程，使用写时复制机制，子进程将内存的数据保存为一个临时文件，比如
-    dump.rdb.temp，当数据保存完成之后再将上一次保存的RDB文件替换掉，然后关闭子进程，这样可以保存每一次做
-    RDB快照的时候保存的数据都是完整的，因为直接替换RDB文件的时候可能会出现突然断电等问题而导致RDB文件还没有
-    保存完整就突然关机停止保存而导致数据丢失的情况，可以手动将每次生成的RDB文件进程备份，这样可以最大化保存历史数据。
+    1.Redis从主进程先fork出一个子进程，使用写时复制(COW)机制，子进程将内存的数据保存为一个临时文件，比如
+    dump.rdb.temp，当数据保存完成之后再将上一次保存的RDB文件替换掉，然后关闭子进程，这样可以保存每一次做RDB快照
+    的时候保存的数据都是完整的，因为直接替换RDB文件的时候可能会出现突然断电等问题而导致RDB文件还没有保存完整就突
+    然关机停止保存而导致数据丢失的情况，可以手动将每次生成的RDB文件进程备份，这样可以最大化保存历史数据。
     2.因为会单独开一个子进程负责做快照，所以不影响redis的读写请求.
-    3.通常连到redis之后，通过脚本执行BGSAVE,每隔多长时间执行一次手动RBD数据备份
-
+    3.Redis是先将数据写入到一个临时文件中，并且写成功了才会保存到打算要存的文件中，所以一般来讲只要备份下来rdb文件总是可用的；
+    4.当然也可以连到redis之后，执行SAVE或者BGSAVE命令启动快照保存机制，每隔多长时间执行一次手动RBD数据备份；
+    但是：
+        SAVE:
+            是在主线程保存快照，这就意味着在SAVE保存完成之前，此时会阻塞所有客户端请求，因为它是同步保存而且在主线程中实现；
+            都是完整(全量)的将内存中的数据写入到磁盘当中，而不是增量方式，如果内存中数据量比较大时，必然会影响性能；
+        BGSAVE:
+            异步方式实现，当我们启动BGSAVE以后，他将立即返回结果告诉已经启动了，然后自动在后台实现保存操作，所以客户端主进程是不会被阻塞的！
+所以一般是通过在脚本中使用BGSAVE命令执行手动RBD数据备份操作!!!
 RDB模式的优缺点：
     优点：
         1.RDB快照保存了某个时间点的数据，可以通过脚本执行bgsave(非阻塞)或者save(阻塞)命令自定义时间点备份，可以保留多个备份，当出现问题可以恢复到不同时间点的版本。
@@ -1108,20 +1143,41 @@ RDB模式的优缺点：
     缺点：
         1-不能实时的保存数据，会丢失自上一次执行RDB备份到当前的内存数据；
         2-数据量非常大的时候，从父进程fork的时候需要一点时间，可能是毫秒或者秒；
-</code></pre><h3 id="生产环境下遇到的坑："><a href="#生产环境下遇到的坑：" class="headerlink" title="生产环境下遇到的坑："></a>生产环境下遇到的坑：</h3><pre><code>redis RDB持久化模式有坑,因为我们使用的服务器是机械硬盘，读写性能和SSD固态硬盘相差很大，服务器内存是128G，
-当时给redis分了最大内存是120G，每fork一次就出来一个新的进程，但是在此触发持久化的条件后又会fork一个进程出来
-，前一个还未写到硬盘中，后一个fork已经出现孙子辈的了，甚至重孙辈的，导致服务器资源耗尽，宕机。还有个redis强烈
-建议内网使用，程序调用也是内网，程序调用也是内网，程序调用也是内网。因为有一次被黑就是redis在公网上跑，还没有设置密码,导致将近20台服务器被黑。
-</code></pre><h3 id="AOF模式"><a href="#AOF模式" class="headerlink" title="AOF模式"></a>AOF模式</h3><pre><code>AOF:按照用户或Web服务器的操作顺序依次将操作添加到指定的日志文件当中，特点是数据安全性相对较高，缺点是即使有些操作是重复的也会全部记录.
+</code></pre><h3 id="生产环境下遇到的坑："><a href="#生产环境下遇到的坑：" class="headerlink" title="生产环境下遇到的坑："></a>生产环境下遇到的坑：</h3><pre><code>redis RDB持久化模式有坑,因为我们使用的服务器是机械硬盘，读写性能和SSD固态硬盘相差很大，服务器内存是128G，当时给
+redis分了最大内存是120G，每fork一次就出来一个新的进程，但是在此触发持久化的条件后又会fork一个进程出来，前一个还
+未写到硬盘中，后一个fork已经出现孙子辈的了，甚至重孙辈的，导致服务器资源耗尽，宕机。还有个redis强烈建议内网使用，
+程序调用也是内网，程序调用也是内网，程序调用也是内网。因为有一次被黑就是redis在公网上跑，还没有设置密码,导致将近
+20台服务器被黑。
+</code></pre><h4 id="AOF模式-append-only-file"><a href="#AOF模式-append-only-file" class="headerlink" title="AOF模式:append only file"></a>AOF模式:append only file</h4><pre><code>1.AOF日志的全称是Append Only File，从名字上我们就能看出来，它就是把redis的每个操作命令都以追加的方式写入的日志文件尾部；
+2.与一般数据库不同的是，AOF文件是可识别的纯文本，它的内容就是一个个的Redis标准命令
+3.类似于mysql的bin-log日志；
+
+AOF:按照用户或Web服务器的操作顺序依次将操作添加到指定的日志文件当中，特点是数据安全性相对较高，缺点是即使有些操作是重复的也会全部记录.
+
+AOF有二个显著缺陷：
+    1.用fsync来解决数据同步不及时的问题
+        1.因为linux内核写数据的时候，其实不是直接写磁盘的，而是先把写操作放到内存完成，然后同步到磁盘中的；
+        2.内核将内存中的数据同步到磁盘的时间是不确定的，因为在内核中有个脏页数据同步策略，写数据-&gt;内存-&gt;由内核
+        同步到内核内存-&gt;磁盘，由于同步时间的不确定，在断电之前的内核内存中需要同步的数据就丢失了,所以为了避免出
+        现这种问题就使用fsync;
+        3.在内核有一个库调用叫fsync(文件同步)，它的工作逻辑是当需要把数据祈请给内核中，内核不但要把数据保存到内核内存中，还要立即同步到磁盘文件中去；
+        4.而我们只需要调用了fsync，就不会按照内核自己的管理调用方式待会再同步到磁盘，而是立即同步到磁盘，确保了数据一定是保存在磁盘上了；
+        5.由于内核之所以会使用脏页数据同步策略，就是为了提高IO性能的，而我们却通过
+        fsync强行同步到磁盘中了，这样一来每秒钟同步的次数就相当多了，而机械硬盘1s也就100个I/O，像SSD能有500IO/s,而PCIE这样的硬盘能达到上万的IO，但价格是
+        相当昂贵的；
+    2.AOF的rewrite
+        1.在redis中一个key以counter来计数通过INCR使得数据增长，如果INCR了20w次，在AOF中也会记录20w行
+        INCR-counter，不但造成AOF文件过大而且恢复时也会很慢；
+        2.而这种情况无非就是将counter直接变成20w次，所以为了避免AOF文件过大，必要每隔一段时间对这个key重写一遍
+        N个合并成一个即可，这叫做AOF的rewrite;这样一来文件的体积就很小，恢复时重放也不会很慢了；
 
 AOF实现的具体过程:
-    AOF和RDB一样使用了写时复制机制，AOF默认为每秒钟fsync一次，即将执行的命令保存到AOF文件当中，这样即使
-    redis服务器发生故障的话顶多也就丢失1秒钟之内的数据，也可以设置不同的fsync策略，或者设置每次执行命令的
-    时候执行fsync，fsync会在后台执行线程，所以主线程可以继续处理用户的正常请求而不受到写入AOF文件的IO影响
-
-AOF的优点点：
-    1.最安全，在启用appendfsync always时(fsync是同步内存中redis所有已经修改的文件到存储设备)
-        ，任何已写入的数据都不会丢失，使用在启用appendfsync everysec也至多只会丢失1秒的数据。
+    AOF和RDB一样使用了写时复制机制，AOF默认为每秒钟fsync一次，即将执行的命令保存到AOF文件当中，这样即使redis
+    服务器发生故障的话顶多也就丢失1秒钟之内的数据，也可以设置不同的fsync策略，或者设置每次执行命令的时候执行
+    fsync，fsync会在后台执行线程，所以主线程可以继续处理用户的正常请求而不受到写入AOF文件的IO影响
+AOF的优点：
+    1.最安全，在启用appendfsync always时(fsync是同步内存中redis所有已经修改
+        的文件到存储设备)，任何已写入的数据都不会丢失，使用在启用appendfsync everysec也至多只会丢失1秒的数据。
     2.AOF文件在发生断电等问题时也不会损坏，即使出现了某条日志只写入了一半的情况，
         也可以使用redis-check-aof工具轻松修复。
     3.AOF文件易读，可修改，在进行了某些错误的数据清除操作后，只要AOF文件没有
@@ -1129,9 +1185,9 @@ AOF的优点点：
 
 AOF模式缺点:
     1.AOF文件通常比RDB文件更大
-    2.性能消耗比RDB高
+    2.磁盘IO性能消耗比RDB高(fsync机制的原因)
     3.数据恢复速度比RDB慢
-</code></pre>
+</code></pre><h3 id="redis一键安装脚本和启动脚本"><a href="#redis一键安装脚本和启动脚本" class="headerlink" title="redis一键安装脚本和启动脚本"></a>redis一键安装脚本和启动脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line">[root@redis-node ~]# cd /usr/local/src/</span><br><span class="line">[root@redis-node src]# ll redis-4.0.1.tar.gz</span><br><span class="line">-rw-rw-r-- 1 root root 1711660 Aug 27 16:19 redis-5.0.3.tar.gz</span><br><span class="line">[root@redis-node src]# cat redis_install.sh</span><br><span class="line">#!/usr/bin/env bash</span><br><span class="line"># It&apos;s Used to be install redis.</span><br><span class="line"># Created on 2018/03/06 .</span><br><span class="line"># author: lk.</span><br><span class="line"># Version: 1.0</span><br><span class="line">    </span><br><span class="line">function install_redis () &#123;</span><br><span class="line">###########################################################################</span><br><span class="line">        cd /usr/local/src</span><br><span class="line">        tar -zxvf /usr/local/src/redis-5.0.3.tar.gz</span><br><span class="line">        cd redis-5.0.3</span><br><span class="line">        make PREFIX=/usr/local/redis install</span><br><span class="line">        mkdir -p /usr/local/redis/&#123;etc,var&#125;</span><br><span class="line">        rsync -avz redis.conf  /usr/local/redis/etc/</span><br><span class="line">        sed -i &apos;s@pidfile.*@pidfile /var/run/redis-server.pid@&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@logfile.*@logfile /usr/local/redis/var/redis.log@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@^dir.*@dir /usr/local/redis/var@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/daemonize no/daemonize yes/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/^# bind 127.0.0.1/bind 0.0.0.0/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line"> ##########################################################################</span><br><span class="line">&#125;</span><br><span class="line">install_redis</span><br><span class="line"></span><br><span class="line">赋予脚本执行权限,并进行安装</span><br><span class="line">[root@redis-node src]# chmod 755 /usr/local/src/redis_install.sh</span><br><span class="line">[root@redis-node src]# /bin/bash -x /usr/local/src/redis_install.sh</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">编写redis-server启动脚本</span><br><span class="line">[root@redis-node src]# cat /etc/init.d/redis-server</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line"># redis - this script starts and stops the redis-server daemon</span><br><span class="line">#</span><br><span class="line"># chkconfig:   - 85 15</span><br><span class="line"># description:  Redis is a persistent key-value database</span><br><span class="line"># processname: redis-server</span><br><span class="line"># config:      /usr/local/redis/etc/redis.conf</span><br><span class="line"># config:      /etc/sysconfig/redis</span><br><span class="line"># pidfile:     /usr/local/redis/var/redis-server.pid</span><br><span class="line">   </span><br><span class="line"># Source function library.</span><br><span class="line">. /etc/rc.d/init.d/functions</span><br><span class="line">   </span><br><span class="line"># Source networking configuration.</span><br><span class="line">. /etc/sysconfig/network</span><br><span class="line">   </span><br><span class="line"># Check that networking is up.</span><br><span class="line">[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0</span><br><span class="line">   </span><br><span class="line">redis=&quot;/usr/local/redis/bin/redis-server&quot;</span><br><span class="line">prog=$(basename $redis)</span><br><span class="line">   </span><br><span class="line">REDIS_CONF_FILE=&quot;/usr/local/redis/etc/redis.conf&quot;</span><br><span class="line">   </span><br><span class="line">[ -f /etc/sysconfig/redis ] &amp;&amp; . /etc/sysconfig/redis</span><br><span class="line">   </span><br><span class="line">lockfile=/var/lock/subsys/redis-server</span><br><span class="line">   </span><br><span class="line">start() &#123;</span><br><span class="line">    [ -x $redis ] || exit 5</span><br><span class="line">    [ -f $REDIS_CONF_FILE ] || exit 6</span><br><span class="line">    echo -n $&quot;Starting $prog: &quot;</span><br><span class="line">    daemon $redis $REDIS_CONF_FILE</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; touch $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">stop() &#123;</span><br><span class="line">    echo -n $&quot;Stopping $prog: &quot;</span><br><span class="line">    killproc $prog</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">restart() &#123;</span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">reload() &#123;</span><br><span class="line">    echo -n $&quot;Reloading $prog: &quot;</span><br><span class="line">    killproc $redis -HUP</span><br><span class="line">    RETVAL=$?</span><br><span class="line">    echo</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">force_reload() &#123;</span><br><span class="line">    restart</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status() &#123;</span><br><span class="line">    status $prog</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status_q() &#123;</span><br><span class="line">    rh_status &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">    start)</span><br><span class="line">        rh_status_q &amp;&amp; exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    stop)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    restart)</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    reload)</span><br><span class="line">        rh_status_q || exit 7</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    force-reload)</span><br><span class="line">        force_reload</span><br><span class="line">        ;;</span><br><span class="line">    status)</span><br><span class="line">        rh_status</span><br><span class="line">        ;;</span><br><span class="line">    condrestart|try-restart)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">            ;;</span><br><span class="line">    *)</span><br><span class="line">        echo $&quot;Usage: $0 &#123;start|stop|status|restart|condrestart|try-restart|reload|force-reload&#125;&quot;</span><br><span class="line">        exit 2</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">赋予脚本执行权限,并启动redis-server</span><br><span class="line">[root@redis-node src]# /etc/init.d/redis-server start</span><br><span class="line">[root@redis-node src]# lsof -i:6379</span><br><span class="line">COMMAND     PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME</span><br><span class="line">redis-ser 24439 root    6u  IPv4 24642923      0t0  TCP dns02.kevin.cn:6379 (LISTEN)</span><br><span class="line"> </span><br><span class="line">温馨提示:</span><br><span class="line">需要将redis.conf文件中的bind改为本机ip.不能使用默认的127.0.0.1,否则远程连接该redis就会失败</span><br><span class="line">[root@redis-node src]# vim /usr/local/redis/etc/redis.conf</span><br><span class="line">.....</span><br><span class="line">bind 192.168.34.118</span><br><span class="line"> </span><br><span class="line">重启redis-server服务</span><br><span class="line">[root@redis-node src]# /etc/init.d/redis-server restart</span><br><span class="line">Stopping redis-server:                                     [  OK  ]</span><br><span class="line">Starting redis-server:                                     [  OK  ]</span><br><span class="line">[root@redis-node src]# lsof -i:6379</span><br><span class="line">COMMAND    PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME</span><br><span class="line">redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LISTEN)</span><br><span class="line"> </span><br><span class="line">最好在tomcat两个节点上使用&quot;telnet 192.168.34.118 6379&quot;验证下redis是否能成功连接</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -1264,8 +1320,8 @@ AOF模式缺点:
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/20/mysql高可用/" rel="next" title="mysql高可用">
-                <i class="fa fa-chevron-left"></i> mysql高可用
+              <a href="/2018/05/10/分布式存储系统数据分布方法/" rel="next" title="分布式存储系统数据分布方法">
+                <i class="fa fa-chevron-left"></i> 分布式存储系统数据分布方法
               </a>
             
           </div>
@@ -1274,8 +1330,8 @@ AOF模式缺点:
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/06/DHCP和PXE/" rel="prev" title="DHCP和PXE">
-                DHCP和PXE <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/15/redis高可用/" rel="prev" title="redis高可用">
+                redis高可用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1348,7 +1404,7 @@ AOF模式缺点:
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">45</span>
+                    <span class="site-state-item-count">47</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1417,7 +1473,9 @@ AOF模式缺点:
                     
                       
                     
-                    <span class="site-state-item-count">28</span>
+                      
+                    
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1593,7 +1651,7 @@ AOF模式缺点:
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存基础介绍"><span class="nav-number">1.</span> <span class="nav-text">缓存基础介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-系统缓存：buffer与cache"><span class="nav-number">2.</span> <span class="nav-text">1.系统缓存：buffer与cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CDN缓存"><span class="nav-number">3.</span> <span class="nav-text">2.CDN缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-应用层缓存"><span class="nav-number">4.</span> <span class="nav-text">3.应用层缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-其他缓存"><span class="nav-number">5.</span> <span class="nav-text">4.其他缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis和Memcached"><span class="nav-number">6.</span> <span class="nav-text">Redis和Memcached</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis安装"><span class="nav-number">7.</span> <span class="nav-text">Redis安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis配置文件详解"><span class="nav-number">8.</span> <span class="nav-text">Redis配置文件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis的数据结构和常用命令"><span class="nav-number">9.</span> <span class="nav-text">Redis的数据结构和常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-字符串-String"><span class="nav-number">9.1.</span> <span class="nav-text">1.字符串:String</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-列表：和ELK相关，基于管道插入多个数据"><span class="nav-number">9.2.</span> <span class="nav-text">2.列表：和ELK相关，基于管道插入多个数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-集合-Set"><span class="nav-number">9.3.</span> <span class="nav-text">3.集合:Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-有序集合：sorted-set"><span class="nav-number">9.4.</span> <span class="nav-text">4.有序集合：sorted set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Hash"><span class="nav-number">9.5.</span> <span class="nav-text">5.Hash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列"><span class="nav-number">10.</span> <span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis常用命令"><span class="nav-number">11.</span> <span class="nav-text">Redis常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis数据持久化"><span class="nav-number">12.</span> <span class="nav-text">Redis数据持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB模式"><span class="nav-number">13.</span> <span class="nav-text">RDB模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境下遇到的坑："><span class="nav-number">14.</span> <span class="nav-text">生产环境下遇到的坑：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF模式"><span class="nav-number">15.</span> <span class="nav-text">AOF模式</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存基础介绍"><span class="nav-number">1.</span> <span class="nav-text">缓存基础介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-系统缓存：buffer与cache"><span class="nav-number">2.</span> <span class="nav-text">1.系统缓存：buffer与cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CDN缓存"><span class="nav-number">3.</span> <span class="nav-text">2.CDN缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-应用层缓存"><span class="nav-number">4.</span> <span class="nav-text">3.应用层缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-其他缓存"><span class="nav-number">5.</span> <span class="nav-text">4.其他缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis和Memcached"><span class="nav-number">6.</span> <span class="nav-text">Redis和Memcached</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis安装"><span class="nav-number">7.</span> <span class="nav-text">Redis安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis配置文件详解"><span class="nav-number">8.</span> <span class="nav-text">Redis配置文件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis的数据结构和常用命令"><span class="nav-number">9.</span> <span class="nav-text">Redis的数据结构和常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-字符串-String"><span class="nav-number">9.1.</span> <span class="nav-text">1.字符串:String</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-列表：和ELK相关，基于管道插入多个数据"><span class="nav-number">9.2.</span> <span class="nav-text">2.列表：和ELK相关，基于管道插入多个数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-集合-Set"><span class="nav-number">9.3.</span> <span class="nav-text">3.集合:Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-有序集合：sorted-set"><span class="nav-number">9.4.</span> <span class="nav-text">4.有序集合：sorted set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Hash"><span class="nav-number">9.5.</span> <span class="nav-text">5.Hash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息队列"><span class="nav-number">10.</span> <span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis常用命令"><span class="nav-number">11.</span> <span class="nav-text">Redis常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis数据持久化"><span class="nav-number">12.</span> <span class="nav-text">Redis数据持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB模式：snapshotting"><span class="nav-number">12.1.</span> <span class="nav-text">RDB模式：snapshotting</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境下遇到的坑："><span class="nav-number">13.</span> <span class="nav-text">生产环境下遇到的坑：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF模式-append-only-file"><span class="nav-number">13.1.</span> <span class="nav-text">AOF模式:append only file</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis一键安装脚本和启动脚本"><span class="nav-number">14.</span> <span class="nav-text">redis一键安装脚本和启动脚本</span></a></li></ol></div>
             
 
           </div>
@@ -1627,7 +1685,7 @@ AOF模式缺点:
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">602k</span>
+    <span title="站点总字数">641k</span>
   
 
   
@@ -1638,7 +1696,7 @@ AOF模式缺点:
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">9:07</span>
+    <span title="站点阅读时长">9:43</span>
   
 </div>
 

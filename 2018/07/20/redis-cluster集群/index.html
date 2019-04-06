@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="Redis cluster">
+<meta name="keywords" content="redis集群">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis-cluster集群">
+<meta property="og:url" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="Redis cluster">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/redis%20cluster主从架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/每一台redis上应该有两个redis进程.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/创建集群1.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/创建集群2.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/cluster%20nodes.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/103的slave.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/103的slave会切换成master.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/集群状态监控.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/添加新节点到集群.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/重新分配槽位.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/重新分配完成.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/添加slave.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/当前集群状态.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/迁移节点.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/验证槽位迁移完成.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/验证node是否删除.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/验证node是否删除.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/master和slave对应关系.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/数据导入.png">
+<meta property="og:updated_time" content="2019-04-06T16:01:32.114Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis-cluster集群">
+<meta name="twitter:description" content="Redis cluster">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/07/20/redis-cluster集群/redis%20cluster主从架构.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Coool's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2018/07/20/redis-cluster集群/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>redis-cluster集群 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">24</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">47</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/07/20/redis-cluster集群/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis-cluster集群
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-20 08:00:00" itemprop="dateCreated datePublished" datetime="2018-07-20T08:00:00+08:00">2018-07-20</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/" itemprop="url" rel="index"><span itemprop="name">缓存</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">9.5k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">9 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Redis-cluster"><a href="#Redis-cluster" class="headerlink" title="Redis cluster"></a>Redis cluster</h3><a id="more"></a>
+<pre><code>1.redis主从架构的缺点：
+    1.当master出现redis服务异常、主机断电、磁盘损坏等问题导致master无法使用，而redis高可用无法实现自故障
+    转移(将slave提升为master)，需要手动执行slave noone将slave切换成master,而且时间很长;
+
+    2.不管是主从模式还是sentinel机制都只是保证了数据跨主机备份的安全性，并没有提升Redis服务的并行写入性能；
+
+    3.所以当单台Redis服务器性能无法满足业务写入需求的时候就必须需要一种方式解决以上的两个核心问题.
+        1.master和slave角色的无缝切换，让业务无感知从而不影响业务使用;
+        2.可以横向动态扩展Redis服务器，从而实现多台服务器并行写入以实现更高并发的目的;
+
+2.Redis cluster集群实现方式：客户端分片、代理分片、Redis Cluster，但是各有区别；
+    1.客户端分区：
+        由客户端程序决定key写分配和写入的redis node，但是需要客户端自己处理写入
+        分配、高可用管理和故障转移等；
+    2.代理方案：
+        基于三方软件实现redis proxy，客户端先连接之代理层，由代理层实现key的写入分配，对客户端来说是有
+        比较简单，但是对于集群管节点增减相对比较麻烦，而且代理本身也是单点和性能瓶颈；
+
+    3.redis cluster
+</code></pre><h3 id="Redis-cluster主从实现原理"><a href="#Redis-cluster主从实现原理" class="headerlink" title="Redis cluster主从实现原理"></a>Redis cluster主从实现原理</h3><pre><code>为了解决单机的redis写入性能受限于单机的内存大小、并发数量、网卡速率等因素，因此redis官方在redis 
+3.0版本之后推出了无中心架构的redis cluster机制，在无中心的redis集群汇中，其每个节点保存当前节点数据和
+整个集群状态,每个节点都和其他所有节点连接，特点如下：
+    1：所有Redis节点使用(PING-PING机制)互联
+    2：集群中某个节点的实效是整个集群中超过半数的节点监测都实效才算真正的实效
+    3：客户端不需要proxy即可直接连接redis，且客户端不需要连接集群中的所有节点，只要连接集群中的任何一个节点即可。
+    4：redis cluster把所有的redisnode映射到 0-16383个槽位(slot)上，读写需要到指定的redis node上
+    进行操作，因此有多少个reids node相当于redis 并发扩展了多少倍。
+    5：Redis集群预先分配16384个(slot)槽位，当需要在redis集群中写入一个key -value的时候，
+    会使用CRC16(key)  mod 16384之后的值，决定将key写入值哪一个槽位从而决定写入哪一个Redis节点上，
+    从而有效解决单机瓶颈。
+
+1.假设三个主节点分别是：A, B, C 三个节点，采用哈希槽 (hash slot)的方式来分配16384个slot的话，它们三个节点分别承担的slot 区间是：
+    节点A覆盖0－5460
+    节点B覆盖5461－10922
+    节点C覆盖10923－16383
+
+2.Redis cluster的架构虽然解决了并发的问题，但是又引入了一个新的问题，因为每个
+    Redis master上数据都是不一样的，所以为了保证数据的安全，每个master都需要一个slave来实现数据的高可用.
+</code></pre><h3 id="Redis-cluster主从架构部署"><a href="#Redis-cluster主从架构部署" class="headerlink" title="Redis cluster主从架构部署"></a>Redis cluster主从架构部署</h3><p><img src="/2018/07/20/redis-cluster集群/redis cluster主从架构.png" alt="redis cluster集群架构"></p>
+<pre><code>1.环境准备：
+    1.每个redis node节点采用相同的硬件配置、相同的密码
+    2.每个节点必须开启参数
+    cluster-enabled yes #必须开启集群状态，开启后redis 进程会有cluster显示
+    cluster-config-file nodes-6380.conf #此文件有redis cluster集群自动创建和维护，不需要任何手动操作
+
+2.为了实验方便，slave都是在master上以6380端口启动，使用不同的Unitfile和配置文件
+    只列出 redis node master A的操作，其他两台master一样即可
+    准备配置文件：
+        [root@node02 ~]# vim /usr/local/redis/etc/redis.conf
+        cluster-enabled yes
+        cluster-config-file nodes-6379.conf
+            #启用创建cluster集群的两项
+        [root@node02 ~]# cp /usr/local/redis/etc/redis /usr/local/redis/etc/redis-6380.conf
+        [root@node02 ~]# vim /usr/local/redis/etc/redis-6380.conf
+        ：%s/6379/6380/g
+            #将6379端口全部替换成6380端口(此端口作为slave的端口)
+    准备启动服务：
+        [root@node02 ~]# cd /usr/lib/systemd/system/
+        [root@node02 ~]# cp redis.service redis-6380.service
+        [root@node02 ~]# vim redis-6380.service
+            #修改slave的Unitfile中加载的配置文件redis-6380.conf
+        [root@node02 ~]# systemctl start  redis redis-6380
+            #将一台服务器上的master和slave都启动
+    #其他两台Redis Node Master{B,C}一样配置即可；
+</code></pre><p>–每一台redis上应该有一主一从<br><img src="/2018/07/20/redis-cluster集群/每一台redis上应该有两个redis进程.png" alt="每一台redis上应该有两个redis进程"></p>
+<pre><code>3.创建集群
+    redis-cli --cluster help  #客户端命令可以创建管理集群
+[root@node01 ~]# redis-cli -a root  --cluster create 192.168.34.121:6379 192.168.34.121:6380 192.168.34.124:6379 192.168.34.124:6380 192.168.34.123:6379 192.168.34.123:6380 --cluster-replicas 1
+</code></pre><p>–</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="/2018/07/20/redis-cluster集群/创建集群1.png" alt="创建集群1"></h2><p><img src="/2018/07/20/redis-cluster集群/创建集群2.png" alt="创建集群2"></p>
+<pre><code>4.检查集群状态
+        #Cluster info可以查看当前集群的状态，集群规模和是否有master节点出现故障以及槽位分配是否是完整且连续的.
+    [root@node01 ~]# redis-cli -h 192.168.34.121 -p 6379 -a root
+    192.168.34.121:6379&gt; CLUSTER INFO
+    cluster_state:ok
+    cluster_slots_assigned:16384
+    cluster_slots_ok:16384
+    cluster_slots_pfail:0
+    cluster_slots_fail:0
+    cluster_known_nodes:6
+    cluster_size:3
+    cluster_current_epoch:6
+    cluster_my_epoch:1
+    cluster_stats_messages_ping_sent:1474
+    cluster_stats_messages_pong_sent:1507
+    cluster_stats_messages_sent:2981
+    cluster_stats_messages_ping_received:1502
+    cluster_stats_messages_pong_received:1474
+    cluster_stats_messages_meet_received:5
+    cluster_stats_messages_received:2981
+
+
+5.查看集群node对应关系
+        #通过cluster nodes可以看到集群中的主从对应关系
+    [root@node01 ~]# redis-cli -h 192.168.34.121 -p 6380 -a root
+    192.168.34.121:6380&gt; cluster nodes
+    7186c6d03dd9a5e3be658f2d08e800bc55b04a09 192.168.7.102:6380@16380 slave f4cfc5cf821c0d855016488d6fbfb62c03a14fda 0 1545659135000 4 connected
+    7eda0bcf0c01bb7343313b81267c42dd1b26c8a6 192.168.7.103:6380@16380 myself,slave 116c4c6de036fdbac5aaad25eb1a61ea262b64af 0 1545659135000 6 conne
+    ctedf4cfc5cf821c0d855016488d6fbfb62c03a14fda 192.168.7.101:6379@16379 master - 0 1545659135000 1 connected 0-5460
+    116c4c6de036fdbac5aaad25eb1a61ea262b64af 192.168.7.102:6379@16379 master - 0 1545659136000 3 connected 5461-10922
+    70de3821dde4701c647bd6c23b9dd3c5c9f24a62 192.168.7.103:6379@16379 master - 0 1545659134000 5 connected 10923-16383
+    2b6e5d9c3944d79a5b64a19e54e52f83d48438d6 192.168.7.101:6380@16380 slave 70de3821dde4701c647bd6c23b9dd3c5c9f24a62 0 1545659135946 5 connected
+</code></pre><p>–cluster nodes<br><img src="/2018/07/20/redis-cluster集群/cluster nodes.png" alt="cluster nodes"></p>
+<pre><code>6.查看集群槽位和主从的具体关系
+    使用redis-cli -a root --cluster check 192.168.34.101:6379
+    随机一个master的IP和端口可以看到对应关系
+</code></pre><p>–查看集群对应关系<br>![查看集群对应关系]redis-cluster集群/(查看集群对应关系.png)</p>
+<pre><code>7.验证集群写入key
+    192.168.7.101:6379&gt; SET k1 v1  
+        #经过算法计算，当前key的槽位需要写入指定的node 
+    (error) MOVED 9189 192.168.7.103:6379   #因为槽位不在当前node所以无法写入
+    192.168.7.102:6379&gt; SET k1 v1  
+    (error) MOVED 9189 192.168.7.102:6379  
+    192.168.7.103:6379&gt; SET k1 v1    #指定的node就可以写入
+    OK
+    192.168.7.103:6379&gt; KEYS *
+    1) &quot;k1&quot;
+    192.168.7.101:6379&gt; KEYS *
+    (empty list or set)
+    192.168.7.102:6379&gt; KEYS *
+    (empty list or set)
+
+8.故障动态转移测试；
+    上一步已经将数据写入到192.168.7.103:6379的master上了现在关闭192.168.7.103上的master 6379的redis进程，测试192.168.7.103:6379的slave192.168.7.103:6380
+    是否能成为master，数据是否能查到.
+</code></pre><p>–103的slave<br><img src="/2018/07/20/redis-cluster集群/103的slave.png" alt="103的slave"><br>–103的slave会切换成master<br><img src="/2018/07/20/redis-cluster集群/103的slave会切换成master.png" alt="103的slave会切换成master"></p>
+<pre><code>9.集群状态监控
+    # redis-cli -a 123456  --cluster check 192.168.7.101:6379
+</code></pre><p>–集群状态监控<br><img src="/2018/07/20/redis-cluster集群/集群状态监控.png" alt="集群状态监控"></p>
+<h3 id="Redis-cluster集群管理维护"><a href="#Redis-cluster集群管理维护" class="headerlink" title="Redis cluster集群管理维护"></a>Redis cluster集群管理维护</h3><p>集群运行时间长久之后，难免由于硬件故障、网络规划、业务增长等原因对已有集群进行相应的调整， 比如增加Redis node节点、减少节点、节点迁移、更换服务器等。<br>增加节点和删除节点会涉及到已有的槽位重新分配及数据迁移。</p>
+<h3 id="1-集群维护之动态添加节点"><a href="#1-集群维护之动态添加节点" class="headerlink" title="1.集群维护之动态添加节点"></a>1.集群维护之动态添加节点</h3><p>1.增加Redis node节点，需要与之前的Redis node版本相同、配置一致，然后分别<br>启动两台Redis node，因为一主一从;<br>2.现有的三主三从redis cluster架构可能无法满足现有业务的并发写入需求，新增一台服务器192.168.34.122，需要将其<br>动态添加到集群当中其不能影响业务使用和数据丢失，则添加过程如下:</p>
+<pre><code>1.同步配置文件
+    同步之前Redis node的配置文件到192.168.7.104 Redis编译安装目录，
+    注意配置文件的监听IP，这是在一台服务器上模拟一主一从redis；
+    # scp redis.conf  192.168.34.104:/usr/local/redis/etc/
+    # scp redis_6380.conf  192.168.34.104:/usr/local/redis/etc/
+
+    分别启动redis服务：
+    # systemctl  daemon-reload
+    # systemctl  restart redis
+    # /usr/local/redis/bin/redis-server  /usr/local/redis/etc/redis_6380.conf
+
+2.新增新节点到集群(先新增一台master节点)
+    使用命令：redis-cli -a 123456 --cluster add-node 192.168.34.104:6379 192.168.7.101:6379
+      #注意： 前面是新增加的的redis节点IP和端口后面是已经存在的集群中的master IP:端口(可以是任意一个master的IP和端口)
+    注意：
+        增加到集群很快，但是新加的节点是没有数据的，需要对集群进行槽位重新分片，数据重新划分；
+</code></pre><p>–添加新节点到集群<br><img src="/2018/07/20/redis-cluster集群/添加新节点到集群.png" alt="添加新节点到集群"></p>
+<pre><code>3.分配槽位
+    添加主机之后需要对添加至集群种的新主机重新分片否则其没有分片；将现有的三主三从上的数据重新分配到四主四从上；
+    重新分片机制：
+        将集群中的每个master抽出一部分给新增的节点使用；
+    命令：
+    [root@redis ~]# redis-cli -a 123456 --cluster reshard  192.168.7.104:6379 
+</code></pre><p>–重新分配槽位<br><img src="/2018/07/20/redis-cluster集群/重新分配槽位.png" alt="重新分配槽位"></p>
+<pre><code>4.查看当前集群状态
+    查看重新划分之后集群是否是正常的.
+    此时因为只加入了一个master,没有把新的slave节点加进来，所以会有一个master没有slave
+</code></pre><p>–重新分配完成<br><img src="/2018/07/20/redis-cluster集群/重新分配完成.png" alt="重新分配完成"></p>
+<pre><code>5.将新的slave也加入集群
+    [root@node01 ~]# redis-cli -a 123456 --cluster add-node 192.168.34.104:6380 192.168.7.101:6379
+    #新的节点加入集群默认都是master节点，需要把它变成一个192.168.34.104:6379的slave
+
+
+6.为新增的master192.168.34.104:6379添加slave192.168.34.104:6380节点
+    将新加slave192.168.34.104:6380，作为master192.168.34.104:6379的slave,
+    登录到192.168.34.104:6380上通过CLUSTER  REPLICATE ID更改新节点状态为slave
+        1.需要先登录到要成为slave的节点上；
+        2.取出要成为master的ID(cluster nodes命令查看)
+</code></pre><p>–添加slave<br><img src="/2018/07/20/redis-cluster集群/添加slave.png" alt="添加slave"></p>
+<pre><code>7.验证当前集群状态
+</code></pre><p>–当前集群状态<br><img src="/2018/07/20/redis-cluster集群/当前集群状态.png" alt="当前集群状态"></p>
+<h3 id="2-集群维护之动态删除节点"><a href="#2-集群维护之动态删除节点" class="headerlink" title="2.集群维护之动态删除节点"></a>2.集群维护之动态删除节点</h3><p>添加节点的时候是先添加node节点到集群，然后分配槽位，删除节点的操作与添加节点的操作正好相反，是先将被删除的<br>Redis node上的槽位迁移到集群中的其他Redis node节点上，然后再将其删除。</p>
+<pre><code>1.迁移master192.168.7.102:6379的槽位之其他master
+    [root@redis-s1 ~]# redis-cli -a root  --cluster reshard  192.168.7.102:6379
+        #指定要删除的master节点的IP+端口
+</code></pre><p>–迁移节点<br><img src="/2018/07/20/redis-cluster集群/迁移节点.png" alt="迁移节点"></p>
+<pre><code>2.验证槽位迁移完成
+</code></pre><p>–验证槽位迁移完成<br><img src="/2018/07/20/redis-cluster集群/验证槽位迁移完成.png" alt="验证槽位迁移完成"></p>
+<pre><code>3.从集群删除服务器
+    虽然槽位已经迁移完成，但是服务器IP信息还在集群当中，因此还需要将IP信息从集群删除
+    命令格式:redis-cli -a root --cluster del-node IP:Port ID
+删除master：
+[root@redis1~]# redis-cli -a root --cluster del-node 192.168.7.101:6379
+f4cfc5cf821c0d855016488d6fbfb62c03a14fda
+Warning: Using a password with &apos;-a&apos; or &apos;-u&apos; option on the command line interface may not be safe.
+&gt;&gt;&gt; Removing node f4cfc5cf821c0d855016488d6fbfb62c03a14fda from cluster 192.168.7.101:6379
+&gt;&gt;&gt; Sending CLUSTER FORGET messages to the cluster...
+&gt;&gt;&gt; SHUTDOWN the node.
+
+删除slave：
+该节点上如果还有其他节点上master 的slave，但是由于服务器下架也要一并删除，因此要提前把保证每个master至少有一个slave
+[root@redis-s1 ~]# redis-cli -a root --cluster del-node 192.168.7.101:6380 
+2b6e5d9c3944d79a5b64a19e54e52f83d48438d6
+Warning: Using a password with &apos;-a&apos; or &apos;-u&apos; option on the command line interface may not be safe.
+&gt;&gt;&gt; Removing node 2b6e5d9c3944d79a5b64a19e54e52f83d48438d6 from cluster 192.168.7.101:6380
+&gt;&gt;&gt; Sending CLUSTER FORGET messages to the cluster...
+&gt;&gt;&gt; SHUTDOWN the node.
+
+4.验证node是否删除
+    发现192.168.7.101已经被删除，但是由于192.168.7.101:6380之前是192.168.7.103:6379的slave，所以删除
+    后会导致相应的master缺少slave，需要重新为没有slave的master分配slave。
+    可以发现下图的192.168.7.104有两个slave，分别是192.168.7.102:6380和192.168.7.104:6380，因此需要将
+    其中一个slave转移为192.168.7.103的slave。
+</code></pre><p>–验证node是否删除<br><img src="/2018/07/20/redis-cluster集群/验证node是否删除.png" alt="验证node是否删除"></p>
+<pre><code>5.重新分配slave
+    将192.168.7.104:6380 转移为192.168.7.103的slave
+</code></pre><p>–重新分配slave<br><img src="/2018/07/20/redis-cluster集群/验证node是否删除.png" alt="重新分配slave"></p>
+<pre><code>6.重新验证集群Master与Slave对应关系
+    Redis Slave节点一定不能和master在一个服务器，必须为跨主机交叉备份模式，避免主机故障后主备全部挂掉，如果出现Redis Slave与Redis master在同一台Redis node的情况，则需要安装以上步骤重新进行slave分配，直到不相互交叉备份为止。
+</code></pre><p>–master和slave对应关系<br><img src="/2018/07/20/redis-cluster集群/master和slave对应关系.png" alt="master和slave对应关系"></p>
+<h3 id="3-集群维护之导入现有Redis数据"><a href="#3-集群维护之导入现有Redis数据" class="headerlink" title="3.集群维护之导入现有Redis数据"></a>3.集群维护之导入现有Redis数据</h3><p>将redis cluster部署完成之后，需要将之前的数据导入到Redis cluster集群，但是由于Redis cluster使用的分片保存key的机制，因此使用传统的AOF文件或RDB快照无法满足需求，因此需要使用集群数据导入命令完成。</p>
+<pre><code>注意：
+导入数据需要redis cluster不能与被导入的数据有重复的key名称，否则导入不成功或中断。
+
+1.环境准备：
+    1.导入数据之前需要关闭各redis 服务器的密码，包括集群中的各node和源Redis server，避免认证带来的
+    环境不一致从而无法导入，但是可以加参数--cluster-replace 强制替换Redis cluster已有的key
+
+2.执行数据导入
+    将源Redis server的数据直接导入之redis cluster。
+    命令格式：#redis-cli  --cluster import  集群服务器IP:PORT --cluster-from 外部Redis node-IP:PORT --cluster-copy --cluster-replace
+</code></pre><p>–数据导入<br><img src="/2018/07/20/redis-cluster集群/数据导入.png" alt="数据导入"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis集群/" rel="tag"><i class="fa fa-tag"></i> redis集群</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/15/redis高可用/" rel="next" title="redis高可用">
+                <i class="fa fa-chevron-left"></i> redis高可用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/10/k8s-volumes/" rel="prev" title="k8s-volumes">
+                k8s-volumes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">47</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-cluster"><span class="nav-number">1.</span> <span class="nav-text">Redis cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-cluster主从实现原理"><span class="nav-number">2.</span> <span class="nav-text">Redis cluster主从实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-cluster主从架构部署"><span class="nav-number">3.</span> <span class="nav-text">Redis cluster主从架构部署</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number"></span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-cluster集群管理维护"><span class="nav-number">1.</span> <span class="nav-text">Redis cluster集群管理维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-集群维护之动态添加节点"><span class="nav-number">2.</span> <span class="nav-text">1.集群维护之动态添加节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-集群维护之动态删除节点"><span class="nav-number">3.</span> <span class="nav-text">2.集群维护之动态删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-集群维护之导入现有Redis数据"><span class="nav-number">4.</span> <span class="nav-text">3.集群维护之导入现有Redis数据</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">641k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">9:43</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

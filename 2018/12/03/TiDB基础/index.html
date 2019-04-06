@@ -136,24 +136,18 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="Redis高可用">
-<meta name="keywords" content="redis高可用">
+  <meta name="description" content="C&apos;est la vie">
+<meta name="keywords" content="database">
 <meta property="og:type" content="article">
-<meta property="og:title" content="redis高可用">
-<meta property="og:url" content="https://www.liukui.tech/2017/07/15/redis高可用/index.html">
+<meta property="og:title" content="TiDB基础">
+<meta property="og:url" content="https://www.liukui.tech/2018/12/03/TiDB基础/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="Redis高可用">
+<meta property="og:description" content="C&apos;est la vie">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从复制过程.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从架构.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移时sentinel信息.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/故障转移后的redis配置文件.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/07/15/redis高可用/当前redis状态.png">
-<meta property="og:updated_time" content="2019-04-01T15:31:20.403Z">
+<meta property="og:updated_time" content="2019-04-05T10:46:51.650Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="redis高可用">
-<meta name="twitter:description" content="Redis高可用">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/07/15/redis高可用/主从复制过程.png">
+<meta name="twitter:title" content="TiDB基础">
+<meta name="twitter:description" content="C&apos;est la vie">
 
 
 
@@ -162,7 +156,7 @@
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/07/15/redis高可用/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/12/03/TiDB基础/">
 
 
 
@@ -172,7 +166,7 @@
   };
 </script>
 
-  <title>redis高可用 | Coool's Blog</title>
+  <title>TiDB基础 | Coool's Blog</title>
   
 
 
@@ -333,7 +327,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">28</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
 
   </li>
         
@@ -352,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">47</span></a>
 
   </li>
         
@@ -458,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/07/15/redis高可用/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/12/03/TiDB基础/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -475,7 +469,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">redis高可用
+          <h1 class="post-title" itemprop="name headline">TiDB基础
               
             
           </h1>
@@ -501,7 +495,7 @@
                 
               
 
-              <time title="创建时间：2017-07-15 08:00:00" itemprop="dateCreated datePublished" datetime="2017-07-15T08:00:00+08:00">2017-07-15</time>
+              <time title="创建时间：2018-12-03 00:00:00" itemprop="dateCreated datePublished" datetime="2018-12-03T00:00:00+08:00">2018-12-03</time>
             
 
             
@@ -519,14 +513,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/" itemprop="url" rel="index"><span itemprop="name">缓存</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/缓存/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/TiDB/" itemprop="url" rel="index"><span itemprop="name">TiDB</span></a></span>
 
                 
                 
@@ -554,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">14k</span>
+                <span title="本文字数">0</span>
               
 
               
@@ -568,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">13 分钟</span>
+                <span title="阅读时长">1 分钟</span>
               
             </div>
           
@@ -588,273 +582,7 @@
       
 
       
-        <h3 id="Redis高可用"><a href="#Redis高可用" class="headerlink" title="Redis高可用"></a>Redis高可用</h3><a id="more"></a>
-<p>虽然Redis可以实现单机的数据持久化，但无论是RDB也好或者AOF也好，都解决不了单点宕机问题，即一旦redis服务器本身<br>出现系统故障、硬件故障等问题后，就会直接造成数据的丢失，因此需要使用高可用和集群技术来解决单点问题.</p>
-<h3 id="Redis主从实现"><a href="#Redis主从实现" class="headerlink" title="Redis主从实现"></a>Redis主从实现</h3><h3 id="主从复制过程"><a href="#主从复制过程" class="headerlink" title="主从复制过程"></a>主从复制过程</h3><p><img src="/2017/07/15/redis高可用/主从复制过程.png" alt="主从同步过程"></p>
-<pre><code>Redis支持主从复制分为全量同步和增量同步，首次同步是全量同步，主从同步可以让从服务器从主服务器备份数据，而且从
-服务器还可与有从服务器，即另外一台redis服务器可以从一台从服务器进行数据同步，redis 的主从同步是非阻塞的，
-其收到从服务器的sync(2.8版本之前是PSYNC)命令会fork一个子进程在后台执行bgsave命令，并将新写入的数据写入到
-一个缓冲区里面，bgsave执行完成之后并生成的将RDB文件发送给客户端，客户端将收到后的RDB文件载入自己的内存，
-然后主redis将缓冲区的内容在全部发送给从redis，之后的同步从服务器会发送一个offset的位置(等同于MySQL的binlog
-    的位置)给主服务器，主服务器检查后位置没有错误将此位置之后的数据包括写在缓冲区的积压数据发送给redis从服务
-    器，从服务器将主服务器发送的挤压数据写入内存，这样一次完整的数据同步，再之后再同步的时候从服务器只要发送
-    当前的offset位 置给主服务器，然后主服务器根据响应的位置将之后的数据发送给从服务器保存到其内存即可。
-
-Redis全量复制一般发生在Slave初始化阶段，这时Slave需要将Master上的所有数据都复制一份。具体步骤如下： 
-1）从服务器连接主服务器，发送SYNC命令； 
-2）主服务器接收到SYNC命名后，开始执行BGSAVE命令生成RDB快照文件并使用缓冲区记录此后执行的所有写命令； 
-3）主服务器BGSAVE执行完后，向所有从服务器发送快照文件，并在发送期间继续记录被执行的写命令； 
-4）从服务器收到快照文件后丢弃所有旧数据，载入收到的快照； 
-5）主服务器快照发送完毕后开始向从服务器发送缓冲区中的写命令； 
-6）从服务器完成对快照的载入，开始接收命令请求，并执行来自主服务器缓冲区的写命令；
-7）后期同步会先发送自己slave_repl_offset位置，只同步新增加的数据，不再全量同步。
-</code></pre><h3 id="主从同步优化："><a href="#主从同步优化：" class="headerlink" title="主从同步优化："></a>主从同步优化：</h3><pre><code>Redis在2.8版本之前没有提供增量部分复制的功能，当网络闪断或者slave Redis重启之后会导致主从之间的全量同步，即从2.8版本开始增加了部分复制的功能。
-
-repl-diskless-sync  no 
-    #yes为支持disk，master将RDB文件先保存到磁盘在发送给slave，no为maste直接将RDB文件发送给slave，默认
-    即为使用no，Master RDB文件不需要与磁盘交互。
-repl-diskless-sync-delay 5  
-    #Master准备好RDB文件后等等待传输时间
-repl-ping-slave-period 10  
-    #slave端向server端发送pings的时间区间设置，默认为10秒 
-repl-timeout 60 #设置超时时间
-repl-disable-tcp-nodelay no 
-    #是否启用TCP_NODELAY，如设置成yes，则redis会合并小的TCP包从而节省带宽，但会增加同步延迟（40ms），
-    造成master与slave数据不一致，假如设置成no，则redis master会立即发送同步数据，没有延迟，前者关注性能，后者关注一致性
-repl-backlog-size 1mb  
-    #master的写入数据缓冲区，用于记录自上一次同步后到下一次同步过程中间的写入命令，计算公式：
-    b repl-backlog-size = 允许从节点最大中断时长 * 主实例offset每秒写入量，比如master每秒最大写入64mb，
-    最大允许60秒，那么就要设置为64mb*60秒=3840mb(3.8G)=
-repl-backlog-ttl 3600 
-    #如果一段时间后没有slave连接到master，则backlog size的内存将会被释放。如果值为0则表示永远不释放这部份内存。 
-slave-priority 100 
-    #slave端的优先级设置，值是一个整数，数字越小表示优先级越高。当master故障时将会按照优先级来选择slave端
-    进行恢复，如果值设置为0，则表示该slave永远不会被选择。 
-#min-slaves-to-write 0 
-#min-slaves-max-lag 10  
-    #设置当一个master端的可用slave少于N个，延迟时间大于M秒时，不接收写操作。
-Master的重启会导致master_replid发生变化，slave之前的master_replid就和master不一致从而会引发所有slave的全量同步。
-</code></pre><h3 id="配置redis一主二从"><a href="#配置redis一主二从" class="headerlink" title="配置redis一主二从"></a>配置redis一主二从</h3><p><img src="/2017/07/15/redis高可用/主从架构.png" alt="主从架构"></p>
-<pre><code>客户端连接redis:
-    1.主备模式，可以实现Redis数据的跨主机备份；
-    2.程序端连接到高可用负载的VIP，然后连接到负载服务器设置的Redis后端real server
-        ，此模式不需要在程序里面配置Redis服务器的真实IP地址，当后期Redis服务器IP
-        地址发生变更只需要更改redis 相应的后端real server即可，可避免更改程序中的
-        IP地址设置.
-
-1.配置2台slave：
-    1.Redis Slave也要开启数据持久化(RDB/AOF)并设置和master同样的连接密码，
-        因为后期slave会有提升为master的可能,Slave端切换master同步后会丢失之前的所有数据。
-    2.一旦某个Slave成为一个master的slave,Redis Slave服务会清空当前redis服务器上的所有数据并将master的
-    数据导入到自己的内存，但是断开同步关系后不会删除当前已经同步过的数据；
-    redis早期的时候都是全量同步，后期支持增量同步
-
-2.修改从redis服务器的redis.conf配置文件
-    [root@node02 redis]# vim etc/redis.conf
-    replicaof 192.168.34.117 6379   #master的IP和端口
-        #注意：master的IP必须和master的bind监听的地址是一致的，如果有两个地址，而bind只监听在内网IP上，此
-        处只能写内网的IP，写外网的IP也不会同步成功的.
-    masterauth root                 #master的验证密码
-    requirepass root     #每个redis数据库的验证密码都要和master一样
-
-3.重启从redis：
-    127.0.0.1:6379&gt; INFO
-    # Replication
-    role:slave                  #显示是从节点
-    master_host:192.168.34.117  #显示master的IP
-    master_port:6379            #显示master的端口
-    master_link_status:up       #显示是否为up状态，在此状态下才是正常的
-    master_last_io_seconds_ago:9
-    master_sync_in_progress:0
-    slave_repl_offset:462
-    slave_priority:100
-    slave_read_only:1
-    connected_slaves:0
-    master_replid:1f0cd49a266eaacc5c6bdd14f5c793d065207166  #master的ID
-    master_replid2:0000000000000000000000000000000000000000 
-        #如果有主从故障转移，master_replid2就成了master_replid的编号
-        #而master_replid会重新生成一个编号
-    master_repl_offset:462
-    second_repl_offset:-1
-    repl_backlog_active:1
-    repl_backlog_size:1048576
-    repl_backlog_first_byte_offset:1
-    repl_backlog_histlen:462
-
-4.验证master上的信息
-     Replication
-    role:master
-    connected_slaves:2    #显示当前有几个slave和IP及是否正常
-    slave0:ip=192.168.34.118,port=6379,state=online,offset=630,lag=0
-    slave1:ip=172.18.0.1,port=6379,state=online,offset=630,lag=0
-    master_replid:1f0cd49a266eaacc5c6bdd14f5c793d065207166
-    master_replid2:0000000000000000000000000000000000000000
-    master_repl_offset:630
-    second_repl_offset:-1
-    repl_backlog_active:1
-    repl_backlog_size:1048576
-    repl_backlog_first_byte_offset:1
-    repl_backlog_histlen:630
-
-5.验证Slave从节点上的数据
-    127.0.0.1:6379&gt; keys *
-    1) &quot;myeky&quot;
-    2) &quot;mykey1&quot;
-    #显示已经从master上将数据同步成功了，如果slave上原来有数据，则会被清空！
-6.master和slave上的日志
-    在master和slave上的日志可以显示出是否同步成功，如果没有同步成功会显示原因，有时原因不会很清楚，需要将
-    redis.conf下的loglevel日志级别调整为debug模式.
-</code></pre><h3 id="主从复制常见问题汇总"><a href="#主从复制常见问题汇总" class="headerlink" title="主从复制常见问题汇总"></a>主从复制常见问题汇总</h3><pre><code>1.master和slave的防火墙要关闭
-2.master密码不对
-    即配置的master密码不对，导致验证不通过而无法建立主从同步关系。
-3.Redis版本不一致
-    不同的redis 版本之间存在兼容性问题，因此各master和slave之间必须保持版本一致
-4.无法远程连接
-    在开启了安全模式情况下，没有设置bind地址和密码
-</code></pre><h3 id="应用程序如何连接redis？："><a href="#应用程序如何连接redis？：" class="headerlink" title="应用程序如何连接redis？："></a>应用程序如何连接redis？：</h3><pre><code>1.java客户端连接redis是通过jedis来实现的，java代码用的时候只要创建jedis对象就可以建多个jedis连接池来连接
-    redis，应用程序再直接调用连接池即可连接Redis。
-2.而Redis为了保障高可用,服务一般都是Sentinel部署方式，当Redis服务中的主服务挂掉之后,会仲裁出另外一台Slaves
-服务充当Master。这个时候,我们的应用即使使用了Jedis连接池,Master服务挂了,我们的应用将还是无法连接新的Master服务
-3.为了解决这个问题,Jedis也提供了相应的Sentinel实现,能够在Redis Sentinel主从切换时候,通知我们的应用,
-把我们的应用连接到新的Master服务。
-4.Jedis Sentinel的使用也是十分简单的,只是在JedisPool中添加了Sentinel和MasterName参数，Jedis Sentinel
-底层基于Redis订阅实现Redis主从服务的切换通知，当Reids发生主从切换时，Sentinel会发送通知主动通知Jedis进行
-连接的切换，JedisSentinelPool在每次
-从连接池中获取链接对象的时候,都要对连接对象进行检测,如果此链接和Sentinel的Master
-服务连接参数不一致,则会关闭此连接,重新获取新的Jedis连接对象。 
-</code></pre><h3 id="redis-Sentinel-哨兵-机制实现"><a href="#redis-Sentinel-哨兵-机制实现" class="headerlink" title="redis Sentinel(哨兵)机制实现"></a>redis Sentinel(哨兵)机制实现</h3><pre><code>redis sentinel的作用：
-    1.redis主从架构中，master宕机之后，是需要人为执行slave noone将slave切换成
-        master的；
-    2.而sentinel进程是用于监控redis集群中Master主服务器工作的状态，在Master主服务器发生故障的时候，
-    可以实现Master和Slave服务器的切换，保证系统的高可用
-    3.master切换后，sentinel进程会通知给JAVA程序上一个与redis通信的jar包，java程序就会与新的master建立
-    连接池进而正常工作.
-
-sentinel工作原理：
-    1.哨兵(Sentinel) 是一个分布式系统，你可以在一个架构中运行多个哨兵(sentinel)
-        进程，这些进程使用流言协议(gossipprotocols)来接收关于Master主服务器
-        是否下线的信息，并使用投票协议(Agreement Protocols)来决定是否执行自动
-        故障迁移,以及选择哪个Slave作为新的Master；
-    2.每个哨兵(Sentinel)进程会向其它哨兵(Sentinel)、Master、Slave定时发送消息，
-        以确认对方是否”活”着，如果发现对方在指定配置时间(可配置的)内未得到回应
-        ，则暂时认为对方已掉线，也就是所谓的”主观认为宕机” 简称SDOWN;
-    3.当“哨兵群”中的多数Sentinel进程在对Master主服务器做出SDOWN 的判断，并且
-        通过 SENTINEL is-master-down-by-addr 命令互相交流之后，得出的Master 
-        Server下线判断，这种方式就是“客观宕机”，简称 ODOWN。
-    4.然后通过一定的vote算法，从剩下的slave从服务器节点中，选一台提升为Master服务
-        器节点，然后自动修改相关配置，并开启故障转移(failover);
-
-注意：
-    哨兵只是解决了人为介入master和slave角色的切换问题，在Redis服务的并行写入性能上并没有任何作用.
-</code></pre><h3 id="Sentinel实现"><a href="#Sentinel实现" class="headerlink" title="Sentinel实现"></a>Sentinel实现</h3><p>哨兵可以不和Redis服务器部署在一起</p>
-<pre><code>1.准备Sentinel的配置文件
-    [root@node01 redis]# cp /usr/local/src/redis-5.0.3/sentinel.conf /usr/local/redis/etc/
-
-2.编辑sentinel.conf配置文件
-    bind 0.0.0.0                    #修改监听的地址为0.0.0.0
-    port 26379                      #sentinel的端口
-    daemonize yes                   #修改为以守护进程方式运行
-    pidfile /var/run/redis-sentinel_26379.pid            #pid路径
-    logfile &quot;/usr/local/redis/logs/sentinel_26379.log&quot;   #log日志路径
-    dir /usr/local/redis/sentinel                       #sentinel临时文件目录
-    sentinel monitor mymaster 172.18.140.6 6379 2    
-        #master的IP和端口，以及几个哨兵人为down就是down
-    sentinel auth-pass mymaster root
-        #master的名(可同上一条)，和验证密码
-    sentinel down-after-milliseconds mymaster 15000
-        #检测时长
-    #将配置文件复制给主从架构中的其他redis服务器上
-
-3.启动哨兵sentinel
-    [root@node01 redis]# redis-sentinel /usr/local/redis/etc/sentinel.conf
-    #因为没有sentinel的Unitfile,所以启动时指定配置文件路径即可;
-
-备注：
-    只要sentinel都启动后，会在sentinel.conf配置文件中生成
-        sentinel myid 66a04f04a74bb7d728fe83dc0788582302e27f0c
-            #每个sentinel服务上的配置文件都会生成各自的集群ID号
-        protected-mode no
-        sentinel leader-epoch mymaster 1
-        sentinel known-replica mymaster 172.18.140.6 6379
-        sentinel known-sentinel mymaster 172.20.103.15 26379 
-        72eb727c9130b47a4538a9b75bf10e6a55d0676f
-        sentinel known-sentinel mymaster 172.18.140.5 26379 
-        66a04f04a74bb7d728fe83dc0788582302e27f0c
-        sentinel current-epoch 1
-        #配置文件会自动加载集群内部的sentinel群组和成员！！            
-    如果要重新设置sentinel，需要先把这些信息删除，重新创建sentinel群组！
-</code></pre><h3 id="测试：将master上的redis服务关闭"><a href="#测试：将master上的redis服务关闭" class="headerlink" title="测试：将master上的redis服务关闭"></a>测试：将master上的redis服务关闭</h3><p>–故障转移时sentinel信息<br><img src="/2017/07/15/redis高可用/故障转移时sentinel信息.png" alt="故障转移时sentinel信息"><br>–故障转移后的redis配置文件<br><img src="/2017/07/15/redis高可用/故障转移后的redis配置文件.png" alt="故障转移后的redis配置文件"><br>故障转移后redis.conf中的replicaof行的master IP会被修改，sentinel.conf中的sentinel monitor IP会被修改。</p>
-<pre><code>查看一台slave:
-    # Replication
-    role:master
-    connected_slaves:1
-    slave0:ip=172.18.140.6,port=6379,state=online,offset=335400,lag=0
-    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
-    master_replid2:7d5355ccd2638b9647d5f3c7c96116fad55ed64f
-    master_repl_offset:335400
-    second_repl_offset:178740
-    repl_backlog_active:1
-    repl_backlog_size:1048576
-    repl_backlog_first_byte_offset:18272
-    repl_backlog_histlen:317129
-        ########可以看到slave1被选择为master了
-前一个master启动后也会自动变成slave:
-    # Replication
-    role:slave
-    master_host:172.18.140.5
-    master_port:6379
-    master_link_status:up
-    master_last_io_seconds_ago:1
-    master_sync_in_progress:0
-    slave_repl_offset:239591
-    slave_priority:100
-    slave_read_only:1
-    connected_slaves:1
-    slave0:ip=172.18.0.1,port=6379,state=online,offset=239591,lag=1
-    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
-    master_replid2:0000000000000000000000000000000000000000
-第二个slave:
-    需要手动修改文件，使其成为之前slave1的slave
-    [root@master1 redis]# vim etc/redis.conf
-    replicaof 172.18.140.5 6379    #将此处的IP给成新master的IP
-然后新的master上就会有2个slave了;
-    # Replication
-    role:master
-    connected_slaves:2
-    slave0:ip=172.18.140.6,port=6379,state=online,offset=403718,lag=0
-    slave1:ip=172.18.0.1,port=6379,state=online,offset=403718,lag=0
-    master_replid:28c62ac13e6c57a7b3a11347bb3872d58da24e11
-    master_replid2:7d5355ccd2638b9647d5f3c7c96116fad55ed64f
-    master_repl_offset:403857
-    second_repl_offset:178740
-    repl_backlog_active:1
-    repl_backlog_size:1048576
-    repl_backlog_first_byte_offset:18272
-    repl_backlog_histlen:385586
-</code></pre><p>–当前redis状态<br><img src="/2017/07/15/redis高可用/当前redis状态.png" alt="当前redis状态"></p>
-<h3 id="redis一键安装脚本和启动脚本"><a href="#redis一键安装脚本和启动脚本" class="headerlink" title="redis一键安装脚本和启动脚本"></a>redis一键安装脚本和启动脚本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">[root@redis-node ~]# cd /usr/local/src/</span><br><span class="line">[root@redis-node src]# ll redis-4.0.1.tar.gz</span><br><span class="line">-rw-rw-r-- 1 root root 1711660 Aug 27 16:19 redis-5.0.3.tar.gz</span><br><span class="line">[root@redis-node src]# cat redis_install.sh</span><br><span class="line">#!/usr/bin/env bash</span><br><span class="line"># It&apos;s Used to be install redis.</span><br><span class="line"># Created on 2018/03/06 .</span><br><span class="line"># author: lk.</span><br><span class="line"># Version: 1.0</span><br><span class="line">    </span><br><span class="line">function install_redis () &#123;</span><br><span class="line">###########################################################################</span><br><span class="line">        cd /usr/local/src</span><br><span class="line">        tar -zxvf /usr/local/src/redis-5.0.3.tar.gz</span><br><span class="line">        cd redis-5.0.3</span><br><span class="line">        make PREFIX=/usr/local/redis install</span><br><span class="line">        mkdir -p /usr/local/redis/&#123;etc,var&#125;</span><br><span class="line">        rsync -avz redis.conf  /usr/local/redis/etc/</span><br><span class="line">        sed -i &apos;s@pidfile.*@pidfile /var/run/redis-server.pid@&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@logfile.*@logfile /usr/local/redis/var/redis.log@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &quot;s@^dir.*@dir /usr/local/redis/var@&quot; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/daemonize no/daemonize yes/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line">        sed -i &apos;s/^# bind 127.0.0.1/bind 0.0.0.0/g&apos; /usr/local/redis/etc/redis.conf</span><br><span class="line"> ##########################################################################</span><br><span class="line">&#125;</span><br><span class="line">install_redis</span><br><span class="line"></span><br><span class="line">赋予脚本执行权限,并进行安装</span><br><span class="line">[root@redis-node src]# chmod 755 /usr/local/src/redis_install.sh</span><br><span class="line">[root@redis-node src]# /bin/bash -x /usr/local/src/redis_install.sh</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">编写redis-server启动脚本</span><br><span class="line">[root@redis-node src]# cat /etc/init.d/redis-server</span><br><span class="line">#!/bin/bash</span><br><span class="line">#</span><br><span class="line"># redis - this script starts and stops the redis-server daemon</span><br><span class="line">#</span><br><span class="line"># chkconfig:   - 85 15</span><br><span class="line"># description:  Redis is a persistent key-value database</span><br><span class="line"># processname: redis-server</span><br><span class="line"># config:      /usr/local/redis/etc/redis.conf</span><br><span class="line"># config:      /etc/sysconfig/redis</span><br><span class="line"># pidfile:     /usr/local/redis/var/redis-server.pid</span><br><span class="line">   </span><br><span class="line"># Source function library.</span><br><span class="line">. /etc/rc.d/init.d/functions</span><br><span class="line">   </span><br><span class="line"># Source networking configuration.</span><br><span class="line">. /etc/sysconfig/network</span><br><span class="line">   </span><br><span class="line"># Check that networking is up.</span><br><span class="line">[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0</span><br><span class="line">   </span><br><span class="line">redis=&quot;/usr/local/redis/bin/redis-server&quot;</span><br><span class="line">prog=$(basename $redis)</span><br><span class="line">   </span><br><span class="line">REDIS_CONF_FILE=&quot;/usr/local/redis/etc/redis.conf&quot;</span><br><span class="line">   </span><br><span class="line">[ -f /etc/sysconfig/redis ] &amp;&amp; . /etc/sysconfig/redis</span><br><span class="line">   </span><br><span class="line">lockfile=/var/lock/subsys/redis-server</span><br><span class="line">   </span><br><span class="line">start() &#123;</span><br><span class="line">    [ -x $redis ] || exit 5</span><br><span class="line">    [ -f $REDIS_CONF_FILE ] || exit 6</span><br><span class="line">    echo -n $&quot;Starting $prog: &quot;</span><br><span class="line">    daemon $redis $REDIS_CONF_FILE</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; touch $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">stop() &#123;</span><br><span class="line">    echo -n $&quot;Stopping $prog: &quot;</span><br><span class="line">    killproc $prog</span><br><span class="line">    retval=$?</span><br><span class="line">    echo</span><br><span class="line">    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile</span><br><span class="line">    return $retval</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">restart() &#123;</span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">reload() &#123;</span><br><span class="line">    echo -n $&quot;Reloading $prog: &quot;</span><br><span class="line">    killproc $redis -HUP</span><br><span class="line">    RETVAL=$?</span><br><span class="line">    echo</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">force_reload() &#123;</span><br><span class="line">    restart</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status() &#123;</span><br><span class="line">    status $prog</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">rh_status_q() &#123;</span><br><span class="line">    rh_status &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">    start)</span><br><span class="line">        rh_status_q &amp;&amp; exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    stop)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    restart)</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    reload)</span><br><span class="line">        rh_status_q || exit 7</span><br><span class="line">        $1</span><br><span class="line">        ;;</span><br><span class="line">    force-reload)</span><br><span class="line">        force_reload</span><br><span class="line">        ;;</span><br><span class="line">    status)</span><br><span class="line">        rh_status</span><br><span class="line">        ;;</span><br><span class="line">    condrestart|try-restart)</span><br><span class="line">        rh_status_q || exit 0</span><br><span class="line">            ;;</span><br><span class="line">    *)</span><br><span class="line">        echo $&quot;Usage: $0 &#123;start|stop|status|restart|condrestart|try-restart|reload|force-reload&#125;&quot;</span><br><span class="line">        exit 2</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
-<pre><code>赋予脚本执行权限,并启动redis-server
-[root@redis-node src]# /etc/init.d/redis-server start
-[root@redis-node src]# lsof -i:6379
-COMMAND     PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
-redis-ser 24439 root    6u  IPv4 24642923      0t0  TCP dns02.kevin.cn:6379 (LISTEN)
-
-温馨提示:
-需要将redis.conf文件中的bind改为本机ip.不能使用默认的127.0.0.1,否则远程连接该redis就会失败
-[root@redis-node src]# vim /usr/local/redis/etc/redis.conf
-.....
-bind 192.168.34.118
-
-重启redis-server服务
-[root@redis-node src]# /etc/init.d/redis-server restart
-Stopping redis-server:                                     [  OK  ]
-Starting redis-server:                                     [  OK  ]
-[root@redis-node src]# lsof -i:6379
-COMMAND    PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
-redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LISTEN)
-
-最好在tomcat两个节点上使用&quot;telnet 192.168.34.118 6379&quot;验证下redis是否能成功连接
-</code></pre>
+        
       
     </div>
 
@@ -920,7 +648,7 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
       
         <div class="post-tags">
           
-            <a href="/tags/redis高可用/" rel="tag"><i class="fa fa-tag"></i> redis高可用</a>
+            <a href="/tags/database/" rel="tag"><i class="fa fa-tag"></i> database</a>
           
         </div>
       
@@ -987,8 +715,8 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/06/DHCP和PXE/" rel="next" title="DHCP和PXE">
-                <i class="fa fa-chevron-left"></i> DHCP和PXE
+              <a href="/2018/11/03/ceph存储基础/" rel="next" title="ceph存储基础">
+                <i class="fa fa-chevron-left"></i> ceph存储基础
               </a>
             
           </div>
@@ -997,8 +725,8 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/20/redis-cluster集群/" rel="prev" title="redis-cluster集群">
-                redis-cluster集群 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/06/GlusterFS存储/" rel="prev" title="GlusterFS存储">
+                GlusterFS存储 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1044,17 +772,8 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -1071,7 +790,7 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">45</span>
+                    <span class="site-state-item-count">47</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1140,7 +859,9 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
                     
                       
                     
-                    <span class="site-state-item-count">28</span>
+                      
+                    
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1307,22 +1028,6 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
       </section>
 
       
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis高可用"><span class="nav-number">1.</span> <span class="nav-text">Redis高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis主从实现"><span class="nav-number">2.</span> <span class="nav-text">Redis主从实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制过程"><span class="nav-number">3.</span> <span class="nav-text">主从复制过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步优化："><span class="nav-number">4.</span> <span class="nav-text">主从同步优化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置redis一主二从"><span class="nav-number">5.</span> <span class="nav-text">配置redis一主二从</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主从复制常见问题汇总"><span class="nav-number">6.</span> <span class="nav-text">主从复制常见问题汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用程序如何连接redis？："><span class="nav-number">7.</span> <span class="nav-text">应用程序如何连接redis？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-Sentinel-哨兵-机制实现"><span class="nav-number">8.</span> <span class="nav-text">redis Sentinel(哨兵)机制实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sentinel实现"><span class="nav-number">9.</span> <span class="nav-text">Sentinel实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试：将master上的redis服务关闭"><span class="nav-number">10.</span> <span class="nav-text">测试：将master上的redis服务关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis一键安装脚本和启动脚本"><span class="nav-number">11.</span> <span class="nav-text">redis一键安装脚本和启动脚本</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
 
       
 
@@ -1350,7 +1055,7 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">602k</span>
+    <span title="站点总字数">641k</span>
   
 
   
@@ -1361,7 +1066,7 @@ redis-ser 8184 root    6u  IPv4 24688720      0t0  TCP dns02.kevin.cn:6379 (LIST
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">9:07</span>
+    <span title="站点阅读时长">9:43</span>
   
 </div>
 
