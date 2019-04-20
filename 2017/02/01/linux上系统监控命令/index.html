@@ -136,25 +136,27 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="iptables的命令使用格式">
-<meta name="keywords" content="iptables防火墙">
+  <meta name="description" content="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用">
+<meta name="keywords" content="linux基础">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iptables基本使用">
-<meta property="og:url" content="https://www.liukui.tech/2017/02/01/iptables基本使用/index.html">
+<meta property="og:title" content="linux上系统监控命令">
+<meta property="og:url" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="iptables的命令使用格式">
+<meta property="og:description" content="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-09T08:59:01.267Z">
+<meta property="og:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/top输出详解.png">
+<meta property="og:updated_time" content="2019-04-20T06:49:05.018Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iptables基本使用">
-<meta name="twitter:description" content="iptables的命令使用格式">
+<meta name="twitter:title" content="linux上系统监控命令">
+<meta name="twitter:description" content="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/top输出详解.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/02/01/iptables基本使用/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/02/01/linux上系统监控命令/">
 
 
 
@@ -164,7 +166,7 @@
   };
 </script>
 
-  <title>iptables基本使用 | Coool's Blog</title>
+  <title>linux上系统监控命令 | Coool's Blog</title>
   
 
 
@@ -450,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/02/01/iptables基本使用/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/02/01/linux上系统监控命令/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -467,7 +469,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">iptables基本使用
+          <h1 class="post-title" itemprop="name headline">linux上系统监控命令
               
             
           </h1>
@@ -475,10 +477,6 @@
 
         <div class="post-meta">
                   
-            <i class="fa fa-thumb-tack"></i>
-            <font color="808080">置顶</font>
-            <span class="post-meta-divider">|</span>
-          
           <span class="post-time">
 
             
@@ -497,7 +495,7 @@
                 
               
 
-              <time title="创建时间：2017-02-01 08:00:00" itemprop="dateCreated datePublished" datetime="2017-02-01T08:00:00+08:00">2017-02-01</time>
+              <time title="创建时间：2017-02-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-02-01T00:00:00+08:00">2017-02-01</time>
             
 
             
@@ -515,7 +513,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iptables/" itemprop="url" rel="index"><span itemprop="name">iptables</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux基础/" itemprop="url" rel="index"><span itemprop="name">linux基础</span></a></span>
 
                 
                 
@@ -543,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">17k</span>
+                <span title="本文字数">18k</span>
               
 
               
@@ -557,7 +555,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">16 分钟</span>
+                <span title="阅读时长">17 分钟</span>
               
             </div>
           
@@ -577,457 +575,510 @@
       
 
       
-        <h3 id="iptables的命令使用格式"><a href="#iptables的命令使用格式" class="headerlink" title="iptables的命令使用格式"></a>iptables的命令使用格式</h3><a id="more"></a>
-<pre><code>获取帮助：
-                    CentOS 7：man iptables-extensions
-                    CentOS 6：man iptables
+        <h3 id="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"><a href="#linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用" class="headerlink" title="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"></a>linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用</h3><a id="more"></a>
+<h3 id="ps命令：process-state"><a href="#ps命令：process-state" class="headerlink" title="ps命令：process state"></a>ps命令：process state</h3><pre><code>Linux中的ps命令是Process Status的缩写。ps命令用来列出系统中当前运行的那些进程。ps命令列出的是当前那些进程的快照，
+就是执行ps命令的那个时刻的那些进程，如果想要动态的显示进程信息，就可以使用top命令。；
+    ps report a snapshot of the current processes
+        #ps可以看到当前进程的快照状态，所以ps每次看到的可能不一样
+    Linux系统各进程的相关信息均保存在/proc/PID目录下的各文件中
 
-规则的编写格式：
-iptables [-t table] COMMAND chain [rulesnum][-m matchname [per-match-options]] [-j targetname [per-target-options]]
-表--&gt;命令--&gt;chain--&gt;对链
+要对进程进行监测和控制，首先必须要了解当前进程的情况，也就是需要查看当前进程，而 ps 命令就是最基本同时也是非常强
+大的进程查看命令。使用该命令可以确定有哪些进程正在运行和运行的状态、进程是否结束、进程有没有僵死、哪些进程占用了过多
+的资源等等。总之大部分信息都是可以通过执行该命令得到的。 
 
+ps 为我们提供了进程的一次性的查看，它所提供的查看结果并不动态连续的；如果想对进程时间监控，应该用 top 工具; 
+kill 命令用于杀死进程;
 
--t table：
-    默认为filter；其它可用的有raw, mangle, nat；
+1.ps命令使用
+    支持三种选项： 
+        UNIX选项 如-A -e;类似 ls -l
+        BSD选项 如a 
+        GNU选项 如--help 类似 ls --all
+    BSD类型的选项：默认显示当前终端中的进程
+        a 选项包括所有终端中的进程 
+        x 选项包括不链接终端的进程 
+        u 选项显示进程所有者的信息 
+        f 选项显示进程树,相当于 --forest 
+        k|--sort 属性对属性排序,属性前加-表示倒序
+        o 属性… 选项显示定制的信息 pid、cmd、%cpu、%mem
+        L 显示支持的属性列表
+    UNIX类型的选项：
+        -C cmdlist 指定命令，多个命令用，分隔 
+        -L 显示线程 
+        -e: 显示所有进程，相当于-A
+        -f: 显示完整格式程序信息 
+        -F: 显示更完整格式的进程信息 
+        -H: 以进程层级格式显示进程相关信息 
+        -u userlist 指定有效的用户ID或名称 
+        -U userlist 指定真正的用户ID或名称 
+        -g gid或groupname 指定有效的gid或组名称 
+        -G gid或groupname 指定真正的gid或组名称 
+        -p pid 显示指pid的进程 
+        --ppid pid 显示属于pid的子进程 
+        -M  显示SELinux信息，相当于Z
+2.linux上进程有5种状态: 
+    1. 运行(正在运行或在运行队列中等待) 
+    2. 中断(休眠中, 受阻, 在等待某个条件的形成或接受到信号) 
+    3. 不可中断(收到信号不唤醒和不可运行, 进程必须等待直到有中断发生) 
+    4. 僵死(进程已终止, 但进程描述符存在, 直到父进程调用wait4()系统调用后释放) 
+    5. 停止(进程收到SIGSTOP, SIGSTP, SIGTIN, SIGTOU信号后停止运行运行) 
+3.ps工具标识进程的5种状态码: 
+    D 不可中断 uninterruptible sleep (usually IO) 
+    R 运行 runnable (on run queue) 
+    S 中断 sleeping 
+    T 停止 traced or stopped 
+    Z 僵死 a defunct (”zombie”) process 
+4.ps aux 和ps -ef的使用
+    前面说过这是两种输出风格，输出项都是差不多的
+    ps aux 是用BSD的格式来显示、其格式如下：
+    [root@node1 ~]# ps aux 
+    USER   PID %CPU %MEM    VSZ   RSS TTY  STAT START   TIME COMMAND
+    root   2   0.0  0.0      0     0   ?   S    11:58   0:00 [kthreadd]
+    root   3   0.0  0.0      0     0   ?   S    11:58   0:00 [ksoftirqd/0]
+    同ps -ef 不同的有列有 
+        USER        #用户名 
+        %CPU        #进程占用的CPU百分比 
+        %MEM        #占用内存的百分比 
+        VSZ         #该进程使用的虚拟內存量（KB） 
+            Virtual memory SiZe,虚拟内存集,进程占用的虚拟内存空间、线性内存
+        RSS         #该进程占用的固定內存量（KB）（驻留中页的数量）
+            ReSident Size, 常驻内存集、物理内存集,进程占用实际物理内存空间
+        STAT        #进程的状态 
+        START       #该进程被触发启动时间 
+        TIME        #该进程实际使用CPU运行的时间,越小代表没占用资源
+    其中STAT状态位常见的状态字符有 
+        D: uninterruptable sleeping #无法中断的休眠状态（通常 IO 的进程）； 
+        R：running                  #正在运行可中在队列中可过行的； 
+        S: interruptable sleeping   #处于休眠状态； 
+        T: stopped                  #停止或被追踪； 
+        W                           #进入内存交换 （从内核2.6开始无效）； 
+        X                           #死掉的进程 （基本很少见）； 
+        Z: zombie                   #僵尸进程； 
+        &lt;: 高优先级进程              #优先级高的进程 
+        N：低优先级进程              #优先级较低的进程 
+        L：内存分页并带锁            #有些页被锁进内存； 
+        s: session leader，会话(子进程)发起者 
+            #进程的领导者(在它之下有子进程)； 
+        l: 多线程进程 
+                #多线程，克隆线程（使用 CLONE_THREAD, 类似 NPTL pthreads）； 
+        +: 前台进程         #位于后台的进程组；
 
-子命令COMMAND:
-        管理链：
-            -P：policy，策略，定义链的默认策略； 一般有两种选择，ACCEPT和DROP；
-            -N：new，新建一条自定义的规则链；被内建链上的规则调用才能生效；[-j  chain_name]；
-            -X：drop，删除自定义的、空的、或者引用计数为0的空链；
-            -F：flush，清空指定的链；
-            -E：重命名引用计数和为0的自定义链；
-            -F：flush, 清空整条链
-            -Z：zero，计数器置零；改为零
-                 iptables的每条规则和每个链都有专用的两个计数器：
-                 每一个规则所匹配到的报文数量个数：pkts
-                 和体积计数器之和：bytes
-        管理规则：增删改、插入
-            -A：append，追加，在指定链的尾部追加一条规则；
-            -I：insert，插入，在指定的位置（省略位置时表示链首）插入一条规则；
-            -D：delelte，删除，删除指定的规则；
-            -R：replace，替换，将指定的规则替换为新规则；不能仅修改规则中的部分，而是整条规则完全替换；
+    ps -ef 是用标准的格式显示进程的:
+    [root@node1 ~]# ps -ef
+    UID         PID   PPID  C  STIME   TTY      TIME CMD
+    root          2      0  0  11:58   ?        00:00:00 [kthreadd]
+    root          3      2  0  11:58   ?        00:00:00 [ksoftirqd/0]
+    其中各列的内容意思如下 
+        UID     #用户ID、但输出的是用户名 
+        PID     #进程的ID 
+        PPID    #父进程ID 
+        C       #进程占用CPU的百分比 
+        STIME   #进程启动到现在的时间 
+        TTY     #该进程在那个终端上运行，若与终端无关，则显示? 若为pts/0等则表示由网络连接主机进程。 
+        CMD     #命令的名称和参数
+</code></pre><h3 id="uptime命令"><a href="#uptime命令" class="headerlink" title="uptime命令"></a>uptime命令</h3><pre><code>[root@node02 ~]# uptime
+11:19:15 up 20 min,  1 user,  load average: 0.00, 0.01, 0.05
 
-        查看：链上查看规则的动作，属于action的一种
-            -L：list，列出表中的链上的规则；
-                -n：numeric，以数值格式显示；
-                -v：verbose，显示详细格式信息； 
-                    -vv, -vvv
-                -x：exactly，计数器的精确结果；
-                --line-numbers：显示链中的规则行号；
-        重置规则计数器：
-            -Z：zero，置0；
-        计数器：
-            规则，以及默认策略有专用的计数器；
-            记录被当前规则所匹配到的：
-                (1) 报文个数；
-                (2) 字节总数；
-chain：
-    (1) 内建链；INPUT OUTPUT FORWARD PREROUTING POSTROUTING
-    (2) 自定义链；
-            自定义连只存在于iptables的上下文，只有被主链调用时，才会
-            存在于netfilter的上下文和5个hook挂上钩，才会生效。
-
-匹配条件：matchname
-    多重条件：逻辑关系为“与”；
-    检查报文：
-        TCP或UDP首部：源端口、目标端口、标记为ACK
-           FSM: 有限状态机:TIME_WAIT,监听状态等
-        IP首部: SIP，DIP
-        MAC首部：MAC地址 
-
-将防火墙规则保存下来
-    iptables-save &gt; /tmp/iptables-rules.v0.1
-    iptables-restore &lt; /tmp/iptables-rules.v0.1
-
-开机自动加载iptables规则
-    yum install iptables-services -y
-    规则的保存和永久生效：
-    将iptables保存在文件
-    iptables-save
-    iptables-restore 
-    iptables-server的service脚本
-    保存在/etc/sysconfig/iptables中，开启启动自动加载
-    firewalld,firewalld-cmd是不能调用iptables定义的规则，用iptables-server
-    必须先安装，不能并行
-
-    匹配条件又分为：通用匹配和扩展匹配
-    通用匹配条件：
-        检查的是下四层协议，对网络层的源地址-s，目标地址-d，协议类型-p进行检查
-            对数据链路层对从网卡的流入-i,流出-o进行检查
-        [!] -s, --sip,--source-ip报文源地址
-            其值可以是单个IP，或者连续IP，可以是网络地址，不能是离散的地址
-        [!] -d, --destination address[/mask][,...]：检查报文中的目标IP地址是否符合此处指定的地址或范围；
-        [!] -i, --in-interface name：数据报文从哪个网卡接口进入；
-            PREROUTING，INPUT, FORWARD
-            因为-i是数据报文流入的选项；
-            所以-i选项只能上面这三个链有关,用在前半部分相关的链上
-        [!] -o, --out-interface name：数据报文从哪个网卡接口出去； 
-            FORWARD, OUTPUT POSTROUTING
-            同理因为-o是数据报文流出的选项；
-            所以-o选项只能上面这三个链有关,用在后半部分相关的链上
-        [!] -p, --protocol protocol：四层协议
-                tcp|udp|icmp|sctp
-    这也是为什么iptables叫网络防火墙的原因，正常的工作只能工作在网络层，
-    检查网络层属性，但是-i -o和网络层属性没关系，和网络层下面的协议有关
-    正常情况下，网络防火墙是用来检查网络层首部来获得相关信息的
-
-    扩展匹配条件：又分为隐式扩展和显示扩展
-        扩展匹配是为了更精准的条件过滤，比如httpd传输时是需要资源压缩的，
-        而只有文本文件才适合压缩，所以在扩展中才能进行过滤。
-
-        /lib/modules/$(uname -r)/net/netfilter/下xt开头的就是扩展模块
-            默认没有载入到内核中，只有当用时才加载的，就叫隐式扩展
-        netfilter为了做深入的条件检查，通过特定的模块来实现检查功能
-
-        隐式扩展：不用-m选项指出matchname即可使用此match的专用选项进行匹配；
-            -p tcp：隐含了-m tcp； 
-                [!] --source-port,--sport port[:port]
-                    匹配报文中传输层的源端口；
-                    可以使用单个端口或者连续端口，但是不能使用离散端口
-                [!] --destination-port,--dport port[:port]、
-                    匹配报文中传输层的目标端口；
-                    可以使用单个端口或者连续端口，但是不能使用离散端口
-                    端口也只有2^16-1=65535个端口
-                [!] --tcp-flags mask comp
-                    SYN，ACK，FIN，RST，URG，PSH；    
-
-                    mask：要检查的标志位列表，以逗号分隔；
-                    comp：必须为1的标志位列表，余下的出现在mask列表中的标志位则必须为0；                        
-                    --tcp-flags  SYN,ACK,FIN,RST SYN
-                        如果只定义SYN则代表tcp握手的第一次，一般只检查第一次
-                        如果定义的是SYN，ACK代表tcp握手的第二次
-                        如果是ACK，则代表tcp的正常通信过程
-                [!] --syn：因为检查tcp握手的第一次比较常用
-                    所以系统内就设置这个选项代表下面这个选项
-                    相当于--tcp-flags  SYN,ACK,FIN,RST  SYN 
-            -p udp：隐含了-m udp：
-                [!] --source-port,--sport port[:port]：匹配报文中传输层的源端口；
-                [!] --destination-port,--dport port[:port]：匹配报文中传输层的目标端口；
-            -p icmp：隐含了-m icmp:互联控制消息协议
-                 [!] --icmp-type {type[/code]|typename}
-                    icmp是有状态的
-                    8：echo-request
-                    0：echo-reply
-
-        显式扩展：必须使用-m选项指出matchname，有的match可能存在专用的选项；
-                显示扩展能帮我们更灵活的设置控制规则
-
-            获取帮助：
-                CentOS 7：man iptables-extensions
-                CentOS 6：man iptables
-
-            1、multiport扩展
-                离散方式的多端口匹配
-                离散最多为15个，以冒号隔开的算一个，所以连续的端口用冒号隔开
-                 [!] --source-ports,--sports port[,port|,port:port]...：指定多个源端口；
-                 [!] --destination-ports,--dports port[,port|,port:port]...：指定多个目标端口；
-                 [!] --ports port[,port|,port:port]...：指定多个端口；
-
-            2、iprange扩展：连续的地址集
-                以连续的ip地址范围指明连续的多地址匹配条件；
-
-                [!] --src-range from[-to]：源IP地址；
-                [!] --dst-range from[-to]：目标IP地址；
-
-            3、set扩展：定义离散地址集
-                如果要开放的地址既不是连续的，也不是网络地址就需要使用set了
-                set依赖于ipset命令行工具；需要用ipset先定义一个地址集，
-                再用set调用地址集即可；需要先安装ipset安装包
-                yum install ipset ，重启iptables服务
-                set存在类型，常用的有两个：
-                    hash:net 网络地址的集合：两个网段剧哦多个网段
-                    hash:ip  IP地址的集合：离散地址集
-                使用方式：
-                    先创建集合：ipset create NAME TYPE( hash:ip/hash:net)
-                    向集合添加元素：ipset add NAME ELEMENT
-                set再调用
-                    --match-set  NAME src
-                    --match-set  NAME dst
-
-            4、string扩展：字串匹配，
-                借助string扩展，iptables把触角伸到了应用层
-                对报文中的应用层数据做字符串匹配检测；
-
-                [!] --string pattern：要检测字符串模式；
-                [!] --hex-string pattern：要检测的字符串模式，16进制编码；
-                --algo {bm|kmp} 2组比较算法
-
-            5、time扩展
-                根据报文到达的时间与指定的时间范围进行匹配度检测；
-
-                --datestart YYYY[-MM[-DD[Thh[:mm[:ss]]]]]：起始日期时间；
-                --datestop YYYY[-MM[-DD[Thh[:mm[:ss]]]]]：结束日期时间；
-
-                --timestart hh:mm[:ss]
-                --timestop  hh:mm[:ss]
-
-                [!] --monthdays day[,day...]
-                [!] --weekdays day[,day...]
-
-                --kerneltz：使用内核中配置的时区
-
-                ~]# iptables -I INPUT -d 172.16.100.67 -p tcp --dport 23 -m time --timestart 09:00:00 --timestop 18:00:00 --weekdays Tue,Thu,Sat -j ACCEPT
-
-            6、connlimit扩展
-                根据每客户端IP做并发连接数匹配；
-
-                --connlimit-upto n：连接数数量小于等于n，此时应该允许；
-                --connlimit-above n：连接数数量大于n，此时应该拒绝；
-
-                ~]# iptables -A INPUT -d 172.16.100.67 -p tcp --dport 23 -m connlimit --connlimit-upto 2 -j ACCEPT
-
-            7、limit扩展
-                基于收发报文的速率进行匹配；
-                基于令牌桶算法：bucket
-                --limit rate[/second|/minute|/hour|/day]：平均速率
-                --limit-burst number：峰值速率,突发速率，最大速率
-
-            8、state扩展：有状态追踪的防火墙
-                stateful有状态；stateless无状态；
-                状态检测；连接追踪的状态监测机制（conntrack）；
-            a.ip报文是无状态的，客户端向当前主机第一次发出请求，而第二次再发出请    求，对于服务器来说都当成第一次
-            b.对于服务器在IP层控制上来说，服务器响应报文和服务器主动发出请求报文    是没有区别的
-            c.基于以上两点，可以让第二次的报文和第一次关联起来，让IP报文有记忆功 能，让当前主机能识别一个新的连接请求是否和之前的连接有关联关系，记忆功能就是把之前的连接请求记录在内核的连接追踪表中，但是这个表是占用内核的    内存中，所以还需要进行连接数和时长的限制
-            d.因为需要查追踪表，所以效率是比之前慢的
-            e.然而是使用hash方式查找的，1w和10w查找时间是大概一致的，效率不会太低
-            f.对tcp,udp.icmp.stmp都是可以进行追踪的，和tcp的状态是没什么实际关系的.
-
-             NEW：新连接；这个新连接是和协议无关的，独立于四层协议之外的
-             ESTABLISHED：已建立的连接； 
-             RELATED：相关联的连接；FTP
-             INVALID：无法识别的状态； 
-             UNTRACKED：未追踪的连接；
-             SNAT：
-             DNAT：
-
-                nf_conntrack内核模块；记忆是由内核空间的conntrack模块实现的
-                    追踪到的连接：/proc/net/nf_conntrack文件中；
-
-                    能追踪的最大连接数量定义在：/proc/sys/net/nf_conntrack_max
-        此值可自行定义，当主机作为网关网络防火墙时，更应该必要时调整到足够大；
-
-                    要想永久保存修改的值需要保存到
-                            vim /etc/sysctl.d/nf_conntrack_max.conf
-                                net.nf_conntrack_max = 1000000
-                            再加载一次就行了
-                            sysctl -p /etc/sysctl.d/nf_conntrack_max.conf   
-
-                    不同的协议的连接追踪的时长：
-                        /proc/sys/net/netfilter/
-
-                [!] --state STATE
-
-                如何开放被模式的ftp服务： 
-                    21端口是命令连接，
-                    (1) 装载追踪ftp协议的模块；
-                        modprobe nf_conntrack_ftp
-
-                    (2) 放行命令连接
-                        ~] # iptables -A INPUT -d 172.16.100.67 -p tcp -m state --state ESTABLISHED -j ACCEPT
-                        ~] # iptables -A INPUT -d 172.16.100.67 -p tcp --dport 21 -m state --state NEW -j ACCEPT
-
-                    (3) 放行数据连接
-                        ~] iptables -A INPUT -d 172.16.100.67 -p tcp -m state --state RELATED -j ACCEPT
-
-        处理动作（目标）
-            -j targetname [per-target-options] 
-            j是jump的意思，自定义链也可以放在target上，即主链跳转到自定义链
-
-            targetname：
-            简单：
-                ACCEPT：接受；
-                DROP：丢弃；
-                    被请求的服务器数据报文丢弃了，请求端需要等待时间会消耗服务端和客户端资源
-            扩展：
-                REJECT：--reject-with:icmp-port-unreachable默认
-                    拒绝；适用内网，直接弹回报文请求
-                RETURN:当被调用的自定义链上没有规则则自动返回主链继续匹配;
-                REDIRECT：端口重定向
-                SNAT：源地址转换
-                DNAT：目标地址转换
-                MASQURADE:地址伪装
-                LOG：日志
-                自定义链：可以先定义自定义链，再通过主链调用，
-                当自定义链被引用时，需要先删除引用，再清空自定义链，然后再删除
-</code></pre><p>每个表对应控制的链，各不相同，记住对应关系<br>网络层<br>tcp协议的头部信息 2btye 2^16-1（0表示通用）<br>2个半连接*2<br>这里因为有两个半连接，请求和回应报文，<br>所以防火墙要设置input接收请求和output回应报文，<br>开启接收请求关闭回应报文，对方也是无法接收到回应报文的</p>
-<h3 id="生产环境下如何设置防火墙？："><a href="#生产环境下如何设置防火墙？：" class="headerlink" title="生产环境下如何设置防火墙？："></a>生产环境下如何设置防火墙？：</h3><pre><code>1.因为生产环境下，被管理的主机不在本地或者在其他省份，我们是通过ssh远程连接管理的!
-2.防火墙规则一般是要设置白名单的，而默认策略是需要设置为DROP或者REJECT，这时，如果
-    不先把SSH或者VNC先设置白名单，我们就无法管理了！那就是给自己找麻烦了
-3.所以要先为SSH服务设置白名单，再设置默认策略为DROP或者REJECT！！！
-4.默认策略可以用-P设置，也可以用自定义策略；自定义策略的好处
-5.防火墙的检查机制,是按照顺序从上往下一个个匹配，如果最上面的一旦匹配即使下面有更
-    严格的条件，也会不生效，所以我们应该把检查严格的条件放到检查宽松的上面
-    比如：string检查规则(具体看示例)等
-</code></pre><h3 id="iptables的使用规范"><a href="#iptables的使用规范" class="headerlink" title="iptables的使用规范"></a>iptables的使用规范</h3><pre><code>iptables -F 即清空filter表的所有链，因为默认是filter表
-iptables -F INPUT，清空filter表上的INPUT链的所有规则
-服务器要设置黑名单
-极端清空下所有链都是drop的
-如果主机有多个网卡，当网关来用的时，forward链就是用来当网络防火墙来用的
-    规则优化：
-    (1) 注意规则的优先顺序，检查严格的要放到前面
-    (2) 可安全放行所有入站及出站，且状态为ESTABLISHED的连接；
-    (3) 服务于同一类功能的规则，匹配条件严格的放前面，宽松放后面；
-    (4) 服务于不同类功能的规则，匹配报文可能性较大扩前面，较小放后面；
-    (5) 设置默认策略；
-        (a) 最后一条规则设定；
-        (b) 默认策略设定；可以使用-P或者-A ，建议使用-A
-    (6)对于一类的规则限制，最好只写一条规则
-</code></pre><h3 id="隐式扩展示例："><a href="#隐式扩展示例：" class="headerlink" title="隐式扩展示例："></a>隐式扩展示例：</h3><pre><code>隐式扩展示例1：SSH服务
-    因为是ssh连接的，如果要设置默认策略为DROP，就一定要先开启SSH服务的请求和回应
-    iptables -A INPUT -i ens33 -s 192.168.34.0/24 -d 192.168.34.103 -p tcp --dport 22 -j ACCEPT
-    再设置默认INPUT链策略为DROP：两种写法：下文会表示自定义链的写法好处
-    iptables -P INPUT -j REJECT 设置默认策略是拒绝
-    或者用自定义写法：
-    iptables -t filter -A INPUT -j REJECT，定义流入的默认策略
-
-iptables -A OUTPUT -o ens33 -d 192.168.34.0/24 -s 192.168.34.103 -p tcp --sport 22 -j ACCEPT
-iptables -t filter -A OUTPUT -j REJECT(代替默认策略的写法)
-设置自定义白名单的好处：
-    必要时，所有规则都可以通过自己明确给定的规则来定义
-    可以写一个脚本把自定义规则写进去，执行后就可以不受控于默认策略
-因为管理的主机不在本地，如果再修改iptables规则时，把ssh也拒绝了，那么就有很大问题
-可以把规则写在一个脚本里，在任务计划里创建一个清空防火墙规则的命令
-即使脚本里的规则把自己拒绝了，可以等任务计划执行后，就可以登进去了，易于控制
-
-隐式扩展示例2：http服务
-    在会前基础上开放80端口的访问
-    iptables -I INPUT -i ens33 -s 192.168.34.0/24 -d 192.168.34.103 -p tcp --dport 80 -j ACCEPT
-    iptables -I OUTPUT -o ens33 -d 192.168.34.0/24 -s 192.168.34.103 -p tcp --sport 80 -j ACCEPT
-
-隐式扩展示例3：lo网卡
-    将127.0.0.1设置不受控
-    在之前的基础上ping 127.0.0.1是受控的
-    之前的iptables -t filter -P INPUT DROP，是将0.0.0.0到0.0.0.0都拒绝了
-    本地127.0.0.1也被拒绝了，所以稍微修改为非lo网卡受控，lo网卡即不受控了
-        iptables -R INPUT 3 ! -i lo -j REJECT
-        iptables -R OUTPUT 3 ! -o lo -j REJECT
-
-隐式扩展示例4：-p icmp的隐式扩展；ping请求
-如何设置当前主机可以ping其他主机，加在最后一条的前面
-    在之前的基础上此时主机主动ping其他主机也是受控的
-    icmp是有类型的,见下图，8 echo-request;  0 echo reply
-    当前主机主动ping其他主机：
-        iptables -I OUTPUT 3 -p icmp --icmp-type 8 -j ACCEPT
-        iptables -I INPUT 3 -p icmp --icmp-type 0 -j ACCEPT
-    其他主机ping防火请主机：
-        iptables -I INPUT 3 -p icmp --icmp-type 8 -j ACCEPT
-        iptables -I OUTPUT 3 -p icmp --icmp-type 0 -j ACCEPT
-
-隐式扩展示例5：DNS -p udp
-    如何设置开放本机可以通过DNS解析域名
-    从本机出去，到达互联的DNS服务器，再接收回应的报文
-    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT 出去的报文
-    iptables -I INPUT -p udp --sport 53 -j ACCEPT 回来的报文
-</code></pre><h3 id="自定义链的使用示例-N-E-X-F"><a href="#自定义链的使用示例-N-E-X-F" class="headerlink" title="自定义链的使用示例(-N -E -X -F)"></a>自定义链的使用示例(-N -E -X -F)</h3><p>以在自定义链中加入samba服务为例</p>
-<pre><code>-N：新建一条自定义的规则链
-只不过在自定义链上是由计数器的
-iptables -N new_rules 新建自定义链
-iptables -E new_rules cifs_rules 改自定义链，必须要0引用的，0 references
-自定义规则链的创建、调用、删除；
-以在自定义链中加入samba服务;然后主链在调用自定义链为例
-    先设置入栈的规则
-        iptables -A cifs_rules -p tcp --dport 139 -j ACCEPT    
-        iptables -A cifs_rules -p tcp --dport 445 -j ACCEPT
-        iptables -A cifs_rules -p udp --dport 137:138 -j ACCEPT
-        iptables -A cifs_rules -j RETURN
-    还要加一条RETURN规则表示，当cifs_rules规则被主链调用时，如果自定义链上的规则
-    没有被匹配到，则return到主链上继续匹配主链上的后续规则.
-在INPUT链去调用自定义链cifs_rules
-        iptables -I INPUT 5 -s 192.168.34.0/24 -j cifs_rules
-删除自定义链：需要先删除引用
-        iptables -D INPUT 5
-        iptables -F cifs_rules
-        iptables -X cifs_rules
-</code></pre><h3 id="显示扩展示例"><a href="#显示扩展示例" class="headerlink" title="显示扩展示例"></a>显示扩展示例</h3><p>必须使用-m选项指出matchname，有的match可能存在专用的选项</p>
-<pre><code>显示扩展示例1：multiport扩展 --多端口匹配
-将21 22 80 139 445一起开启允许访问：
-iptables -I INPUT -p tcp -m multiport --dports 21:22,80,139,445 -j ACCEPT
-iptables -I OUTPUT -p tcp -m multiport --sports 21,22,80,139,445 -j ACCEPT
+输出的项分别表示：
+    11:19:15   #显示当前时间
+    up 20 min  #系统已启动的时间
+    1 user     #当前系统登录的上线人数
+    load average: 0.00, 0.01, 0.05是指
+    #系统平均负载（1、5、10 分钟的平均负载，一般不会超过1）
+注意：
+    1.系统平均负载: 是指在特定时间间隔内运行队列中的平均进程数 
+    2.通常每个CPU内核的当前活动进程数不大于3，那么系统的性能良好。如果每 个CPU内核的任务数大于5，那么此主机的性能有严重问题 
+        注意：上面是指单核cpu，如果是双核的应该不大于6，以此类推
+    3.如果linux主机是1个双核CPU，当Load Average 为6的时候说明机器已经被充分使用
+</code></pre><h3 id="进程管理工具–-gt-top命令"><a href="#进程管理工具–-gt-top命令" class="headerlink" title="进程管理工具–&gt;top命令"></a>进程管理工具–&gt;top命令</h3><p>–top输出详解<br><img src="/2017/02/01/linux上系统监控命令/top输出详解.png" alt="top输出详解"></p>
+<pre><code>[root@node02 ~]# top
+top - 11:33:09 up 34 min,  1 user,  load average: 0.10, 0.11, 0.08
+Tasks:  98 total,   1 running,  97 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.3 sy,  0.0 ni, 99.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   481876 total,    23980 free,   232296 used,   225600 buff/cache
+KiB Swap:  2097148 total,  2096628 free,      520 used.   185472 avail Mem 
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+   6542 root      20   0  161984   2216   1560 R  0.7  0.5   0:00.02 top                                                                   
+   288 root      20   0       0      0      0 S  0.3  0.0   0:00.63 xfsaild/sda2 
 
 
-显示扩展示例2： ip-range:必须是连续的范围
-允许ping的主机为192.168.34.100-192.168.34.106段的IP地址：
-iptables -I INPUT 3 -p icmp --icmp-type 8 -m iprange --src-range 192.168.34.100-192.168.34.106 -j ACCEPT
-iptables -I OUTPUT 3 -p icmp --icmp-type 0 -m iprange --dst-range 192.168.34.100-192.168.34.106 -j ACCEPT
+top：有许多内置命令 
+    排序： 通过下面这些字母进行切换可以看到不同的显示信息
+        P：以占据的CPU百分比,%CPU 
+        M：占据内存百分比,%MEM 
+        T：累积占据CPU时长,TIME+ 
+    首部信息显示： 
+        uptime信息：l命令 
+        tasks及cpu信息：t命令 
+        cpu分别显示：1 (数字) 
+        memory信息：m命令 
+    退出命令：q 
+        修改刷新时间间隔：s 
+        终止指定进程：k 
+        保存文件：W  
+栏位信息简介 
+    us：用户空间 
+    sy：内核空间 
+    ni：调整nice时间 
+    id：空闲 
+    wa：等待IO时间 
+    hi：硬中断 
+    si：软中断（模式切换） 
+    st：虚拟机偷走的时间
+选项： 
+    -d # 指定刷新时间间隔，默认为3秒 
+    -b 全部显示所有进程 
+    -n # 刷新多少次后退出 
+    -H 线程模式，示例：top -H -p `pidof mysqld` 
 
-显示扩展示例3：set扩展
-    ipset先定义地址集:
-        ipset create allowpinghosts hash:ip  --先定义IP地址集
-        ipset add allowpinghosts 192.168.34.107 --向地址集添加IP地址
-    set再调用地址集：
-    iptables -I INPUT 4 -p icmp --icmp-type 8 -m set --match-set allowpinghosts src -j ACCEPT
-    iptables -I OUTPUT 4 -p icmp --icmp-type 0 -m set --match-set allowpinghosts dst -j ACCEPT
+Linux top命令的用法详细详解
+首先介绍top中一些字段的含义：
 
-显示扩展示例4：string扩展：字串匹配
-    比如：控制httpd服务的报文带有sex字串的都拒绝进入和访问
-    事先构建一个带有sex字串的html文件，然后设置规则
-    （因为这个规则比较严格，所以记得要放到允许访问httpd规则的前面！）
-    iptables -I INPUT -p tcp --dport 80 -m string --string &quot;sex&quot; --algo bm -j REJECT
-    iptables -I OUTPUT -p tcp --sport 80 -m string --string &quot;sex&quot; --algo bm -j REJECT
-    但是如果httpd有多个页面，只有访问特定页面时才拒绝时，其他的页面还是需要能访问
-    iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-    iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
+top 命令实时显示进程的状态。默认状态显示的是cpu密集型的进程，并且每5秒钟更新一次。你可以通过PID的数字大小，
+age (newest first), time (cumulative time),resident memory usage（常驻内存使用）以及进程从启动后占用cpu的时间。 
 
-显示扩展示例5：time扩展
-    比如1：控制httpd服务访问时间为8:00-18:00
-    iptables -I INPUT 1 -p tcp --dport 80 -s 192.168.34.107 -m time --timestart 08:00:00 --timestop 20:00:00 --kerneltz -j ACCEPT
-    iptables -I OUTPUT 1 -p tcp --sport 80 -d 192.168.34.107 -m time --timestart 08:00:00 --timestop 20:00:00 --kerneltz -j ACCEPT
-    比如2：控制对IP:192.168.34.107的ping命令访问时间为8:00-16:00
-    iptables -I INPUT 3 -p icmp --icmp-type 8 -s 192.168.34.107 -m time --timestart 08:00:00 --timestop 16:00:00 --kerneltz -j ACCEPT
-    iptables -I OUTPUT 3 -p icmp --icmp-type 0 -d 192.168.34.107 -m time --timestart 08:00:00 --timestop 16:00:00 --kerneltz -j ACCEPT
+VIRT：virtual memory usage 虚拟内存
+1、进程“需要的”虚拟内存大小，包括进程使用的库、代码、数据等
+2、假如进程申请100m的内存，但实际只使用了10m，那么它会增长100m，而不是实际的使用量
 
-显示扩展示例6：connlimit扩展
-    以SSH服务为例，当当连接数大于3时，拒绝连接
-    iptables -I INPUT 1 -p tcp --dport 22 -m connlimit --connlimit-above 3 -j REJECT
-    对于一类的规则限制，最好只写一条规则
+RES：resident memory usage 常驻内存
+1、进程当前使用的内存大小，但不包括swap out
+2、包含其他进程的共享
+3、如果申请100m的内存，实际使用10m，它只增长10m，与VIRT相反
+4、关于库占用内存的情况，它只统计加载的库文件所占内存大小
 
-显示扩展示例7：limit扩展
-    比如：限制192.168.34.105ping防火墙主机为每分钟20个，最大峰值速率为5
-    iptables -R INPUT 3 -p icmp --icmp-type 8 -s 192.168.34.105 -m limit --limit 20/minute --limit-burst 5 -j ACCEPT
-    iptables -I OUTPUT 2 -p icmp --icmp-type 0 -j ACCEPT
+SHR：shared memory 共享内存
+1、除了自身进程的共享内存，也包括其他进程的共享内存
+2、虽然进程只使用了几个共享库的函数，但它包含了整个共享库的大小
+3、计算某个进程所占的物理内存大小公式：RES – SHR
+4、swap out后，它将会降下来
 
-显示扩展示例8：state扩展
-1.使用state就可以简化之前的所有规则了，这里对21,22,80,53,139,445做连接追踪功能
-    先建立入栈的ESTABLISHED的规则
-        iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
-    再建立出栈的ESTABLISHED的规则
-        iptables -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
-    再建立入栈的NEW的规则
-        iptables -A INPUT -p tcp -m multiport --dports 21:22,80,53,139,445 -m state --state NEW -j ACCEPT
-2.对于FTP来说，因为是被动模式，服务端还开启一个随机端口，但是之前并没有建立
-    随机端口的NEW规则，也没有创建RELATED的规则，所以这里要新建一条RELATED规则
-    a.ftp的RELATD,依赖于nf_conntrack_ftp模块
-    b.创建FTP的RELATED规则
-        iptables -I INPUT 3 -p tcp -m state --state RELATED -j ACCEPT
-        因为端口是不确定的，所以用RELATED
-    这样就建立了FTP的访问限制了
-</code></pre><font size="3" color="#FF0000">通过state的显示扩展，可以看出上面所有的规则都可以简化成NEW,ESTABLISHED,RELATED的状态<br>具体可以参考下面的各种服务进行规则控制写法示例<br></font>
+DATA
+1、数据占用的内存。如果top没有显示，按f键可以显示出来。
+2、真正的该程序要求的数据空间，是真正在运行中要使用的。
 
-<h3 id="通过iptables规则对下面服务实现控制："><a href="#通过iptables规则对下面服务实现控制：" class="headerlink" title="通过iptables规则对下面服务实现控制："></a>通过iptables规则对下面服务实现控制：</h3><pre><code>基于连接追踪功能对下面服务进行控制
-dns httpd：互联网
-nfs samba vsftpd 仅允许loaclnet
-mysql:loaclhost
-ping :all 限制速率为10/min
-ssh:IP最大并发连接数3，工作时间的8:00-18:00允许连接
-要求默认策略为拒绝
+top 运行中可以通过 top 的内部命令对进程的显示方式进行控制。内部命令如下：
+s – 改变画面更新频率
+l – 关闭或开启第一部分第一行 top 信息的表示
+t – 关闭或开启第一部分第二行 Tasks 和第三行 Cpus 信息的表示
+m – 关闭或开启第一部分第四行 Mem 和 第五行 Swap 信息的表示
+N – 以 PID 的大小的顺序排列表示进程列表
+P – 以 CPU 占用率大小的顺序排列进程列表
+M – 以内存占用率大小的顺序排列进程列表
+h – 显示帮助
+n – 设置在进程列表所显示进程的数量
+q – 退出 top
+s – 改变画面更新周期
 
-iptables -I INPUT 1 -m state --state ESTABLISHED -j ACCEPT
-iptables -I INPUT 2 -p tcp -m multiport --dports 53,80 -m state --state NEW -j ACCEPT
-iptables -I INPUT 3 -p udp --dport 53 -m state --state NEW -j ACCEPT
-iptables -I INPUT 4 -p tcp --dport 22 -m connlimit --connlimit-above 3 -m time --timestart 08:00:00 --timestop 18:00:00 --weekday 1,2,3,4,5  -j REJECT
-iptables -I INPUT 5 -p tcp -s 192.168.34.0/24 -m multiport --dports 21:22,2049,139,445 -m state --state NEW -j ACCEPT
-iptables -I INPUT 6 -p tcp -s 127.0.0.1 --dport 3306 -m state --state NEW -j ACCEPT
-modprobe nf_conntrack_ftp
-iptables -I INPUT 7 -p tcp -m state --state RELATED -j ACCEPT
-iptables - I INPUT 8 -p icmp --icmp-type 8 -m limit --limit 10/minute --limit-burst 1 -j ACCEPT
-iptables -I INPUT 9 -p icmp --icmp-type 0 -j ACCEPT
-iptables -A INPUT -j REJECT
+序号 列名 含义
+a PID 进程id
+b PPID 父进程id
+c RUSER Real user name
+d UID 进程所有者的用户id
+e USER 进程所有者的用户名
+f GROUP 进程所有者的组名
+g TTY 启动进程的终端名。不是从终端启动的进程则显示为 ?
+h PR 优先级
+i NI nice值。负值表示高优先级，正值表示低优先级
+j P 最后使用的CPU，仅在多CPU环境下有意义
+k %CPU 上次更新到现在的CPU时间占用百分比
+l TIME 进程使用的CPU时间总计，单位秒
+m TIME+ 进程使用的CPU时间总计，单位1/100秒
+n %MEM 进程使用的物理内存百分比
+o VIRT 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES
+p SWAP 进程使用的虚拟内存中，被换出的大小，单位kb。
+q RES 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA
+r CODE 可执行代码占用的物理内存大小，单位kb
+s DATA 可执行代码以外的部分(数据段+栈)占用的物理内存大小，单位kb
+t SHR 共享内存大小，单位kb
+u nFLT 页面错误次数
+v nDRT 最后一次写入到现在，被修改过的页面数。
+w S 进程状态。（D=不可中断的睡眠状态，R=运行，S=睡眠，T=跟踪/停止，Z=僵尸进程）
+x COMMAND 命令名/命令行
+y WCHAN 若该进程在睡眠，则显示睡眠中的系统函数名
+z Flags 任务标志，参考 sched.h
 
-iptables -I OUTPUT 1 -m state --state ESTABLISHED -j ACCEPT
-iptables -A OUTPUT 2 -p tcp -m tcp --sport 10000:65535 -j ACCEPT
-iptables -I OUTPUT 3 -p icmp --icmp-type 8 -j ACCEPT
-iptables -A OUTPUT -j REJECT
+默认情况下仅显示比较重要的 PID、USER、PR、NI、VIRT、RES、SHR、S、%CPU、%MEM、TIME+、COMMAND 列。可以通过下面的快捷
+键来更改显示内容。
+
+通过 f 键可以选择显示的内容。按 f 键之后会显示列的列表，按 a-z 即可显示或隐藏对应的列，最后按回车键确定。
+按 o 键可以改变列的显示顺序。按小写的 a-z 可以将相应的列向右移动，而大写的 A-Z 可以将相应的列向左移动。最后按回车键确定。
+按大写的 F 或 O 键，然后按 a-z 可以将进程按照相应的列进行排序。而大写的 R 键可以将当前的排序倒转。
+</code></pre><h3 id="sar"><a href="#sar" class="headerlink" title="sar"></a>sar</h3><pre><code>sar（System ActivityReporter系统活动情况报告）是目前Linux上最为全面的系统性能分析工具之一，可以从多方面对系统
+的活动进行报告，包括：文件的读写情况、系统调用的使用情况、磁盘I/O、CPU效率、内存使用状况、进程活动及IPC有关的活动
+等，sar命令有sysstat安装包安装，本文主要以CentOS 6系列x64系统为例，介绍sar命令。
+
+1.sar输出
+    [root@node02 ~]# sar
+    Linux 3.10.0-862.el7.x86_64 (node02)    04/20/2019  _x86_64_    (1 CPU)
+    12:10:01 PM  CPU   %user   %nice   %system  %iowait   %steal    %idle
+    12:20:01 PM  all   1.48    0.00    0.82      0.08      0.00     97.61
+    12:30:01 PM  all   2.39    0.00    0.94      0.01      0.00     96.65
+    12:40:02 PM  all   2.10    0.00    1.24      0.05      0.00     96.61
+    12:50:01 PM  all   0.27    0.00    0.39      0.01      0.00     99.33
+    Average:     all   1.56    0.00    0.85      0.04      0.00     97.55
+</code></pre><h3 id="内存管理工具之–-gt-vmstat-虚拟内存信息"><a href="#内存管理工具之–-gt-vmstat-虚拟内存信息" class="headerlink" title="内存管理工具之–&gt;vmstat:虚拟内存信息"></a>内存管理工具之–&gt;vmstat:虚拟内存信息</h3><pre><code>1.用来获得有关进程、虚存、页面交换空间及CPU活动的信息。这些信息反映了系统的负载情况;
+2.虚拟内存运行原理：
+    在系统中运行的每个进程都需要使用到内存，但不是每个进程都需要每时每刻使用系统分配的内存空间。当系统运行所需内存
+    超过实际的物理内存，内核会释放某些进程所占用但未使用的部分或所有物理内存，将这部分资料存储在磁盘上直到进程下
+    一次调用，并将释放出的内存提供给有需要的进程使用。
+
+    在Linux内存管理中，主要是通过“调页Paging”和“交换Swapping”来完成上述的内存调度。调页算法是将内存中最近不常使
+    用的页面换到磁盘上，把活动页面保留在内存中供进程使用。交换技术是将整个进程，而不是部分页面，全部交换到磁盘上。
+
+    分页(Page)写入磁盘的过程被称作Page-Out，分页(Page)从磁盘重新回到内存的过程被称作Page-In。当内核需要一个分页
+    时，但发现此分页不在物理内存中(因为已经被Page-Out了)，此时就发生了分页错误（Page Fault）。
+
+    当系统内核发现可运行内存变少时，就会通过Page-Out来释放一部分物理内存。经管Page-Out不是经常发生，但是如果
+    Page-out频繁不断的发生，直到当内核管理分页的时间超过运行程式的时间时，系统效能会急剧下降。这时的系统已经运行
+    非常慢或进入暂停状态，这种状态亦被称作thrashing(颠簸)。
+3.vmstat输出信息
+    [root@node02 ~]# vmstat
+    procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+    r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+    3  0    776  12968    168 230708    0    0   111     7  157  286  1  1 99  0  0
+    具体代理的意义：
+    procs: 
+        r：可运行（正运行或等待运行）进程的个数，和核心数有关 b：处于不可中断睡眠态的进程个数(被阻塞的队列的长度) 
+    memory： 
+        swpd: 交换内存的使用总量 
+        free：空闲物理内存总量 
+        buffer：用于buffer的内存总量 
+        cache：用于cache的内存总量 
+    swap: 
+        si：从磁盘交换进内存的数据速率(kb/s) 
+        so：从内存交换至磁盘的数据速率(kb/s)
+    io：
+        bi：从块设备读入数据到系统的速率(kb/s) 
+        bo: 保存数据至块设备的速率 
+    system： 
+        in: interrupts  中断速率，包括时钟 
+        cs: context switch  进程切换速率 
+    cpu： 
+        us:Time spent running non-kernel code 
+        sy: Time spent running kernel code 
+        id: Time spent idle. Linux 2.5.41前,包括IO-wait time. 
+        wa: Time spent waiting for IO.  2.5.41前，包括in idle. 
+        st: Time stolen from a virtual machine.  2.6.11前, unknown
+    选项： 
+        -s: 显示内存的统计数据
+</code></pre><h3 id="内存管理工具之–-gt-iostat-统计CPU和设备IO信息"><a href="#内存管理工具之–-gt-iostat-统计CPU和设备IO信息" class="headerlink" title="内存管理工具之–&gt;iostat:统计CPU和设备IO信息"></a>内存管理工具之–&gt;iostat:统计CPU和设备IO信息</h3><pre><code>1.iostat是用来专门统计CPU和设备IO信息
+2.iostat输出详情：
+    [root@node02 ~]# iostat
+    Linux 3.10.0-862.el7.x86_64 (node02)    04/20/2019  _x86_64_    (1 CPU)
+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+               9.22    0.00   11.37    1.70    0.00   77.71
+    Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+    sda              94.95      3944.03       690.62     443506      77660
+    sdb               0.78        18.50         0.00       2080          0
+    sdc               0.78        18.50         0.00       2080          0
+    sdd               0.78        18.50         0.00       2080          0
+    scd0              0.16         9.14         0.00       1028          0
+    输出信息解释：
+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+        #是指平均cpu利用率
+    Device:     #每块磁盘的具体情况
+    tps         #当前磁盘每秒钟处理事务的速度
+    kB_read/s   #当前磁盘每秒钟读的字节数
+    kB_wrtn/s   #当前磁盘每秒钟写的字节数
+    kB_read     #当前磁盘读的总量
+    kB_wrtn     #当前磁盘写的总量
+3.使用：
+    在生产环境中可以通过这个信息观察每块磁盘的写入和读取速度进行监控
+</code></pre><h3 id="系统监控工具–-gt-dstat命令：系统资源统计-代替vmstat-iostat-ifstat"><a href="#系统监控工具–-gt-dstat命令：系统资源统计-代替vmstat-iostat-ifstat" class="headerlink" title="系统监控工具–&gt;dstat命令：系统资源统计,代替vmstat,iostat,ifstat"></a>系统监控工具–&gt;dstat命令：系统资源统计,代替vmstat,iostat,ifstat</h3><pre><code>1.dstat命令是监控系统资源统计,代替vmstat(虚拟内存),iostat(磁盘读写),ifstat(网卡监控)
+2.安装dstat
+    [root@node02 ~]# yum install dstat -y
+        #dstat命令来自dstat-0.7.2-12.el7.noarch包
+3.dstat输出
+    [root@node02 ~]# dstat
+    You did not select any stats, using -cdngy by default.
+    ----total-cpu-usage---- -dsk/total- -net/total- ---paging-- ---system--
+    usr sys idl wai hiq siq| read  writ| recv  send|  in   out | int   csw 
+      2   2  95   0   0   0| 814k  122k|   0     0 |1714B 2301B| 215   555 
+      0   0 100   0   0   0|   0     0 |  60B  890B|   0     0 | 142   230 
+      1   1  98   0   0   0|   0     0 |  60B  346B|   0     0 | 150   227 
+      0   1  98   0   0   1|   0     0 |  60B  346B|   0     0 | 168   251 
+      0   1  99   0   0   0|   0     0 |  60B  346B|   0     0 | 149   232 
+    输出信息：
+    total-cpu-usage  #cpu信息
+    dsk/total        #磁盘信息
+    net/total        #网卡信息
+    paging：         #swap信息  
+    system           #进程信息
+4.dstat相关选项
+    dstat [-afv] [options..] [delay [count]] 
+        -c 显示cpu相关信息 
+        -C #,#,...,total 
+        -d 显示disk相关信息 
+        -D total,sda,sdb,... 
+        -g 显示page相关统计数据 
+        -m 显示memory相关统计数据 
+        -n 显示network相关统计数据 
+        -p 显示process相关统计数据 
+        -r 显示io请求相关的统计数据 
+        -s 显示swapped相关的统计数据
+</code></pre><h3 id="监视磁盘I-O工具–-gt-iotop"><a href="#监视磁盘I-O工具–-gt-iotop" class="headerlink" title="监视磁盘I/O工具–&gt;iotop"></a>监视磁盘I/O工具–&gt;iotop</h3><pre><code>iostat是I/O statistics（输入/输出统计）的缩写，iostat工具将对系统的磁盘操作活动进行监视。它的特点是汇报磁盘活动
+统计情况，同时也会汇报出CPU使用情况。iostat也有一个弱点，就是它不能对某个进程进行深入分析，仅对系统的整体情况进行分析;
+
+iotop命令是一个用来监视磁盘I/O使用状况的top类工具iotop具有与top相似的UI，其中包括
+PID、用户、I/O、进程等相关信息，可查看每个进程是如何使用IO;
+
+1.iotop输出信息
+    [root@node02 ~]# iotop
+    Total DISK READ :   0.00 B/s | Total DISK WRITE :       0.00 B/s
+    Actual DISK READ:   0.00 B/s | Actual DISK WRITE:       0.00 B/s
+        TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN  IO&gt; COMMAND                                                                   
+    1 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.00 % systemd --switched-root --system --deserialize 22
+    2 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.00 % [kthreadd]
+    3 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.00 % [ksoftirqd/0
+    输出信息：
+    第一行：
+        Total DISK READ：Read速率总计
+        Total DISK WRITE：Write速率总计
+    第二行：
+        Actual DISK READ：实际的Read速率 
+        Actual DISK WRITE：实际的Write速率 
+    第三行：参数如下： 
+        TID：线程ID（按p切换为进程ID） 
+        PRIO：优先级 
+        USER：用户 
+        DISK磁盘读速率 
+        READ 磁盘写速率 
+        SWAPIN：swap交换百分比 
+        IO&gt;：IO等待所占的百分比 
+        COMMAND：线程/进程命令，这通过查看IO速率看到的是哪个进程/线程的问题
+    面试常问：
+        它可以查哪个进程的IO是最频繁的以及它的IO速率怎么样(精确到进程)，最后
+        一项就是具体的某个进程COMMAND；
+    监控：
+        在zabbix监控磁盘读取和写入的速率可以判断web服务器是否受到攻击；
+        主要就是将Total DISK READ和Total DISK WRITE过滤出来进行监控
+2.命令格式：
+    iotop  -[选项]
+      --version：//显示程序的版本号并退出
+      -h, --help：//显示此帮助消息并退出
+      -o, --only：//仅显示实际执行I / O的进程或线程，只显示在划硬盘的程序
+      -b, --batch：//非交互模式，批量处理 用来记录日志的
+      -n NUM, --iter=NUM：//设定循环几次
+      -d SEC, --delay=SEC：//设定显示时间间隔[秒]
+      -p PID, --pid=PID：//要监控的进程/线程[全部]
+      -u USER, --user=USER：//用户监控[全部]
+      -P, --processes：//只显示进程，而不是所有线程
+      -a, --accumulated：//显示累积的I / O而不是带宽
+      -k, --kilobytes：//使用千字节而不是人性化的单位
+      -t, --time：//在每一行上添加一个时间戳（暗示--batch）
+      -q, --quiet：//抑制一些标题行（暗示--batch）
+3.怎么获取该程序正在读的什么文件？
+    这个问题其实很简单，通过 lsof 命令我们就可以达到目的：lsof -c APPname
+    同样，如果我们知道了被频繁读取的文件是哪个，也可以反查程序：
+    iotop查看用户进程，lsof -p pid在按该用户进程 pid 查看所打开的文件，lsof -u username按用户名查看打开的文件，
+    列出某用户的某进程打开的文件lsof -u USERNAME -c APPNAME；
+    也是可以根据目录进行查询：lsof | grep path；
+4.结论：
+    1.我们给服务器做压力测试时，有的时候很容易碰到磁盘IO读取瓶颈，持续高的IO会导致磁盘读取密集读写磁盘IO成为短
+    板，程序运行过慢；常见的IO服务器例如：数据库服务器，文件服务器，视频服务器等；
+    2.使用top命令查看%wa指标，该项阈值表示io waiting等待磁盘磁盘写入完成的时间，一般不能高于30%，假如该值过大
+    且持续很久，就证明遇到了I/O瓶颈，需要对软件进行优化，或对硬件进行升级；
+    3.iostat -d -x 1输出磁盘相关统计信息；
+    4.iotop定位负载来源于那个进程/线程
+    5.可以使用pt-ioprofile工具定位IO文件信息；（是Percona公司开发用于管理MySQL的工具）
+ 或者使用下列命令进行IO文件定位：
+    1.lsof -c oracle  //
+    2.lsof | grep path  /oracle/app/oracle.........................
+    3.iotop   //查看用户进程
+    4.lsof -p pid  //查看该用户下打开的文件
+    5.lsof -u oracle   -c oracle
+5.补充：如何进行IO瓶颈测试？
+    如何进行大文件IO测试：
+    1.生成 5g 大小的文件并输出时间，执行速度等信息
+    time dd if=/dev/zero of=test.file bs=1G count=5
+    2.测试写入20G数据，数据量越大，测试值应该更精确
+    sync;/usr/bin/time -p bash -c &quot;(dd if=/dev/zero of=test.dd  bs=1M count=20000)&quot; 
+    sync;/usr/bin/time -p bash -c &quot;(dd if=/dev/zero of=test.dd  bs=1000K count=20000;sync)&quot;
+    dd bs=1M count=20000 if=/dev/zero of=test.dd conv=fdatasync dd命令测试是IO的顺序写和读方式
+</code></pre><h3 id="lsof-list-open-files"><a href="#lsof-list-open-files" class="headerlink" title="lsof:list open files"></a>lsof:list open files</h3><pre><code>Lsof是遵从Unix哲学的典范，它只完成一个功能，并且做的相当完美——它可以列出某个进程打开的所有文件信息。打开的文件可
+能是普通的文件、目录、NFS文件、块文件、字符文件、共享库、常规管道、命名管道、符号链接、Socket流、网络Socket、UNIX域S
+ocket，以及其它更多类型。因为“一切皆文件”乃为Unix系统的重要哲学思想之一，因此可以想象lsof命令的重要地位;
+
+list open files查看当前系统文件的工具。在linux环境下，一切皆文件， 用户通过文件不仅可以访问常规数据，还可以访问
+网络连接和硬件如传输控制 协议 (TCP) 和用户数据报协议 (UDP)套接字等，系统在后台都为该应用程序分配了一个文件描述符;
+
+lsof ［options］ filename
+    lsof  /path/to/somefile：显示打开指定文件的所有进程之列表
+    lsof -c string：
+        显示其COMMAND列中包含指定字符(string)的进程所有打开的文件；此选项可以重复
+        使用，以指定多个模式；
+    lsof -p PID：
+        查看该进程打开了哪些文件；进程号前可以使用脱字符“^”取反；
+    lsof -u USERNAME：
+        显示指定用户的进程打开的文件；用户名前可以使用脱字符“^”取反，如“lsof -u ^root”则用于显示非root用户打开的所有文件；
+    lsof -g GID：
+        显示归属gid的进程情况
+    lsof +d /DIR/：
+        显示指定目录下被进程打开的文件
+    lsof +D /DIR/
+        #基本功能同上，但lsof会对指定目录进行递归查找，注意这个参数要比grep版本慢：
+    lsof -a：
+        #按“与”组合多个条件，如lsof -a -c apache -u apache
+    lsof -N：
+        #列出所有NFS（网络文件系统）文件
+    lsof -d FD：
+        #显示指定文件描述符的相关进程；也可以为描述符指定一个范围，如0-2表示0,1,2三个文件描述符；另外，-d还支持其它很多特殊值，如：
+            mem: 列出所有内存映射文件；
+            mmap：显示所有内存映射设备；
+            txt：列出所有加载在内存中并正在执行的进程，包含code和data；
+            cwd：正在访问当前目录的进程列表；
+    lsof -n：
+        #不反解IP至HOSTNAME
+    lsof -i：
+        #用以显示符合条件的进程情况
+    lsof -i[46] [protocol][@hostname|hostaddr][:service|port]
+        46：IPv4或IPv6
+        protocol：TCP or UDP
+        hostname：Internet host name
+        hostaddr：IPv4地址
+        service：/etc/service中的服务名称(可以不只一个)
+        port：端口号 (可以不只一个)
+示例：
+    1.指定进程号，可以查看该进程打开的文件 
+        [root@tomcat ~]# ps -ef | grep java
+        root       6657      1  9 12:36 pts/0
+        [root@tomcat ~]# lsof -p 6657  #可以看到java进程打开的文件
+        COMMAND  PID USER FD   TYPE    DEVICE  SIZE/OFF      NODE NAME
+        java    6657 root cwd   DIR    8,2      4096        100663361 /root
+        [root@tomcat ~]# lsof -p 6657 | wc -l  #统计打开的文件描述符总数
+
+    2.查看8080端口现在运行的情况
+        [root@node02 ~]# lsof -i:8080
+        COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+        java    6657 root   59u  IPv6  45756      0t0  TCP *:webcache (LISTEN)
+        #类似于于ss -tnpl|grep 8080命令
+        [root@node02 ~]# ss -tnpl|grep 8080
+        LISTEN   0  100   :::8080   :::*  users:((&quot;java&quot;,pid=6657,fd=59))
+    3.查看指定进程打开的网络连接 
+        lsof -i –n -a -p 9527 参数-i、-a、-p等，-i查看网络连接情况，-a查看存在的进程，-p指定进程
+    4.恢复删除正在使用的文件：
+        ~]# lsof |grep /var/log/messages  #打开这个文件，模拟正在使用的情况
+        ~]# rm -f /var/log/messages       #误删除操作
+        ~]# lsof |grep /var/log/messages  #再次查看，就会看到delete的信息
+        ~]# cat /proc/653/fd/6            
+            #进入到这个文件描述符目录，可以看到文件是红色的表示删除了
+        ~]# cat /proc/653/fd/6 &gt; /var/log/messages
+            #将文件重定向即可达到恢复的目的
+        注意：
+            1.这里说的是误删除了正在使用的文件，如果某个文件未被使用删除了那就不能恢复了；
+            2.在清除mysql日志的时候如果误删除了就可以使用这种方法；
+lsof输出信息解释：
+    上述命令中，每行显示一个打开的文件，若不指定条件默认将显示所有进程打开的所有文件。lsof输出各列信息的意义如下：
+    COMMAND：进程的名称
+    PID：进程标识符
+    USER：进程所有者
+    FD：文件描述符，应用程序通过文件描述符识别该文件。如cwd、txt等
+    TYPE：文件类型，如DIR、REG等
+    DEVICE：指定磁盘的名称
+    SIZE：文件的大小
+    NODE：索引节点（文件在磁盘上的标识）
+    NAME：打开文件的确切名称
 </code></pre>
       
     </div>
@@ -1094,7 +1145,7 @@ iptables -A OUTPUT -j REJECT
       
         <div class="post-tags">
           
-            <a href="/tags/iptables防火墙/" rel="tag"><i class="fa fa-tag"></i> iptables防火墙</a>
+            <a href="/tags/linux基础/" rel="tag"><i class="fa fa-tag"></i> linux基础</a>
           
         </div>
       
@@ -1161,8 +1212,8 @@ iptables -A OUTPUT -j REJECT
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/01/linux防火墙实现原理/" rel="next" title="linux防火墙实现原理">
-                <i class="fa fa-chevron-left"></i> linux防火墙实现原理
+              <a href="/2017/02/01/linux网络管理命令/" rel="next" title="linux网络管理命令">
+                <i class="fa fa-chevron-left"></i> linux网络管理命令
               </a>
             
           </div>
@@ -1171,8 +1222,8 @@ iptables -A OUTPUT -j REJECT
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/01/iptables-NAT表管理/" rel="prev" title="iptables-NAT表管理">
-                iptables-NAT表管理 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/01/linux防火墙实现原理/" rel="prev" title="linux防火墙实现原理">
+                linux防火墙实现原理 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1485,7 +1536,7 @@ iptables -A OUTPUT -j REJECT
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的命令使用格式"><span class="nav-number">1.</span> <span class="nav-text">iptables的命令使用格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境下如何设置防火墙？："><span class="nav-number">2.</span> <span class="nav-text">生产环境下如何设置防火墙？：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables的使用规范"><span class="nav-number">3.</span> <span class="nav-text">iptables的使用规范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐式扩展示例："><span class="nav-number">4.</span> <span class="nav-text">隐式扩展示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义链的使用示例-N-E-X-F"><span class="nav-number">5.</span> <span class="nav-text">自定义链的使用示例(-N -E -X -F)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示扩展示例"><span class="nav-number">6.</span> <span class="nav-text">显示扩展示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过iptables规则对下面服务实现控制："><span class="nav-number">7.</span> <span class="nav-text">通过iptables规则对下面服务实现控制：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"><span class="nav-number">1.</span> <span class="nav-text">linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps命令：process-state"><span class="nav-number">2.</span> <span class="nav-text">ps命令：process state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uptime命令"><span class="nav-number">3.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管理工具–-gt-top命令"><span class="nav-number">4.</span> <span class="nav-text">进程管理工具–&gt;top命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sar"><span class="nav-number">5.</span> <span class="nav-text">sar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-vmstat-虚拟内存信息"><span class="nav-number">6.</span> <span class="nav-text">内存管理工具之–&gt;vmstat:虚拟内存信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-iostat-统计CPU和设备IO信息"><span class="nav-number">7.</span> <span class="nav-text">内存管理工具之–&gt;iostat:统计CPU和设备IO信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统监控工具–-gt-dstat命令：系统资源统计-代替vmstat-iostat-ifstat"><span class="nav-number">8.</span> <span class="nav-text">系统监控工具–&gt;dstat命令：系统资源统计,代替vmstat,iostat,ifstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监视磁盘I-O工具–-gt-iotop"><span class="nav-number">9.</span> <span class="nav-text">监视磁盘I/O工具–&gt;iotop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof-list-open-files"><span class="nav-number">10.</span> <span class="nav-text">lsof:list open files</span></a></li></ol></div>
             
 
           </div>
