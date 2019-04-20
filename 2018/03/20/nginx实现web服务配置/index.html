@@ -149,7 +149,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/官网rewrite2.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/rewrite规则.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/20/nginx实现web服务配置/referer防盗机制.png">
-<meta property="og:updated_time" content="2019-01-26T06:28:48.699Z">
+<meta property="og:updated_time" content="2019-04-20T15:27:31.480Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx实现web服务配置">
 <meta name="twitter:description" content="nginx安装和配置文件Nginx下载安装和模块使用说明手册">
@@ -331,7 +331,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">28</span></a>
 
   </li>
         
@@ -566,7 +566,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">15 分钟</span>
+                <span title="阅读时长">16 分钟</span>
               
             </div>
           
@@ -966,11 +966,28 @@ ngx_http_auth_basic_module模块
         压缩过滤器，仅对此处设定的MIME类型的内容启用压缩功能；
         过滤需要压缩的类型，纯文本和html不需要，因为默认就对其压缩
     示例：
-        gzip  on;
-        gzip_comp_level 6;
-        gzip_min_length 64;
+        ~]# vim /usr/local/nginx/conf/nginx.conf        
+                #将以下配置放到nginx.conf的http{ ... }节点中
+        gzip  on;            #开启gzip压缩功能
+        gzip_buffers 4 16k;         
+            #设置压缩缓冲区大小，此处设置为4个16K内存作为压缩结果流缓存
+        gzip_comp_level 6;   #设置压缩比率，最小为1
+        gzip_min_length 64;  #设置允许压缩的页面最小字节数;
+        gzip_http_version 1.1;      #压缩版本
+        gzip_disable &quot;MSIE [1-6]\.&quot;; 
+            #配置禁用gzip条件，支持正则。此处表示ie6及以下不启用gzip（因为ie低版本不支持）
         gzip_proxied any;
-        gzip_types text/xml text/css  application/javascript; 
+        gzip_types text/plain application/x-javascript text/css application/xml \
+        text/javascript application/x-httpd-php application/javascript application/json; 
+            #制定压缩的类型,线上配置时尽可能配置多的压缩类型!上面是生成线上配置
+    注意：
+        Nginx的Gzip压缩功能虽然好用，但是下面两类文件资源不太建议启用此压缩功能。
+        1.图片类型资源 (还有视频文件)
+            原因：图片如jpg、png文件本身就会有压缩，所以就算开启gzip后，压缩前和压缩后大小没有多大区别，所以开启
+            了反而会白白的浪费资源。（可以试试将一张jpg图片压缩为zip，观察大小并没有多大的变化。虽然zip和gzip算法
+            不一样，但是可以看出压缩图片的价值并不大）
+        2.大文件资源
+            原因：会消耗大量的cpu资源，且不一定有明显的效果
 </code></pre><h4 id="ngx-http-ssl-module模块："><a href="#ngx-http-ssl-module模块：" class="headerlink" title="ngx_http_ssl_module模块："></a>ngx_http_ssl_module模块：</h4><pre><code>如上图，代理服务用nginx不采用LVS的一个原因就是LVS不支持SSL的代理，nginx可以实现
     面对客户端使用https协议，面对后端服务器集群使用http协议，所以有时nginx反代也叫https的会话卸载器
 如果是四层调度，https访问必须是客户端与后端服务器之间建立；
@@ -1381,9 +1398,7 @@ rewirte的处理逻辑：
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-count">28</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1586,7 +1601,7 @@ rewirte的处理逻辑：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">720k</span>
+    <span title="站点总字数">779k</span>
   
 
   
@@ -1597,7 +1612,7 @@ rewirte的处理逻辑：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">10:54</span>
+    <span title="站点阅读时长">11:48</span>
   
 </div>
 
