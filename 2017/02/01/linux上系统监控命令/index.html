@@ -144,12 +144,13 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/linux上常用性能调优工具.png">
 <meta property="og:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/top输出详解.png">
-<meta property="og:updated_time" content="2019-04-20T06:49:05.018Z">
+<meta property="og:updated_time" content="2019-04-20T15:58:55.088Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux上系统监控命令">
 <meta name="twitter:description" content="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/top输出详解.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/02/01/linux上系统监控命令/linux上常用性能调优工具.png">
 
 
 
@@ -541,7 +542,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">18k</span>
+                <span title="本文字数">21k</span>
               
 
               
@@ -555,7 +556,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">17 分钟</span>
+                <span title="阅读时长">19 分钟</span>
               
             </div>
           
@@ -576,6 +577,7 @@
 
       
         <h3 id="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"><a href="#linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用" class="headerlink" title="linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"></a>linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用</h3><a id="more"></a>
+<p>–linux上常用性能调优工具<br><img src="/2017/02/01/linux上系统监控命令/linux上常用性能调优工具.png" alt="linux上常用性能调优工具"></p>
 <h3 id="ps命令：process-state"><a href="#ps命令：process-state" class="headerlink" title="ps命令：process state"></a>ps命令：process state</h3><pre><code>Linux中的ps命令是Process Status的缩写。ps命令用来列出系统中当前运行的那些进程。ps命令列出的是当前那些进程的快照，
 就是执行ps命令的那个时刻的那些进程，如果想要动态的显示进程信息，就可以使用top命令。；
     ps report a snapshot of the current processes
@@ -676,6 +678,69 @@ kill 命令用于杀死进程;
         STIME   #进程启动到现在的时间 
         TTY     #该进程在那个终端上运行，若与终端无关，则显示? 若为pts/0等则表示由网络连接主机进程。 
         CMD     #命令的名称和参数
+</code></pre><h3 id="iftop"><a href="#iftop" class="headerlink" title="iftop"></a>iftop</h3><pre><code>iftop监控网络中哪个进程使用流量最大,它可以实时监控哪个进程对网络接口当中带宽占用率最大；
+iftop是一款实时流量监控工具,监控TCP/IP连接等,缺点就是无报表功能。必须以root身份才
+能运行。
+Linux下使用iftop工具结合iptables服务来解决带宽资源被恶意请求满的问题，主要通过2个步骤来实现;
+监控eth1
+    iftop -i eth1
+基于实例讲解输出含义
+执行iftop -N -n -i eth1后界面为
+             19.1Mb   38.1Mb   57.2Mb  76.3Mb   95.4Mb
++-----------------+-----------------+--------------------+---------
+192.168.1.11                   =&gt; 192.168.1.66       5.3Mb  3.22Mb  3.20Mb
+                               &lt;=                    219kb  45.7kb  49.3kb
+192.168.1.11                   =&gt; 192.168.1.29       144kb  30.8kb  29.6kb
+                               &lt;=                    11.3Mb  2.38Mb  2.74Mb
+192.168.1.11                   =&gt; 12.2.11.71         0b   6.40kb  6.66kb
+                               &lt;=                    0b      0b      0b
+192.168.1.11                   =&gt; 192.168.1.8        2.63kb  1.43kb   932b
+                               &lt;=                    1.31kb  1.05kb   893b
+192.168.1.11                   =&gt; 192.168.2.78       2.53kb  1.54kb  2.15kb
+                               &lt;=                    160b    160b    187b
+192.168.1.11                   =&gt; 111.126.195.69     0b    166b     69b
+                               &lt;=                    0b      0b      0b
+---------------------------------------------------------------------------
+TX:      cum:   9.70MB   peak:   15.6Mb     rates:   15.4Mb  3.26Mb  3.23Mb
+RX:             8.38MB           14.9Mb              11.5Mb  2.42Mb  2.79Mb
+TOTAL:          18.1MB           30.5Mb              27.0Mb  5.69Mb  6.03Mb
+
+iftop界面含义如下
+    第一行：带宽显示
+中间部分：外部连接列表，即记录了哪些ip正在和本机的网络连接
+中间部分右边：实时参数分别是该访问ip连接到本机2秒，10秒和40秒的平均流量
+=&gt;代表发送数据，&lt;= 代表接收数据
+底部三行：表示发送，接收和全部的流量
+底部三行第二列：为你运行iftop到目前流量
+底部三行第三列：为高峰值
+底部三行第四列：为平均值
+通过iftop的界面很容易找到哪个ip在霸占网络流量，这个是ifstat做不到的。不过iftop的流量显示单位是Mb,这个b是bit，是位，不是字节，而ifstat的KB，这个B就是字节了，byte是bit的8倍。初学者容易被误导。
+
+进入iftop的命令
+    进入iftop画面后的一些操作命令(注意大小写)
+    按h切换是否显示帮助;
+    按n切换显示本机的IP或主机名;
+    按s切换是否显示本机的host信息;
+    按d切换是否显示远端目标主机的host信息;
+    按t切换显示格式为2行/1行/只显示发送流量/只显示接收流量;
+    按N切换显示端口号或端口服务名称;
+    按S切换是否显示本机的端口信息;
+    按D切换是否显示远端目标主机的端口信息;
+    按p切换是否显示端口信息;
+    按P切换暂停/继续显示;
+    按b切换是否显示平均流量图形条;
+    按B切换计算2秒或10秒或40秒内的平均流量;
+    按T切换是否显示每个连接的总流量;
+    按l打开屏幕过滤功能，输入要过滤的字符，比如ip,按回车后，屏幕就只显示这个IP相关的流量信息;
+    按L切换显示画面上边的刻度;刻度不同，流量图形条会有变化;
+    按j或按k可以向上或向下滚动屏幕显示的连接记录;
+    按1或2或3可以根据右侧显示的三列流量数据进行排序;
+    按&lt;根据左边的本机名或IP排序;
+    按&gt;根据远端目标主机的主机名或IP排序;
+    按o切换是否固定只显示当前的连接;
+    按f可以编辑过滤代码，这是翻译过来的说法，我还没用过这个！
+    按!可以使用shell命令，这个没用过！没搞明白啥命令在这好用呢！
+    按q退出监控。
 </code></pre><h3 id="uptime命令"><a href="#uptime命令" class="headerlink" title="uptime命令"></a>uptime命令</h3><pre><code>[root@node02 ~]# uptime
 11:19:15 up 20 min,  1 user,  load average: 0.00, 0.01, 0.05
 
@@ -1222,8 +1287,8 @@ lsof输出信息解释：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/01/iptables-NAT表管理/" rel="prev" title="iptables-NAT表管理">
-                iptables-NAT表管理 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/01/iptables基本使用/" rel="prev" title="iptables基本使用">
+                iptables基本使用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1534,7 +1599,7 @@ lsof输出信息解释：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"><span class="nav-number">1.</span> <span class="nav-text">linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps命令：process-state"><span class="nav-number">2.</span> <span class="nav-text">ps命令：process state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uptime命令"><span class="nav-number">3.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管理工具–-gt-top命令"><span class="nav-number">4.</span> <span class="nav-text">进程管理工具–&gt;top命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sar"><span class="nav-number">5.</span> <span class="nav-text">sar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-vmstat-虚拟内存信息"><span class="nav-number">6.</span> <span class="nav-text">内存管理工具之–&gt;vmstat:虚拟内存信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-iostat-统计CPU和设备IO信息"><span class="nav-number">7.</span> <span class="nav-text">内存管理工具之–&gt;iostat:统计CPU和设备IO信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统监控工具–-gt-dstat命令：系统资源统计-代替vmstat-iostat-ifstat"><span class="nav-number">8.</span> <span class="nav-text">系统监控工具–&gt;dstat命令：系统资源统计,代替vmstat,iostat,ifstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监视磁盘I-O工具–-gt-iotop"><span class="nav-number">9.</span> <span class="nav-text">监视磁盘I/O工具–&gt;iotop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof-list-open-files"><span class="nav-number">10.</span> <span class="nav-text">lsof:list open files</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用"><span class="nav-number">1.</span> <span class="nav-text">linux上的系统监控命令：ps、uptime、top、sar、vmstat、iostat、dstat、iotop、lsof的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps命令：process-state"><span class="nav-number">2.</span> <span class="nav-text">ps命令：process state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iftop"><span class="nav-number">3.</span> <span class="nav-text">iftop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uptime命令"><span class="nav-number">4.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管理工具–-gt-top命令"><span class="nav-number">5.</span> <span class="nav-text">进程管理工具–&gt;top命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sar"><span class="nav-number">6.</span> <span class="nav-text">sar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-vmstat-虚拟内存信息"><span class="nav-number">7.</span> <span class="nav-text">内存管理工具之–&gt;vmstat:虚拟内存信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理工具之–-gt-iostat-统计CPU和设备IO信息"><span class="nav-number">8.</span> <span class="nav-text">内存管理工具之–&gt;iostat:统计CPU和设备IO信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统监控工具–-gt-dstat命令：系统资源统计-代替vmstat-iostat-ifstat"><span class="nav-number">9.</span> <span class="nav-text">系统监控工具–&gt;dstat命令：系统资源统计,代替vmstat,iostat,ifstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监视磁盘I-O工具–-gt-iotop"><span class="nav-number">10.</span> <span class="nav-text">监视磁盘I/O工具–&gt;iotop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lsof-list-open-files"><span class="nav-number">11.</span> <span class="nav-text">lsof:list open files</span></a></li></ol></div>
             
 
           </div>
@@ -1568,7 +1633,7 @@ lsof输出信息解释：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">779k</span>
+    <span title="站点总字数">781k</span>
   
 
   
@@ -1579,7 +1644,7 @@ lsof输出信息解释：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">11:48</span>
+    <span title="站点阅读时长">11:50</span>
   
 </div>
 
