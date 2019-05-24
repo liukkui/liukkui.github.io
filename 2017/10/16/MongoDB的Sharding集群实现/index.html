@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="1.MongoDB的sharding分片功能原理">
+<meta name="keywords" content="MongoDB的Sharding集群实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB的Sharding集群实现">
+<meta property="og:url" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="1.MongoDB的sharding分片功能原理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/为什么要分片.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/mongodb的分片框架架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/range分片.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/Hash的切片.png">
+<meta property="og:updated_time" content="2019-05-24T15:00:35.870Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB的Sharding集群实现">
+<meta name="twitter:description" content="1.MongoDB的sharding分片功能原理">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/为什么要分片.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MongoDB的Sharding集群实现 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">28</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">58</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MongoDB的Sharding集群实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-10-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T08:00:00+08:00">2017-10-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-MongoDB的sharding分片功能原理"><a href="#1-MongoDB的sharding分片功能原理" class="headerlink" title="1.MongoDB的sharding分片功能原理"></a>1.MongoDB的sharding分片功能原理</h3><a id="more"></a>
+<p>在生产环境中，通常是这两种技术结合使用，分片+副本集</p>
+<p>–为什么要分片<br><img src="/2017/10/16/MongoDB的Sharding集群实现/为什么要分片.png" alt="为什么要分片"><br>–mongodb的分片框架架构<br><img src="/2017/10/16/MongoDB的Sharding集群实现/mongodb的分片框架架构.png" alt="mongodb的分片框架架构"></p>
+<pre><code>1.为什么要数据分片？
+    1.随着业务的发展数据集肯定会越来越大，单节点上的CPU一直处于满负荷工作扛不住了；
+    2.数据量太大导致memory内存达到极限
+    3.数据量太大导致磁盘/网络IO达到瓶颈
+    扩展方式：
+        1.向上扩展：使用更大的内存和性能更好的CPU
+        2.向外扩展：
+            将大的数据集切分放到多个节点上,水平分片可以解决：
+            1.减少单机请求数,将单机负载,提高总负载 
+            2.减少单机的存储空间,提高总存空间 
+
+2.Sharding分区概念和分片带来的问题？
+    1.分片 (sharding)是指将数据库拆分,将其分散在不同的机器上的过程。将数据分散到不同的机器上,不需要功能强大的服务器就可以
+    存储更多的数据和处理更大的负载；
+    2.shard是如何将大的数据集切割的？
+        1.首先sharding是collection级别的，为了能够保证整个sharding集群的每一个Shard上的数据副本大小尽可能的均衡；
+        2.而后这个collection会被切分成固定大小的块chunk（类似于raid），然后均匀的分散到各Shard上；
+        3.那么如何保证集群运行期间，各shard上的数据始终保持均衡分散的？
+            下文解释!
+3.MongoDB的分片框架架构
+    1.mysql的分片需要借助额外的技术来实现，如Gizzard,HiveDB,Mysql-proxy+HSACLE等等；
+    2.而MongoDB的分片实现比较简单，因为mongoDB直接支持sharding集群，而且是自动实现分片
+    3.mongoDB的分片框架架构，如上图
+        mongodb内部有三个组件：Router、Config Server、Shard
+        1.Router：mongos
+            1.mongos有一个即可，2个是为了实现冗余，相当于mongodb的代理,可以使用keepalived做高可用!!
+            2.用户查询请求会先到mongos，而mongos并不会存储和查询数据，它只是将用户请求路由到合适的分片上来执行而已；
+            3.因为要查询的数据有可能在ShardA、ShardB、ShardC上都有的，mongos必须知道每个节点上到底存储了哪些数据，因为
+            各Shard上存储的元数据都在Config Server上
+        2.Config Server
+            1.存储集群的元数据，所谓元数据是指对应shard上的collection的索引,也包括chunk信息；
+            2.mongos第一次启动或者关掉重启就会从config server加载配置信息；
+            3.Config Server需要至少三个节点，因为需要故障时重新选举
+            4.而Config-Server集群的正常工作需要借助外部的机制zookeeper来实现，zk是实现类似于paxos一样能够实现选举机制并
+            决定出哪个是主节点的，因此ZK是一个中心协调节点；
+            5.而zookeeper也是分布式的，它能够自己构建成三个节点实现内部选举!!
+        3.Shard:replica set
+            1.Shard真正存储数据的数据节点，也成为mongod实际节点
+            2.replica set
+                因为后端shard故障了，虽然能够工作但是数据少了一部分，因此后端的每一个shard都是一个副本集（至少三个节点）；
+    这就和分布式系统很像了，分布式系统有前端节点(元数据)和后端节点(数据)；
+
+4.sharding上的数据是如何保证集群运行时始终保持数据均衡分散的？
+    1.首先Router是根据Config Server来路由的
+    2.其次Config-Server存放的是collection的索引，而大家知道索引是把某一字段拿出来按升序、降序排列的一个范围，然后把索引
+    平均切成N段(shard的个数);
+        但是注意：
+            它不是根据范围平均切成N段，而是根据每一个范围所持有的数据数量做的平均,因此每个Shard上的范围不是平均的!
+            如：
+                0~20、21~30、31~60这样分散的，而不是0~20、21~40、41~60这样平均范围；
+        带来的问题：
+            根据范围的数据数量做平均带来的问题是：随着业务的增长，ShardA上的数据越来越大，而ShardC上可能只有极少数的数据甚至是空的!!
+            如：
+                0~20(10000条数据)、21~30(5000条数据)、31~60(100条数据)
+        解决办法：
+            此时就需要重新均衡数据，而平均均衡的方法是：将ShardA、ShardB、ShardC上的取值范围进行调整；
+            如：
+                将原理的0~20、21~30、31~60调整为0~10、11~25、26~60
+            因此每一个数据的重新均衡可能要全局都需要移动的!!!
+    3.其实mysql的分片也是如此：
+        把某一个表的某一字段做成索引，把索引当成分片的元数据，而后把一个大的数据集切成多个chunk再把这些chunk平均分散到
+        多个节点上去,在数据运行当中可能还需要进行数据的重新均衡：即数据在各个节点上挪来挪去!!
+</code></pre><p>– range分片<br><img src="/2017/10/16/MongoDB的Sharding集群实现/range分片.png" alt="range分片"><br>–Hash的切片<br><img src="/2017/10/16/MongoDB的Sharding集群实现/Hash的切片.png" alt="Hash的切片"></p>
+<pre><code>5.如何切分和切分方式？
+    切分方式和索引的类型有关，不同的索引类型切分方法是不一样的，而且业务使用何种分片方式取决于业务模型来判定的!!
+    1.基于范围切分
+        range分片，范围切片用到的索引一定是支持顺序排序的索引类型，如：B Tree类型的索引
+        如：按age索引进行切分
+    2.list:基于离散值进行分片
+        如
+    3.基于Hash的切片
+        hash索引类型的是无法排序的，因为对键排序没有任何意义，此时它就不是按范围进行切片了，它也是一种离散的切片方式
+    备注：
+        1.分片的意义：
+            分片的意义主要目的在于主要是分散写操作，顺带分散读操作，为了避免写热区使用离散切分是最有用的；
+        2.采用何种分片的指导方针：
+            写离散、读集中：
+                即分完片之后，写要离散分散到多个Shard上，而读要集中（读时涉及到的节点越少越好，因为多个节点需要综合起来重新排序）
+</code></pre><h3 id="2-MongoDB的sharding分片集群实现"><a href="#2-MongoDB的sharding分片集群实现" class="headerlink" title="2.MongoDB的sharding分片集群实现"></a>2.MongoDB的sharding分片集群实现</h3><pre><code>1.环境准备
+    1.1.主机分配
+        192.168.34.117 mongos       #生产环境应该使用keepalived做高可用
+        192.168.34.118 config server #生产环境至少三台使用Zookeeper
+        192.168.34.123 Shard1       #生产环境每一个Shard都需要做Replica Set
+        192.168.34.126 Shard2       #生产环境每一个Shard都需要做Replica Set
+    1.2:搭建集群时时间一定要保持同步
+        ~]# ntpdate time1.aliyun.com
+    1.3.关闭防火墙和selinux
+        ~]# setenforce 0
+        ~]# systemctl disable firewalld
+2.和sharidng分片相关的命令
+    ~]# mongod --help
+        sharding options:
+            --configsvr         #设定mongod实例为Config Server
+            --configsvrMode arg #
+            --shardsvr          #
+3.Sharding集群配置
+    3.1.先配置Config Server
+        1.Config Server就是一个mongod实例，通常只需要指明它是config Server即可
+        2.启动即可
+            ~]# mongod  --dbpath /data/mongodb/data/ --logpath /data/mongodb/log/mongod.log --configsvr
+                #启动时指定--configsvr即可
+            或者修改
+                ~]# vim /etc/mongod.conf
+                    --configsvr=true
+        3.Config Server会监听在27019端口上
+        [root@node01 mongodb]# ss -tnl
+        State  Recv-Q  Send-Q Local Address:Port  PeerAddress:Port         
+        LISTEN    0      128     192.168.34.118:27019        *:*  
+    3.2.配置mongos
+        3.2.1.在192.168.34.117上配置mongos，对于mongos而言只需要安装mongos包即可
+            ~]# yum install mongodb-org-mongos-3.2.22-1.el7.x86_64.rpm
+                #只需要安装mongos包即可
+        3.2.2.启动mongos
+            ~]# mongos -help
+                Sharding options:
+                    --configdb arg #启动时指定1~3个configdb的地址和端口即可
+            ~]# mongos --configdb=192.168.34.118:27019  --fork --logpath=/var/log/mongodb/mongos.log
+                #启动时指定configdb的IP+端口，工作在后台和指定mongos的日志文件
+        3.2.3.mongos也监听在27017端口上
+            因为mongos是作为代理工作的，所以监听在27017端口上
+        3.2.4.测试连接mongos
+            在任意mongos客户端连接到192.168.34.117的mongos上
+            ~]# mongo --host 192.168.34.117 
+                mongos&gt; help   #此时可以看到显示的是mongos命令
+                mongos&gt; sh.help()    #此时就可以使用sharding的相关命令操作了
+    3.3.配置所有的Shard
+        所有的shard配置和此前配置mongodb是一样的，指明数据目录启动即可
+        ~]# mongod --dbpath /data/mongodb/data/ --logpath /data/mongodb/log/mongod.log
+            #所有shard节点直接指明数据目录启动即可
+    3.4.shard的管理相关命令
+        ~]# mongo --host 192.168.34.117
+            mongos&gt; sh.help()
+            sh.addShard( host )                     #添加shard节点
+            sh.enableSharding(dbname)      #指明在某个db库上启用shard功能
+                默认即使构建了shard集群但并不是每个数据库都启用了shard功能
+            sh.shardCollection(fullName,key,unique)
+                #因为shard是collection级别的，但并不是所有collection都需要做切割，所以需要指明对哪个库上的哪个collection做切割!!!
+            sh.splitFind(fullName,find)
+            sh.splitAt(fullName,middle)
+            sh.moveChunk(fullName,find,to)
+            sh.setBalancerState( &lt;bool on or not&gt; ) 
+            sh.getBalancerState()    #查看当前均衡器的状态
+            sh.isBalancerRunning()   #查看均衡器是否正常工作
+            sh.disableBalancing(coll)
+            sh.enableBalancing(coll)
+            sh.addShardTag(shard,tag)
+            sh.removeShardTag(shard,tag)
+            sh.addTagRange(fullName,min,max,tag)
+            sh.removeTagRange(fullName,min,max,tag)
+            sh.status() 
+    3.5.在mongos节点添加各个Shard
+        ~]# mongo --host 192.168.34.117
+            mongos&gt; sh.addShard(&quot;192.168.34.123&quot;) #添加第一个Shard
+            mongos&gt; sh.addShard(&quot;192.168.34.126&quot;) #添加第二个Shard
+    3.6.使用shard功能
+        1.先做shard集群
+        2.指明对哪个库启用shard功能
+        3.指明对哪个库中的哪个collection的哪个键、索引做shard
+        ~]# mongo --host 192.168.34.117
+            mongos&gt; sh.enableSharding(&quot;testdb&quot;)
+            { &quot;ok&quot; : 1 }
+                #在testdb库上启用shard功能
+        mongos&gt; sh.shardCollection(&quot;testdb.students&quot;,{&quot;age&quot;:1})
+        { &quot;collectionsharded&quot; : &quot;testdb.students&quot;, &quot;ok&quot; : 1 }
+            #表示在testdb的students上的age字段上做升序索引
+            注意：collection一定要指明是哪个库的哪个collection
+        mongos&gt; sh.status()  #使用sh.status()查看shard的信息
+        --- Sharding Status --- 
+          sharding version: {
+            &quot;_id&quot; : 1,
+            &quot;minCompatibleVersion&quot; : 5,
+            &quot;currentVersion&quot; : 6,
+            &quot;clusterId&quot; : ObjectId(&quot;5ce6b9abe14fff2a5ded9696&quot;)
+          }
+          shards:
+                {  &quot;_id&quot; : &quot;shard0000&quot;,  &quot;host&quot; : &quot;192.168.34.123:27017&quot; }
+                {  &quot;_id&quot; : &quot;shard0001&quot;,  &quot;host&quot; : &quot;192.168.34.126:27017&quot; }
+          active mongoses:
+                &quot;3.2.22&quot; : 1
+          balancer:
+                Currently enabled:  yes
+                Currently running:  no
+                Failed balancer rounds in last 5 attempts:  0
+                Migration Results for the last 24 hours: 
+                        No recent migrations
+          databases:
+                {  &quot;_id&quot; : &quot;testdb&quot;,  &quot;primary&quot; : &quot;shard0000&quot;,  &quot;partitioned&quot; : true }
+                        testdb.students
+                                shard key: { &quot;age&quot; : 1 }
+                                unique: false
+                                balancing: true
+                                chunks:
+                                        shard0000   1
+                                { &quot;age&quot; : { &quot;$minKey&quot; : 1 } } --&gt;&gt; { &quot;age&quot; : { &quot;$maxKey&quot; : 1 } } on : shard0000 Timestamp(1, 0)
+        解释：
+            1.&quot;primary&quot; : &quot;shard0000&quot;分片的意义
+                因为testdb库中并不是所有的collection都做分片，所以不做分片的collection都放在shard0000，做了分片的均衡分散在shard0000和shard0001上；
+            2.chunks:
+                     shard0000   1
+            { &quot;age&quot; : { &quot;$minKey&quot; : 1 } } --&gt;&gt; { &quot;age&quot; : { &quot;$maxKey&quot; : 1 } } on : shard0000 Timestamp(1, 0)
+                #表示第一个分片shard0000，最小值--&gt;最大值都放在shard0000上，因为此时刚创建好没有数据；
+    3.7.创建数据并查看是否实现了分片
+        mongos&gt; use testdb
+            switched to db testdb
+        mongos&gt; for (i=1;i&lt;=10000;i++)db.students.insert({name:&quot;student&quot;+i,age:(i%120),address:{ city:&quot;北京&quot;, district:&quot;海淀区&quot; }})
+            WriteResult({ &quot;nInserted&quot; : 1 })
+                #创建students的数据
+        mongos&gt; sh.status()
+            balancer:
+                    Currently enabled:  yes
+                    Currently running:  no
+                    Failed balancer rounds in last 5 attempts:  0
+                    Migration Results for the last 24 hours: 
+                            2 : Success
+            databases:
+                    {  &quot;_id&quot; : &quot;testdb&quot;,  &quot;primary&quot; : &quot;shard0000&quot;,  &quot;partitioned&quot; : true }
+                        testdb.students
+                            shard key: { &quot;age&quot; : 1 }
+                            unique: false
+                            balancing: true
+                            chunks:
+                                    shard0000   2
+                                    shard0001   1
+                            { &quot;age&quot; : { &quot;$minKey&quot; : 1 } } --&gt;&gt; { &quot;age&quot; : 2 } on : shard0001 Timestamp(2, 0) 
+                            { &quot;age&quot; : 2 } --&gt;&gt; { &quot;age&quot; : 10 } on : shard0000 Timestamp(2, 1) 
+                            { &quot;age&quot; : 10 } --&gt;&gt; { &quot;age&quot; : { &quot;$maxKey&quot; : 1 } } on : shard0000 Timestamp(1, 3)
+    3.8.运维时故障案例
+        &gt; use text
+        switched to db text
+        &gt; db.books.insert({x:&quot;1&quot;,y:&quot;2&quot;})
+        can&apos;t create user databases on a --configsvr instance  ##报错信息
+        解答：
+            这个错误是说在configsvr的实例上创建collection失败了，可以看出首先这是一个mongodb的sharding集群，所有数据插入
+            和查询的接口都是mongos服务器的IP+端口，报这个错只能说没有连到mongos而是连到了后端的Shard上了；
+
+    3.8.功能补充
+        查看哪些数据库启用了shard功能
+            db.databases.find({&quot;partitioned&quot;:true})
+        列出所有的shard
+            mongos&gt; use admin
+            mongos&gt; db.runCommand(&quot;listShards&quot;)
+            {
+                &quot;shards&quot; : [
+                    {
+                        &quot;_id&quot; : &quot;shard0000&quot;,
+                        &quot;host&quot; : &quot;192.168.34.123:27017&quot;
+                    },
+                    {
+                        &quot;_id&quot; : &quot;shard0001&quot;,
+                        &quot;host&quot; : &quot;192.168.34.126:27017&quot;
+                    }
+                ],
+                &quot;ok&quot; : 1
+            }
+        显示shard集群的详细信息
+            db.printShardingStatus()=sh.status()
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB的Sharding集群实现/" rel="tag"><i class="fa fa-tag"></i> MongoDB的Sharding集群实现</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/01/旧事-大好河山/" rel="next" title="旧事-大好河山">
+                <i class="fa fa-chevron-left"></i> 旧事-大好河山
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/16/MongoDB的profile、监控和备份恢复/" rel="prev" title="MongoDB的profile、监控和备份恢复">
+                MongoDB的profile、监控和备份恢复 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">58</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-MongoDB的sharding分片功能原理"><span class="nav-number">1.</span> <span class="nav-text">1.MongoDB的sharding分片功能原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MongoDB的sharding分片集群实现"><span class="nav-number">2.</span> <span class="nav-text">2.MongoDB的sharding分片集群实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">849k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">12:52</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

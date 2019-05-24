@@ -136,23 +136,29 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="C&apos;est la vie">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Coool&#39;s Blog">
-<meta property="og:url" content="https://www.liukui.tech/categories/缓存/redis/index.html">
+  <meta name="description" content="1.mongoDB的优化-Profiling捕捉慢查询">
+<meta name="keywords" content="MongoDB的profile、监控和备份恢复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB的profile、监控和备份恢复">
+<meta property="og:url" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="C&apos;est la vie">
+<meta property="og:description" content="1.mongoDB的优化-Profiling捕捉慢查询">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控2.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控3.png">
+<meta property="og:updated_time" content="2019-05-24T15:07:31.223Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Coool&#39;s Blog">
-<meta name="twitter:description" content="C&apos;est la vie">
+<meta name="twitter:title" content="MongoDB的profile、监控和备份恢复">
+<meta name="twitter:description" content="1.mongoDB的优化-Profiling捕捉慢查询">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/categories/缓存/redis/">
+  <link rel="canonical" href="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/">
 
 
 
@@ -162,7 +168,7 @@
   };
 </script>
 
-  <title>分类: redis | Coool's Blog</title>
+  <title>MongoDB的profile、监控和备份恢复 | Coool's Blog</title>
   
 
 
@@ -214,7 +220,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -304,14 +310,14 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">24</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">28</span></a>
 
   </li>
         
         
         
           
-          <li class="menu-item menu-item-categories menu-item-active">
+          <li class="menu-item menu-item-categories">
 
     
     
@@ -323,7 +329,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">28</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">29</span></a>
 
   </li>
         
@@ -342,7 +348,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">54</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">58</span></a>
 
   </li>
         
@@ -428,138 +434,586 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>redis<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/07/20/redis-cluster集群/" itemprop="url">
-              
-                <span itemprop="name">redis-cluster集群</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">MongoDB的profile、监控和备份恢复
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-07-20T08:00:00+08:00" content="2018-07-20">
-          07-20
-        </time>
-      </div>
+        <div class="post-meta">
+                  
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-10-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T08:00:00+08:00">2017-10-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/07/15/redis高可用/" itemprop="url">
-              
-                <span itemprop="name">redis高可用</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-07-15T08:00:00+08:00" content="2018-07-15">
-          07-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <h3 id="1-mongoDB的优化-Profiling捕捉慢查询"><a href="#1-mongoDB的优化-Profiling捕捉慢查询" class="headerlink" title="1.mongoDB的优化-Profiling捕捉慢查询"></a>1.mongoDB的优化-Profiling捕捉慢查询</h3><a id="more"></a>
+<pre><code>因为Mongodb中如果不添加索引，对Mongodb数据表进行查询操作的时候，需要把数据都加载到内存。当数据的数量达到几十万乃至上百万的
+时候，查询就会变慢、而且Mongodb一直占据99%的CPU，
+    如果此时使用netstat -anp | grep ESTABLISHED过滤就会看到应用服务器有正在处理的连接请求，此时可以开启慢查询
+1.1.开启profile的相关命令
+    db.setProfilingLevel(level,&lt;slowms&gt;) 0=off 1=slow 2=all
+        #设置profile的级别和慢查询的超时时间
+        0代表关闭，1代表记录慢命令，2代表全部
+        注意：
+            1.profile需要在所有的集合下设置或则在开启的时候开启参数
+                ~]# vim /etc/mongodb.conf
+                    profile = 1
+                    slowms = 200
+            2.每次设置之后返回给你的结果是修改之前的状态（包括级别、时间参数）
+    db.getProfilingStatus() - returns if profiling is on and slow threshold
+        #查看当前设置是否开启了profile
+    db.system.profile.find()
+        #开启了慢查询后，使用此命令可以看到超市时长的查询命令
+1.2.示例：
+    &gt; db.setProfilingLevel(1,100)  #开启慢查询级别为1,时间为100ms
+    &gt; db.system.profile.find({millis:{$gt:500}})  
+        #查看慢查询时间超过500ms的查询语句
+    { 
+        &quot;op&quot; : &quot;query&quot;,                     #操作类型，有insert、query、update、remove、getmore、command  
+        &quot;ns&quot; : &quot;F10data3.f10_2_8_3_jgcc&quot;, 
+        &quot;query&quot; : {                         #具体的查询语句 包括过滤条件，limit行数  排序字段
+            filter&quot; : {
+                &quot;jzrq&quot; : {
+                    &quot;$gte&quot; : ISODate(&quot;2017-03-31T16:00:00.000+0000&quot;), 
+                    &quot;$lte&quot; : ISODate(&quot;2017-06-30T15:59:59.000+0000&quot;)
+                }, 
+                &quot;jglxfldm&quot; : 10.0
+            }, 
+            &quot;ntoreturn&quot; : 200.0,    
+            &quot;sort&quot; : {                      #如果有排序  则显示排序的字段 这里是 RsId
+                &quot;RsId&quot; : 1.0
+            }
+        }, 
+        &quot;keysExamined&quot; : 0.0,               #索引扫描数量 这里是全表扫描，没有用索引 所以是 0
+        &quot;docsExamined&quot; : 69608.0,           #浏览的文档数 这里是全表扫描 所以是整个collection中的全部文档数
+        &quot;numYield&quot; : 546.0,                 #该操作为了使其他操作完成而放弃的次数。通常来说，当他们需要访问
+                                            还没有完全读入内存中的数据时，操作将放弃。这使得在MongoDB为了
+                                            放弃操作进行数据读取的同时，还有数据在内存中的其他操作可以完成。
+        &quot;locks&quot; : {                         #锁信息，R：全局读锁；W：全局写锁；r：特定数据库的读锁；w：特定数据库的写锁
+            &quot;Global&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(1094)  #该操作获取一个全局级锁花费的时间。
+                }
+            }, 
+            &quot;Database&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(547)  
+                }
+            }, 
+            &quot;Collection&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(547)
+                }
+            }
+        }, 
+        &quot;nreturned&quot; : 200.0,                #返回的文档数量
+        &quot;responseLength&quot; : 57695.0,         #返回字节长度，如果这个数字很大，考虑值返回所需字段
+        &quot;millis&quot; : 264.0,                   #消耗的时间（毫秒）
+        &quot;planSummary&quot; : &quot;COLLSCAN, COLLSCAN&quot;, #执行概览 从这里看来 是全表扫描 
+        &quot;execStats&quot; : {                       #详细的执行计划 这里先略过 后续可以用 explain来具体分析
+        }, 
+        &quot;ts&quot; : ISODate(&quot;2017-08-24T02:32:49.768+0000&quot;),  #命令执行的时间
+        &quot;client&quot; : &quot;10.3.131.96&quot;,                        #访问的ip或者主机
+        &quot;allUsers&quot; : [
+        ], 
+        &quot;user&quot; : &quot;&quot;
+    }
+    解释：
+        ts：命令执行时间
+        info：命令的内容
+        query：代表查询
+        order.order： 代表查询的库与集合
+        reslen：返回的结果集大小，byte数
+        nscanned：扫描记录数量
+        nquery：后面是查询条件
+        nreturned：返回记录数及用时
+        millis：所花时间
+    分析和优化：
+        1.millis的时间较大，那么就需要作优化
+        2.nscanned或docsExamined数很大，或者接近记录总数，那么可能没有用到索引查询
+        3.如果keysExamined数为0，也可能是没用索引
+        4.结合 planSummary 中的显示，上例中是  &quot;COLLSCAN, COLLSCAN&quot; 确认是全表扫描
+        5.如果 keysExamined 值高于 nreturned 的值，说明数据库为了找到目标文档扫描了很多文档。这时可以考虑创建索引来提高效率
+1.3.system.profile的结果中的&apos;type&apos;的返回参数说明
+    COLLSCAN     #全表扫描                避免
+    IXSCAN       #索引扫描                可以改进 选用更高效的索引
+    FETCH        #根据索引去检索指定document                    
+    SHARD_MERGE  #将各个分片返回数据进行merge     尽可能避免跨分片查询
+    SORT         #表明在内存中进行了排序（与老版本的scanAndOrder:true一致） 排序要有index  
+    LIMIT        #使用limit限制返回数    要有限制 Limit+（Fetch+ixscan）最优
+    SKIP         #使用skip进行跳过       避免不合理的skip
+    IDHACK       #针对_id进行查询        推荐,_id 默认主键,查询速度快
+    SHARDING_FILTER  #通过mongos对分片数据进行查询 SHARDING_FILTER+ixscan最优 
+    COUNT        #利用db.coll.explain().count()之类进行count运算             
+    COUNTSCAN    #count不使用Index进行count时的stage返回 避免这种情况建议加索引
+    COUNT_SCAN   #count使用了Index进行count时的stage返回    推荐
+    SUBPLA       #未使用到索引的$or查询的stage返回           避免
+    TEXT         #使用全文索引进行查询时候的stage返回  
+    PROJECTION   #限定返回字段时候stage的返回  选择需要的数据,推荐PROJECTION+ixscan
+</code></pre><h3 id="2-使用zabbix监控MongoDB"><a href="#2-使用zabbix监控MongoDB" class="headerlink" title="2.使用zabbix监控MongoDB"></a>2.使用zabbix监控MongoDB</h3><pre><code>由于所存储的业务数据比较重要，所以对MongoDB的监控显得尤为重要！Zabbix监控MongoDB性能的原理：
+    通过echo &quot;db.serverStatus()&quot; | mongo admin 来查看mongodb的状态;
+1.1.Zabbix监控MongoDB性能，主要监控以下项目：
+    - 连接数
+        db.serverStatus().connections.current：当前连接数
+        db.serverStatus().connections.available:可用连接数
+        注意：
+            mongodb最大处理到2000个连接就不行了（要根据你的机器性能和业务来设定），所以设大了没意义。设个合理值的话，到达
+            这个值mongodb就拒绝新的连接请求，避免被太多的连接拖垮；
+    - 内存使用情况：
+        vsize 虚拟内存使用量，单位MB：db.serverStatus().mem.virtual
+        res 物理内存使用量，单位MB：db.serverStatus().mem.resident
+    - 每秒执行的查询、插入、删除、更新、getmore、等操作次数
+        query/s 每秒查询次数:db.serverStatus().opcounters.query
+        inserts/s 每秒插入次数:db.serverStatus().opcounters.insert
+        delete/s 每秒删除次数:db.serverStatus().opcounters.delete
+        update/s 每秒更新次数:db.serverStatus().opcounters.update
+        getmore/s:每秒getmore次数:db.serverStatus().opcounters.getmore
+    - 每秒执行fsync将数据写入硬盘的次数
+        flushs/s
+    - command/s 
+        每秒的命令数，比以上插入、查找、更新、删除的综合还多，还统计了别的命令
+    - 所有的被mmap的数据量，单位是MB
+        mapped/s
+    - 锁
+    - 每秒访问的索引次数，每秒命中索引的次数
+        Index hit
+    - MongoDB产生的总的页面错误数量
+        db.serverStatus().extra_info.page_faults
+    - MongoDB的网络流量状况
+1.2.mongod上安装zabbix_agent客户端
+    ~]# cat /usr/local/zabbix/etc/zabbix_agentd.conf|grep -v &quot;#&quot;|grep -v &quot;^$&quot;
+    Include=/usr/local/zabbix/etc/zabbix_agentd.conf.d/
+    UnsafeUserParameters=1 #配置成1，表示启用自定义脚本功能！
+1.3.自定义监控脚本
+    ~]# vim /usr/local/zabbix/etc/zabbix_agentd.conf.d/MongoDB.sh
+        #!/bin/bash
+        database=monitor
+        user=monitor
+        password=pass0p-!
+        case $# in
+          1)
+            output=$(/bin/echo &quot;db.serverStatus().$1&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+          2)
+            output=$(/bin/echo &quot;db.serverStatus().$1.$2&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+          3)
+            output=$(/bin/echo &quot;db.serverStatus().$1.$2.$3&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+        esac
+        #check if the output contains &quot;NumberLong&quot;
+        if [[ &quot;$output&quot; =~ &quot;NumberLong&quot;   ]];then
+          echo $output|sed -n &apos;s/NumberLong(//p&apos;|sed -n &apos;s/)//p&apos;
+        else
+          echo $output
+        fi
+    ~]# setfacl -Rm u:zabbix:rwx /root  #为脚本赋予zabbix执行权限
+    ~]# vim /usr/local/zabbix/etc/zabbix_agentd.conf.d/userparameter_MongoDB.conf
+    UserParameter=MongoDB.Status[*],/usr/local/zabbix/monitor_scripts/MongoDB.sh &quot;$1&quot; &quot;$2&quot;
+1.4.导入监控模板，重启zabbix_agent测试即可
+</code></pre><p>–mongodb监控1<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png" alt="mongodb监控"><br>–mongodb监控2<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控2.png" alt="mongodb监控"><br>–mongodb监控3<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控3.png" alt="mongodb监控"></p>
+<h3 id="3-MongoDB的单个collection和整库备份"><a href="#3-MongoDB的单个collection和整库备份" class="headerlink" title="3.MongoDB的单个collection和整库备份"></a>3.MongoDB的单个collection和整库备份</h3><pre><code>1.单个collection的导入与导出
+    1.1》导出工具：mongoexport
+        mongoDB中的mongoexport工具可以把一个collection导出成JSON格式或CSV格式的文件
+        语法：
+            mongoexport -d dbname -c collectionname -o file --type json/csv -f field
+            参数说明：
+            -d ：数据库名
+            -c ：collection名
+            -o ：输出的文件名
+            --type ： 输出的格式，默认为json
+            -f ：输出的字段，如果-type为csv，则需要加上-f &quot;字段名&quot;
+        示例：
+            ~]# mongoexport -d testdb -c users -o /data/testdb_user.json --type json 
+            2017-05-24T22:08:04.926+0800    connected to: localhost
+            2017-05-24T22:08:05.237+0800    exported 10000 records  #总记录数
+                #将testdb库的users这个collection导出到/data/testdb_user.json文件
+    1.2.数据导入：mongoimport
+        语法：
+        mongoimport -d dbname -c collectionname --file filename --headerline --type json/csv -f field
+        参数说明：
+            -d ：数据库名
+            -c ：collection名
+            --type ：导入的格式默认json
+            -f ：导入的字段名
+            --headerline ：如果导入的格式是csv，则可以使用第一行的标题作为导入的字段
+            --file ：要导入的文件
+        示例：删除后恢复
+            ~]# systemctl stop mongod #关闭mongod实例
+            ~]# rm -rf /data/mongodb/data/*   #先删除所有数据
+            ~]# systemctl start mongod   #重启mongod实例
+            ~]# mongoimport -d testdb -c users --file /data/testdb_user.json --type json
+            2017-05-24T22:09:52.189+0800    connected to: localhost
+            2017-05-24T22:09:52.396+0800    imported 10000 documents
+                #将第一步备份的数据再导入进来     
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/06/26/redis基础/" itemprop="url">
-              
-                <span itemprop="name">redis基础</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-06-26T08:00:00+08:00" content="2018-06-26">
-          06-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+2.MongoDB备份与恢复        
+    2.1.MongoDB数据库备份
+        语法：
+        mongodump -h dbhost -d dbname -o dbdirectory
+        参数说明：
+            -h： MongDB所在服务器地址，例如：127.0.0.1，当然也可以指定端口号：127.0.0.1:27017
+            -d： 需要备份的数据库实例，例如：test
+            -o： 备份的数据存放位置，例如：/home/mongodump/，当然该目录需要提前建立，这个目录里面存放该数据库实例的备份数据。
+        示例：
+            ~]# mongodump -d hello -o /data/mongobak/
+            2017-05-24T22:32:38.573+0800    writing hello.hello12345678 to 
+            2017-05-24T22:32:38.573+0800    writing hello.hello to 
+            2017-05-24T22:32:38.670+0800    done dumping hello.hello12345678 (10000 documents)
+            2019-05-24T22:32:38.704+0800    done dumping hello.hello (10000 documents)
+                #可以看到hello库的所有collections都备份了
+            ~]# cd /data/mongobak/hello/
+            ~]# ls
+            hello12345678.bson  hello12345678.metadata.json  hello.bson  hello.metadata.json
+                #可以看到collection的数据和元数据是分开存放的
+    2.2.MongoDB数据库恢复
+        语法：
+        mongorestore -h dbhost -d dbname --dir dbdirectory
+        参数说明：
+            -h： MongoDB所在服务器地址
+            -d： 需要恢复的数据库实例，例如：test，当然这个名称也可以和备份时候的不一样，比如test2
+            --dir： 备份数据所在位置，例如：/home/mongodump/itcast/
+            --drop： 恢复的时候，先删除当前数据，然后恢复备份的数据。就是说，恢复后，备份后添加修改的数据都会被删除，慎用！
+        示例：
+            1.删除
+                &gt; use hello
+                switched to db hello
+                &gt; db.dropDatabase()
+                { &quot;dropped&quot; : &quot;hello&quot;, &quot;ok&quot; : 1 }
+                    #先将hello库删除
+            2.恢复
+                [root@node02 ~]# mongorestore -d hellodb --dir /data/mongobak/hello/
+                2017-05-24T22:35:40.192+0800    building a list of collections to restore from /data/mongobak/hello dir
+                2017-05-24T22:35:40.212+0800    reading metadata for hellodb.hello12345678 from /data/mongobak/hello/hello12345678.metadata.json
+                2017-05-24T22:35:40.227+0800    restoring hellodb.hello12345678 from /data/mongobak/hello/hello12345678.bson
+                2017-05-24T22:35:40.240+0800    reading metadata for hellodb.hello from /data/mongobak/hello/hello.metadata.json
+                2017-05-24T22:35:40.255+0800    restoring hellodb.hello from /data/mongobak/hello/hello.bson
+                2017-05-24T22:35:40.517+0800    restoring indexes for collection hellodb.hello from metadata
+                2017-05-24T22:35:40.528+0800    finished restoring hellodb.hello (10000 documents)
+                2017-05-24T22:35:40.544+0800    restoring indexes for collection hellodb.hello12345678 from metadata
+                2017-05-24T22:35:40.544+0800    finished restoring hellodb.hello12345678 (10000 documents)
+                2017-05-24T22:35:40.544+0800    done
+            3.数据库验证
+                &gt; show dbs
+                hellodb  0.001GB
+                local    0.000GB
+                testdb   0.000GB
+                &gt; use hellodb
+                switched to db hellodb
+                &gt; show collections
+                hello
+                hello12345678
+                    #可以看到库和所有collection都恢复了
+            4.备注
+                恢复时-d databaseName 指定数据库名时可以和备份的库的名字不同!
+</code></pre>
       
     </div>
 
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB的profile、监控和备份恢复/" rel="tag"><i class="fa fa-tag"></i> MongoDB的profile、监控和备份恢复</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/16/MongoDB的Sharding集群实现/" rel="next" title="MongoDB的Sharding集群实现">
+                <i class="fa fa-chevron-left"></i> MongoDB的Sharding集群实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/18/文本三剑客之awk/" rel="prev" title="文本三剑客之awk">
+                文本三剑客之awk <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -580,8 +1034,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -598,7 +1061,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">54</span>
+                    <span class="site-state-item-count">58</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -667,7 +1130,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">28</span>
+                      
+                    
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -728,7 +1193,15 @@
                     
                       
                     
-                    <span class="site-state-item-count">24</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">28</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -827,6 +1300,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-mongoDB的优化-Profiling捕捉慢查询"><span class="nav-number">1.</span> <span class="nav-text">1.mongoDB的优化-Profiling捕捉慢查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用zabbix监控MongoDB"><span class="nav-number">2.</span> <span class="nav-text">2.使用zabbix监控MongoDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-MongoDB的单个collection和整库备份"><span class="nav-number">3.</span> <span class="nav-text">3.MongoDB的单个collection和整库备份</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -854,7 +1343,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">788k</span>
+    <span title="站点总字数">849k</span>
   
 
   
@@ -865,7 +1354,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">11:56</span>
+    <span title="站点阅读时长">12:52</span>
   
 </div>
 
@@ -1007,6 +1496,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
 
   
 
