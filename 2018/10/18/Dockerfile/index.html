@@ -145,7 +145,7 @@
 <meta property="og:description" content="DockerFile：构建镜像">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/三者区别.png">
-<meta property="og:updated_time" content="2019-01-22T08:38:18.043Z">
+<meta property="og:updated_time" content="2019-06-05T14:19:34.083Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerfile">
 <meta name="twitter:description" content="DockerFile：构建镜像">
@@ -308,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">27</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">26</span></a>
 
   </li>
         
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.8k</span>
+                <span title="本文字数">11k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">6 分钟</span>
+                <span title="阅读时长">10 分钟</span>
               
             </div>
           
@@ -660,7 +660,7 @@ COPY:
     从宿主机复制文件至创建的新镜像
     COPY &lt;src&gt;... &lt;dest&gt;
     COPY [&quot;&lt;src&gt;&quot;,...&quot;&lt;dest&gt;&quot;]
-         &lt;src&gt;：要复制的源文件或目录，支持使用通配符
+        &lt;src&gt;：要复制的源文件或目录，支持使用通配符
         &lt;dest&gt;：目标路径，即正在创建的image的文件系统路径；建议为&lt;dest&gt;使用绝对路径，否则，COPY指定则以WORKDIR为其起始路径；
         注意：在路径中有空白字符时，通常使用第二种格式
     注意：
@@ -668,7 +668,7 @@ COPY:
     2.如果src是目录，其内部的文件或子目录会自动被递归复制，但src自身不会被复制
             等于cp -r /src/* /dest/
     3. src有多个，或者src使用通配符，则dest必须是一个目录，且必须以/结尾
-    4. 如果dest事先不存在，它将会被自动创建
+    4. 如果dest事先不存在，它将会被自动创建，包括其父目录；
 ADD:
     类似于COPY，但是额外支持tar文件和URL路径
     ADD &lt;src&gt;... &lt;dest&gt;
@@ -719,50 +719,145 @@ ENV：
     定义多个变量时，建议使用第二种方式，以便在同一层中完成所有功能
     缺点：如果想修改ENV定义的值，只能修改dockerfile中的值，比价麻烦，此时
     就可以使用ARG来代替ENV
+注意：
+    1.在build阶段和run阶段都可以传环境变量，不过为了区别两个阶段，build阶段的
+        ENV现在都用ARG来代替了(build阶段的ENV命令也比较老了)
+    2.在run阶段传的环境变量是给容器启动时所使用的
 ARG：
     arg是在build阶段进行传值，替换dockerfile中的值
         ARG &lt;name&gt; [=&lt;default&gt;] 可以设置默认值
     当build创建镜像时没有传值，则使用在dockerfile中设置的默认值
     既可以弥补ENV的缺点也可以和RUN，CMD的ENV传环境变量区别开
-
     如：在build时更改home的值
     docker image build --build-arg home=&quot;/webdata/&quot; /data/dockerfile/ -t myimg:v0.4
-</code></pre><h4 id="RUN-CMD-ENTRYPOINT的区别"><a href="#RUN-CMD-ENTRYPOINT的区别" class="headerlink" title="RUN,CMD,ENTRYPOINT的区别"></a>RUN,CMD,ENTRYPOINT的区别</h4><p><img src="/2018/10/18/Dockerfile/三者区别.png" alt="三者的区别"></p>
-<p>区别：</p>
+Healthcheck:容器健康状态监测，支持docker17版本之后的
+    1.--interval=DURATION(default 30s) 每隔多久检测一次
+    2.--timeout=DURATION(default 30s)      单次请求的等待应答时长
+    3.--start-period=DURATION(default 5s)  
+                容器启动多久后，开始检测程序是否正常，根据不同程序时间不同 
+    4.--reties=N (default 3)  重试次数
+    0表示成功，1表示不健康，2表示docker内部的健康检测返回值
+    虽然能检测容器是否为健康状态，但是容器本身是不能重启的，需要借助容器编排工具
+        一旦发现容器不健康，编排工具会自动重启容器
+ONBUILD
+    用于在dockerfile中定义一个触发器
+    具体用法：
+        1.在dockerfile中定义ONBUILD指令后，build镜像时，是不执行ONBUILD指令的！
+            而当别人在基于这个有ONBUILD的镜像，又做一个dockerfile，build镜像时，
+            被引用的镜像中的ONBUILD才执行
+        2.所以叫做指令的延迟执行，而且OBUILD指令后跟的命令一般是ADD一个互联网的
+            网址，因为COPY/ADD文件，可能别人的电脑上并没有这个文件
+</code></pre><h3 id="shell和RUN-CMD-ENTRYPOINT的区别"><a href="#shell和RUN-CMD-ENTRYPOINT的区别" class="headerlink" title="shell和RUN,CMD,ENTRYPOINT的区别"></a>shell和RUN,CMD,ENTRYPOINT的区别</h3><pre><code>1.先解释shell：
+    比如：[root@node02 ~]# 它是我们通过ssh连接的命令行接口而且是由一个shell进程打印出来的，如果我们运行一个ls,那么ls就是
+    当前这个shell的子进程，同理在这个接口下运行httpd呢，httpd当然也就是这个shell的子进程，所以说我们平时在命令行中启动的进程
+    都是shell的子进程!!!
+2.进程管理和进程控制：
+    1.在进程管理中一定遇到过这个问题：
+        如果在ssh远程连接的shell中启动一个进程(比如就是httpd)，当这个ssh进程因为网络原因断开了那么这个SSH进程的所有子
+        进程(子子进程)都会终止，(ssh进程-&gt;shell进程-&gt;ls(httpd)进程);
+    2.进程控制
+        因此为了能够把某一进程运行为守护进程而且不会因为某一个shell终止而终止，就需要用进程控制，比如：
+            &amp;:使用&amp;符号将当前进程送到后台去，但是依然和当前shell剥离不了关系；
+            nohup:使用nohup剥离与当前终端的关系
+        比如：
+            nohup httpd &amp;：就表示将httpd运行在后台并剥离与当前终端的关系，即当前的shell终止了，httpd进程不会终止，这就是守护进程的意义和价值；
+    3.所以说我们正常在shell命令行终端中启动的进程其实都是shell的子进程，而这个问题在容器中就不是问题了，因为在容器中进程必须
+    运行在前台且不能送到后台去；
+3.shell的特性：
+    在shell中有很多特性：输入输出重定向、管道、globaling文件名通配、*等等；
+    因此在linux中，程序启动的方式有两种：
+        1.由shell解释运行
+        2.不使用shell来运行，而是直接把它作为由内核控制的进程就启动起来了；
+            可以理解为是init.d的直接子进程
+    比如：
+        1.~]# ls *:
+            之所以能运行并不是ls能够接收*作为参数，而是在ls执行之前*已经被shell解释过了，然后由shell再让ls去运行;那么ls是否
+            可以不是shell的子进程？
+                （ls好像一直都是运行在shell接口上的，但是crontab确是我们经常遇到的，而且有可能不是运行为shell的子进程；）
+        2.crontab
+            crontab是可以不使用shell来启动的，不使用shell启动就意味着直接把它作为由内核控制的进程就启动起来了和shell没关系，它是内核上init的子进程；
+            (正常应该是init-shell进程-command都是shell子进程)
+    所以说：
+        如果ls不是运行在shell接口下，而是由内核直接控制的进程，那么执行ls *命令就会出错的，因为*是shell的特性内核是无法解释*的；
+        我们只是习惯了在shell接口中执行命令了，这就是为什么我们平时的操作都是正常的，只是没有认识到shell的存在而已；
+4.因此：
+    CMD [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+        #这意味着这个进程是直接运行为init的子进程的和shell没关系
+    CMD [&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+        #如果想运行为shell的子进程，就需要加上&quot;/bin/bash&quot;,&quot;-c&quot;，通过shell解释运行httpd命名
+    这种运行方式在下文介绍RUN、CMD、ENTRYPONIT命令中是否运行为shell子进程都是可以通过不同语法来控制的!!!
+</code></pre><p>RUN,CMD,ENTRYPOINT的区别：<br><img src="/2018/10/18/Dockerfile/三者区别.png" alt="三者的区别"></p>
 <pre><code>RUN：
     用于指定docker build过程中运行的程序，可以是任何命令
-                (这就意味着RUN的命令必须是使用的基础镜像支持的命令)
+                    (这意味着RUN的命令必须是我们使用的基础镜像存在且支持的命令)
     1.是指在docker build过程中通过运行RUN定义的shell命令，以达到在镜像中安装软件等操作
     2.RUN可以设定多次，而且每一个都会在build的时执行
-    语法：
-        RUN &lt;command&gt;
-            通常运行的是一个shell命令，且以&quot;/bin/sh -c&quot;运行，且/bin/sh是PID为1的进程，command是作为shell的子进程存在
-        RUN [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]
-            此种格式指定的命令不会以&quot;/bin/sh -c&quot;，因此无法支持shell的诸多特性，如要依赖于shell特性，可替换成如下格式：
-            RUN [&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;&lt;executable&gt;&quot;,&quot;&lt;param1&gt;&quot;]
+    3.语法：
+        1.RUN &lt;command&gt;
+            第一种格式中command通常是一个shell命令，docker build会自动专门启动一个&quot;/bin/sh -c&quot;进程来运行这个这个command，
+            而且/bin/sh是docker中PID为1的进程，command只是作为shell的子进程存在的
+        2.RUN [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]
+            1.第二种格式中的参数是一个JSON格式的数组，此种格式指定的命令不会以&quot;/bin/sh -c&quot;，不是作为shell的子进程来运行的因此无法支持shell的诸多特性；
+            2.如果想使用第二种格式支持shell的特性的话，需要使用下面这种语法：
+                RUN [&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;&lt;executable&gt;&quot;,&quot;&lt;param1&gt;&quot;]
+        3.所以RUN、CMD、ENTRYPONIT命令是在[]中括号内的，都不会作为shell的子进程运行，除非使用[&quot;/bin/sh&quot;,&quot;-c&quot;,&quot;&lt;executable&gt;&quot;,&quot;&lt;param1&gt;&quot;]这种语法!!!
 CMD：
     1.当把镜像运行容器时，需要指定默认运行的程序，这在dockerfile中需要用CMD命令来
-        指定，ENTRYPOINT也可以
-    2.默认运行的程序必须运行在前台
-    3.由于CMD设定的是容器启动默认运行的程序，所以必须只有一个，如果有多个，
-        则最后一个CMD生效
-    语法：
-        CMD &lt;command&gt; 或
-        CMD [“&lt;executable&gt;”, “&lt;param1&gt;”, “&lt;param2&gt;”] 或
-        CMD [&quot;&lt;param1&gt;&quot;,&quot;&lt;param2&gt;&quot;]
+        指定，当然使用ENTRYPOINT也可以；
+    2.和RUN的区别在于：
+        RUN指令运行在映像文件构建过程中，而CMD指令运行于Dockerfile构建出的新映像文件启动一个容器时；
+    3.默认运行的程序必须运行在前台
+    4.由于CMD设定的是容器启动默认运行的程序，所以必须只有一个，如果有多个，则最后一个CMD生效
+    5.基于镜像运行的容器启动时，是可以运行指定的命令来覆盖容器内默认的程序的，如果
+        不想让其覆盖，可以使用ENTRYPOINT进行定义默认程序做成镜像
+        如：
+            CMD [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+                #当run时如果指定了/bin/bash，那么httpd就不会运行了
+            ENTRYPOINT [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+                #当run时如果指定了/bin/bash，那么httpd就不会运行了
+    语法(三种)：
+        1.CMD &lt;command&gt;：表示运行为shell的子进程
+        2.CMD [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]
+            表示不以shell解释运行，不支持shell的特性
+        3.CMD [&quot;&lt;param1&gt;&quot;,&quot;&lt;param2&gt;&quot;]
         前两种语法格式的意义同RUN
         第三种则用于为ENTRYPOINT指令提供默认参数
-    systemctl start httpd启动是运行在systemd的前台上，所以启动就会退出
+    注意：
+        1.在分析docker时提到过任何命令要作为容器的默认运行的命令时，它必须运行在前台；
+        2.而以往我们用systemctl start httpd启动一个程序时他代表是运行在后台的，而且事实上它是托管在systemd的前台上；
+        3.但是我们现在不打算用systemd来启动，就是手动启动，即便是以shell的子进程来启动他也是手动启动的，而不是使用systemd来控制，因为可能这里并没有systemd;
 ENTRYPOINT：
     1.CMD和ENTRYPOINT都表示镜像启动为容器时，容器默认运行的程序，而且CMD和ENTRYPOINT有多个，也都是最后一个生效
     2.如果CMD和ENTRYPOINT同时存在，CMD和ENTRYPONIT需要组合起来，则CMD指定的内容
     都作为ENTRYPOINT所指定内容的参数
+    3.基于镜像运行的容器启动时，是可以运行指定的命令来覆盖容器内CMD定义的默认的程序的，如果不想让其覆盖，可以在ENTRYPOINT中
+    定义默认程序，因为ENTRYPOINT中定义的默认运行命令在run时是不允许覆盖的!!!
+        但是如果再run时，通过选项--entrypoint &quot;/bin/bash&quot; 还是可以被覆盖的
     语法：
         ENTRYPOINT &lt;command&gt;或者
         ENTRYPOINT [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]
     docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到
     ENTRYPOINT命令最后做为其参数使用
     Dockerfile文件中也可以存在多个ENTRYPOINT指令，但仅有最后一个会生效
+
+CMD和ENTRYPONIT同时存在的意义？
+    1.可以把CMD /usr/sbin/httpd -DFOREGROUND写成
+        CMD [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+        ENTRYPONIT [&quot;/bin/bash&quot;,&quot;-c&quot;]
+        当然这只是一种表达方式，不过通常是在ENTRYPONIT写脚本
+    2.entryponit脚本作为传统应用程序与容器化运行程序的中间层，来处理不同环境下的
+        应用程序所依赖的不同配置文件的，而且脚本可以接受环境变量传参数来设置配置文件的
+脚本自己先执行脚本内定义的一些功能，运行完之后，再转为将CMD作为entrypoint的参数
+，还替换脚本进程，CMD的PID号也会变为1
+注意：
+    在run阶段也是可以传环境变量的，只不过这个变量是给容器启动时所使用的，在这里是
+    给entrypoint中的变量赋值的
+总结：
+    1.基于同一个镜像启动容器时，希望能有不同的配置，要么程序能接受读环境变量来设定
+        自定义信息，要么通过entrypoint脚本创建镜像，基于镜像创建容器时，为entrypoint脚本中的变量传值来设置不同的配置文件.
+    2.自己制作或者从网上下载的image可以先通过docker image inspect name查看是否
+        entrypoint脚本，再查看脚本中定义的内容和变量，可以根据不同的环境，run时，
+        -e 传递不同的变量值生成不同配置文件的容器
 </code></pre><p>示例：<br>    docker run –name c1 -P -d myimg:v0.1 以后台运行容器</p>
 
       
@@ -897,8 +992,8 @@ ENTRYPOINT：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker的资源限制/" rel="next" title="Docker的资源限制">
-                <i class="fa fa-chevron-left"></i> Docker的资源限制
+              <a href="/2018/10/18/docker存储卷/" rel="next" title="docker存储卷">
+                <i class="fa fa-chevron-left"></i> docker存储卷
               </a>
             
           </div>
@@ -907,8 +1002,8 @@ ENTRYPOINT：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/03/ceph存储基础/" rel="prev" title="ceph存储基础">
-                ceph存储基础 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/Docker仓库管理工具Harbor/" rel="prev" title="Docker仓库管理工具Harbor">
+                Docker仓库管理工具Harbor <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1121,9 +1216,7 @@ ENTRYPOINT：
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1231,7 +1324,7 @@ ENTRYPOINT：
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">5.1.</span> <span class="nav-text">RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell和RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">6.</span> <span class="nav-text">shell和RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></div>
             
 
           </div>
@@ -1265,7 +1358,7 @@ ENTRYPOINT：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">871k</span>
+    <span title="站点总字数">875k</span>
   
 
   
@@ -1276,7 +1369,7 @@ ENTRYPOINT：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">13:12</span>
+    <span title="站点阅读时长">13:16</span>
   
 </div>
 
