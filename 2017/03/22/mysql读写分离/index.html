@@ -145,7 +145,7 @@
 <meta property="og:description" content="Mysql的读写分离">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/03/22/mysql读写分离/proxysql实现读写分离.png">
-<meta property="og:updated_time" content="2019-06-05T14:25:59.453Z">
+<meta property="og:updated_time" content="2019-06-21T13:05:07.277Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql读写分离">
 <meta name="twitter:description" content="Mysql的读写分离">
@@ -552,7 +552,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.1k</span>
+                <span title="本文字数">7.2k</span>
               
 
               
@@ -566,7 +566,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">6 分钟</span>
+                <span title="阅读时长">7 分钟</span>
               
             </div>
           
@@ -589,11 +589,38 @@
         <h3 id="Mysql的读写分离"><a href="#Mysql的读写分离" class="headerlink" title="Mysql的读写分离"></a>Mysql的读写分离</h3><a id="more"></a>
 <p><img src="/2017/03/22/mysql读写分离/proxysql实现读写分离.png" alt="proxysql实现读写分离结构"></p>
 <p>ProxySQL官方网站:<a href="https://proxysql.com/" target="_blank" rel="noopener">ProxySQL</a>&amp;<a href="https://github.com/sysown/proxysql/wiki" target="_blank" rel="noopener">安装手册</a><br>Mycat:<a href="http://www.mycat.io/" target="_blank" rel="noopener">基于Cobar研发的Mycat</a></p>
-<pre><code>proxysql是一个高性能的mysql代理服务器，MYSQL中间件
-多种方式的的读/写分离
-定制基于用户、基于schema、基于语句的规则对SQL语句进行路由
-缓存查询结果
-后端节点监控
+<pre><code>为什么要用到读写分离器(负载均衡器)？
+    1.网站的架构由最初的单机站点发展到大规模站点，达到了性能瓶颈，需要向外扩展以实现更高的性能需求，如mysql的主从复制集群
+    2.mysql的主从复制虽然好用，但是不可避免的带来了读写语句是如何负载均衡的问题；
+        即：
+        客户端请求来了之后，它是如何将请求平均负载的问题，这时可以在主从复制前端加一个调度器，而且这个调度器必须是七层调度能够
+        分析并精确理解请求语句是读请求还是写请求，如果是读请求，这个调度器还可以通过负载均衡的方式发送给后端多个从服务器进行负
+        载均衡；这种代理就是mysql的七层反向代理，也成为mysql的r/w spliter：读写分离器；
+    3.数据库的读写分离有效减小了主数据库的压力，如果没有读写分离器只能代码中标记哪个是读数据库哪些是写数据库，耦合性较差；
+    4.读写分离器(语句路由软件)可以实现对数据库的读写进行分离，以扩展数据库的性能
+    5.mysql数据库的写操作遇到瓶颈时，双主模型对写操作不会有任何提升，而是做数据库切分，将数据库表拆分到多个数据库上.
+    6.NewSQL(例如TiDB)本身是分布式的，背后由多台服务器支持读写操作,而且完全在
+    协议上支持mysql.
+
+proxysql实现读写分离架构缓存层分析:
+    1.因为对mysql而言，它是有query_cache查询缓存的，当通过proxysql调度到后端不同的从服务器负责读操作时，那么为了使得保存在
+    每一台的query_cache能够被命中，就需要调度时是基于取模或者一致性hash的，但是这样会损坏负载均衡效果的；
+    2.所以一般在应用程序侧需要加一个memcached或者redis作为缓存层的；
+    如上图示架构
+    3.虽然像LVS这种四层调度器不能识别mysql的read和write七层操作，不能代理前端的proxysql的操作，但是在后端所有slave前却可以
+    加一层LVS，因为：
+        1.尽管proxysql也有调度功能，但是没有LVS的强大
+        2.LVS加在这一层，即使它不是七层的但因为后端都是Slave节点，不用区分读写了!
+
+proxysql功能：
+    1.是一个高性能的mysql代理服务器，MYSQL中间件，有官方版和percona版；
+    2.多种方式的的读/写分离
+    3.定制基于用户、基于schema、基于语句的规则对SQL语句进行路由
+    4.缓存查询结果
+    5.后端节点监控
+    数据分发路由机制，
+        proxysql只能对读做分发，依然不能对写做分发，真正能够对写做分发，需要语句路由，如mysql的分片框架，能够实现写的时候帮
+        忙写到一台只负责写的服务器上，读的时候能够从所有服务去查
 </code></pre><h3 id="ProxySQL安装"><a href="#ProxySQL安装" class="headerlink" title="ProxySQL安装"></a>ProxySQL安装</h3><pre><code>基于YUM仓库安装
     vim /etc/yum.repos.d/proxysql.repo
     [proxysql_repo]
@@ -1230,7 +1257,7 @@ proxysql使用：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">879k</span>
+    <span title="站点总字数">881k</span>
   
 
   
@@ -1241,7 +1268,7 @@ proxysql使用：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">13:19</span>
+    <span title="站点阅读时长">13:21</span>
   
 </div>
 

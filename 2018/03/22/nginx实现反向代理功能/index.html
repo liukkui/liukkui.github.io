@@ -151,7 +151,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/LNMP的多种架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/fpm状态监控.png">
-<meta property="og:updated_time" content="2019-06-21T11:59:22.818Z">
+<meta property="og:updated_time" content="2019-06-21T12:18:33.181Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx实现反向代理功能">
 <meta name="twitter:description" content="Nginx实现反向代理服务器的配置">
@@ -554,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">14k</span>
+                <span title="本文字数">15k</span>
               
 
               
@@ -568,7 +568,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">13 分钟</span>
+                <span title="阅读时长">14 分钟</span>
               
             </div>
           
@@ -734,7 +734,8 @@
         1.location中的路径和proxy_pass中的路径是映射关系!
         2.当proxy_pass后没有带任何路径时（没有/|/bbs/|/bbs），只需要把客户端请求的URI全部补到proxy_pass即可；
         3.当proxy_pass后不管只有/还是/abac[ |/]时，这里的location中的路径和proxy_pass中的路径是映射关系，这时就需要location中路径和proxy_pass路径是否一样了!!
-        4.当location中是正则表达式时,这时需要把客户端请求的URI全部补到proxy_pass后的，因此proxy_pass是不能做任何路径映射的!
+        4.当location中是正则表达式时,这个路径是无法映射的！这时只能客户端请求什么，然后在proxy_pass后补什么！因此location是
+        正则表达式时，proxy_pass后一定不要写任何Uri,否则nginx -t就会报语法错误！
 </code></pre><p>-前后端路径映射<br><img src="/2018/03/22/nginx实现反向代理功能/前后端路径映射.png" alt="前后端路径映射"> </p>
 <pre><code>2.proxy_set_header field value;
     前面说过代理服务器可以修改客户端请求数据报文的信息发送给后端服务器，而对于后端
@@ -754,7 +755,7 @@
 </code></pre><p><img src="/2018/03/22/nginx实现反向代理功能/proxy_set_header.png" alt="proxy_set_header"></p>
 <h3 id="Nginx代理Web服务的Proxy缓存功能"><a href="#Nginx代理Web服务的Proxy缓存功能" class="headerlink" title="Nginx代理Web服务的Proxy缓存功能"></a>Nginx代理Web服务的Proxy缓存功能</h3><p>Nginx是一个高性能的web服务器，尤其在高并发和处理静态页面的时候有先天的优势；很大一部分得益于缓存的开启，缓存的实现逻辑</p>
 <pre><code>* 此处是作用于http的上下文，因为每个代理模块都有缓存功能，但是不能混用
-* 要想使用proxy的缓存功能，必须先定义再引用
+* 要想使用proxy的缓存功能，必须先在nginx中定义出一个缓存空间出来，然后再引用！
 * 定义缓存所以列表：对文件进行hash生成hash串，hash串是16进制数字，如果把hash串的前三位数字，按照数字放在对应的层级生成一个三级索引列表
 * 根据实际情况定义缓存层级，每多一次就是对磁盘IO的消耗，灵活定义缓存层级很有必要，比如一层以1个16进制数就是16个目录，2个16进制数就是2^8=256个目录，可以通过增加每次的级数，减小层数，对磁盘的IO消耗就降低了
 
@@ -819,7 +820,8 @@ nginx的缓存功能： 不一定启用nginx缓存，可以使用varnish,或者C
     查询的速度越快，定义了1:1:2三层路由索引，第一层16个目录，第二层16个子目录
     第三次256个子目录
 </code></pre><p><img src="/2018/03/22/nginx实现反向代理功能/" alt="proxy_pass的缓存层级"></p>
-<h3 id="ngx-http-headers-module模块：操纵响应报文首部"><a href="#ngx-http-headers-module模块：操纵响应报文首部" class="headerlink" title="ngx_http_headers_module模块：操纵响应报文首部"></a>ngx_http_headers_module模块：操纵响应报文首部</h3><pre><code>区别于proxy_set_header：
+<h3 id="ngx-http-headers-module模块：操纵响应报文首部"><a href="#ngx-http-headers-module模块：操纵响应报文首部" class="headerlink" title="ngx_http_headers_module模块：操纵响应报文首部"></a>ngx_http_headers_module模块：操纵响应报文首部</h3><p><a href="http://nginx.org/en/docs/varindex.html" target="_blank" rel="noopener">nginx中的内嵌变量</a></p>
+<pre><code>区别于proxy_set_header：
     是代理服务器把客户端请求报文中的某些信息通过修改代理服务器请求报文首部的方式发送给后端服务器
 headers：
     代理服务器响应给客户端的响应报文添加自定义首部，或修改指定首部的值；达到隐藏
@@ -836,6 +838,26 @@ headers：
         expires epoch | max | off;
         响应缓存的缓存时长
         用于定义Expire或Cache-Control首部的值；
+示例：
+    可以在server或者location中定义
+    server {
+        listen 80;
+        server_name www.blog.com;
+        root /data/html
+        proxy_set_header X-Real-IP $remote_addr;
+        location /bbs/ {
+            proxy_pass http://172.17.0.2/;
+            proxy_cache webcache;
+            proxy_cache_key $request_uri;
+            proxy_cache_valid 200 302 10m;
+            proxy_cache_valid 301 1h;
+            proxy_cache_valid any 1m;
+            proxy_cache_methons GET HEAD;
+
+            add_header X-Via $server_addr;
+            add_header X-Accel $server_name; 
+        }
+    }
 </code></pre><h3 id="Nginx代理后端fastCGI协议"><a href="#Nginx代理后端fastCGI协议" class="headerlink" title="Nginx代理后端fastCGI协议"></a>Nginx代理后端fastCGI协议</h3><p><img src="/2018/03/22/nginx实现反向代理功能/LNMP的多种架构.png" alt="LA/NMP的几种架构"></p>
 <pre><code>1.fpm其实就是一种类似于httpd的MPM模型中的prefork模型
     启用一个fpm主进程，生成n个子进程，由子进程内部的php解释器负责处理并发的多路
@@ -1455,7 +1477,7 @@ fastcgi缓存定义示例：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">879k</span>
+    <span title="站点总字数">881k</span>
   
 
   
@@ -1466,7 +1488,7 @@ fastcgi缓存定义示例：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">13:19</span>
+    <span title="站点阅读时长">13:21</span>
   
 </div>
 
