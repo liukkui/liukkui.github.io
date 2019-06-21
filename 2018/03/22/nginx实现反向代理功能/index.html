@@ -151,7 +151,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/LNMP的多种架构.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/nginx实现反向代理功能/fpm状态监控.png">
-<meta property="og:updated_time" content="2019-01-22T12:20:49.758Z">
+<meta property="og:updated_time" content="2019-06-21T11:59:22.818Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="nginx实现反向代理功能">
 <meta name="twitter:description" content="Nginx实现反向代理服务器的配置">
@@ -554,7 +554,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">11k</span>
+                <span title="本文字数">14k</span>
               
 
               
@@ -568,7 +568,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">10 分钟</span>
+                <span title="阅读时长">13 分钟</span>
               
             </div>
           
@@ -628,29 +628,113 @@
 <p>1.nginx作为代理服务器是，代理客户端和后端服务器，在数据报文是有两段的：<br>    1.客户端—&gt;代理服务器<br>    2.代理服务器作为客户端—&gt;后端的httpd/fpm/memche服务器<br>    而且代理服务器可以把客户端发来的数据报文进行修改重新封装发给后端服务器，<br>    后端服务器响应给代理服务器的报文也可以被代理服务器修改，再响应给客户端<br>    在设置中，可以通过不能功能体现出数据报文被如何修改的！</p>
 <p>2.作为代理配置和nginx作为web服务器差不多，只不过要把root/alias缓存proxy_pass<br>    如果同时又root和proxy_pass，proxy_pass的优先级高</p>
 <p>3.在location中将<em>.php或者</em>.jpg代理到不同的后端服务器上，可以实现资源请求的动静分离<br>    实现了在一台代理服务器上的资源路由.</p>
-<h3 id="ngx-http-proxy-module模块："><a href="#ngx-http-proxy-module模块：" class="headerlink" title="ngx_http_proxy_module模块："></a>ngx_http_proxy_module模块：</h3><pre><code>1.proxy_pass URL 
+<h3 id="ngx-http-proxy-module模块："><a href="#ngx-http-proxy-module模块：" class="headerlink" title="ngx_http_proxy_module模块："></a>ngx_http_proxy_module模块：</h3><pre><code>1.Syntax:   proxy_pass URL;
+  Default:    —
+  Context:  location, if in location, limit_except
     代理http协议的主要功能，是将客户端的请求代理至后端服务的路径上
-        Context: location, if in location, limit_except；
         server {
             ...
             server_name HOSTNAME;
             location / {
-                proxy http://hos[:port]; 优先级高于server的root
+                proxy http://host[:port]; 优先级高于server的root
                 }
+                    #此处后面的/可加可不加
             location /uri/ {
                     proxy http://host/new_uri/;
                 }
             location ~|~* /uri/ {
-                    proxy http://host;
+                    proxy http://host;   #此处最后不能加/
                 }
             ...
         }      
+特别注意1：
     http://HOSTNAME/uri --&gt; http://host/uri 
     http://HOSTNAME/uri/ --&gt; http://host/new_uri/
     http://HOSTNAME/uri/ --&gt; http://host/uri/；
     路径映射，前后端的location和proxy_pass是映射关系,必要加/
     如果location是正则表达式路径，proxy_pass的路径必须没有/和URI，因为是正则表达
-        式，无法判断路径
+    式，无法判断路径
+    1.加/就是映射，不加就会把前面用户请求时的路径补回来
+    2.前后端不一样时必定要加，一样时可加可不加
+    3.但如果localtion中使用了正则表达式模式，就一定不能加/，不加/的意思是指：
+        把用户请求的URL中除了地址的路径原样不动的补到host后面，客户端请求什么就补什么!
+    4.具体区别看下文示例
+特别注意2：
+    nginx中有两个模块都有proxy_pass指令。一个是ngx_http_proxy_module 模块，一个是ngx_stream_proxy_module模块。
+    1.ngx_http_proxy_module 中的 proxy_pass 用法如下：
+        语法: proxy_pass URL;
+        场景: location, if in location, limit_except
+        说明: 
+            1.设置后端代理服务器的协议(protocol)和地址(address),以及location中可以匹配的一个可选的URI。
+            2.协议可以是&quot;http&quot;或&quot;https&quot;。地址可以是一个域名或ip地址和端口，或者一个unix-domain socket 路径。 
+    2.ngx_stream_proxy_module 中的proxy_pass用法如下：
+        语法: proxy_pass address;
+        场景: server
+        说明: 
+            1.设置后端代理服务器的地址。
+            2.这个地址(address)可以是一个域名或ip地址和端口，或者一个 unix-domain socket路径。 
+    3.关系和区别：
+        在两个模块中，两个proxy_pass都是用来做后端代理的指令。
+        1.ngx_http_proxy_module模块的proxy_pass指令作用于http上下文需要在location、location中的if、limit_except段中使用，
+        它是proxy_pass URL，需要提供域名或ip地址和端口外，还需要提供协议，如&quot;http&quot;或&quot;https&quot;，还有一个可选的uri可以配置；
+        2.ngx_stream_proxy_module模块的proxy_pass指令只能在server段使用,只需要提供域名或ip地址和端口。可以理解为端口转发，
+        可以是tcp端口，也可以是udp端口，不需要写protocol协议!!
+
+路径映射示例：
+    前端请求：http://www.blog.com/images/logo.jpg
+        在nginz中/images/logo.jpg就URI，而在location中配置的也都是URI
+    第一种情况：
+        location / {
+            proxy_pass http://192.168.34.118;  #此处不加/
+        }
+        location /images/ {
+            proxy_pass http://192.168.34.118;  #此处不加/
+        }
+        发送到后端都是：http://192.168.34.118/images/logo.jpg
+        分析：
+            这两个例子中proxy_pass都不加/时，客户端请求中的URI是/images/logo.jpg就把这个URI补到proxy_pass后，此时和location中的路径无关!
+    第二种情况： 
+        2.1.location / {
+                proxy_pass http://192.168.34.118/; #此处加/
+            }
+            发送到后端：http://192.168.34.118/images/logo.jpg
+        2.2.location /images/ {
+                proxy_pass http://192.168.34.118/;  #此处不加/
+            }
+            发送到后端：http://192.168.34.118/logo.jpg
+        分析：
+            首先proxy_pass的uri和location的路径是映射关系的，映射是指：
+                需要分析客户端请求的URI时，要把location的这部分在客户端请求的URI中去掉，然后把余下的部分补到proxy_pass的/后!!
+            1.2.1中的映射关系是：/=/,所以把images/logo.jpg补到proxy_pass的/后就是：http://192.168.34.118/images/logo.jpg
+            2.2.2中的映射关系时：/images/=/,所以把logo.jpg补到proxy_pass的/后就是：http://192.168.34.118/logo.jpg
+            2.从上面四个例子可以明显看到映射关系和带不带/是有着重要关系的!再看下面两个例子；
+    第三种情况：
+        location / {
+            proxy_pass http://192.168.34.118/bbs/;
+        }
+        发送到后端：http://192.168.34.118/bbs/images/logo.jpg
+        分析：
+            此时的映射关系是：/=/bbs/,所以要把images/logo.jpg补到proxy_pass的/bbs/后就是：http://192.168.34.118/bbs/images/logo.jpg
+    第四种情况： 
+        location /images/ {
+            proxy_pass http://192.168.34.118/bbs;  #此处bbs后没有/
+        }  
+        发送到后端：http://192.168.34.118/bbslogo.jpg
+        分析：
+            此时的映射关系是：/images/=bbs,所以把logo.jpg补到proxy_pass的/bbs后就是：http://192.168.34.118/bbslogo.jpg!!
+            这样的话，那么客户端请求时肯定会报错了!!
+    第五种情况：
+        location ~* \.(jpg)$ {
+            proxy_pass http://192.168.34.118;
+        }  
+        发送到后端：http://192.168.34.118/*****.jpg
+        分析：
+            这时由于location中是正则表达式，无法判断客户端请求的路径，所以需要都加到proxy_pass的后面，所以proxy_pass后不能带任何路径!!
+    总结：
+        1.location中的路径和proxy_pass中的路径是映射关系!
+        2.当proxy_pass后没有带任何路径时（没有/|/bbs/|/bbs），只需要把客户端请求的URI全部补到proxy_pass即可；
+        3.当proxy_pass后不管只有/还是/abac[ |/]时，这里的location中的路径和proxy_pass中的路径是映射关系，这时就需要location中路径和proxy_pass路径是否一样了!!
+        4.当location中是正则表达式时,这时需要把客户端请求的URI全部补到proxy_pass后的，因此proxy_pass是不能做任何路径映射的!
 </code></pre><p>-前后端路径映射<br><img src="/2018/03/22/nginx实现反向代理功能/前后端路径映射.png" alt="前后端路径映射"> </p>
 <pre><code>2.proxy_set_header field value;
     前面说过代理服务器可以修改客户端请求数据报文的信息发送给后端服务器，而对于后端
@@ -1003,8 +1087,8 @@ fastcgi缓存定义示例：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/22/浅谈mysql优化/" rel="next" title="浅谈mysql优化">
-                <i class="fa fa-chevron-left"></i> 浅谈mysql优化
+              <a href="/2018/03/22/基于lnnmp搭建个人博客/" rel="next" title="基于lnnmp搭建个人博客">
+                <i class="fa fa-chevron-left"></i> 基于lnnmp搭建个人博客
               </a>
             
           </div>
@@ -1013,8 +1097,8 @@ fastcgi缓存定义示例：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/22/基于lnnmp搭建个人博客/" rel="prev" title="基于lnnmp搭建个人博客">
-                基于lnnmp搭建个人博客 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/26/nginx实现四层和七层负载均衡/" rel="prev" title="nginx实现四层和七层负载均衡">
+                nginx实现四层和七层负载均衡 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1371,7 +1455,7 @@ fastcgi缓存定义示例：
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">875k</span>
+    <span title="站点总字数">879k</span>
   
 
   
@@ -1382,7 +1466,7 @@ fastcgi缓存定义示例：
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">13:16</span>
+    <span title="站点阅读时长">13:19</span>
   
 </div>
 
