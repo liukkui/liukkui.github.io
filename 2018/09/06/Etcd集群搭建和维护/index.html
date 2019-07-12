@@ -144,7 +144,7 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="Etcd原理">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-28T14:55:13.954Z">
+<meta property="og:updated_time" content="2019-07-12T14:47:10.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Etcd集群搭建和维护">
 <meta name="twitter:description" content="Etcd原理">
@@ -325,7 +325,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">34</span></a>
 
   </li>
         
@@ -344,7 +344,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">61</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">62</span></a>
 
   </li>
         
@@ -546,7 +546,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">17k</span>
+                <span title="本文字数">18k</span>
               
 
               
@@ -560,7 +560,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">15 分钟</span>
+                <span title="阅读时长">16 分钟</span>
               
             </div>
           
@@ -769,26 +769,38 @@
         #将之前的数据全部删除，重新自动创建
 
 6.关于数据存储的说明
-在数据存储的目录中，在启动的时候，文件目录结果如下所示：
-    ~]# tree /var/lib/etcd/
-    /var/lib/etcd/
-    └── default.etcd
-        └── member
-            ├── snap
-            │   └── db
-            └── wal
-                ├── 0000000000000000-0000000000000000.wal
-                └── 0.tmp
-在备份中的文件目录如下所示：
-    ~]# tree /data/etcdbak/
-    /data/etcdbak/
-    └── back_20190628
-        └── member
-            ├── snap
-            │   └── db
-            └── wal
-                └── 0000000000000000-0000000000000000.wal
-    #从上面可以看到，备份会默认丢弃tmp文件，而tmp文件主要是未提交的数据记录
+    首先etcd对数据的持久化采用的是binlog日志，也称WAL，即Write-Ahead-Log加Snapshot快照的方式，即数据目录是
+    由snap+WAL（binlog）两个目录组成的；
+    在数据存储的目录中，在启动的时候，文件目录结果如下所示：
+        ~]# tree /var/lib/etcd/
+        /var/lib/etcd/
+        └── default.etcd
+            └── member
+                ├── snap
+                │   └── db
+                └── wal
+                    ├── 0000000000000000-0000000000000000.wal
+                    └── 0.tmp
+    snap:
+        用于存放快照数据，etcd为防止WAL文件过多会创建快照，snap用于存储etcd的快照数据状态；
+    wal：
+        用于存放预写式日志，其最大的作用是记录整个数据变化的全部历程。
+        在etcd中，所有数据的修改在提交前，都要先写入WAL中，使用WAL进行数据的存储使得etcd拥有故障快速回复和数据回滚这两个重要功能；
+    故障快速恢复：
+        如果你的数据遭到破坏，就可以通过执行所有WAL中记录的修改操作，快速从最原始的数据恢复到数据损坏之前的状态；
+    数据回滚undo/重做redo：
+        因为所有的修改操作都被记录在WAL中，所以进行回滚或重做时，只需要反向或正向执行日志中的操作即可；
+
+    在备份中的文件目录如下所示：
+        ~]# tree /data/etcdbak/
+        /data/etcdbak/
+        └── back_20190628
+            └── member
+                ├── snap
+                │   └── db
+                └── wal
+                    └── 0000000000000000-0000000000000000.wal
+        #从上面可以看到，备份会默认丢弃tmp文件，而tmp文件主要是未提交的数据记录
 </code></pre><h3 id="附录1：配置etcd集群需要设置的参数项"><a href="#附录1：配置etcd集群需要设置的参数项" class="headerlink" title="附录1：配置etcd集群需要设置的参数项"></a>附录1：配置etcd集群需要设置的参数项</h3><pre><code>etcd的主配置为/etc/etcd/etcd.conf，各节点上使用的个别配置参数的取值会有不同，主要是需要分别根据节点自身的环境进行取值。需要配置的各参数说明如下：
 ETCD_DATA_DIR=&quot;/var/lib/etcd/k8s.etcd&quot;
     集群数据目录，可保持默认或按需取值；建议各节点保持一致；
@@ -842,9 +854,7 @@ ETCD_PEER_TRUSTED_CA_FILE
                 etcdbak/20181220/member/snap/
                 etcdbak/20181220/member/wal/
                 etcdbak/20181220/member/wal/0000000000-000000000000.wal
-            ~]# scp etcdbak.tar.gz 192.168.34.128:/etcd/
-    1.3.关于数据存储的说明
-    1.4.单节点扩展成集群         
+            ~]# scp etcdbak.tar.gz 192.168.34.128:/etcd/       
 
 2.关闭其中一台etcd
     [root@etcd02 ~]# systemctl stop etcd   #关闭etcd
@@ -860,7 +870,7 @@ ETCD_PEER_TRUSTED_CA_FILE
     cluster is degraded
         #cluster is degraded表示etcd集群被降级了，而且短时间内重新选举etcd02为leader;仍然可以对外提供服务；
 
-3.主机迁移
+ 3.主机迁移
     有的时候，物理机需要下线维修，从而需要将数据拷贝到其他的机器上，从而在这里使用第三台机器来进行迁移；
     在这里进行恢复的时候，必须按照步骤进行恢复，首先停止需要停止的机器的etcd进程，然后将数据拷贝到新机器的数据目录中:
     ~]# scp -r /etcd/   192.168.34.117:/etcd/   #拷贝数据
@@ -869,12 +879,16 @@ ETCD_PEER_TRUSTED_CA_FILE
     ~]# etcdctl member update 此处写上面找到的etcd编号
     ~]# etcdctl member list
         #update后，就会把被替换掉的etcd的IP改成新的etcd服务器的IP；
-
-4.扩容
-    ~]# 先做好证书并上传
-    ~]# etcdctl member add etcd04 https://etcd03.cre.io:2380&quot;
-    ~]# etcdctl member list  
-        #此时就可以看到新的etcd了    
+    备注：
+        假设运行很久的etcd集群的binlog里有20万条操作记录，某一节点down且无法恢复，需要在集群中重新添加一台新的节点，这个时候master就需要把整个数据库复制到新加入的节点，master通过raft协议将整个binlog复制给slave节点，slave再将binlog在本地重放，这样做会非常耗时，因此一般的做法是：
+            对整个数据库定期打快照，先将快照复制到新节点上，然后剩下的数据再使用binlog方式由master-&gt;slave上复制；
+4.4.扩容-etcd集群运行时重配置
+    出于安全考虑。etcd所有运行时的重配置都必须经过两个阶段：广播新的配置和启动新的集群：
+    1.通知集群新的配置
+        要向etcd集群增加一个member，需要调用一次用于向集群增加member的API，这是增加节点的必经之路，只有当集群同意该配置更新之后，该API才能正确返回；
+    2.启动新集群
+        为了加etcd节点加入一个现有集群，需要指定正确的initial-cluster,并将initial-cluster-state设置成existing，待新节点启动
+        后，首先它会连一次现有集群，并验证当前集群的配置是否与启动参数initial-cluster指定的匹配，在新节点成功启动后，集群就会实现期望的配置；
 
 5.缩容
     当集群需要缩小规模的时候，主要直接移除节点，那么节点上etcd进程会被停止。
@@ -1126,7 +1140,7 @@ ETCD_PEER_TRUSTED_CA_FILE
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-count">62</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1207,9 +1221,7 @@ ETCD_PEER_TRUSTED_CA_FILE
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-count">34</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1422,7 +1434,7 @@ ETCD_PEER_TRUSTED_CA_FILE
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">926k</span>
+    <span title="站点总字数">954k</span>
   
 
   
@@ -1433,7 +1445,7 @@ ETCD_PEER_TRUSTED_CA_FILE
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:02</span>
+    <span title="站点阅读时长">14:27</span>
   
 </div>
 

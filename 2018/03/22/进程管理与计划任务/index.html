@@ -169,7 +169,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/进程管理与计划任务/23.jpg">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/进程管理与计划任务/24.jpg">
 <meta property="og:image" content="https://www.liukui.tech/2018/03/22/进程管理与计划任务/25.jpg">
-<meta property="og:updated_time" content="2019-04-20T15:29:25.574Z">
+<meta property="og:updated_time" content="2019-06-30T07:47:05.540Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进程管理与计划任务">
 <meta name="twitter:description" content="进程管理与计划任务">
@@ -351,7 +351,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">34</span></a>
 
   </li>
         
@@ -370,7 +370,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">61</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">62</span></a>
 
   </li>
         
@@ -565,7 +565,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">6.7k</span>
+                <span title="本文字数">9.2k</span>
               
 
               
@@ -579,7 +579,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">6 分钟</span>
+                <span title="阅读时长">8 分钟</span>
               
             </div>
           
@@ -855,6 +855,53 @@ crontab命令
         /etc/cron.daily/tmpwatch 定期执行清除临时文件
     /etc/cron.weekly 
     /etc/cron.monthly 
+</code></pre><h3 id="附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现"><a href="#附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现" class="headerlink" title="附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现"></a>附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现</h3><pre><code>1. crontab与环境变量
+    不要假定cron知道所需要的特殊环境，它其实并不知道。所以你要保证在shelll脚本中提供所有必要的路径和环境变量，除了一些自动设置的全局变量。所以注意如下3点：
+    1）脚本中涉及文件路径时写全局路径；
+    2）脚本执行要用到java或其他环境变量时，通过source命令引入环境变量，如：
+        cat start_cbp.sh
+        #!/bin/sh
+        source /etc/profile
+        export RUN_CONF=/home/d139/conf/platform/cbp/cbp_jboss.conf
+        /usr/local/jboss-4.0.5/bin/run.sh -c mev &amp;
+    3）当手动执行脚本OK，但是crontab死活不执行时。这时必须大胆怀疑是环境变量惹的祸，并可以尝试在crontab中直接引入环境变量解决问题。如：
+        0 * * * * . /etc/profile;/bin/sh /var/www/java/audit_no_count/bin/restart_audit.sh
+
+2. 其他应该注意的问题
+    1）新创建的cron job，不会马上执行，至少要过2分钟才执行。如果重启cron则马上执行。
+    2）每条 JOB 执行完毕之后，系统会自动将输出发送邮件给当前系统用户。日积月累，非常的多，甚至会撑爆整个系统。所以每条 JOB 命令后面进行重定向处理是非常必要的： &gt;/dev/null 2&gt;&amp;1 。前提是对 Job 中的命令需要正常输出已经作了一定的处理, 比如追加到某个特定日志文件。
+    3）当crontab突然失效时，可以尝试/etc/init.d/crond restart解决问题。或者查看日志看某个job有没有执行/报错tail -f /var/log/cron。
+    4）千万别乱运行crontab -r。它从Crontab目录（/var/spool/cron）中删除用户的Crontab文件。删除了该用户的所有crontab都没了。
+    5）在crontab中%是有特殊含义的，表示换行的意思。如果要用的话必须进行转义\%，如经常用的date ‘+%Y%m%d’在crontab里是不会执行的，应该换成date ‘+\%Y\%m\%d’`。
+
+3.最近遇到了一些sh不能在crontab定时任务中自动执行的问题
+    期间由于不太了解，故走了一点弯路，现在总结下来可能第一次
+    进行设置遇到的问题。以绝后患！我所用过的操作系统为HP-unix&amp;linux&amp;sco-unix，均测试通过
+    1，首先确保sh脚本具有可执行属性
+        即chmod +x  ***.sh
+        或chmod +777 ***.sh
+    2，确保sh脚本手工执行正常
+        即在当前系统内手工执行sh脚本以后能收到自己期望得到的结果
+    3，加载环境变量
+        这个问题是经常容易被忽略的问题，通常我们在第二步的时候手动执行脚本能得到自己想要的结果，可是设置好crontab之后，总不能得到自己想要的结果，总感觉脚本没有被执行。或者执行后没有得到正常的结果。很多均是由于没有加载所在用户的环境变量所引起的。因此最好在自己的脚本首两行添加环境变量的导入。如下：其中telstar是我在操作系统下所在的用户。在该目录下执行ls -a可以查看到.cshrc文件。我们在自己的sh脚本中增加source 该文件，将本用户的环境变量加载，那么以下的内容就能正常被执行了
+        #!/bin/csh#source /telstar/.cshrc
+下面贴出我的定时重启tomcat的一个例子
+    #!/bin/csh#source /telstar/.cshrckill -9 `ps -ef | grep Djava.uti | grep -v tail | grep -v vi | grep -v grep | awk &apos;{print $2}&apos;`cd /telstar/tomcat/binsleep 15./startup.sh &amp;
+
+4.cron输出导致僵尸进程案例及解决
+    案例：
+        登录到主机发现服务器上有2个名称为[sh] &lt;defunct&gt;的进程
+        Ps –ef 带进程号查 发现是僵尸进程是restartTomcat.sh这类进程
+        杀掉这些僵尸进程
+        单纯使用kill -9 进程号是无法杀掉，需要kill -9 父进程号，子进程会自动被init进程接管，释放。
+        查询父进程是cron，root下有cron任务
+        [root@server mail]# crontab -l
+        50 23 * * * /bin/bash restartTomcat.sh
+        造成这些现象的原因是crontab中的程序执行，导致输出大量信息到标准设备上。
+        crontab 计划内容中定义命令，如果有大量输出信息，将会造成僵尸进程(defunct)；这时候应该在定义的命令后边加上 &quot;&gt; /dev/null 2&gt;&amp;1&quot;
+
+    解决办法:  把cron任务的输出定向到空设备上
+        即将crontab里面的每行命令后面加上 &gt; /dev/null 2&gt;&amp;1
 </code></pre>
       
     </div>
@@ -988,8 +1035,8 @@ crontab命令
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/22/基于lnnmp搭建个人博客/" rel="next" title="基于lnnmp搭建个人博客">
-                <i class="fa fa-chevron-left"></i> 基于lnnmp搭建个人博客
+              <a href="/2018/03/20/nginx实现web服务配置/" rel="next" title="nginx实现web服务配置">
+                <i class="fa fa-chevron-left"></i> nginx实现web服务配置
               </a>
             
           </div>
@@ -1072,7 +1119,7 @@ crontab命令
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-count">62</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1153,9 +1200,7 @@ crontab命令
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-count">34</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1334,7 +1379,7 @@ crontab命令
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管理与计划任务"><span class="nav-number">1.</span> <span class="nav-text">进程管理与计划任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程"><span class="nav-number">2.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程优先级"><span class="nav-number">3.</span> <span class="nav-text">进程优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Big-O：时间复杂度，用时和规模的关系"><span class="nav-number">4.</span> <span class="nav-text">Big O：时间复杂度，用时和规模的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程内存："><span class="nav-number">5.</span> <span class="nav-text">进程内存：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPC，进程间通信"><span class="nav-number">6.</span> <span class="nav-text">IPC，进程间通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的状态"><span class="nav-number">7.</span> <span class="nav-text">进程的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的分类"><span class="nav-number">8.</span> <span class="nav-text">进程的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pstree-进程间的树形结构"><span class="nav-number">8.1.</span> <span class="nav-text">pstree 进程间的树形结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ps"><span class="nav-number">8.2.</span> <span class="nav-text">ps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taskset-绑定进程至指定的CPU"><span class="nav-number">8.3.</span> <span class="nav-text">taskset 绑定进程至指定的CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#renice-调整进程优先级"><span class="nav-number">8.4.</span> <span class="nav-text">renice 调整进程优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pgrep"><span class="nav-number">8.5.</span> <span class="nav-text">pgrep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pidof-显示进程的进程编号"><span class="nav-number">8.6.</span> <span class="nav-text">pidof 显示进程的进程编号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uptime-显示系统启动的时间"><span class="nav-number">8.7.</span> <span class="nav-text">uptime 显示系统启动的时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#top-动态监测系统"><span class="nav-number">8.8.</span> <span class="nav-text">top 动态监测系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#free"><span class="nav-number">8.9.</span> <span class="nav-text">free</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vmstat-虚拟内存状态"><span class="nav-number">8.10.</span> <span class="nav-text">vmstat 虚拟内存状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iostat-显示io的负载情况，在sysstat"><span class="nav-number">8.11.</span> <span class="nav-text">iostat 显示io的负载情况，在sysstat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pmap-显示进程的内存占用情况"><span class="nav-number">8.12.</span> <span class="nav-text">pmap 显示进程的内存占用情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dstat-显示系统的占用，替代vmstat，iostat"><span class="nav-number">8.13.</span> <span class="nav-text">dstat 显示系统的占用，替代vmstat，iostat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iotop-显示进程的io占用的情况"><span class="nav-number">8.14.</span> <span class="nav-text">iotop 显示进程的io占用的情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lsof-查看进程打开的文件"><span class="nav-number">8.15.</span> <span class="nav-text">lsof 查看进程打开的文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kill"><span class="nav-number">8.16.</span> <span class="nav-text">kill</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业控制"><span class="nav-number">9.</span> <span class="nav-text">作业控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并行执行"><span class="nav-number">9.1.</span> <span class="nav-text">并行执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#计划任务"><span class="nav-number">9.2.</span> <span class="nav-text">计划任务</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管理与计划任务"><span class="nav-number">1.</span> <span class="nav-text">进程管理与计划任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程"><span class="nav-number">2.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程优先级"><span class="nav-number">3.</span> <span class="nav-text">进程优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Big-O：时间复杂度，用时和规模的关系"><span class="nav-number">4.</span> <span class="nav-text">Big O：时间复杂度，用时和规模的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程内存："><span class="nav-number">5.</span> <span class="nav-text">进程内存：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPC，进程间通信"><span class="nav-number">6.</span> <span class="nav-text">IPC，进程间通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的状态"><span class="nav-number">7.</span> <span class="nav-text">进程的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的分类"><span class="nav-number">8.</span> <span class="nav-text">进程的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pstree-进程间的树形结构"><span class="nav-number">8.1.</span> <span class="nav-text">pstree 进程间的树形结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ps"><span class="nav-number">8.2.</span> <span class="nav-text">ps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#taskset-绑定进程至指定的CPU"><span class="nav-number">8.3.</span> <span class="nav-text">taskset 绑定进程至指定的CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#renice-调整进程优先级"><span class="nav-number">8.4.</span> <span class="nav-text">renice 调整进程优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pgrep"><span class="nav-number">8.5.</span> <span class="nav-text">pgrep</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pidof-显示进程的进程编号"><span class="nav-number">8.6.</span> <span class="nav-text">pidof 显示进程的进程编号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uptime-显示系统启动的时间"><span class="nav-number">8.7.</span> <span class="nav-text">uptime 显示系统启动的时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#top-动态监测系统"><span class="nav-number">8.8.</span> <span class="nav-text">top 动态监测系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#free"><span class="nav-number">8.9.</span> <span class="nav-text">free</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vmstat-虚拟内存状态"><span class="nav-number">8.10.</span> <span class="nav-text">vmstat 虚拟内存状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iostat-显示io的负载情况，在sysstat"><span class="nav-number">8.11.</span> <span class="nav-text">iostat 显示io的负载情况，在sysstat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pmap-显示进程的内存占用情况"><span class="nav-number">8.12.</span> <span class="nav-text">pmap 显示进程的内存占用情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dstat-显示系统的占用，替代vmstat，iostat"><span class="nav-number">8.13.</span> <span class="nav-text">dstat 显示系统的占用，替代vmstat，iostat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iotop-显示进程的io占用的情况"><span class="nav-number">8.14.</span> <span class="nav-text">iotop 显示进程的io占用的情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lsof-查看进程打开的文件"><span class="nav-number">8.15.</span> <span class="nav-text">lsof 查看进程打开的文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kill"><span class="nav-number">8.16.</span> <span class="nav-text">kill</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业控制"><span class="nav-number">9.</span> <span class="nav-text">作业控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并行执行"><span class="nav-number">9.1.</span> <span class="nav-text">并行执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#计划任务"><span class="nav-number">9.2.</span> <span class="nav-text">计划任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现"><span class="nav-number">10.</span> <span class="nav-text">附录：crontab作为应用守护时，如何避免出现环境变量未加载的情况？如何避免crontab导致僵尸进程的出现</span></a></li></ol></div>
             
 
           </div>
@@ -1368,7 +1413,7 @@ crontab命令
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">926k</span>
+    <span title="站点总字数">954k</span>
   
 
   
@@ -1379,7 +1424,7 @@ crontab命令
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:02</span>
+    <span title="站点阅读时长">14:27</span>
   
 </div>
 
