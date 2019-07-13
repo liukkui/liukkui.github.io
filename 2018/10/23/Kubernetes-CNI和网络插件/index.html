@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-13T09:47:14.502Z">
+<meta property="og:updated_time" content="2019-07-13T10:29:36.221Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">31k</span>
+                <span title="本文字数">34k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">28 分钟</span>
+                <span title="阅读时长">31 分钟</span>
               
             </div>
           
@@ -784,6 +784,29 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     ~]# ls /opt/cni/bin/
         bridge  dhcp  flannel  host-device  host-local  ipvlan  loopback  macvlan  portmap  ptp  sample  tuning  vlan
             #确保这些二进制程序文件都生成了，后面安装flannel或者caclio时，会自动在此目录下查找对应网络插件的可执行文件，用于容器IP地址的分配；
+    其中：flannel用到的插件
+          - bridge
+          - flannel
+          - host-local
+          - loopback
+          - portmap   #可以只复制这5个插件到bin目录下即可
+    Flannel-CNI插件的配置文件可以包含多个plugin或由其调用其他plugin；Flannel-DaemonSet Pod运行以后会生成/run/flannel/subnet.env 文件，例如：
+        FLANNEL_NETWORK=10.244.0.0/16
+        FLANNEL_SUBNET=10.244.10.1/24
+        FLANNEL_MTU=1472
+        FLANNEL_IPMASQ=true
+    然后它利用这个文件信息去配置和调用`bridge`插件来生成容器网络，调用host-local来管理IP地址，例如：
+        {
+            &quot;name&quot;: &quot;mynet&quot;,
+            &quot;type&quot;: &quot;bridge&quot;,
+            &quot;mtu&quot;: 1472,
+            &quot;ipMasq&quot;: false,
+            &quot;isGateway&quot;: true,
+            &quot;ipam&quot;: {
+                &quot;type&quot;: &quot;host-local&quot;,
+                &quot;subnet&quot;: &quot;10.244.10.1/24&quot;
+            }
+        }
 4.以pod方式部署flannel；
     ~]# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
         #直接使用上面flannel项目的配置清单部署即可
@@ -832,6 +855,9 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
               &quot;Directrouting&quot;: true
             }
     2.如果需要使用host-gw模式的话，直接将Type的值改为host-gw即可。
+        &quot;Backend&quot;: {
+          &quot;Type&quot;: &quot;host-gw&quot;,
+        }
     3.关于net-conf.json里面还可以定义以下一些配置，如:
         1.SubnetLen：定义每个子网的掩码长度，默认为24。如果为24，那么10.244.0.0/16就会被分成255个子网，其中每个Worker节点会使用一个子网。
         每个子网里有多少个地址可用就意味着每个Worker节点可以运行多少个Pod。
@@ -915,6 +941,26 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 }
               ]
             }
+    7.验证flannel网络
+    在集群创建几个测试pod:
+        ~]# kubectl run test --image=busybox --replicas=3 sleep 30000`
+    ~]# kubectl get pod --all-namespaces -o wide|head -n 4
+        NAMESPACE     NAME                    READY     STATUS    RESTARTS   AGE       IP             NODE
+        default       busy-5956b54c8b-ld4gb   1/1       Running   0          9m        172.20.2.7     192.168.1.20
+        default       busy-5956b54c8b-lj9l9   1/1       Running   0          9m        172.20.1.5     192.168.1.21
+        default       busy-5956b54c8b-wwpkz   1/1       Running   0          9m        172.20.0.6     192.168.1.22
+    查看路由
+        ~]# ip route
+        default via 192.168.1.254 dev ens3 onlink 
+        192.168.1.0/24 dev ens3  proto kernel  scope link  src 192.168.1.20 
+        172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 linkdown 
+        172.20.0.0/24 via 192.168.1.22 dev ens3 
+        172.20.1.0/24 via 192.168.1.21 dev ens3 
+        172.20.2.0/24 dev cni0  proto kernel  scope link  src 172.20.2.1 
+    在各节点上分别 ping 这三个POD IP地址，确保能通：
+        ~]# ping 172.20.2.7
+        ~]# ping 172.20.1.5
+        ~]# ping 172.20.0.6
 </code></pre><p>–抓包测试<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png" alt="抓包测试"></p>
 <h3 id="7-部署Caclio"><a href="#7-部署Caclio" class="headerlink" title="7.部署Caclio"></a>7.部署Caclio</h3><p><a href="https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/calico" target="_blank" rel="noopener">caclio官方安装介绍</a><br>–caclio原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png" alt="caclio原理图"></p>
 <pre><code>1.安装方式：
@@ -923,6 +969,14 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         1.标准托管方式： Calico与kubernetes共用一套etcd集群存储数据
         2.kubernetes数据存储区分：Calico与kubernetes分别单独各自使用一套etcd集群存储数据；
         在线上一般是使用标准托管方式，因为维护一套etcd集群便于管理
+    3.caclio版本：
+        根据安装的k8s版本依赖的或者推荐的caclio版本安装即可；
+    4.安装前注意事项：
+        1.安装前检查主机名不能有大写字母，只能由小写字母、-、.组成 (regex: [a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*))(calico-node v3.0.6以上已经解决主机大写字母问题)；
+        2.安装前必须确保各节点主机名不重复：
+            calico node name由节点主机名决定，如果重复，那么重复节点在etcd中只存储一份配置，BGP邻居也不会建立。
+        3.安装之前必须确保kube-master和kube-node节点已经成功部署；
+        4.等待15s后（视网络拉取calico相关镜像速度），calico网络插件安装完成，删除之前kube-node安装时默认cni网络配置
 2.提供CNI插件
     下载地址：https://github.com/containernetworking/plugins/releases
     ~]# 上传CNI插件到k8s的所有node节点上；
@@ -1068,14 +1122,15 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             2.calico-node服务的主要参数：
                 CALICO_IPV4POOL_CIDR：&quot;192.168.0.0/16&quot;
                     Calico IPAM的IP地址池，Pod的IP地址将从该池中进行分配,默认是192.168.0.0/16，如果是规划的其他网络，需要修改正确；
-                FELIX_LOGSEVERITYSCREEN：info #日志级别,可以改为warning
-                FELIX_IPV6SUPPORT：flase  #是否启用IPV6，默认不启用 
+                FELIX_LOGSEVERITYSCREEN：info            #日志级别,可以改为warning
+                FELIX_IPV6SUPPORT：flase                 #是否启用IPV6，默认不启用 
+                FELIX_DEFAULTENDPOINTTOHOSTACTION:ACCEPT #默认允许Pod到Node的网络流量
                 CALICO_IPV4POOL_IPIP：
                     是否启用IPIP模式：启用IPIP模式时，Calico将在node上创建一个tunl0的虚拟隧道；你启用IPIP时，路由规则直接使用物理机网卡作为路由器转发。
                 备注：
                     IP Pool可以使用两种模式：BGP或IPIP。
                     启用IPIP模式时，设置CALICO_IPV4POOL_IPIP=&quot;always&quot;，不使用IPIP模式时，设置为&quot;off&quot;，此时将使用BGP模式，当k8s的node
-                    节点在同一网络时可以关闭IPIP功能来提高网络性能，不在一个网络时一定要开启IPIP功能，所以设置默认开启就行了；
+                    节点在同一网络时可以关闭IPIP功能来提高网络性能，当不在一个网络或者运行在公有云上需一定要开启IPIP功能，所以设置默认开启就行了；
         5.查看挂载的secret资源
             volumes:
               - name: etcd-certs
@@ -1107,7 +1162,13 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         IPv6 BGP status
         No IPv6 peer found.
         #使用calicoctl node status验证，每个node节点都是Established就是正常的
-        #calico是使用BGP协议，会自动学习node节点上的路由条目（route -n）;
+    BGP协议信息：
+        1.calico是使用BGP协议，会自动学习node节点上的路由条目（route -n）;
+        2.BGP协议是通过TCP连接来建立邻居的，因此可以用netstat命令验证BGP Peer
+        ~]# netstat -antlp|grep ESTABLISHED|grep 179
+            tcp   0  0 192.168.1.10:179 192.168.1.20:42316  ESTABLISHED 28479/bird      
+            tcp   0  0 192.168.1.10:179 192.168.1.21:40320  ESTABLISHED 28479/bird      
+            tcp   0  0 192.168.1.10:179 192.168.1.22:49330  ESTABLISHED 28479/bird
     ~]# kubectl get pod -n kube-system
         NAME                        READY     STATUS      RESTARTS   AGE
         calico-kube-controllers-795885ddbd-dr8t7   1/1   Running 0   1m
@@ -1748,7 +1809,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">961k</span>
+    <span title="站点总字数">964k</span>
   
 
   
@@ -1759,7 +1820,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:34</span>
+    <span title="站点阅读时长">14:36</span>
   
 </div>
 
