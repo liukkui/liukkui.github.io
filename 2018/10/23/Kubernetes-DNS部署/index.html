@@ -136,29 +136,25 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="MHA实现mysql的高可用">
-<meta name="keywords" content="MySql">
+  <meta name="description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
+<meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MHA实现mysql高可用">
-<meta property="og:url" content="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/index.html">
+<meta property="og:title" content="Kubernetes-DNS部署">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="MHA实现mysql的高可用">
+<meta property="og:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/MHA自动切换逻辑.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/MHA架构.png">
-<meta property="og:image" content="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/主节点自动切换.png">
-<meta property="og:updated_time" content="2019-06-05T14:26:57.955Z">
+<meta property="og:updated_time" content="2019-07-13T15:29:59.416Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MHA实现mysql高可用">
-<meta name="twitter:description" content="MHA实现mysql的高可用">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/MHA自动切换逻辑.png">
+<meta name="twitter:title" content="Kubernetes-DNS部署">
+<meta name="twitter:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/">
 
 
 
@@ -168,7 +164,7 @@
   };
 </script>
 
-  <title>MHA实现mysql高可用 | Coool's Blog</title>
+  <title>Kubernetes-DNS部署 | Coool's Blog</title>
   
 
 
@@ -454,7 +450,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/05/20/MHA实现mysql高可用/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -471,7 +467,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MHA实现mysql高可用
+          <h1 class="post-title" itemprop="name headline">Kubernetes-DNS部署
               
             
           </h1>
@@ -479,10 +475,6 @@
 
         <div class="post-meta">
                   
-            <i class="fa fa-thumb-tack"></i>
-            <font color="808080">置顶</font>
-            <span class="post-meta-divider">|</span>
-          
           <span class="post-time">
 
             
@@ -501,7 +493,7 @@
                 
               
 
-              <time title="创建时间：2017-05-20 08:00:00" itemprop="dateCreated datePublished" datetime="2017-05-20T08:00:00+08:00">2017-05-20</time>
+              <time title="创建时间：2018-10-23 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-23T08:00:00+08:00">2018-10-23</time>
             
 
             
@@ -519,14 +511,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a></span>
 
                 
                 
@@ -554,7 +539,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">11k</span>
+                <span title="本文字数">9.7k</span>
               
 
               
@@ -568,7 +553,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">10 分钟</span>
+                <span title="阅读时长">9 分钟</span>
               
             </div>
           
@@ -588,65 +573,225 @@
       
 
       
-        <h3 id="MHA实现mysql的高可用"><a href="#MHA实现mysql的高可用" class="headerlink" title="MHA实现mysql的高可用"></a>MHA实现mysql的高可用</h3><a id="more"></a>
-<pre><code>问题引入：
-    1.首先要知道无论是mysql的主从架构、主主架构都只是解决了mysql的读请求的负载均衡，对mysql的写请求没有任何平均负载的效果；
-        注意：双主模型只是为了实现高可用(任何一个主节点down机后还可以提供写操作)，它只能分摊多操作，不能分摊写操作；
-    2.因为如果想让mysql每个节点分摊一部分写操作，那么只有对mysql做切分；
-        1.垂直切分：分库
-            1.将一个库中的多张表(无跨库join的需求)分割放到多台物理服务器上，这样
-            就意味着读和写操作只能到特定的服务器上，而且每个服务器上只有整个数据库集的一部分；
-            2.当需要读取全部数据时就需要在在多台数据库上读取出来然后再应用程序级别整合，这种框架类似于mysql的中间件，称之为mysql的切分框架；
-            3.如果能分库通常意味着业务本身是可以通过多个数据库完成读写操作的，这时只需要在应用程序上配置完从分库查询的；
-        2.水平切分：分表，sharding
-            1.当不能使用垂直切分时(多张表写入数据量很大，且不能分库存放是)，就只
-            能通过将多张表进行表切分存放这种方式就是水平切分；
-            2.当然将表水平切分的方式有很多种，比如按ID号、按年龄、hash(ID、年龄)等进行分表存放；
-            3.如果是分表方式就意味着前端必须要有个中间件，这个中间件有：cobar,Mycat等；
-    3.因此mysql服务器要想能够实现分摊写操作，主从复制是做不到的，只能通过水平切分或者垂直切分；
-    4.把一个数据库切分成多个片段又必然会带来其中任何一个片段出现故障都会导致数据丢失，则又回到了分片--&gt;分片主从--&gt;MMM、MMA
-
-解决方案：
-    1.mysql自带的主从、主主架构都各自存在很多问题，而为了负载均衡写操作的分片sharding方式又会带来主从问题，而这个问
-    题又回到了master高可用上来了；
-    2.因此在主从(分片/主库)架构上，有很多第三方辅助性工具工作在一个单独的节点上并且基于心跳方式周期性监控主从架构中的
-    主节点，一旦发现主节点down，就会自动提升其中的一个从节点为新的主节点；
-    3.因此在mysql级别纯粹负责实现mysql主从复制结构中主节点高可用性，这种高可用机制是通过提升主从架构中的从节点为主节
-    点完成的，而不是通过master active/master inactive来实现的；
-    4.这种高可用方案主要有两类：MMM和MHA
-        MMM:Multi Master Mysql
-        MHA:Master High Variables
-        注意：
-            MMM、MHA只是提供master节点高可用方案，它是建构在主从复制集群之上的方案；
-</code></pre><p>–MHA自动切换逻辑<br><img src="/2017/05/20/MHA实现mysql高可用/MHA自动切换逻辑.png" alt="MHA自动切换逻辑"></p>
-<pre><code>MHA:必须基于一主多从架构实现
-    1.MHA自动切换逻辑:
-        1.对主节点进行监控，可实现自动故障转移至其它从节点；通过提升某一从节点为新的主节点，基于主从复制实现；那么
-        MHA是如何解决自动切换和数据完整的？
-        如图示：
-            1.当master出现故障时，为了避免一些未复制到从节点的lost events二进制事件丢失，MHA会先在自己管理节点本地保存一份master的二进制
-            日志副本；
-            2.而且会从各个从节点的中继日志中的事件指针指向的位置分析出来哪个从节点从master上复制的数据更多，然后把
-            事先保存在本地的lost events应用到这个同步数据多的从节点上；
-            3.然后再把其他从节点的master指向新的主节点，从而提升一个从节点称为新的主节点；
-            4.为了能够完成对主从节点的信息监控，MHA需要依赖于SSH服务；
-        2.Manager节点需要部署在独立的主机之上，而且MHA可以监控多个mysql主从复制集群；
-    2.MHA工作原理
-        1.从宕机崩溃的master保存二进制日志事件（binlog events）
-        2.识别含有最新更新的slave
-        3.应用差异的中继日志（relay log）到其他的slave
-        4.应用从master保存的二进制日志事件（binlog events）
-        5.提升一个slave为新的master，一般在10s左右
-        6.使其他的slave连接新的master进行复制
-
-Galera Cluster工作原理：多主模型
-    1.Galera-Cluster使用的不是mysql协议，它不是在mysql层通过二进制日志、中继日志来复制的，而是在最底层通过存储级别基于wsrep协议完成；
-    2.任何一节点都可读写，不需要主从复制，实现多主读写，实现的是多主方案的实现，前端也不需要再使用r/w spliter;
-    3.基于wsrep(MySQL extended with the Write Set Replication)通过wsrep协议在全局实现复制；
-</code></pre><h3 id="MHA的实现"><a href="#MHA的实现" class="headerlink" title="MHA的实现"></a>MHA的实现</h3><p>–MHA集群架构<br><img src="/2017/05/20/MHA实现mysql高可用/MHA架构.png" alt="MHA集群架构"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line">1.架构角色和软件包：</span><br><span class="line">    1.依赖于epel源，需启用</span><br><span class="line">    2.MHA管理节点：Manager工具包和Node工具包</span><br><span class="line">        1.MHA通常单独部署在一台独立的机器上管理多个master/slave集群，每个master/slave集群称作一个application；</span><br><span class="line">        2.当然在没有故障时，也可以手动切换master节点；</span><br><span class="line">        3.在管理节点上安装两个包： </span><br><span class="line">            mha4mysql-manager     </span><br><span class="line">            mha4mysql-node</span><br><span class="line">    3.数据库各节点：安装Node工具包</span><br><span class="line">        1.运行在每台Mysql服务器上master/slave/manager,它通过监控具备解析和清理logs功能的脚本来加快故障转移；</span><br><span class="line">        2.node安装完之后会有4个脚本程序能够辅助完成日志分析各个slave上的数据多少和中继日志中的位置从而实现提升一个从为主节点；</span><br><span class="line">        3.在被管理节点安装：   </span><br><span class="line">            mha4mysql-node </span><br><span class="line">    4.MHA软件由两部分组成，Manager工具包和Node工具包</span><br><span class="line">    5.Manager工具包主要包括以下几个工具： </span><br><span class="line">        masterha_check_ssh         用来检查MHA的SSH配置状况 masterha_check_repl        用来检查MySQL复制状况(基于主从架构)</span><br><span class="line">        masterha_manger            用来启动MHA主程序</span><br><span class="line">        masterha_check_status      用来检测当前MHA运行状态 </span><br><span class="line">        masterha_master_monitor    用来检测master是否宕机 </span><br><span class="line">        masterha_master_switch     故障转移（自动或手动） masterha_conf_host         添加或删除配置的server信息 </span><br><span class="line">        masterha_stop       #用来关闭MHA服务的工具，当然也可以使用kill命令</span><br><span class="line">    6.Node工具包：</span><br><span class="line">        save_binary_logs       </span><br><span class="line">            #保存和复制master的二进制日志</span><br><span class="line">        apply_diff_relay_logs </span><br><span class="line">            #识别差异的中继日志事件并将其差异的事件应用于到其他的slave </span><br><span class="line">        filter_mysqlbinlog  </span><br><span class="line">            #去除不必要的ROLLBACK事件（MHA已不再使用此工具） </span><br><span class="line">        purge_relay_logs    </span><br><span class="line">            #由MHA负责清除各节点的中继日志（不会阻塞SQL线程），而不是由mysql自己去清理和下面那个参数有关；</span><br><span class="line">    7.自定义扩展： </span><br><span class="line">        因为只依靠上面Manager和Node提供的工具还不足以实现MHA的完整功能，比如客户端应该访问的是一个VIP，当一个从提升</span><br><span class="line">        为主时对外提供服务的IP地址必然会改变，所以应该设置VIP，因为下面这几个工具都是为完善MHA功能的：</span><br><span class="line">            secondary_check_script： 通过多条网络路由检测master的可用性 </span><br><span class="line">            master_ip_ailover_script： </span><br><span class="line">                #更新Application使用的masterip </span><br><span class="line">                #实际上就是管理VIP的，实现VIP迁移的工具但是需要依赖于脚本实现</span><br><span class="line">                #当然也可以使用keepalived来实现；</span><br><span class="line">            shutdown_script：  强制关闭master节点</span><br><span class="line">                强制关闭故障的master节点，避免出现资源争抢的情况</span><br><span class="line">            report_script：  </span><br><span class="line">                #当发生主从切换时通过脚本通知给管理员</span><br><span class="line">            init_conf_load_script： 加载初始配置参数</span><br><span class="line">            master_ip_online_change_script：</span><br><span class="line">                在线更新master节点ip地址，即在不使用VIP的方案时手动修改</span><br><span class="line">    8.配置文件：   </span><br><span class="line">        因为MHA可以管理多个主从复制集群，每一个集群称为一个application,而这些集群可以有公用的配置段global和独自的配置段application；</span><br><span class="line">            global配置:</span><br><span class="line">                为各application提供默认配置      </span><br><span class="line">            application配置：</span><br><span class="line">                为每个主从复制集群 </span><br><span class="line">    注意：</span><br><span class="line">        为了尽可能的减少主库硬件损坏宕机造成的数据丢失，因此在配置MHA 的同时建议配置成MySQL 5.5的半同步复制；</span><br><span class="line"></span><br><span class="line">2.配置MHA实现：</span><br><span class="line">    1.因为每个从节点都有可能被提升为主节点，所以所有从节点都要开启二进制日志和中继日志；</span><br><span class="line">    2.主节点可以不开启中继日志(当主节点down了之后当做从节点被加进来时再开启也可以)，但是为了统计，主从最好都开启二进制日志和中继日志；</span><br><span class="line">    3.环境准备：</span><br><span class="line">        1.服务器：</span><br><span class="line">            node1:MHA manager(也可以部署在某一个从节点上)，10.10.0.3</span><br><span class="line">            node2:mysql master 10.10.0.5</span><br><span class="line">            node3:mysql slave1 10.10.0.6</span><br><span class="line">            node4:mysql slave2 10.10.0.7</span><br><span class="line">        2.各主机互相基于ssh-key验证</span><br><span class="line">            ssh-keygen</span><br><span class="line">            ssh 10.10.0.5(自己的IP)</span><br><span class="line">            scp /root/.ssh 10.10.0.3|6|7:/root/  #即可</span><br><span class="line">        3.各主机的时间需要同步</span><br><span class="line">    4.mysql主从配置</span><br><span class="line">        1.初始化主节点master配置:</span><br><span class="line">            ~]# vim /etc/my.cnf</span><br><span class="line">            [mysqld]</span><br><span class="line">            server-id=1</span><br><span class="line">            skip-name-resolve</span><br><span class="line">            innodb_file_per_table=1</span><br><span class="line">            relay-log=relay-bin</span><br><span class="line">            log-bin=master-bin</span><br><span class="line">            ...   #其他需要配置的参数根据实际情况添加即可</span><br><span class="line">        2.初始化两台从节点:</span><br><span class="line">            ~]# vim /etc/my.cnf</span><br><span class="line">            [mysqld]</span><br><span class="line">            server-id=2|3   #复制及群中的各节点的id均为唯一；</span><br><span class="line">            skip-name-resolve</span><br><span class="line">            innodb_file_per_table=1</span><br><span class="line">            relay-log=relay-bin</span><br><span class="line">            log-bin=slave1-bin</span><br><span class="line">            relay_log_purge=0  #关闭relay-log的自动清理功能</span><br><span class="line">                因为MHA要根据中继日志判断各个从节点的中继日志位置的，所以需要关闭mysql的中继日志自动清理功能，由MHA去清理中继日志；</span><br><span class="line">            read_only=1   #MHA根据read_only来判断主从节点的，一旦某个从提升为主时会自动改成read_only=0</span><br><span class="line">        3.创建主从复制账号和MHA的管理账号</span><br><span class="line">            mysql&gt; show master status;</span><br><span class="line">            +-------------------+-----------+</span><br><span class="line">            | Log_name          | File_size |</span><br><span class="line">            +-------------------+-----------+</span><br><span class="line">            | node2-bin.000001 |       245  | #从此位置后开始复制</span><br><span class="line">            +-------------------+-----------+</span><br><span class="line">            mysql&gt; grant replication slave on *.* to repluser@&apos;10.10.0.%&apos; identified by &apos;root123&apos;;</span><br><span class="line">                #创建复制账号</span><br><span class="line">            mysql&gt; grant all on *.* to mhauser@&apos;10.10.0.%&apos; identified by &apos;mha123&apos;;</span><br><span class="line">                #创建MHA账号用于管理各节点</span><br><span class="line">        4.设置change master to</span><br><span class="line">            主节点：mysql&gt; show master status;</span><br><span class="line">                +-------------------+-----------+</span><br><span class="line">                | Log_name          | File_size |</span><br><span class="line">                +-------------------+-----------+</span><br><span class="line">                | node2-bin.000001 |       245  | #创建用户前的二进制日志位置</span><br><span class="line">                +-------------------+-----------+</span><br><span class="line">            各从节点执行：</span><br><span class="line">                CHANGE MASTER TO</span><br><span class="line">                  MASTER_HOST=&apos;10.10.0.5&apos;, #主节点IP</span><br><span class="line">                  MASTER_USER=&apos;repluser&apos;,</span><br><span class="line">                  MASTER_PASSWORD=&apos;root123&apos;,</span><br><span class="line">                  MASTER_PORT=3306,</span><br><span class="line">                  MASTER_LOG_FILE=&apos;node2-bin.000001&apos;, #初始二进制日志</span><br><span class="line">                  MASTER_LOG_POS=245; #日志位置</span><br><span class="line">                mysql&gt; start slave;</span><br><span class="line">                    #各从节点设置完后启动复制线程</span><br><span class="line">                mysql&gt; show slave status\G;</span><br><span class="line">        5.在mysql主从节点都安装node安装包</span><br><span class="line">        ~]# yum install mha4mysql-node-0.56-0.el6.noarch.rpm</span><br><span class="line">            #el6的包同样适用于el7上，都可以使用；</span><br><span class="line">            #base和epel源，需要事先配置好epel；</span><br><span class="line">        ~]# rpm -qlp mha4mysql-node-0.56-0.el6.noarch.rpm </span><br><span class="line">            /usr/bin/apply_diff_relay_logs</span><br><span class="line">            /usr/bin/filter_mysqlbinlog</span><br><span class="line">            /usr/bin/purge_relay_logs</span><br><span class="line">            /usr/bin/save_binary_logs</span><br><span class="line">                #主要就是这四个程序</span><br><span class="line">    5.MHA管理节点上配置：10.10.0.3</span><br><span class="line">        1.安装manager包</span><br><span class="line">            ~]# yum install mha4mysql-manager-0.56-0.el6.noarch.rpm</span><br><span class="line">            ~]# yum install mha4mysql-node-0.56-0.el6.noarch.rpm</span><br><span class="line">                #管理节点两个包都需要安装，依赖base和epel源</span><br><span class="line">        2.准备MHA的application配置文件</span><br><span class="line">            1.因为MHA可以管理多个主从复制集群，每一个集群称为一个application，所以可以在/etc/mha/路径下创建</span><br><span class="line">            多个*.cnf文件为监控的每个集群设置独有的配置信息；</span><br><span class="line">            2.这里以mysqlcluster1.cnf名为例为上面的集群定义配置信息</span><br><span class="line">                ~]# vim /etc/mha/mysqlcluster1.cnf  </span><br><span class="line">                [server default]  #为各集群提供默认配置</span><br><span class="line">                user=mhauser    #上面创建好的MHA管理账号</span><br><span class="line">                password=mha123 #管理账号的密码</span><br><span class="line">                manager_workdir=/etc/mha/cluster1/ </span><br><span class="line">                    #当前集群的工作目录且目录会自动创建</span><br><span class="line">                manager_log=/etc/mha/cluster1/manager.log  </span><br><span class="line">                    #当前集群的监控日志文件</span><br><span class="line">                remote_workdir=/etc/mha/cluster1/</span><br><span class="line">                    #在管理节点上(master/slave)准备MHA的工作目录和上面一致即可</span><br><span class="line">                ssh_user=root   #ssh的用户为root用户，无需密码已经认证</span><br><span class="line">                repl_user=repluser  #主从复制集群的账号</span><br><span class="line">                repl_password=root123 #主从复制集群的账号的密码</span><br><span class="line">                ping_interval=1     #MHA每隔多久检测master是否在线，1s</span><br><span class="line"></span><br><span class="line">                [server1]</span><br><span class="line">                hostname=10.10.0.5  #master节点信息</span><br><span class="line">                # ssh_port=22022    #如果ssh使用了非默认端口，修改即可</span><br><span class="line">                candidate_master=1 #将来此节点是否可以提升为新的master节点</span><br><span class="line">                [server2]</span><br><span class="line">                hostname=10.10.0.6  #slave1节点信息</span><br><span class="line">                # ssh_port=22022</span><br><span class="line">                candidate_master=1</span><br><span class="line">                #no_master=1  #如果不想提升此节点为master，启用此项即可</span><br><span class="line">                [server3]</span><br><span class="line">                hostname=10.10.0.7  #slave2节点信息</span><br><span class="line">                candidate_master=1</span><br><span class="line">    6.配置完之后检查是否满足MHA的基本功能</span><br><span class="line">        1.检查各主机间SSH是否成功</span><br><span class="line">            masterha_check_ssh --conf=/etc/mha/mysqlcluster1.cnf</span><br><span class="line">                #显示SSH connection tests passed successfully说明是成功的</span><br><span class="line">        2.检查主从复制是否成功</span><br><span class="line">            masterha_check_repl --conf=/etc/mha/mysqlcluster1.cnf</span><br><span class="line">                #显示Mysql Replication Health is OK,说明是正常的</span><br><span class="line">    7.启动MHA</span><br><span class="line">        当测试完成后可以启动MHA了</span><br><span class="line">        ~]# nohup masterha_manager --conf=/etc/mha/mysqlcluster1.cnf</span><br><span class="line">            #剥离当前终端在后台运行MHA</span><br><span class="line">        ~]# masterha_check_status --conf=/etc/mha/mysqlcluster1.cnf</span><br><span class="line">            mysqlcluster1 is running(0:PING_OK)，master:10.10.0.5</span><br><span class="line">                #启动了MHA，可以通过此命令查看MHA集群的状态；</span><br><span class="line">                #表示MHA监控的mysqlcluster1集群状态时OK的，并显示master信息</span><br><span class="line"></span><br><span class="line">3.MHA故障转移测试</span><br><span class="line">    1.手动把主节点down机</span><br><span class="line">        ~]# killall mysqld mysqld_safe</span><br><span class="line">    2.可以通过查询cat /etc/mha/cluster1/manager.log日志查看故障转移的节点信息</span><br><span class="line">    3.在从节点上验证</span><br><span class="line">        此时发现10.10.0.6这个从节点被提升为主节点了；</span><br><span class="line">        mysql&gt; show Global variables like &apos;read_only&apos;;</span><br><span class="line">            +---------------+-------+</span><br><span class="line">            | read_only     | OFF   |  #之前从节点上设置的只读被MHA关闭了</span><br><span class="line">            +---------------+-------+</span><br><span class="line">        mysql&gt; show master status;</span><br><span class="line">            #可以看到自己时主节点</span><br><span class="line">    4.将原来的master再加入到这个主从集群(修复上线的节点)</span><br><span class="line">        1.在新的主节点上做一次完全备份并记录二进制日志名字和位置</span><br><span class="line">        2.将备份出的数据库导入到这个从节点上，并从上面记录的二进制日志文件和位置之后开始复制；</span><br><span class="line">        3.这里要把它当成一个新的从节点加入集群的方式进行安全操作；</span><br><span class="line">    5.停止MHA</span><br><span class="line">        ~]# masterha_stop --conf=/etc/mha/mysqlcluster1.cnf</span><br><span class="line">            #使用masterha_stop指定配置文件停止一个监控集群</span><br><span class="line">    6.注意：</span><br><span class="line">        1.MHA一旦监测并提升一个从节点为主节点后，MHA程序会自动退出的，需要人为的再次将MHA启动起来；</span><br><span class="line">        2.如果不想再次手动启动MHA，可以写一个监控脚本即可</span><br><span class="line">    7.备注：</span><br><span class="line">        1.MHA切换时，主节点的IP肯定是变化了，对于前端应用程序来说就很方便，所以一般应用程序访问的是VIP，这里通过</span><br><span class="line">        master_ip_ailover_script的脚本来实现VIP漂移；</span><br><span class="line">        2.当然这里也可以使用keepalived的来实现；</span><br><span class="line">        3.为了避免故障的master上线出现脑裂的情况，也需要使用shutdown_script脚本给故障的master发送shutdown -h now关闭服务器；</span><br></pre></td></tr></table></figure>
-<p>–主节点自动切换<br><img src="/2017/05/20/MHA实现mysql高可用/主节点自动切换.png" alt="主节点自动切换"></p>
-
+        <h3 id="kubernetes-DNS部署-KubeDNS-CoreDNS"><a href="#kubernetes-DNS部署-KubeDNS-CoreDNS" class="headerlink" title="kubernetes-DNS部署(KubeDNS/CoreDNS)"></a>kubernetes-DNS部署(KubeDNS/CoreDNS)</h3><a id="more"></a>
+<pre><code>为什么要部署dns?
+    因为kuberntes中的所有pod都是基于service域名解析后，再负载均衡分发到service后端的各个pod服务中，那么如果没有DNS解析，则无法查到各个
+    服务对应的service服务;
+</code></pre><h3 id="1-部署KubeDNS"><a href="#1-部署KubeDNS" class="headerlink" title="1.部署KubeDNS"></a>1.部署KubeDNS</h3><p><a href="https://github.com/kubernetes/dns" target="_blank" rel="noopener">kube-dns项目</a></p>
+<pre><code>1.准备镜像
+    kubeDNS部署需要3个镜像文件
+    ~]# ls /images
+        k8s-dns-dnsmasq-nanny-amd64_1.14.13.tar.gz  #dnsmasq
+        k8s-dns-kube-dns-amd64_1.14.13.tar.gz       #kube-dns程序
+        k8s-dns-sidecar-amd64_1.14.13.tar.gz        #辅助容器
+            #sidecar是一个监控健康模块，同时向外暴露metrics记录。
+    ~]# docker load -i k8s-dns-dnsmasq-nanny-amd64_1.14.13.tar.gz
+    ~]# docker load -i k8s-dns-kube-dns-amd64_1.14.13.tar.gz
+    ~]# docker load -i k8s-dns-sidecar-amd64_1.14.13.tar.gz
+    ~]# docker tag gcr.io/google-containers/k8s-dns-dnsmasq-nanny-amd64:1.14.13 192.168.1.101/baseimage/k8s-dns-dnsmasq-nanny-amd64:1.14.13
+        #重新打tag标签，其他两个镜像一样操作
+    ~]# docker push 192.168.1.101/baseimage/k8s-dns-dnsmasq-nanny-amd64:1.14.13
+        #上传到本地的harbor的baseimage仓库中
+2.修改kube-dns.yaml清单
+    清单中有几个需要根据实际规划的IP和域名要更改
+    ~]# vim kube-dns.yaml #修改yaml清单，只显示需要修改的，没有修改的使用...代替
+        apiVersion: v1
+        kind: Service
+        ...
+        spec:
+          selector:
+            k8s-app: kube-dns
+          clusterIP: 172.31.254.254   #和kubelet的cluster-dns参数的值一样
+          ......
+        ---
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        ...
+            - name: kubedns
+            image: 192.168.1.101/baseimages/k8s-dns-kube-dns-amd64:1.14.13
+            resources:
+              limits:
+                memory: 4096Mi         #建议内存限制修改为大于4G；
+              requests:
+                cpu: 100m
+                memory: 70Mi
+              args:
+              - --domain=cre.local. #和kubelet的cluster-domain参数的值一样
+              - --dns-port=10053    #在集群内部dns服务的端口
+              - --config-dir=/kube-dns-config
+        ...
+            - name: dnsmasq
+            image: 192.168.1.101/baseimages/k8s-dns-dnsmasq-nanny-amd64:1.14.13
+            args:
+            - --server=/cre.local./127.0.0.1#10053      #修改k8s的搜索域
+            - --server=/creonline.local./192.168.1.160#53 
+            - --server=/creonline.local./192.168.1.180#53 
+        ...
+            - name: sidecar
+            image: 192.168.1.101/baseimages/k8s-dns-sidecar-amd64:1.14.13
+            args:
+            - --v=2
+            - --logtostderr
+            - --probe=kubedns,127.0.0.1:10053,kubernetes.default.svc.cre.local.,5,SRV
+            - --probe=dnsmasq,127.0.0.1:53,kubernetes.default.svc.cre.local.,5,SRV
+        ...
+        ###################################################################
+    需要修改的地方：
+    1.clusterIP: 172.31.254.254   
+        #和kubelet的cluster-dns参数的值一样,一般为service网络靠后的一个IP地址
+    2.kubedns、dnsmasq、sidecar使用的镜像
+        #修改为本地harbor镜像的地址
+    3.kubedns容器的内存限制
+        limits:
+            memory: 4096Mi     
+        #内存限制一定要修改成大于4G，不然dns解析会很慢；
+    4.kubedns、dnsmasq、sidecar的args中解析的域名：
+        #都修改为k8s集群事先定义好的集群后缀名：cre.local.
+    5.dnsmasq容器的args中添加解析k8s集群外的DNS服务器地址；
+    原因：
+        1.cre.local.是k8s集群内部的DNS后缀，但是公司内部还有内网的DNS服务器，比如：
+            内网DNS服务器域名后缀是：online.local.
+            支付业务使用的域名：
+                bj-cre-zhifu-vip.creonline.local  （生产环境的支付域名）
+                bj-cre-zhifu-vip.crepre.local     （测试环境的支付域名）
+                bj-cre-zhifu-vip.cretest.local     (开发环境的支付域名)
+        2.由于通常开发在代码中写的支付业务的域名是写的内网DNS服务器的记录，而k8s是解析不了的，因此在部署kube-dns时需要在dnsmasq中
+        加--server来指定内网DNS服务器的地址和端口；
+        --server=/creonline.local./192.168.1.160#53
+        --server=/crepre.local./192.168.1.170#53
+        --server=/cretest.local./192.168.1.180#53
+            #1.当需要解析集群外的生产环境后缀为creonline.local.的域名时，就解析到192.168.1.160这台DNS服务器去查询；
+            #1.当需要解析集群外的测试环境后缀为crepre.local.的域名时，就解析到192.168.1.170这台DNS服务器去查询；
+            #1.当需要解析集群外的开发环境后缀为cretest.local.的域名时，就解析到192.168.1.180这台DNS服务器去查询；
+3.部署kube-dns
+    ~]# kubectl apply -f kube-dns.yaml     #部署
+        service/kube-dns created
+        serviceaccount/kube-dns created
+        configmap/kube-dns created
+        deployment.extensions/kube-dns created
+    ~]# kubectl get pods -n kube-system | grep kube-dns
+        NAME                        READY    STATUS     RESTARTS   AGE
+        kube-dns-5b9b99d8bc-4wrpt    3/3     Running      0        10s
+            #可以看到3个kube-dns-pod都正常运行了
+4.测试DNS功能
+    ~]# kubectl create busybox --image=busybox sleep 36000
+        pod/busybox created
+    ~]# kubectl get pods
+        busybox      1/1       Running    0    20s 
+    ~]# kubectl get services --all-namespaces
+        NAMESPACE   NAME       TYPE      CLUSTER-IP   EXTERNAL-IP  PORT(S)
+        default     kubernetes CLUSTERIP 10.96.0.1     &lt;none&gt;      443/TCP
+        kube-system kube-dns   CLUSTERIP 10.96.254.254 &lt;none&gt;      53/UDP,53/TCP
+            #1.kubernetes这个svc就是k8s-apiserver在内部的访问接口
+            #2.kube-dns的svc;
+    ~]# kubectl exec busybox nslookup kubernetes  #解析kubernetes这个svc
+        Server: 10.96.254.254
+        Address 1: 10.96.254.254 kube-dns.kube-system.svc.cre.local
+        Name:   kubernetes
+        Address 1: 10.96.0.1 kubernetes.default.svc.cre.local
+            #因为busybox和kubernetes都在default名称空间，只写svc的name也是可以解析出来的；
+    ~]# kubectl exec busybox nslookup kube-dns     #kube-dns这个svc
+        nslookup: cant&apos;t resolve &apos;kube-dns&apos;
+        Server: 10.96.254.254
+        Address 1: 10.96.254.254 kube-dns.kube-system.svc.cre.local
+        command terminated with exit code 1
+            #此时解析和busybox不在同一namespace的kube-dns就不能解析了；
+    ~]# kubectl exec busybox nslookup kube-dns.kube-system.svc.cre.local
+        Server: 10.96.254.254
+        Address 1: 10.96.254.254 kube-dns.kube-system.svc.cre.local
+        Name: kube-dns.kube-system.svc.cre.local
+        Address 1: 10.96.254.254  kube-dns.kube-system.svc.cre.local
+        #使用完成格式的svc名称解析就可以解析出来了,所以在生产环境中规定都是写service的全称，而不是这些svc的名字；
+5.域名解析原理：
+    1.k8s是基于pod的service-name相互调用、解析的，不是deployment也不是pod
+    2.在k8s内部是有namespace的概念的，不同的ns之间的域名等信息是隔离的，不同ns中可以有相同的pod、service、controller等资源，如果
+    两个pod不在同一ns中是不能解析出其svc的（不是不能而是写全称）；
+    3.k8s为了解决第2条的问题，规定业务相互调用时必须写svc的全称,即指定解析的svc是在哪个名称空间下；
+        全称格式：
+            业务svc-name.所在名称空间.svc.cre.local
+        如：
+            tomcat1-svc.cre.svc.cre.local #cre名称空间下的tomcat1业务
+    比如：
+        nginx的upstream中调用tomcat时，server后填的的这个tomcat的全称:8080
+        upstream creonline {
+            hash $remote_addr consistent;
+            server tomcat1.cre.svc.cre.local:8080 weight=2 max_fails=0;
+            server tomcat2.cre.svc.cre.local:8080 weight=3max_fails=0;
+            server tomcat3.cre.svc.cre.local:8080 max_fails=0;
+            keepalive 32； 
+        }
+</code></pre><h3 id="2-部署CoreDNS"><a href="#2-部署CoreDNS" class="headerlink" title="2.部署CoreDNS"></a>2.部署CoreDNS</h3><p><a href="https://github.com/coredns/coredns" target="_blank" rel="noopener">coredns项目</a><br><a href="https://github.com/coredns/deployment" target="_blank" rel="noopener">deployment部署项目</a><br><a href="https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns/coredns" target="_blank" rel="noopener">kubernetes-addons中的coredns项目</a></p>
+<pre><code>部署方式：
+    1.coredns在github上是需要使用GO编译安装的，但是在deployment分支中的模板；项目上有人做好了coredns.yaml的模板和修改脚本，可以根据实际
+    情况修改成自己使用的coredns.yaml部署清单文件；
+        deploy.sh脚本：
+            其实就是输入自己定义的DNS-IP和service-CIDR网段，传递参数生成新的coredns.yaml清单；
+    2.在kubernetes项目中的附件addons中也可以下载coredns.yaml.sed模板清单，在使用deploy.sh脚本处理；
+    3.两个地方下载的coredns.yaml.sed清单内容还是有差别的，差别在于：
+        是否使用运行在K8s-Master节点上附加组件管理器（Addon-manager）管理附加组件（Addons）的服务，它管理着 $ADDON_PATH
+        （默认是 /etc/kubernetes/addons/）目录中的所有扩展，保证它们始终运行在期望状态；
+    4.Addon-manager支持两种标签：
+        1.addonmanager.kubernetes.io/mode=Reconcile：
+            表示无法通过API来修改，即：
+            1.如果通过API修改了，则会自动回滚到/etc/kubernetes/addons/中的配置；
+            2.如果通过API删除了，则会通过/etc/kubernetes/addons/中的配置自动重新创建；
+            3.如果从/etc/kubernetes/addons/中删除配置，则Kubernetes资源也会删除；
+            简而言之就是说只能通过修改/etc/kubernetes/addons/中的配置来修改；
+        2.addonmanager.kubernetes.io/mode=EnsureExists：
+            表示仅检查扩展是否存在而不检查配置是否更改，即：
+            1.可以通过API来修改配置，不会自动回滚
+            2.如果通过API删除了，则会通过/etc/kubernetes/addons/中的配置自动重新创建
+            3.如果从/etc/kubernetes/addons/中删除配置，则Kubernetes资源不会删除；
+    当然yaml模板中还有其他参数的差别，具体使用哪一个模板都可以，下文使用的是deployment分支中的模板；
+1.下载镜像并上传
+    coredns只需一个镜像即可，不像kubedns需要3个镜像
+    ~]# docker load -i coredns_1.2.2.tar #使用1.2.2版本（查看k8s依赖版本部署）
+    ~]# docker tag coredns/coredns:1.2.2 192.168.1.101/baseimage/coredns:1.2.2
+        #更改tag后上传到本地harbor上
+    ~]# docker push 192.168.1.101/baseimage/coredns:1.2.2
+2.下载coredns.yaml.sed的模板清单和处理脚本
+    ~]# wget https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/coredns.yaml.sed
+        #在deployment分支上下载coredns的模板清单
+    ~]# wget https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/deploy.sh
+        #下载处理脚本
+3.生成core.yaml清单，并修改拉取镜像地址
+    1.生成新的yaml清单
+        ~]# bash deploy.sh -i 10.96.254.254 -r &quot;10.96.0.0/12&quot; -s -t coredns.yaml.sed &gt; coredns.yaml
+        #1.向脚本传递DNS服务的地址是10.96.254.254，service的网段时10.96.0.0/12，然后生成实际的coredns.yaml清单文件；
+        #2.DNS地址就是kubelet配置的--cluster-dns参数的地址，在node节点上使用ps -ef | grep dns即可看到kubelet的信息；
+    2.修改yaml清单
+        ~]# vim coredns.yaml
+        ...
+        ---
+        apiVersion: v1
+        kind: ConfigMap
+        ...
+        data:
+          Corefile: |
+            .:53 {
+                errors
+                health
+                kubernetes cre.local. in-addr.arpa ip6.arpa  #修改为实际域名后缀
+        ...
+              containers:
+              - name: coredns
+                image: 192.168.1.101/baseimages/coredns:1.2.6 #从harbor拉取镜像
+        ...
+4.部署
+    ~]# kubectl apply -f coredns.yaml
+        serviceaccount/coredns created
+        clusterrole.rbac.authorization.k8s.io/system:coredns created
+        clusterrolebinding.rbac.authorization.k8s.io/system:coredns created
+        configmap/coredns created
+        deployment.extensions/coredns created
+        service/kube-dns created
+    ~]# kubectl get pods -n kube-system | grep coredns
+        NAME                        READY    STATUS     RESTARTS   AGE
+        coredns-5457cf5965-l6rkq    1/1      Running      0        20s
+        #正常运行
+5.测试DNS服务
+    和上文kube-dns测试步骤相同；
+</code></pre>
       
     </div>
 
@@ -712,7 +857,7 @@ Galera Cluster工作原理：多主模型
       
         <div class="post-tags">
           
-            <a href="/tags/MySql/" rel="tag"><i class="fa fa-tag"></i> MySql</a>
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
           
         </div>
       
@@ -779,8 +924,8 @@ Galera Cluster工作原理：多主模型
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/17/mysql备份恢复/" rel="next" title="mysql备份恢复">
-                <i class="fa fa-chevron-left"></i> mysql备份恢复
+              <a href="/2018/10/18/Docker的资源限制/" rel="next" title="Docker的资源限制">
+                <i class="fa fa-chevron-left"></i> Docker的资源限制
               </a>
             
           </div>
@@ -789,8 +934,8 @@ Galera Cluster工作原理：多主模型
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/06/DHCP和PXE/" rel="prev" title="DHCP和PXE">
-                DHCP和PXE <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/23/Kubernetes-CNI和网络插件/" rel="prev" title="Kubernetes-CNI和网络插件">
+                Kubernetes-CNI和网络插件 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1123,7 +1268,7 @@ Galera Cluster工作原理：多主模型
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MHA实现mysql的高可用"><span class="nav-number">1.</span> <span class="nav-text">MHA实现mysql的高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MHA的实现"><span class="nav-number">2.</span> <span class="nav-text">MHA的实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubernetes-DNS部署-KubeDNS-CoreDNS"><span class="nav-number">1.</span> <span class="nav-text">kubernetes-DNS部署(KubeDNS/CoreDNS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-部署KubeDNS"><span class="nav-number">2.</span> <span class="nav-text">1.部署KubeDNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-部署CoreDNS"><span class="nav-number">3.</span> <span class="nav-text">2.部署CoreDNS</span></a></li></ol></div>
             
 
           </div>
