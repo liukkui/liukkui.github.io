@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-13T11:02:33.311Z">
+<meta property="og:updated_time" content="2019-07-13T11:20:27.223Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">35k</span>
+                <span title="本文字数">37k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">32 分钟</span>
+                <span title="阅读时长">33 分钟</span>
               
             </div>
           
@@ -1190,10 +1190,38 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         calico-node-w2ntg           0/2       ContainerCreating  0   1m
         calico-node-zk8ch           2/2       Running            0   1m
     ~]# kubectl get node
-        NAME           STATUS    ROLES     AGE       VERSION
-        k8s-node01     Ready    &lt;none&gt;     23m       v1.13.4
-        k8s-node02     Ready    &lt;none&gt;     33m       v1.13.4
-        k8s-node03     Ready    &lt;none&gt;     43m       v1.13.4
+        NAME         STATUS                    ROLES  AGE    VERSION
+        k8s-master01 Ready,SchedulingDisabled  master 1h20m  v1.13.4
+        k8s-master02 Ready,SchedulingDisabled  master 2h10m  v1.13.4
+        k8s-master03 Ready,SchedulingDisabled  master 3h30m  v1.13.4
+        k8s-node01   Ready                     node   23m    v1.13.4
+        k8s-node02   Ready                     node   33m    v1.13.4
+        k8s-node03   Ready                     node   43m    v1.13.4
+5.查看etcd中calico相关信息：
+    因为这里calico网络使用etcd存储数据，所以可以在etcd集群中查看数据，calico-3.x版本默认使用etcd v3存储，登陆集群的任意一个etcd节点查看即可；
+    ~]# etcdctl --endpoints=http://127.0.0.1:2379 --ca-file=/etc/kubernetes/ssl/ca.pem ls /calico
+6.部署pod测试网络是否正常
+    ~]# kubectl run net-test --image=alpine --replicas=4 sleep 36000
+        deployment.apps/net-test created
+        #部署4个pod实例是为了使其运行在不同的node上，然后使用位于不同node的pod进行ping操作来验证网络正常与否；
+    ~]# kubectl get pods -o wide
+        NAME                     READY STATUS        IP              NODE
+        net-test-cd766cb69-cb6x9  1/1  Running  10.20.218.2    k8s-node01
+        net-test-cd766cb69-fv9s8  1/1  Running  10.20.151.194  k8s-node02
+        net-test-cd766cb69-ssffz  1/1  Running  10.20.151.193  k8s-node02
+        net-test-cd766cb69-vfksm  1/1  Running  10.20.218.1    k8s-node03
+        #选择两个位于不同的NODE上的pod进行验证
+    ~]# kubectl exec -it net-test-cd766cb69-cb6x9 sh  #登录位于node01上的pod
+        / #
+        / # ping 10.20.218.1    #ping位于k8s-node03上的Pod
+        PING 10.20.218.1 (10.20.218.1) 56(84) bytes of data.
+        64 bytes from 10.20.218.1: icmp_seq=1 ttl=64 time=0.346 ms
+        64 bytes from 10.20.218.1: icmp_seq=2 ttl=64 time=0.670 ms
+        / # ping 10.20.218.1    #ping位于k8s-node02上的Pod
+        PING 10.20.151.193 (10.20.151.193) 56(84) bytes of data.
+        64 bytes from 10.20.151.193: icmp_seq=1 ttl=64 time=0.346 ms
+        64 bytes from 10.20.151.193: icmp_seq=2 ttl=64 time=0.670 ms
+    #测试结果看到网络部署是正常的
 </code></pre><h3 id="8-网络策略：NetworkPolicy"><a href="#8-网络策略：NetworkPolicy" class="headerlink" title="8.网络策略：NetworkPolicy"></a>8.网络策略：NetworkPolicy</h3><p><img src="/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png" alt="networkpolicy"></p>
 <pre><code>1.为什么flannel不用vxlan来做网络策略实现网络隔离？
     1.尽管vlan可以做到设置网络策略达到访问限制，但是对于k8s集群来说这样做太鸡肋了；
@@ -1823,7 +1851,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">965k</span>
+    <span title="站点总字数">966k</span>
   
 
   
@@ -1834,7 +1862,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:37</span>
+    <span title="站点阅读时长">14:38</span>
   
 </div>
 
