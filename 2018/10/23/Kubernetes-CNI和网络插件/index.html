@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-13T09:43:54.790Z">
+<meta property="og:updated_time" content="2019-07-13T09:47:14.502Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">30k</span>
+                <span title="本文字数">31k</span>
               
 
               
@@ -1093,6 +1093,21 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 serviceaccount/calico-node created
                     #部署完成
 4.验证caclio和集群状态
+    ~]# calicoctl version     #执行客户端命令，验证caclico版本是否安装正确
+    ~]# calicoctl node status #验证calico网络是否正常
+        Calico process is running
+        IPv4 BGP status
+        +--------------+-------------------+-------+-------+-------------+
+        | PEER ADDRESS |  PEER TYPE        | STATE | SINCE |   INFO      |
+        +--------------+-------------------+-------+-------+-------------+
+        | 192.168.1.20 | node-to-mode mesh | up    | 10:20 | Established |
+        | 192.168.1.21 | node-to-mode mesh | up    | 10:20 | Established |
+        | 192.168.1.22 | node-to-mode mesh | up    | 10:20 | Established |
+        +--------------+-------------------+-------+-------+-------------+
+        IPv6 BGP status
+        No IPv6 peer found.
+        #使用calicoctl node status验证，每个node节点都是Established就是正常的
+        #calico是使用BGP协议，会自动学习node节点上的路由条目（route -n）;
     ~]# kubectl get pod -n kube-system
         NAME                        READY     STATUS      RESTARTS   AGE
         calico-kube-controllers-795885ddbd-dr8t7   1/1   Running 0   1m
@@ -1733,7 +1748,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">960k</span>
+    <span title="站点总字数">961k</span>
   
 
   
@@ -1744,7 +1759,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:33</span>
+    <span title="站点阅读时长">14:34</span>
   
 </div>
 
