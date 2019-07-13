@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-12T14:57:17.505Z">
+<meta property="og:updated_time" content="2019-07-13T09:43:54.790Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">24k</span>
+                <span title="本文字数">30k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">22 分钟</span>
+                <span title="阅读时长">28 分钟</span>
               
             </div>
           
@@ -699,13 +699,22 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     1.支持网络配置与网络策略管理，基于BGP路由协议，性能上高于Flannel。支持很细的ACL规则控制，从而对网络隔离有了更好的隔离性。因为是基于BGP
     路由，所以当worker节点是不同网段的情况下是直接使用BGP通讯，从而网络性能较高,默认使用192.168.0.0./16网络；   
     2.Calico利用Linux内核原生的路由和iptables防火墙功能。进出各个容器，虚拟机和主机的所有流量都会在路由到目标之前遍历这些内核规则。
-    3.其他功能：
-        3.1.calicoctl：允许您从简单的命令行界面实现高级策略和网络。
-        3.2.orchestrator插件：提供与各种流行协调器的紧密集成和同步。
-        3.3.key/value store：保存Calico的策略和网络配置状态，一般为etcd
-        3.4.calico/node：
-            在每个主机上运行，​​从键\值存储中读取相关的策略和网络配置信息，并在Linux内核中实现它。
-        3.5.Dikastes/Envoy：
+    3.caclio组件：
+        1.Felix：Calico agent：(calico/node)
+            1.运行在每台node上，为容器设置网络信息：IP,路由规则，iptable规则等;
+            2.每个主机上运行，​​从键\值存储中读取相关的策略和网络配置信息，并在Linux内核中实现它。
+        2.etcd:calico后端存储、用来保存Calico的策略和网络配置状态；
+        3.BIRD:BGP Client： 
+            1.负责把Felix在各node上设置的路由信息广播到Calico网络( 通过BGP协议)。
+            2.IPIP：IPIP是一种将各Node的路由之间做一个tunnel，再把两个网络连接起来的模式，启用IPIP模式时，Calico将在各Node上创建一个名为&quot;tunl0&quot;的虚拟网络接口；
+            注意：
+                1.当k8s的node节点都在同一个网络中，可以关闭IPIP功能来提供网络性能；
+                2.当node节点不在一个网络中时，IPIP功能是必须要开的；如何开启和关闭IPIP功能，见下文部署caclio;
+        4.BGP Route Reflector：大规模集群的分级路由分发。
+        5.calicoctl：
+            calico命令行管理工具、允许您从简单的命令行界面实现高级策略和网络。
+        6.orchestrator插件：提供与各种流行协调器的紧密集成和同步。
+        7.Dikastes/Envoy：
             可选的Kubernetes组件，通过相互TLS身份验证保护工作负载到工作负载的通信，并实施应用层策略。
 3.Canel:
     caclio+flannel即flannel的网络功能+caclio的网络策略功能；
@@ -766,7 +775,16 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         手动部署，手动修改配置文件，通过systemctl控制启动.
     备注：
         以pod形式运行更易于升级
-3.以pod方式部署：
+3.提供CNI插件
+    下载地址：https://github.com/containernetworking/plugins/releases
+    ~]# 上传CNI插件到k8s的所有node节点上；
+    ~]# mkdir -p /opt/cni/bin     #创建展开路径，因为这是默认的加载路径
+    ~]# tar xf cni-plugins-amd64-v0.7.4.tgz -C /opt/cni/bin/
+        #展开到这个特定的目录
+    ~]# ls /opt/cni/bin/
+        bridge  dhcp  flannel  host-device  host-local  ipvlan  loopback  macvlan  portmap  ptp  sample  tuning  vlan
+            #确保这些二进制程序文件都生成了，后面安装flannel或者caclio时，会自动在此目录下查找对应网络插件的可执行文件，用于容器IP地址的分配；
+4.以pod方式部署flannel；
     ~]# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
         #直接使用上面flannel项目的配置清单部署即可
         配置清单文件内容如下:
@@ -805,7 +823,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                     &quot;Type&quot;: &quot;vxlan&quot;
                   }
                 }
-4.选项说明、修改为host-gw模式
+5.选项说明、修改为host-gw模式
     1.关于Flannel网络部署配置清单文件关键配置项说明:
         1.Network：Pod使用的网络。
         2.Backend：后端使用协议，默认为vxlan，默认没有开启Directrouting，如果需要开始的话在backend里面再加一个选项，如下所示。
@@ -826,7 +844,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             flannel.alpha.coreos.com/kube-subnet-manager: &quot;true&quot;
             flannel.alpha.coreos.com/public-ip: xx.xx.xx.xx
             flannel.alpha.coreos.com/public-ip-overwrite:yy.yy.yy.yy (ps:optional)
-5.~]# kubectl get pods -n kube-system
+6.~]# kubectl get pods -n kube-system
     NAME                         READY   STATUS     RESTARTS    AGE
     kube-flannel-ds-amd64-csa29l  1/1     Running      0         10s
     kube-flannel-ds-amd64-vskspz  1/1     Running      0         20s
@@ -905,7 +923,18 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         1.标准托管方式： Calico与kubernetes共用一套etcd集群存储数据
         2.kubernetes数据存储区分：Calico与kubernetes分别单独各自使用一套etcd集群存储数据；
         在线上一般是使用标准托管方式，因为维护一套etcd集群便于管理
-2.标准托管方式安装caclio
+2.提供CNI插件
+    下载地址：https://github.com/containernetworking/plugins/releases
+    ~]# 上传CNI插件到k8s的所有node节点上；
+    ~]# mkdir -p /opt/cni/bin     #创建展开路径，因为这是默认的加载路径
+    ~]# tar xf cni-plugins-amd64-v0.7.4.tgz -C /opt/cni/bin/
+        #展开到这个特定的目录
+    ~]# ls /opt/cni/bin/
+        bridge  dhcp  flannel  host-device  host-local  ipvlan  loopback  macvlan  portmap  ptp  sample  tuning  vlan
+        #确保这些二进制程序文件都生成了，后面安装flannel或者caclio时，会自动在此目录下查找对应网络插件的可执行文件，用于容器IP地址的分配；
+    备注：
+        在caclio.yaml部署时，CNI插件的安装是由内部的install-cni：calico/cniv3.1.3镜像来完成的；
+3.标准托管方式安装caclio
     1.RBAC：
         如果在启用RBAC的群集上部署Calico，则应首先应用ClusterRole和ClusterRoleBinding规范,下载清单，如需修改清单，可以修改后再部署；
         ~]# kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/rbac.yaml
@@ -914,7 +943,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             clusterrole.rbac.authorization.k8s.io/calico-node created
             clusterrolebinding.rbac.authorization.k8s.io/calico-node created
     2.生成caclio-etcd-secret的secret资源
-        在caclio.yaml清单中需要用到caclio访问etcd集群的证书和私钥，再将证书和私钥转换成secret资源；
+        A.在caclio.yaml清单中需要用到caclio需要通过apiserver间接访问etcd集群，所以需要提前为caclio生成etcd客户端的证书和私钥，并转为secret资源进行挂载使用；
+        B.这里手动创建caclio-etcd-secrets资源，而不使用caclio.yaml清单中方式，需要下文还会标注怎么把那段注释掉；
         1.创建calico证书请求
             ~]# vim calico-csr.json.j2 
             {
@@ -940,17 +970,18 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         3.生成calico-etcd-secrets的secret资源（在kube-system名称空间中）
             ~]# kubectl create secret generic -n kube-system calico-etcd-secrets --from-file=etcd-ca=ca.pem --from-file=etcd-key=calico-key.pem --from-file=etcd-cert=calico.pem
                 #因为caclio.yaml中挂载的secret资源名称就是calico-etcd-secrets并放在kube-system名称空间中；
+        4.准备caclioTLS目录
+            ~]# mkdir /etc/calico/caclioTLS/
+                #该目录是为caclio.yaml清单中的configmap启用TLS认证准备的
+            ~]# ls /etc/calico/caclioTLS/
+                caclio.pem caclio-key.pem
+                    #将caclio的证书和私钥放到此目录下
     3.下载caclio部署清单
         ~]# wget https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/calico.yaml
             #这里下载caclio-v3.3版本的
         在部署前需要修改几项：
-        1.清单中configMap中的etcd-endpoints的地址和证书名称
-            etcd_endpoints: &quot;https://etcd01.cre.io:2379,https://etcd02.cre.io:2379,https://etcd03.cre.io:2379&quot; ,
-            &quot;etcd_key_file&quot;: &quot;/etc/calico/ssl/calico-key.pem&quot;,
-            &quot;etcd_cert_file&quot;: &quot;/etc/calico/ssl/calico.pem&quot;,
-            &quot;etcd_ca_cert_file&quot;: &quot;/etc/kubernetes/ssl/ca.pem&quot;,
-        2.修改镜像拉取地址；
-            yaml文件中有三个镜像，如下：
+        1.修改镜像拉取地址；
+            caclio.yaml文件中有依赖三个镜像，如下：
                 image: quay.io/calico/node:v3.3.6
                 image: quay.io/calico/cni:v3.3.6
                 image: quay.io/calico/kube-controllers:v3.1.6
@@ -958,14 +989,101 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 image: harbor1.cre.io/calico-node:v3.3.6
                 image: harbor1.cre.io/calico-cni:v3.3.6
                 image: harbor1.cre.io/calico-kube-controllers:v3.3.6
-        3.查看挂载的secret资源
+        2.注释掉caclio.yaml清单中关于secret的信息
+            apiVersion: v1
+            kind: Secret
+            type: Opaque
+            metadata:
+              name: calico-etcd-secrets
+              namespace: kube-system
+            data:
+              # etcd-key: null
+              # etcd-cert: null
+              # etcd-ca: null
+            ---
+                #将此三项注释掉，因为上文已手动创建了calico-etcd-secrets资源；
+        3.修改caclio.yaml清单中ConfigMap的部分主要参数如下，按需修改：
+            kind: ConfigMap
+            apiVersion: v1
+            metadata:
+              name: calico-config
+              namespace: kube-system
+            data:
+              etcd_endpoints: &quot;http://127.0.0.1:2379&quot;
+              calico_backend: &quot;bird&quot;
+              cni_network_config: |-
+                {
+                  &quot;name&quot;: &quot;k8s-pod-network&quot;,
+                  &quot;cniVersion&quot;: &quot;0.3.0&quot;,
+                  &quot;plugins&quot;: [
+                    {
+                      &quot;type&quot;: &quot;calico&quot;,
+                      &quot;etcd_endpoints&quot;: &quot;__ETCD_ENDPOINTS__&quot;,
+                      &quot;etcd_key_file&quot;: &quot;/etc/calico/ssl/calico-key.pem&quot;,
+                      &quot;etcd_cert_file&quot;: &quot;/etc/calico/caclioTLS/calico.pem&quot;,
+                      &quot;etcd_ca_cert_file&quot;: &quot;/etc/kubernetes/ssl/ca.pem&quot;,
+                      &quot;log_level&quot;: &quot;info&quot;,
+                      &quot;mtu&quot;: 1500,
+                      &quot;ipam&quot;: {
+                          &quot;type&quot;: &quot;calico-ipam&quot;
+                      },
+                      &quot;policy&quot;: {
+                          &quot;type&quot;: &quot;k8s&quot;
+                      },
+                      &quot;kubernetes&quot;: {
+                          &quot;kubeconfig&quot;: &quot;/root/.kube/config&quot;
+                      }
+                    },
+                    {
+                      &quot;type&quot;: &quot;portmap&quot;,
+                      &quot;snat&quot;: true,
+                      &quot;capabilities&quot;: {&quot;portMappings&quot;: true}
+                    }
+                  ]
+                }
+                #如果etcd集群启用了TLS证书认证，需要将下面三项都启用
+              etcd_ca: &quot;/calico-secrets/etcd-ca&quot;     #etcd的CA证书
+              etcd_cert: &quot;/calico-secrets/etcd-cert&quot; #etcd的证书
+              etcd_key: &quot;/calico-secrets/etcd-key&quot;   #etcd的私钥
+                #这三个路径是etcd访问TLS文件的容器中的路径，默认的，不需要修改
+            ###############################################################
+            1.etcd_endpoints：Calico使用etcd来保存网络拓扑和状态，该参数指定etcd的地址，可以使用K8S Master所用的etcd，也可以另外搭建；
+                改为：etcd_endpoints: &quot;https://etcd01.cre.io:2379,https://etcd02.cre.io:2379,https://etcd03.cre.io:2379&quot;
+            2.calico_backend：Calico的后端，默认为bird；
+            3.修改cni_network_config中的信息
+                type=calico：
+                    Kubelet从CNI_PATH（默认为/opt/cni/bin）找名为calico的可执行文件，用于容器IP地址的分配；
+                etcd_endpoints：etcd集群地址，同上
+                &quot;etcd_key_file&quot;: &quot;/etc/calico/caclioTLS/calico-key.pem&quot;,
+                &quot;etcd_cert_file&quot;: &quot;/etc/calico/caclioTLS/calico.pem&quot;,
+                &quot;etcd_ca_cert_file&quot;: &quot;/etc/kubernetes/ssl/ca.pem&quot;,
+                    #caclio证书的本地路径 
+                &quot;kubernetes&quot;: {
+                    &quot;kubeconfig&quot;: &quot;/root/.kube/config&quot;
+                        #使用的kubeconfig文件
+        4.修改calico.yaml清单关于通过DaemonSet部署的calico-node服务的主要参数：
+            1.该POD中主包括如下两个容器：
+                1.calico-node：calico服务程序，用于设置Pod的网络资源，保证pod的网络与各Node互联互通，它还需要以HostNetwork模式运行，直接使用宿主机网络。
+                2.install-cni：在各Node上安装CNI二进制文件到/opt/cni/bin目录下，并安装相应的网络配置文件到/etc/cni/net.d目录下。
+            2.calico-node服务的主要参数：
+                CALICO_IPV4POOL_CIDR：&quot;192.168.0.0/16&quot;
+                    Calico IPAM的IP地址池，Pod的IP地址将从该池中进行分配,默认是192.168.0.0/16，如果是规划的其他网络，需要修改正确；
+                FELIX_LOGSEVERITYSCREEN：info #日志级别,可以改为warning
+                FELIX_IPV6SUPPORT：flase  #是否启用IPV6，默认不启用 
+                CALICO_IPV4POOL_IPIP：
+                    是否启用IPIP模式：启用IPIP模式时，Calico将在node上创建一个tunl0的虚拟隧道；你启用IPIP时，路由规则直接使用物理机网卡作为路由器转发。
+                备注：
+                    IP Pool可以使用两种模式：BGP或IPIP。
+                    启用IPIP模式时，设置CALICO_IPV4POOL_IPIP=&quot;always&quot;，不使用IPIP模式时，设置为&quot;off&quot;，此时将使用BGP模式，当k8s的node
+                    节点在同一网络时可以关闭IPIP功能来提高网络性能，不在一个网络时一定要开启IPIP功能，所以设置默认开启就行了；
+        5.查看挂载的secret资源
             volumes:
               - name: etcd-certs
                 secret:
                   secretName: calico-etcd-secrets
                   defaultMode: 0400
                 #calico-node和calico-kube-controllers都是通过这种方式挂载的；
-        4.部署
+        6.部署
             ~]# kubectl apply -f calico.yaml
                 configmap/calico-config created
                 secret/calico-etcd-secrets created
@@ -973,7 +1091,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 deployment.extensions/calico-kube-controllers created
                 serviceaccount/calico-kube-controllers created
                 serviceaccount/calico-node created
-3.验证caclio和集群状态
+                    #部署完成
+4.验证caclio和集群状态
     ~]# kubectl get pod -n kube-system
         NAME                        READY     STATUS      RESTARTS   AGE
         calico-kube-controllers-795885ddbd-dr8t7   1/1   Running 0   1m
@@ -1236,8 +1355,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
-                <i class="fa fa-chevron-left"></i> Docker镜像
+              <a href="/2018/10/18/docker存储卷/" rel="next" title="docker存储卷">
+                <i class="fa fa-chevron-left"></i> docker存储卷
               </a>
             
           </div>
@@ -1614,7 +1733,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">954k</span>
+    <span title="站点总字数">960k</span>
   
 
   
@@ -1625,7 +1744,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:27</span>
+    <span title="站点阅读时长">14:33</span>
   
 </div>
 
