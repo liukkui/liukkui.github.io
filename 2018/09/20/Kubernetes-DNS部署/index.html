@@ -145,7 +145,7 @@
 <meta property="og:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/k8s-dns.png">
-<meta property="og:updated_time" content="2019-07-14T09:51:14.025Z">
+<meta property="og:updated_time" content="2019-07-14T13:14:29.069Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-DNS部署">
 <meta name="twitter:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
@@ -541,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.8k</span>
+                <span title="本文字数">14k</span>
               
 
               
@@ -555,7 +555,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">9 分钟</span>
+                <span title="阅读时长">13 分钟</span>
               
             </div>
           
@@ -796,6 +796,108 @@
         #正常运行
 5.测试DNS服务
     和上文kube-dns测试步骤相同；
+</code></pre><h3 id="部署dnsmasq实现统一管理k8s-dns和内网DNS"><a href="#部署dnsmasq实现统一管理k8s-dns和内网DNS" class="headerlink" title="部署dnsmasq实现统一管理k8s-dns和内网DNS"></a>部署dnsmasq实现统一管理k8s-dns和内网DNS</h3><pre><code>原因：
+    在经过上面的一系列部署之后，kuberntes的虚拟集群网络的DNS解析的确是可以的了。但是kubernetes之外的物理机节点也是需要DNS解析的，那么该
+    怎么去管理呢？
+        比如，在上文部署kube-dns时提到过代码中写的是内网DNS中的域名，而对于k8s中的服务来说也是需要解析内网DNS的，上文只是提出对于使用
+        kube-dns的一个解决方案，但是对于coredns来说如何解决？
+方法：使用Dnsmasq:
+    dnsmasq部署于物理服务器上，而CoreDNS的上游DNS服务器默认会选择物理机网卡上设置的DNS，只要将dnsmasq作为物理机网卡设置的DNS，那么就可
+    以直接设置为CoreDNS的上游DNS服务器了。
+Dnsmasq工作原理:
+    1.Dnsmasq提供DNS缓存和DHCP服务、Tftp服务功能。当接受到一个DNS请求时，Dnsmasq首先会查找/etc/hosts这个文件，然后查找/etc/resolv.conf
+    中定义的外部DNS。所以说Dnsmasq是一个很不错的外部DNS中继。
+    2.配置Dnsmasq为DNS缓存服务器，同时在/etc/hosts文件中加入本地内网解析，这样一来每当内网机器查询时就会优先查询hosts文件，这就等于
+    将/etc/hosts共享给全内网机器使用，从而解决内网机器互相识别的问题;    
+
+1.部署Dnsmasq服务
+    ~]# getenforce 0
+        #关闭selinux以及配置防火墙放行53端口号
+    ~]# systemctl stop firewalld.service       #停止firewall
+    ~]# systemctl disable firewalld.service  #禁止firewall开机启动    
+        关闭防火墙：
+    ~]# yum install -y dnsmasq
+    ~]# systemctl start dnsmasq      #安装并启动Dnsmasq
+    ~]# systemctl status dnsmasq  
+    ● dnsmasq.service - DNS caching server.
+       Loaded: loaded (/usr/lib/systemd/system/dnsmasq.service; disabled; vendor preset: disabled)
+       Active: active (running) since Sun 2018-07-14 23:06:36 CST; 11s ago
+     Main PID: 5895 (dnsmasq)
+        Tasks: 1
+       Memory: 396.0K
+       CGroup: /system.slice/dnsmasq.service
+               └─5895 /usr/sbin/dnsmasq -k
+    Jul 14 23:06:36 master01 dnsmasq[5895]: reading /etc/resolv.conf
+    Jul 14 23:06:36 master01 dnsmasq[5895]: using nameserver 45.113.201.35#53
+    Jul 14 23:06:36 master01 dnsmasq[5895]: using nameserver 114.114.114.114#53
+    Jul 14 23:06:36 master01 dnsmasq[5895]: read /etc/hosts - 5 addresses
+        #Dnsmasq启动后，会自动读取当前主机的网卡的DNS以及hosts文件
+2.Dnsmasq配置文件解析：
+    Dnsmasq的配置文件在/etc/dnsmasq.conf，默认情况下dnsmasq.conf中只开启了最后include项，可以在/etc/dnsmasq.d中自己写任意名字的配置文件。
+    重要部分配置文件说明：
+    resolv-file=/etc/resolv.dnsmasq.conf
+        #定义dnsmasq从哪里获取上游DNS服务器的地址，默认是从/etc/resolv.conf获取
+    strict-order
+        #严格按照resolv-file文件中的顺序从上到下进行DNS解析，直到第一个解析成功为止。一般需要开启strict-order
+    listen-address=127.0.0.1
+        #定义dnsmasq监听的地址，默认是监控本机的所有网卡上。局域网内主机若要使用dnsmasq服务时，指定本机的IP地址
+    address=/19.76.10.in-addr.arpa/10.20.10.10
+        #设置一个反向解析，即所有的地址都解析到特定dns去解析
+    address=/double-click.net/127.0.0.1
+        #增加一个域名，强制解析到你指定的地址上
+    cache-size=150
+        #设置dns缓存大小,默认为150条
+    log-queries
+    log-facility=/usr/log/dnsmasq.log
+        设置DNS的日志及日志路径
+3.配置Dnsmasq
+    ~]# grep -v &quot;^#&quot; /etc/dnsmasq.conf | grep -v &quot;^$&quot;  #Dnsmasq的配置文件
+        resolv-file=/etc/resolv.dnsmasq.conf 
+            #dnsmasq会从这个文件中寻找上游dns服务器
+        strict-order
+        addn-hosts=/etc/dnsmasq.hosts
+        listen-address=127.0.0.1,192.168.1.160    
+            #dnsmasq部署在192.168.1.160上
+4.修改本机/etc/resolv.conf指向部署的dnsmasq服务器
+    ~]# vim /etc/resolv.conf
+        nameserver 192.168.1.160       #dnsmasq服务器的地址
+5.创建resolv.dnsmasq.conf文件并添加上游DNS服务器地址
+    ~]# vim /etc/resolv.dnsmasq.conf
+        nameserver 202.96.134.133
+        nameserver 114.114.114.114
+    备注：
+        resolv.dnsmasq.conf中设置的真正能访问互联网的DNS服务器地址（如电信、联通、腾讯、阿里）
+6.创建dnsmasq.hosts文件
+    ~]# cp /etc/hosts /etc/dnsmasq.hosts
+    ~]# vim /etc/dnsmasq.hosts
+        127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+        ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+        kube-master01   192.168.1.101
+        kube-master02   192.168.1.102
+        kube-master03   192.168.1.103
+        kube-node01   192.168.1.104
+        kube-node02   192.168.1.105
+        kube-node03   192.168.1.106
+            #添加内网需要解析的DNS地址和域名
+7.启动Dnsmasq
+    ~]# systemctl start dnsmasq &amp;&amp; systemctl enable dnsmasq
+    ]# ss -tnlp | grep 53
+        LISTEN  0 5   *:53    *:*  users:((&quot;dnsmasq&quot;,pid=4581,fd=5))
+        LISTEN  0 5   :::53   :::* users:((&quot;dnsmasq&quot;,pid=4581,fd=7))
+8.重启Coredns
+    CoreDNS在启动的时候已经设置好了上游DNS服务器了，重启一下可以让CoreDNS重新设置上游服务器。
+9.测试
+    ~]# ping k8s-master01         #在物理节点测试
+    PING k8s-master01 (192.168.1.101) 56(84) bytes of data.
+    64 bytes from k8s-master01 (192.168.1.101): icmp_seq=1 ttl=64 time=0.036 ms
+    64 bytes from k8s-master01 (192.168.1.101): icmp_seq=2 ttl=64 time=0.056 ms
+    ~]# kubectl exec busybox ping k8s-master01
+    PING k8s-master01 (192.168.1.101) 56(84) bytes of data.
+    64 bytes from k8s-master01 (192.168.1.101): icmp_seq=1 ttl=64 time=0.033 ms
+        #可以看到容器内的pod也可以解析内网的服务器地址了；
+总结：
+    从上面的结果来看，Dnsmasq已经成为了CoreDNS的上游DNS服务器了，这样只要管理好dnsmasq的域名配置，就可以统一管理各台物理机以及
+    kubernetes所有服务的DNS解析了；
 </code></pre>
       
     </div>
@@ -1273,7 +1375,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubernetes-DNS部署-KubeDNS-CoreDNS"><span class="nav-number">1.</span> <span class="nav-text">kubernetes-DNS部署(KubeDNS/CoreDNS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-部署KubeDNS"><span class="nav-number">2.</span> <span class="nav-text">1.部署KubeDNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-部署CoreDNS"><span class="nav-number">3.</span> <span class="nav-text">2.部署CoreDNS</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#kubernetes-DNS部署-KubeDNS-CoreDNS"><span class="nav-number">1.</span> <span class="nav-text">kubernetes-DNS部署(KubeDNS/CoreDNS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-部署KubeDNS"><span class="nav-number">2.</span> <span class="nav-text">1.部署KubeDNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-部署CoreDNS"><span class="nav-number">3.</span> <span class="nav-text">2.部署CoreDNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署dnsmasq实现统一管理k8s-dns和内网DNS"><span class="nav-number">4.</span> <span class="nav-text">部署dnsmasq实现统一管理k8s-dns和内网DNS</span></a></li></ol></div>
             
 
           </div>
@@ -1307,7 +1409,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">989k</span>
+    <span title="站点总字数">994k</span>
   
 
   
@@ -1318,7 +1420,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:59</span>
+    <span title="站点阅读时长">15:03</span>
   
 </div>
 
