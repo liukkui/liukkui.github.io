@@ -140,21 +140,23 @@
 <meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes-DNS部署">
-<meta property="og:url" content="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/index.html">
+<meta property="og:url" content="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-13T15:29:59.416Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/k8s-dns.png">
+<meta property="og:updated_time" content="2019-07-14T09:51:14.025Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-DNS部署">
 <meta name="twitter:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/k8s-dns.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/">
 
 
 
@@ -344,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">63</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">64</span></a>
 
   </li>
         
@@ -450,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/23/Kubernetes-DNS部署/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -493,7 +495,7 @@
                 
               
 
-              <time title="创建时间：2018-10-23 08:00:00" itemprop="dateCreated datePublished" datetime="2018-10-23T08:00:00+08:00">2018-10-23</time>
+              <time title="创建时间：2018-09-20 08:00:00" itemprop="dateCreated datePublished" datetime="2018-09-20T08:00:00+08:00">2018-09-20</time>
             
 
             
@@ -539,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.7k</span>
+                <span title="本文字数">9.8k</span>
               
 
               
@@ -574,6 +576,7 @@
 
       
         <h3 id="kubernetes-DNS部署-KubeDNS-CoreDNS"><a href="#kubernetes-DNS部署-KubeDNS-CoreDNS" class="headerlink" title="kubernetes-DNS部署(KubeDNS/CoreDNS)"></a>kubernetes-DNS部署(KubeDNS/CoreDNS)</h3><a id="more"></a>
+<p><img src="/2018/09/20/Kubernetes-DNS部署/k8s-dns.png" alt="k8s-dns"></p>
 <pre><code>为什么要部署dns?
     因为kuberntes中的所有pod都是基于service域名解析后，再负载均衡分发到service后端的各个pod服务中，那么如果没有DNS解析，则无法查到各个
     服务对应的service服务;
@@ -742,7 +745,9 @@
             1.可以通过API来修改配置，不会自动回滚
             2.如果通过API删除了，则会通过/etc/kubernetes/addons/中的配置自动重新创建
             3.如果从/etc/kubernetes/addons/中删除配置，则Kubernetes资源不会删除；
-    当然yaml模板中还有其他参数的差别，具体使用哪一个模板都可以，下文使用的是deployment分支中的模板；
+        当然yaml模板中还有其他参数的差别，具体使用哪一个模板都可以，下文使用的是deployment分支中的模板；
+    5.部署的coredns副本数量是1
+        在coredns.yaml清单中coredns的replicas副本数量默认都是1个，但是如果开启了coredns的HPA功能，replicas的数量会自动伸缩；
 1.下载镜像并上传
     coredns只需一个镜像即可，不像kubedns需要3个镜像
     ~]# docker load -i coredns_1.2.2.tar #使用1.2.2版本（查看k8s依赖版本部署）
@@ -924,8 +929,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker的资源限制/" rel="next" title="Docker的资源限制">
-                <i class="fa fa-chevron-left"></i> Docker的资源限制
+              <a href="/2018/09/06/Etcd集群搭建和维护/" rel="next" title="Etcd集群搭建和维护">
+                <i class="fa fa-chevron-left"></i> Etcd集群搭建和维护
               </a>
             
           </div>
@@ -934,8 +939,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/23/Kubernetes-CNI和网络插件/" rel="prev" title="Kubernetes-CNI和网络插件">
-                Kubernetes-CNI和网络插件 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/09/28/Kubernetes-容器监控Metrics-Server/" rel="prev" title="Kubernetes-容器监控Metrics-Server">
+                Kubernetes-容器监控Metrics-Server <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1008,7 +1013,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-count">64</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1302,7 +1307,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">976k</span>
+    <span title="站点总字数">989k</span>
   
 
   
@@ -1313,7 +1318,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">14:48</span>
+    <span title="站点阅读时长">14:59</span>
   
 </div>
 
