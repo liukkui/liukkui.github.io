@@ -145,7 +145,7 @@
 <meta property="og:description" content="Heapster和Dashboard">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/06/28/Kubernetes-监控Heapster和Dashboard/dashboard.png">
-<meta property="og:updated_time" content="2019-07-15T08:00:57.788Z">
+<meta property="og:updated_time" content="2019-07-15T08:05:13.210Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-监控Heapster和Dashboard">
 <meta name="twitter:description" content="Heapster和Dashboard">
@@ -686,9 +686,11 @@
 
 1.下载yaml清单
     ~]# wget https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+
 2.准备dashboard的证书文件和secret文件
-    github上下载的dashboard资源部署清单是需要secret的generic类型的资源，这个secret资源名为kubernetes-dashboard-certs,且在
+    1.github上下载的dashboard资源部署清单是需要secret的generic类型的资源，这个secret资源名为kubernetes-dashboard-certs,且在
     kube-system名称空间.
+    2.这里使用openssl来制作证书，使用cfssl方式类似；
     ~]# openssl genrsa -out dashboard.key 2048   #生成dashboard的私钥
     ~]# openssl req -new -key dashboard.key -out dashboard.csr -subj &quot;/O=cre/CN=www.cre.io&quot;
         #指定登录dashboard的域名是www.cre.com，向k8s的CA申请签署
@@ -696,6 +698,7 @@
         #使用k8s的CA证书进行签署
     ~]# kubectl create secret generic kubernetes-dashboard-certs --from-file=dashboard.crt --from-file=dashboard.key -n kube-system
         #转换成secret资源,kubernetes-dashboard-certs是dashboard.yaml中事先规定好的secret名字；
+
 3.修改dashboard.yaml清单中的service类型
     Dashboard需要在k8s集群外部访问，所以需要修改其service类型为NodePort类型，而不是默认的ClusterIP类型；
     ~]# vim dashboard.yaml   #修改清单中关于service的信息
@@ -720,6 +723,7 @@
     修改部分解释：
         1.如果不写nodePort则由apiserver从service-node-port-range=30000-65000中自动分配端口，当然也可以手动指定nodeport范围内的端口；
         2.type: NodePort：指定为NodePort类型的service;
+
 4.修改dashboard.yaml清单中镜像地址和args参数
     ~]# vim dashboard.yaml   #修改清单中关于deployment的信息
     spec:
@@ -736,6 +740,7 @@
         1.从本地harbor上拉取dashboard的镜像；
         2.auto-generate-certificates默认设置，需要挂载生成的dashboard证书了，已经使用创建并挂载secret资源代替了；
         3.token-ttl=43200：默认的token有效时间是900s，当然这里可以设置自己想要的有效时长，这里设置了12小时；
+
 5.部署Dashboard:
     ~]# kubectl apply -f kubernetes-dashboard.yaml  #部署
         secret/kubernetes-dashbaord-certs created
@@ -749,6 +754,7 @@
         CoreDNS is running at https://10.96.254.254:6443/api/v1/namesapces/kube-system/services/kube-dns:dns/proxy
         kubernetes-dashboard is running at https://192.168.1.100:6443/api/v1/namesapces/kube-system/services/https:kubernetes-dashboard:/proxy
             #可以看到部署成功的dashboard访问地址，或者直接访问证书中的dashboard域名；
+
 6.准备admin权限和read只读权限的kubeconfig文件或Token信息；
     1.登录dashboard是有两种方式的：令牌和kubeconfig文件
     2.关于权限：
@@ -945,6 +951,7 @@
         同上，省略
     生成read-user的kubeconfig文件：
         同上，省略
+
 7.登录：
     https://www.cre.com:30443
     #使用上面做成的两个kubeconfig文件登录即可；
