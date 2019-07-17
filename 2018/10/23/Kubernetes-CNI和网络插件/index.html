@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-17T02:49:26.362Z">
+<meta property="og:updated_time" content="2019-07-17T07:22:59.658Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">38k</span>
+                <span title="本文字数">41k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">35 分钟</span>
+                <span title="阅读时长">37 分钟</span>
               
             </div>
           
@@ -964,9 +964,16 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         ~]# ping 172.20.0.6
 </code></pre><p>–抓包测试<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png" alt="抓包测试"></p>
 <h3 id="7-部署Caclio"><a href="#7-部署Caclio" class="headerlink" title="7.部署Caclio"></a>7.部署Caclio</h3><p><a href="https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/calico" target="_blank" rel="noopener">caclio官方安装介绍</a><br>–caclio原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png" alt="caclio原理图"></p>
-<pre><code>环境要求：
-    1.Calico会使用DaemonSet在每一个node节点上部署一个calico容器，使用BGP网络会自动学习主机上的路由，当网络环境很大，需要在跨机房部署k8s集群时，需要在交换机设备上开启BGP，否则跨机房时就访问不了；
-    2.calico学习路由的方式：
+<pre><code>   环境要求：
+    1.Calico 是一个基于BGP协议的网络互联解决方案。它是一个纯3层的方法，使用路由来实现报文寻址和传输。；
+    2.相比flannel,ovs等SDN解决方案，Calico避免了层叠网络带来的性能损耗。将节点当做router，位于节点上的container被当做router
+    的直连设备。利用Kernel来实现高效的路由转发。 节点间的路由信息通过BGP协议在整个Calico网络中传播。 具有以下特点： 
+        1.在calico中的数据包不需要进行封包和解封。 
+        2.基于三层网络通信，troubleshoot会更方便。 
+        3.网络安全策略使用ACL定义，基于iptables实现，比起overlay方案中的复杂机制更只管和容易操作。
+    3.Calico会使用DaemonSet在每一个node节点上部署一个calico容器，使用BGP网络会自动学习主机上的路由，当网络环境很大，需要在
+    跨机房部署k8s集群时，需要在交换机设备上开启BGP，否则跨机房时就访问不了；
+    4.calico学习路由的方式：
         calico会自己学习路由，它出去的源地址网络就是容器本身，不像flannel使用宿主机的网卡出去；比如：
             node1:上各运行3个pod:node1-pod1、node1-pod2、node1-pod3
             node2:上运行3个pod:node2-pod1、node2-pod2、node2-pod3
@@ -1363,6 +1370,69 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                       value: [&quot;test3&quot;,&quot;test2&quot;]
               policyTypes:
               - Ingress
+</code></pre><h3 id="9-替换k8s集群的网络插件"><a href="#9-替换k8s集群的网络插件" class="headerlink" title="9.替换k8s集群的网络插件"></a>9.替换k8s集群的网络插件</h3><pre><code>在测试环境的k8s集群中希望试用多种网络插件（calico/flannel/kube-router）,可以使用如下方式清理之前安装的网络插件 
+    1.WARNNING：重新安装k8s网络插件会短暂中断已有运行在k8s上的服务
+    2.如果k8s集群已经运行庞大业务pod，重装网络插件时会引起所有pod的删除、重建，短时间内将给apiserver带来压力，可能引起master节点夯住;
+    3.确保没有裸pod运行（因为最后需要删除所有pod重建，裸pod不会重建），即所有pod 都是由deploy/daemonset/statefulset等创建；
+1.替换流程
+    如果使用标准cni方式安装k8s集群的网络插件；cni负载创建容器网卡和IP分配（IPAM），不同的网络插件（calico,flannel等）创建容器网卡和IP分配方式不一样，所以在替换网络插件时候需要现有pod全部删除，然后自动按照新网络插件的方式重建pod网络；
+2.替换操作：
+    大致流程为：  
+        a.根据实际运行情况，删除现有网络组件的daemonset pod  
+        b.如果现有组件是kube-router需要进行一些额外清理  
+        c.暂停node相关服务，后面才可以进一步清理iptables等  
+        d.执行旧网络插件相关清理  
+        e.重新开启node相关服务  
+        f.安装新网络插件  
+        g.删除所有运行pod，然后等待自动重建  
+3.实例操作：
+    1.删除原network插件部署
+        ~]# kubectl delete -f flannel.yaml/calico.yaml
+        #根据实际情况使用yaml清单删除之前部署的网络插件
+    2.停止k8s-node相关服务
+        ~]# systemctl stop kubelet kube-proxy
+    3.清理calico残留路由
+        如果需要清理calico，还需做此步骤
+        ~]# for rt in `ip route|grep bird|sed &apos;s/blackhole//&apos;|awk &apos;{print $1}&apos;`;do ip route del $rt;done;
+    4.清理kube-proxy产生的iptables规则
+        ~]# kube-proxy --cleanup
+    5.清理目录和文件
+        ~]# rm -rf ${dir}
+            需要清理的目录有下面这些
+            - &quot;/etc/cni/&quot;
+            - &quot;/run/flannel/&quot;
+            - &quot;/etc/calico/&quot;
+            - &quot;/var/run/calico/&quot;
+            - &quot;/var/lib/calico/&quot;
+            - &quot;/var/log/calico/&quot;
+            - &quot;/etc/cilium/&quot;
+            - &quot;/var/run/cilium/&quot;
+            - &quot;/sys/fs/bpf/tc/&quot;
+            - &quot;/var/lib/cni/&quot;
+            - &quot;/var/lib/kube-router/&quot;
+            - &quot;/opt/kube/kube-system/&quot;
+    6.清理网络
+        ~]# &quot;ip link del tunl0; \
+            ip link del flannel.1; \
+            ip link del cni0; \
+            ip link del mynet0; \
+            ip link del kube-bridge; \
+            ip link del dummy0; \
+            ip link del kube-ipvs0; \
+            ip link del cilium_net; \
+            ip link del cilium_vxlan; \
+            systemctl restart networking; \
+            systemctl restart network&quot;
+    7.重启k8s-node服务
+        ~]# systemctl start kubelet kube-proxy
+    8.重新安装新的网络插件
+        ~]# kubectl apply -f flannel.yaml/calico.yaml
+    9.删除所有运行pod，由controller自动重建
+        ~]# vim restart_all_pod.sh
+            #!/bin/bash
+            for NS in $(kubectl get ns|awk &apos;NR&gt;1{print $1}&apos;);do 
+                kubectl delete pod --all -n $NS
+            done;
 </code></pre>
       
     </div>
@@ -1840,7 +1910,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-CNI和网络插件"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes-CNI和网络插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-k8s集群上的通信需求"><span class="nav-number">2.</span> <span class="nav-text">1.k8s集群上的通信需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CNI：Container-Network-Interface"><span class="nav-number">3.</span> <span class="nav-text">2.CNI：Container Network Interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-跨主机的网络间通信原理"><span class="nav-number">4.</span> <span class="nav-text">3.跨主机的网络间通信原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-k8s集群的CNI网络插件及其原理"><span class="nav-number">5.</span> <span class="nav-text">4.k8s集群的CNI网络插件及其原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Flannel、Caclio、Canel的区别和选择"><span class="nav-number">6.</span> <span class="nav-text">5.Flannel、Caclio、Canel的区别和选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Flannel网络原理和部署"><span class="nav-number">7.</span> <span class="nav-text">6.Flannel网络原理和部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-部署Caclio"><span class="nav-number">8.</span> <span class="nav-text">7.部署Caclio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-网络策略：NetworkPolicy"><span class="nav-number">9.</span> <span class="nav-text">8.网络策略：NetworkPolicy</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes-CNI和网络插件"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes-CNI和网络插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-k8s集群上的通信需求"><span class="nav-number">2.</span> <span class="nav-text">1.k8s集群上的通信需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CNI：Container-Network-Interface"><span class="nav-number">3.</span> <span class="nav-text">2.CNI：Container Network Interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-跨主机的网络间通信原理"><span class="nav-number">4.</span> <span class="nav-text">3.跨主机的网络间通信原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-k8s集群的CNI网络插件及其原理"><span class="nav-number">5.</span> <span class="nav-text">4.k8s集群的CNI网络插件及其原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Flannel、Caclio、Canel的区别和选择"><span class="nav-number">6.</span> <span class="nav-text">5.Flannel、Caclio、Canel的区别和选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Flannel网络原理和部署"><span class="nav-number">7.</span> <span class="nav-text">6.Flannel网络原理和部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-部署Caclio"><span class="nav-number">8.</span> <span class="nav-text">7.部署Caclio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-网络策略：NetworkPolicy"><span class="nav-number">9.</span> <span class="nav-text">8.网络策略：NetworkPolicy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-替换k8s集群的网络插件"><span class="nav-number">10.</span> <span class="nav-text">9.替换k8s集群的网络插件</span></a></li></ol></div>
             
 
           </div>
@@ -1885,7 +1955,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:23</span>
+    <span title="站点阅读时长">15:28</span>
   
 </div>
 
