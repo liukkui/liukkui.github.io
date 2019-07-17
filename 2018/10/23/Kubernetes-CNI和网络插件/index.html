@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-17T07:22:59.658Z">
+<meta property="og:updated_time" content="2019-07-17T07:47:53.535Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -983,9 +983,9 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         对于Calico来说的报文流程：
             calico会在node1主机上自动学习静态路由，这个静态路由指的是：calico会学习到我们事先规划好的每个node节点上的pod网络，比如：
             node1的pod网段：10.244.20.0/255.255.255.192,它有64个主机位，然后node1就会加一条静态路由，然后通告给其他节点；
-            node2的pod网段：10.244.30.0/255.255.255.192,那么静态路由就是：
-                route add 10.244.20.0/255.255.192.0 gw node1-ip,通信时不需要经过flannel的flannel.1等网卡封装，而是直接通过物理网卡通信；
-        详见下文calico安装后的信息；
+            node2的pod网段：10.244.30.0/255.255.255.192,那么node2到达node1节点的静态路由就是：
+                route add 10.244.20.0/255.255.192.0 gw node1-ip,通信时不需要经过flannel的flannel.1、物理网络eth0等报文封装带来的性能损耗，而是直接通过物理网卡通信；
+        具体路由信息可以看下文安装好calico后的route路由信息；
 
 1.安装方式：
     1.Calico有多种托管方式，因为我们使用的二进制部署方式，所以首先可以抛开kubeadm这种不适合生产环境的方式；
@@ -1145,7 +1145,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 2.install-cni：在各Node上安装CNI二进制文件到/opt/cni/bin目录下，并安装相应的网络配置文件到/etc/cni/net.d目录下。
             2.calico-node服务的主要参数：
                 CALICO_IPV4POOL_CIDR：&quot;192.168.0.0/16&quot;
-                    Calico IPAM的IP地址池，Pod的IP地址将从该池中进行分配,默认是192.168.0.0/16，如果是规划的其他网络，需要修改正确；
+                    Calico IPAM（IP分配）的IP地址池，Pod的IP地址将从该池中进行分配,默认是192.168.0.0/16，如果是规划的其他网络，需要修改正确；
                 FELIX_LOGSEVERITYSCREEN：info            #日志级别,可以改为warning
                 FELIX_IPV6SUPPORT：flase                 #是否启用IPV6，默认不启用 
                 FELIX_DEFAULTENDPOINTTOHOSTACTION:ACCEPT #默认允许Pod到Node的网络流量
@@ -1199,8 +1199,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
         其中：
             1.在Destination中10.20.*.*/255.255.255.192的就是calico为node节点分配的pod网段
-            2.比如10.20.161.192   192.168.1.20    255.255.255.192就是一条静态路由，即：
-            route add 10.20.161.192/255.255.255.192 gw 192.168.1.20,当前主机到达node-IP为192.168.1.20的静态路由；
+            2.比如10.20.161.192  192.168.1.20 255.255.255.192 UG  0  0  0 tunl0就是一条静态路由，即：
+            route add 10.20.161.192/255.255.255.192 gw 192.168.1.20,当前主机到达node节点IP为192.168.1.20的静态路由；
     BGP协议信息：
         1.calico是使用BGP协议，会自动学习node节点上的路由条目（route -n）;
         2.BGP协议是通过TCP连接来建立邻居的，因此可以用netstat命令验证BGP Peer
@@ -1566,8 +1566,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker仓库管理工具Harbor/" rel="next" title="Docker仓库管理工具Harbor">
-                <i class="fa fa-chevron-left"></i> Docker仓库管理工具Harbor
+              <a href="/2018/10/18/Dockerfile/" rel="next" title="Dockerfile">
+                <i class="fa fa-chevron-left"></i> Dockerfile
               </a>
             
           </div>
