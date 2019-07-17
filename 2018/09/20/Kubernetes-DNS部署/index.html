@@ -145,7 +145,7 @@
 <meta property="og:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/09/20/Kubernetes-DNS部署/k8s-dns.png">
-<meta property="og:updated_time" content="2019-07-14T13:14:29.069Z">
+<meta property="og:updated_time" content="2019-07-15T09:21:40.805Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-DNS部署">
 <meta name="twitter:description" content="kubernetes-DNS部署(KubeDNS/CoreDNS)">
@@ -761,9 +761,10 @@
         #下载处理脚本
 3.生成core.yaml清单，并修改拉取镜像地址
     1.生成新的yaml清单
-        ~]# bash deploy.sh -i 10.96.254.254 -r &quot;10.96.0.0/12&quot; -s -t coredns.yaml.sed &gt; coredns.yaml
+        ~]# bash deploy.sh -i 10.96.254.254 -r &quot;10.96.0.0/12&quot; -s -t coredns.yaml.sed -d cre.local &gt; coredns.yaml
         #1.向脚本传递DNS服务的地址是10.96.254.254，service的网段时10.96.0.0/12，然后生成实际的coredns.yaml清单文件；
         #2.DNS地址就是kubelet配置的--cluster-dns参数的地址，在node节点上使用ps -ef | grep dns即可看到kubelet的信息；
+        #3.-d cre.local:指定部署的k8s集群真正的域后缀名称，代替模板中默认的cluster.local;
     2.修改yaml清单
         ~]# vim coredns.yaml
         ...
@@ -782,6 +783,8 @@
               - name: coredns
                 image: 192.168.1.101/baseimages/coredns:1.2.6 #从harbor拉取镜像
         ...
+        备注：
+            修改k8s的域后缀，当然也可以在deploy.sh通过-d传递和从本地拉取镜像
 4.部署
     ~]# kubectl apply -f coredns.yaml
         serviceaccount/coredns created
@@ -1420,7 +1423,7 @@ Dnsmasq工作原理:
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:15</span>
+    <span title="站点阅读时长">15:23</span>
   
 </div>
 

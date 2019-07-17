@@ -152,7 +152,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-13T11:20:40.223Z">
+<meta property="og:updated_time" content="2019-07-17T02:49:26.362Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">37k</span>
+                <span title="本文字数">38k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">33 分钟</span>
+                <span title="阅读时长">35 分钟</span>
               
             </div>
           
@@ -964,7 +964,23 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         ~]# ping 172.20.0.6
 </code></pre><p>–抓包测试<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png" alt="抓包测试"></p>
 <h3 id="7-部署Caclio"><a href="#7-部署Caclio" class="headerlink" title="7.部署Caclio"></a>7.部署Caclio</h3><p><a href="https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/calico" target="_blank" rel="noopener">caclio官方安装介绍</a><br>–caclio原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png" alt="caclio原理图"></p>
-<pre><code>1.安装方式：
+<pre><code>环境要求：
+    1.Calico会使用DaemonSet在每一个node节点上部署一个calico容器，使用BGP网络会自动学习主机上的路由，当网络环境很大，需要在跨机房部署k8s集群时，需要在交换机设备上开启BGP，否则跨机房时就访问不了；
+    2.calico学习路由的方式：
+        calico会自己学习路由，它出去的源地址网络就是容器本身，不像flannel使用宿主机的网卡出去；比如：
+            node1:上各运行3个pod:node1-pod1、node1-pod2、node1-pod3
+            node2:上运行3个pod:node2-pod1、node2-pod2、node2-pod3
+        对于flannel来说的报文流程：
+            node1-pod1访问node2-pod2是使用overlay方式，流程：
+            node1-pod1-&gt;cni0-&gt;flannel.1-&gt;node1-eth0&lt;--------&gt;node02-eth0-flannel.1-&gt;cni0-&gt;node2-pod2，必须依赖宿主机物理网卡通信；
+        对于Calico来说的报文流程：
+            calico会在node1主机上自动学习静态路由，这个静态路由指的是：calico会学习到我们事先规划好的每个node节点上的pod网络，比如：
+            node1的pod网段：10.244.20.0/255.255.255.192,它有64个主机位，然后node1就会加一条静态路由，然后通告给其他节点；
+            node2的pod网段：10.244.30.0/255.255.255.192,那么静态路由就是：
+                route add 10.244.20.0/255.255.192.0 gw node1-ip,通信时不需要经过flannel的flannel.1等网卡封装，而是直接通过物理网卡通信；
+        详见下文calico安装后的信息；
+
+1.安装方式：
     1.Calico有多种托管方式，因为我们使用的二进制部署方式，所以首先可以抛开kubeadm这种不适合生产环境的方式；
     2.标准托管方式与kubernetes数据存储区分的方式有什么区别呢？
         1.标准托管方式： Calico与kubernetes共用一套etcd集群存储数据
@@ -1162,20 +1178,22 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         +--------------+-------------------+-------+-------+-------------+
         IPv6 BGP status
         No IPv6 peer found.
-        #使用calicoctl node status验证，每个node节点都是Established就是正常的
+        #使用calicoctl node status验证，每个node节点都是Established就是正常的,这里因为是3台节点所以是3条信息；
     查看路由
         ~]# route -n
         Kernel IP routing table
         Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
         0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 ens3
-        10.20.161.192   192.168.1.20    255.255.255.192 UG    0      0        0 ens3
-        10.20.218.0     192.168.1.21    255.255.255.192 UG    0      0        0 ens3
-        10.20.167.130   192.168.1.22    255.255.255.192 UG    0      0        0 ens3
+        10.20.161.192   192.168.1.20    255.255.255.192 UG    0      0        0 tunl0
+        10.20.218.0     192.168.1.21    255.255.255.192 UG    0      0        0 tunl0
+        10.20.167.130   192.168.1.22    255.255.255.192 UG    0      0        0 tunl0
         10.20.222.190   0.0.0.0         255.255.255.192 UG    0      0        0 *
         192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 ens3
         172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
-        10.20.166.128  192.168.1.63    255.255.255.192 UG    0      0        0 ens3
-            #在Destination中10.20.*.*/255.255.255.192的就是calico为node节点分配的pod网段
+        其中：
+            1.在Destination中10.20.*.*/255.255.255.192的就是calico为node节点分配的pod网段
+            2.比如10.20.161.192   192.168.1.20    255.255.255.192就是一条静态路由，即：
+            route add 10.20.161.192/255.255.255.192 gw 192.168.1.20,当前主机到达node-IP为192.168.1.20的静态路由；
     BGP协议信息：
         1.calico是使用BGP协议，会自动学习node节点上的路由条目（route -n）;
         2.BGP协议是通过TCP连接来建立邻居的，因此可以用netstat命令验证BGP Peer
@@ -1199,7 +1217,12 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         k8s-node03   Ready                     node   43m    v1.13.4
 5.查看etcd中calico相关信息：
     因为这里calico网络使用etcd存储数据，所以可以在etcd集群中查看数据，calico-3.x版本默认使用etcd v3存储，登陆集群的任意一个etcd节点查看即可；
-    ~]# etcdctl --endpoints=http://127.0.0.1:2379 --ca-file=/etc/kubernetes/ssl/ca.pem ls /calico
+    ~]# ETCDCTL_API=3  etcdctl --endpoints=http://127.0.0.1:2379 --ca-file=/etc/kubernetes/ssl/ca.pem ls /calico
+        #查看所有保存在etcd集群中的calico相关数据
+    ~]# ETCDCTL_API=3 etcdctl --endpoints=&quot;http://127.0.0.1:2379&quot; get --prefix /calico/ipam/v2/host
+        #查看calico网络为各节点分配的网段
+    calico 2.x版本默认使用etcd v2存储，登陆集群的一个etcd 节点，查看命令：
+        ~]# etcdctl --endpoints=http://127.0.0.1:2379 --ca-file=/etc/kubernetes/ssl/ca.pem ls /calico
 6.部署pod测试网络是否正常
     ~]# kubectl run net-test --image=alpine --replicas=4 sleep 36000
         deployment.apps/net-test created
@@ -1473,8 +1496,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker的资源限制/" rel="next" title="Docker的资源限制">
-                <i class="fa fa-chevron-left"></i> Docker的资源限制
+              <a href="/2018/10/18/Docker仓库管理工具Harbor/" rel="next" title="Docker仓库管理工具Harbor">
+                <i class="fa fa-chevron-left"></i> Docker仓库管理工具Harbor
               </a>
             
           </div>
@@ -1862,7 +1885,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:15</span>
+    <span title="站点阅读时长">15:23</span>
   
 </div>
 

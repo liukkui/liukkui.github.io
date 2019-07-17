@@ -145,7 +145,7 @@
 <meta property="og:description" content="Heapster和Dashboard">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/06/28/Kubernetes-监控Heapster和Dashboard/dashboard.png">
-<meta property="og:updated_time" content="2019-07-15T08:05:13.210Z">
+<meta property="og:updated_time" content="2019-07-15T11:38:49.686Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-监控Heapster和Dashboard">
 <meta name="twitter:description" content="Heapster和Dashboard">
@@ -541,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">12k</span>
+                <span title="本文字数">16k</span>
               
 
               
@@ -555,7 +555,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">11 分钟</span>
+                <span title="阅读时长">14 分钟</span>
               
             </div>
           
@@ -588,7 +588,8 @@
     ~]# docker push 192.168.1.101/baseimage/heapster-amd64:v1.5.4
     ]# docker push 192.168.1.101/baseimage/kubernetes-dashboard-amd64:v1.10.1
         #上传到本地harbor上
-</code></pre><h3 id="1-Heapster部署"><a href="#1-Heapster部署" class="headerlink" title="1.Heapster部署"></a>1.Heapster部署</h3><pre><code>备注：
+</code></pre><h3 id="1-Heapster部署"><a href="#1-Heapster部署" class="headerlink" title="1.Heapster部署"></a>1.Heapster部署</h3><p><a href="https://github.com/kubernetes/heapster" target="_blank" rel="noopener">Heapster项目地址</a></p>
+<pre><code>备注：
     1.部署heapster只是为了Dashboard显示metrics数据，不是为了监控不需要部署influxdb+kabana;
     2.heapster内部是使用域名调用其他组件的，所以需要依赖于CoreDNS/kubeDNS；
 1.heapster.yaml部署清单
@@ -956,7 +957,85 @@
     https://www.cre.com:30443
     #使用上面做成的两个kubeconfig文件登录即可；
 </code></pre><p>–Dashboard登录页面<br><img src="/2018/06/28/Kubernetes-监控Heapster和Dashboard/dashboard.png" alt="dashboard"></p>
+<h3 id="3-安装报错问题汇总"><a href="#3-安装报错问题汇总" class="headerlink" title="3.安装报错问题汇总"></a>3.安装报错问题汇总</h3><pre><code>1.system:anonymous，code:403问题
+  访问dashboard网页时，可能出现下面这种报错：
+      {
+        &quot;kind&quot;: &quot;Status&quot;,
+        &quot;apiVersion&quot;: &quot;v1&quot;,
+        &quot;metadata&quot;: {
+        },
+        &quot;status&quot;: &quot;Failure&quot;,
+        &quot;message&quot;: &quot;services \&quot;https:kubernetes-dashboard:\&quot; is forbidden: User \&quot;system:anonymous\&quot; cannot get services/proxy in the namespace \&quot;kube-system\&quot;&quot;,
+        &quot;reason&quot;: &quot;Forbidden&quot;,
+        &quot;details&quot;: {
+          &quot;name&quot;: &quot;https:kubernetes-dashboard:&quot;,
+          &quot;kind&quot;: &quot;services&quot;
+        },
+        &quot;code&quot;: 403
+      }
+    原因:
+      1.原因是由于kube-apiserver使用了TLS认证，而我们的真实物理机上的浏览器使用匿名证书（因为没有可用的证书）去访问Dashboard，导致授权
+      失败而不无法访问。官方提供的解决方法是将kubelet的证书转化为浏览器可用的证书，然后导入进浏览器；
+      2.Kubernetes API Server新增了–anonymous-auth选项，允许匿名请求访问secure-port。没有被其他authentication方法拒绝的请求即
+      Anonymous-requests，这样的匿名请求的username为system:anonymous, 归属的组为system:unauthenticated。并且该选线是默认的。
+      这样一来，当采用chrome浏览器访问dashboard UI时很可能无法弹出用户名、密码输入对话框，导致后续authorization失败。为了保证用户名、
+      密码输入对话框的弹出，需要将–anonymous-auth设置为false;
+    解决办法：
+      在api-server配置文件中启用--anonymous-auth=false
+      ~]# vim /usr/lib/systemd/system/kube-apiserver.service
+        [Service]
+        User=root
+        ExecStart=/usr/local/bin/kube-apiserver \
+        --anonymous-auth=false \ 
+          #不接受匿名访问，若为true，则表示接受，此处设置为false，便于dashboard访问
 
+2.Unauthorized，code:401问题
+  有时虽然设置了--anonymous-auth=false，但访问dashboard时，还会出现如下报错：
+      {
+        &quot;kind&quot;: &quot;Status&quot;,
+        &quot;apiVersion&quot;: &quot;v1&quot;,
+        &quot;metadata&quot;: {
+        },
+        &quot;status&quot;: &quot;Failure&quot;,
+        &quot;message&quot;: &quot;Unauthorized&quot;,
+        &quot;reason&quot;: &quot;Unauthorized&quot;,
+        &quot;code&quot;: 401
+      }
+    原因：
+    解决办法1：
+      在api-server配置文件中启用-basic-auth-file基于用户名密码认证
+      ~]# vim /usr/lib/systemd/system/kube-apiserver.service
+      [Service]
+        User=root
+        ExecStart=/usr/local/bin/kube-apiserver \
+        --basic-auth-file=/etc/kubernetes/pki/basic-auth.csv \
+      basic-auth.csv制作方法： 格式为password，username，uid
+        ~]# vim basic-auth.csv
+            cre123456，admin，1
+            readonly，readonly，2       #这里设置两个用户
+      授权admin用户权限：
+        ~]# kubectl create clusterrolebinding login-dashboard-admin --clusterrole=cluster-admin --user=admin
+          #将admin与k8s内部的clusterrole：cluster-admin获得权限；
+    解决办法2：
+      方法1可能对低版本k8s-apiserver配置后就无法启动了，所以推荐使用kubectl proxy方案；
+      在主节点上，我们执行kubectl proxy --address=192.168.56.101 --disable-filter=true开启代理。
+      其中：
+        address表示外界可以使用192.168.56.101来访问Dashboard，我们也可以使用0.0.0.0
+        disable-filter=true表示禁用请求过滤功能，否则我们的请求会被拒绝，并提示 Forbidden (403) Unauthorized。
+
+3.getsockopt: connection timed out问题
+    果安装的docker版本为1.13及以上，并且网络畅通，flannel、etcd都正常，但还是会出现getsockopt: connection timed out&apos;的错误，则可能是iptables配置问题。具体问题：
+      Error: &apos;dial tcp 10.233.50.3:8443: getsockopt: connection timed out
+    原因：
+      docker从1.13版本开始，可能将iptables FORWARD chain的默认策略设置为DROP，从而导致ping其他Node上的Pod IP失败，遇到这种问题时，需要手动设置策略为ACCEPT：
+    解决办法：
+      ~]# vim /usr/lib/systemd/system/docker.service
+        [Service]
+        Type=notify
+        ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
+          #将Forward的默认策略改为ACCEPT;
+      ~]# systemctl restart dcoker     #重启Docker即可；
+</code></pre>
       
     </div>
 
@@ -1433,7 +1512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heapster和Dashboard"><span class="nav-number">1.</span> <span class="nav-text">Heapster和Dashboard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Heapster部署"><span class="nav-number">2.</span> <span class="nav-text">1.Heapster部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Dashboard部署"><span class="nav-number">3.</span> <span class="nav-text">2.Dashboard部署</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Heapster和Dashboard"><span class="nav-number">1.</span> <span class="nav-text">Heapster和Dashboard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Heapster部署"><span class="nav-number">2.</span> <span class="nav-text">1.Heapster部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Dashboard部署"><span class="nav-number">3.</span> <span class="nav-text">2.Dashboard部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-安装报错问题汇总"><span class="nav-number">4.</span> <span class="nav-text">3.安装报错问题汇总</span></a></li></ol></div>
             
 
           </div>
@@ -1478,7 +1557,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:15</span>
+    <span title="站点阅读时长">15:23</span>
   
 </div>
 

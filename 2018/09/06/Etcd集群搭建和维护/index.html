@@ -144,7 +144,7 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="Etcd原理">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-12T14:47:10.750Z">
+<meta property="og:updated_time" content="2019-07-17T04:14:35.315Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Etcd集群搭建和维护">
 <meta name="twitter:description" content="Etcd原理">
@@ -546,7 +546,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">18k</span>
+                <span title="本文字数">22k</span>
               
 
               
@@ -560,7 +560,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">16 分钟</span>
+                <span title="阅读时长">20 分钟</span>
               
             </div>
           
@@ -767,40 +767,6 @@
             #修改etcd的数据存储目录
     ~]# rm -rf &quot;/var/lib/etcd/*
         #将之前的数据全部删除，重新自动创建
-
-6.关于数据存储的说明
-    首先etcd对数据的持久化采用的是binlog日志，也称WAL，即Write-Ahead-Log加Snapshot快照的方式，即数据目录是
-    由snap+WAL（binlog）两个目录组成的；
-    在数据存储的目录中，在启动的时候，文件目录结果如下所示：
-        ~]# tree /var/lib/etcd/
-        /var/lib/etcd/
-        └── default.etcd
-            └── member
-                ├── snap
-                │   └── db
-                └── wal
-                    ├── 0000000000000000-0000000000000000.wal
-                    └── 0.tmp
-    snap:
-        用于存放快照数据，etcd为防止WAL文件过多会创建快照，snap用于存储etcd的快照数据状态；
-    wal：
-        用于存放预写式日志，其最大的作用是记录整个数据变化的全部历程。
-        在etcd中，所有数据的修改在提交前，都要先写入WAL中，使用WAL进行数据的存储使得etcd拥有故障快速回复和数据回滚这两个重要功能；
-    故障快速恢复：
-        如果你的数据遭到破坏，就可以通过执行所有WAL中记录的修改操作，快速从最原始的数据恢复到数据损坏之前的状态；
-    数据回滚undo/重做redo：
-        因为所有的修改操作都被记录在WAL中，所以进行回滚或重做时，只需要反向或正向执行日志中的操作即可；
-
-    在备份中的文件目录如下所示：
-        ~]# tree /data/etcdbak/
-        /data/etcdbak/
-        └── back_20190628
-            └── member
-                ├── snap
-                │   └── db
-                └── wal
-                    └── 0000000000000000-0000000000000000.wal
-        #从上面可以看到，备份会默认丢弃tmp文件，而tmp文件主要是未提交的数据记录
 </code></pre><h3 id="附录1：配置etcd集群需要设置的参数项"><a href="#附录1：配置etcd集群需要设置的参数项" class="headerlink" title="附录1：配置etcd集群需要设置的参数项"></a>附录1：配置etcd集群需要设置的参数项</h3><pre><code>etcd的主配置为/etc/etcd/etcd.conf，各节点上使用的个别配置参数的取值会有不同，主要是需要分别根据节点自身的环境进行取值。需要配置的各参数说明如下：
 ETCD_DATA_DIR=&quot;/var/lib/etcd/k8s.etcd&quot;
     集群数据目录，可保持默认或按需取值；建议各节点保持一致；
@@ -832,31 +798,139 @@ ETCD_PEER_CLIENT_CERT_AUTH
     是否验正集群成员节点的客户端证书，安全通信的场景需要启用，其值为&quot;true&quot;
 ETCD_PEER_TRUSTED_CA_FILE
     用于为成员安全通信签署证书的CA的证书，例如&quot;/etc/etcd/pki/ca.crt&quot;
-</code></pre><h3 id="etcd集群数据备份和故障维护"><a href="#etcd集群数据备份和故障维护" class="headerlink" title="etcd集群数据备份和故障维护"></a>etcd集群数据备份和故障维护</h3><pre><code>1.etcd集群数据备份和恢复
-    etcd从严格意义上来说，也就是一个存储，不过是分布式环境下的存储，而且保持强一致性，也就是每次有个leader进行发号指令，写入数据的时候，必须leader同意follower回复ok才能写入，而且必须大部分的节点正常响应；
-    1.1.配置定时任务进行备份
-        ~]# vim /script/backup_etcd.sh    #备份脚本
-            #!/bin/bash
-            date_time=`date +%Y%m%d`
-            etcdctl backup --data-dir /var/lib/etcd/default.etcd/ --backup-dir /data/etcdbak/back_${date_time}
-            find /data/etcdbak/ -ctime +7 -exec rm -r {} \;
-        ~]# crontab -e                     #设置定时任务
-            #backup etcd everyday at 2:00
-            0 2 * * * /usr/bin/bash /script/backup_etcd.sh &amp;&gt; /dev/null
-        #将错误输出和正常输出都重定向掉，是为了防止发送邮件，造成inode数量增大；
-        #备份数据时，可以在任意节点执行backup命令即可；
-    1.2.数据恢复的步骤
-        1.打包备份数据，发送到要恢复的etcd主机
-            ~]# tar -zcvf etcdbak.tar.gz etcdbak/
-                etcdbak/
-                etcdbak/20181220/
-                etcdbak/20181220/member/
-                etcdbak/20181220/member/snap/
-                etcdbak/20181220/member/wal/
-                etcdbak/20181220/member/wal/0000000000-000000000000.wal
-            ~]# scp etcdbak.tar.gz 192.168.34.128:/etcd/       
+</code></pre><h3 id="etcd集群数据备份、基本管理和故障维护"><a href="#etcd集群数据备份、基本管理和故障维护" class="headerlink" title="etcd集群数据备份、基本管理和故障维护"></a>etcd集群数据备份、基本管理和故障维护</h3><pre><code>1.管理etcd集群
+    Etcd集群支持在线改变集群成员节点，可以增加、修改、删除成员节点；不过改变成员数量仍旧需要满足集群成员多数同意原则（quorum），
+    另外请记住集群成员数量变化的影响：
+    1.增加etcd集群节点, 提高集群稳定性
+    2.增加etcd集群节点,提高集群读性能（所有节点数据一致，客户端可以从任意节点读取数据）；
+    3.增加etcd集群节点,降低集群写性能（所有节点数据一致，每一次写入会需要所有节点数据同步）；
 
-2.关闭其中一台etcd
+2.关于etcd数据存储的说明
+    首先etcd对数据的持久化采用的是binlog日志，也称WAL，即Write-Ahead-Log+Snapshot快照的方式，即数据目录是
+    由snap+wal（binlog）两个目录组成的；
+    1.如下：是etcd数据目录的树结构和两个目录的作用：
+        ~]# tree /var/lib/etcd/
+        /var/lib/etcd/
+        └── default.etcd
+            └── member
+                ├── snap
+                │   └── db
+                └── wal
+                    ├── 0000000000000000-0000000000000000.wal
+                    └── 0.tmp
+        snap:
+            用于存放快照数据，etcd为防止WAL文件过多会创建快照，snap用于存储etcd的快照数据状态；
+        wal：
+            1.用于存放预写式日志，其最大的作用是记录整个数据变化的全部历程。
+            2.在etcd中，所有数据的修改在提交前，都要先写入WAL中，使用WAL进行数据的存储使得etcd拥有故障快速回复和数据回滚这两个重要功能；
+    2.故障恢复：
+        1.如果你的数据遭到破坏，就可以通过执行所有WAL中记录的修改操作，快速从最原始的数据恢复到数据损坏之前的状态；
+        2.etcd会把启动的配置信息存储到--datadir参数指定的数据目录中，配置信息包括本地节点的ID、集群ID和初始化时的集群信息，
+        当一个节点有数据损坏或丢失时，就应该把这个节点从集群中删除，然后加入一个不带数据目录的新节点；
+    3.数据回滚undo/重做redo：
+        因为所有的修改操作都被记录在WAL中，所以进行回滚或重做时，只需要反向或正向执行日志中的操作即可；
+    4.为什么还要做快照？
+        虽然有了wal实时存储所有的变更，但为了防止磁盘很快爆满，etcd默认每10000条记录做一次快照，做过快照后的wal文件就可以删除了，
+        而且通过API可以查询的历史etcd操作默认为1000条；
+    在备份中的文件目录如下所示：
+        ~]# tree /data/etcdbak/
+        /data/etcdbak/
+        └── back_20190628
+            └── member
+                ├── snap
+                │   └── db
+                └── wal
+                    └── 0000000000000000-0000000000000000.wal
+        #从上面可以看到，备份会默认丢弃tmp文件，而tmp文件主要是未提交的数据记录
+
+3.备份、恢复etcd数据:
+    etcd_API有v2、v3版本，所以备份时还是有区别的，下文分别阐述：
+        区别：做快照的时候etcd_v2是把内存中的数据库序列化成JSON，然后持久化到磁盘，而etcd_v3是读取磁盘里的数据库的当前
+        版本（从BoltDB在读取，然后序列化到磁盘）；
+    1.etcd v2版本的备份和恢复
+        etcd v2是一个纯内存数据库，写操作先通过Raft协议复制binlog,复制成功后将数据写入内存，整个数据库在内存中就是一个简单的
+        树结构，其并未将数据实时写入磁盘，持久化是靠binlog和定期做快照来实现的，etcd_v2做快照的方法是将内存中的整个数据库复制
+        一份出来，然后序列化成JSON，写入磁盘中成为一个快照；而且做快照时使用的是复制出来的数据库，客户端的读写请求依旧会落在原始
+        的数据库上，所以做快照的操作不会阻塞客户端的读写请求；
+
+    2.etcd v3版本的备份和恢复
+        在一个基线上为etcd集群做快照能够实现etcd数据的冗余备份，通过定期的为etcd节点后端数据库做快照，etcd集群就能从一个已知的良好状态时间点进行恢复；
+        备份方式：
+            ~]# ETCDCTL_API=3 etcdctl --endpoinits $ENDPOINT snapshot save backup.db
+                #指定一个正在运行的etcd节点使用snapshot-save备份,然后集群就可以通过复制etcd节点数据目录的member/snap/db文件来获得快照了；
+            ~]# ETCDCTL_API=3 etcdctl --write-out=table snapshot status backup.db
+                +-----------+----------+------------+-------------+
+                | HASH      | REVISION | TOTAL KEYS |  TOTAL SIZE |
+                +-----------+----------+------------+-------------+
+                | fe01cf57  |     10   |    230     |    10.2M    |
+                +-----------+----------+------------+-------------+
+                #查看备份，而且快照文件的完整性校验会在恢复时进行，使用backup.db中的HASH值就是用于snapshot restore时进行校验；
+            扩展：
+                备份方式还可以直接从etcd的数据目录中进行复制，但复制过来的数据是没有一致性Hash值的，在恢复时需要使用&quot;--skip-hash-check&quot;选项跳过，下文有直接复制数据目录恢复的方式
+
+        恢复：
+            1.etcd v3提供了快照和恢复机制重建一个新的etcd集群，只要一个快照文件就能恢复etcd集群，使用snapshot restore命令
+            创建一个新的etcd数据目录，所有节点都将从同一个快照文件进行恢复，恢复时会覆盖写快照文件中的一些元数据，
+            如：member ID和cluster ID,这些节点也就丢失它们之前的身份信息，抹掉元数据就是为了防止新节点不小心加入别的etcd集群；
+            2.恢复操作会初始化一个新的etcd节点，该节点保留了之前的数据，并且配置将通过启动参数传入，步骤如下：
+            ~]# ETCDCTL_API=3 etcdctl snapshot restore backup.db \
+                --name m1 \
+                --initial-cluster m1=http://host1:2380,m1=http://host2:2380,m3=http://host1:2380 \
+                --initial-cluster-token etcd-cluster-1 \
+                --initial-advertise-peer-urls http://host1:2380
+            ~]# ETCDCTL_API=3 etcdctl snapshot restore backup.db \
+                --name m2 \
+                --initial-cluster m1=http://host1:2380,m1=http://host2:2380,m3=http://host1:2380 \
+                --initial-cluster-token etcd-cluster-1 \
+                --initial-advertise-peer-urls http://host2:2380
+            ~]# ETCDCTL_API=3 etcdctl snapshot restore backup.db \
+                --name m3 \
+                --initial-cluster m1=http://host1:2380,m1=http://host2:2380,m3=http://host1:2380 \
+                --initial-cluster-token etcd-cluster-1 \
+                --initial-advertise-peer-urls http://host3:2380
+            再用新的数据目录启动etcd进程：
+                ~]# etcd \
+                    --name m1 \
+                    --listen-client-urls http://host1:2379 \
+                    --advertise-client-urls http://host1:2379 \
+                    --listen-peer-urls http://host1:2380 &amp;
+                ~]# etcd \
+                    --name m2 \
+                    --listen-client-urls http://host2:2379 \
+                    --advertise-client-urls http://host2:2379 \
+                    --listen-peer-urls http://host2:2380 &amp;
+                ~]# etcd \
+                    --name m3 \
+                    --listen-client-urls http://host3:2379 \
+                    --advertise-client-urls http://host3:2379 \
+                    --listen-peer-urls http://host3:2380 &amp;
+            三个etcd进程都启动后，etcd集群就能在快照数据的基础上对外提供服务了；
+    3.etcd备份数据目录方式恢复
+        etcd从严格意义上来说，也就是一个存储，不过是分布式环境下的存储，而且保持强一致性，也就是每次有个leader进行发号指令，
+        写入数据的时候，必须leader同意follower回复ok才能写入，而且必须大部分的节点正常响应；
+        1.1.配置定时任务进行备份
+            ~]# vim /script/backup_etcd.sh    #备份脚本
+                #!/bin/bash
+                date_time=`date +%Y%m%d`
+                etcdctl backup --data-dir /var/lib/etcd/default.etcd/ --backup-dir /data/etcdbak/back_${date_time}
+                find /data/etcdbak/ -ctime +7 -exec rm -r {} \;
+            ~]# crontab -e                     #设置定时任务
+                #backup etcd everyday at 2:00
+                0 2 * * * /usr/bin/bash /script/backup_etcd.sh &amp;&gt; /dev/null
+            #将错误输出和正常输出都重定向掉，是为了防止发送邮件，造成inode数量增大；
+            #备份数据时，可以在任意节点执行backup命令即可；
+        1.2.数据恢复的步骤
+            1.打包备份数据，发送到要恢复的etcd主机
+                ~]# tar -zcvf etcdbak.tar.gz etcdbak/
+                    etcdbak/
+                    etcdbak/20181220/
+                    etcdbak/20181220/member/
+                    etcdbak/20181220/member/snap/
+                    etcdbak/20181220/member/wal/
+                    etcdbak/20181220/member/wal/0000000000-000000000000.wal
+                ~]# scp etcdbak.tar.gz 192.168.34.128:/etcd/         
+
+4.关闭其中一台etcd
     [root@etcd02 ~]# systemctl stop etcd   #关闭etcd
     ~]# etcdctl --endpoints=&apos;https://etcd02.cre.io:2379&apos; --cert-file=/etc/etcd/pki/client.crt --key-file=/etc/etcd/pki/client.key --ca-file=/etc/etcd/pki/ca.crt member list
     78f1359abb4e38df: name=etcd03.cre.io peerURLs=https://etcd03.cre.io:2380 clientURLs=https://etcd03.cre.io:2379 isLeader=false
@@ -870,7 +944,7 @@ ETCD_PEER_TRUSTED_CA_FILE
     cluster is degraded
         #cluster is degraded表示etcd集群被降级了，而且短时间内重新选举etcd02为leader;仍然可以对外提供服务；
 
- 3.主机迁移
+5.主机迁移
     有的时候，物理机需要下线维修，从而需要将数据拷贝到其他的机器上，从而在这里使用第三台机器来进行迁移；
     在这里进行恢复的时候，必须按照步骤进行恢复，首先停止需要停止的机器的etcd进程，然后将数据拷贝到新机器的数据目录中:
     ~]# scp -r /etcd/   192.168.34.117:/etcd/   #拷贝数据
@@ -882,15 +956,26 @@ ETCD_PEER_TRUSTED_CA_FILE
     备注：
         假设运行很久的etcd集群的binlog里有20万条操作记录，某一节点down且无法恢复，需要在集群中重新添加一台新的节点，这个时候master就需要把整个数据库复制到新加入的节点，master通过raft协议将整个binlog复制给slave节点，slave再将binlog在本地重放，这样做会非常耗时，因此一般的做法是：
             对整个数据库定期打快照，先将快照复制到新节点上，然后剩下的数据再使用binlog方式由master-&gt;slave上复制；
-4.4.扩容-etcd集群运行时重配置
+
+6.扩容-etcd集群运行时重配置
     出于安全考虑。etcd所有运行时的重配置都必须经过两个阶段：广播新的配置和启动新的集群：
     1.通知集群新的配置
         要向etcd集群增加一个member，需要调用一次用于向集群增加member的API，这是增加节点的必经之路，只有当集群同意该配置更新之后，该API才能正确返回；
     2.启动新集群
-        为了加etcd节点加入一个现有集群，需要指定正确的initial-cluster,并将initial-cluster-state设置成existing，待新节点启动
-        后，首先它会连一次现有集群，并验证当前集群的配置是否与启动参数initial-cluster指定的匹配，在新节点成功启动后，集群就会实现期望的配置；
+        --initial-cluster-state需要启用选项；
+        为了加etcd节点加入一个现有集群，需要指定正确的initial-cluster,并将initial-cluster-state设置成existing，待新节点启动后，首先它会连一次现有集群，并验证当前集群的配置是否与启动参数initial-cluster指定的匹配，在新节点成功启动后，集群就会实现期望的配置；
+        原理：
+            --initial-cluster-state的含义是：初始化集群状态，它有两个值：
+            1.new，默认值
+            2.existing     
+            意义：
+                当静态启动或当DNS服务发现所有member都存在时设置成new;设置成existing时，etcd会尝试加入一个已经存在的集群；
+    ~]# 先做好证书并上传
+    ~]# etcdctl member add etcd04 https://etcd03.cre.io:2380&quot;
+    ~]# etcdctl member list  
+        #此时就可以看到新的etcd了    
 
-5.缩容
+7.缩容
     当集群需要缩小规模的时候，主要直接移除节点，那么节点上etcd进程会被停止。
     ~]# etcdctl member list 
         #先查看需要移除的etcd节点的编号
@@ -1400,7 +1485,7 @@ ETCD_PEER_TRUSTED_CA_FILE
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd原理"><span class="nav-number">1.</span> <span class="nav-text">Etcd原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd集群搭建"><span class="nav-number">2.</span> <span class="nav-text">Etcd集群搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置etcd集群基于https通信（等于重新生成一个新的etcd集群）"><span class="nav-number">3.</span> <span class="nav-text">配置etcd集群基于https通信（等于重新生成一个新的etcd集群）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录1：配置etcd集群需要设置的参数项"><span class="nav-number">4.</span> <span class="nav-text">附录1：配置etcd集群需要设置的参数项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etcd集群数据备份和故障维护"><span class="nav-number">5.</span> <span class="nav-text">etcd集群数据备份和故障维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd集群和常见问题"><span class="nav-number">6.</span> <span class="nav-text">Etcd集群和常见问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd原理"><span class="nav-number">1.</span> <span class="nav-text">Etcd原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd集群搭建"><span class="nav-number">2.</span> <span class="nav-text">Etcd集群搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置etcd集群基于https通信（等于重新生成一个新的etcd集群）"><span class="nav-number">3.</span> <span class="nav-text">配置etcd集群基于https通信（等于重新生成一个新的etcd集群）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录1：配置etcd集群需要设置的参数项"><span class="nav-number">4.</span> <span class="nav-text">附录1：配置etcd集群需要设置的参数项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etcd集群数据备份、基本管理和故障维护"><span class="nav-number">5.</span> <span class="nav-text">etcd集群数据备份、基本管理和故障维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd集群和常见问题"><span class="nav-number">6.</span> <span class="nav-text">Etcd集群和常见问题</span></a></li></ol></div>
             
 
           </div>
@@ -1445,7 +1530,7 @@ ETCD_PEER_TRUSTED_CA_FILE
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:15</span>
+    <span title="站点阅读时长">15:23</span>
   
 </div>
 
