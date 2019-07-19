@@ -145,7 +145,7 @@
 <meta property="og:description" content="DockerFile：构建镜像">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/18/Dockerfile/三者区别.png">
-<meta property="og:updated_time" content="2019-06-05T14:19:34.083Z">
+<meta property="og:updated_time" content="2019-07-19T11:42:13.188Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerfile">
 <meta name="twitter:description" content="DockerFile：构建镜像">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">11k</span>
+                <span title="本文字数">15k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">10 分钟</span>
+                <span title="阅读时长">13 分钟</span>
               
             </div>
           
@@ -584,31 +584,23 @@
       
         <h3 id="DockerFile：构建镜像"><a href="#DockerFile：构建镜像" class="headerlink" title="DockerFile：构建镜像"></a>DockerFile：构建镜像</h3><a id="more"></a>
 <pre><code>前面说过：
-    1.镜像是分层的，当基于这个镜像创建一个容器时，docker是通过联合挂载机制把镜像层
-    进行叠加作为容器的只读层，而后又在这个镜像栈上构建了一个可写层作为这个容器的工
-    作目录.
-    2.所有的底层数据在第一次发生修改操作时，是通过CoW写时复制机制，把数据复制到读
-    写层进行修改并保存在读写层，覆盖底层的原始文件；写入新数据时，则直接保存在读写
-    层，而在读写层看到的数据就是全部的镜像层数据(镜像栈)
+    1.镜像是分层的，当基于这个镜像创建一个容器时，docker是通过联合挂载机制把镜像层进行叠加作为容器的只读层，而后又在这个镜像栈
+    上构建了一个可写层作为这个容器的工作目录.
+    2.所有的底层数据在第一次发生修改操作时，是通过CoW写时复制机制，把数据复制到读写层进行修改并保存在读写层，覆盖底层的原始文件；
+    写入新数据时，则直接保存在读写层，而在读写层看到的数据就是全部的镜像层数据(镜像栈)
     3.而Graph Driver则又在构建在本地文件系统之上的二级文件系统(aufs,overlay2)
-    4.基于Graph Driver这种特有的图形驱动程序，就可以把分成构建的镜像堆积在存储
-    空间当中，紧邻的镜像是有依赖关系的
-    5.docker commit可以把当前的读写层及其底层依赖的镜像关系打包成一个镜像层存储
-    在Graph Driver当中，并且指向底层依赖的镜像层，形成一个新的镜像层，如果基于
-    同一个镜像commit多个可写层，这些新的镜像层都是指向之前的底层镜像的，这也是
-    docker镜像不是很大的原因。
-    6.所以在制作镜像时，完全不必基于某个基础镜像显示启动一个新容器，然后在上面创建
-    修改可写层并打包成镜像；commit只是一种方式，也可以使用dokcerfile
+    4.基于Graph Driver这种特有的图形驱动程序，就可以把分成构建的镜像堆积在存储空间当中，紧邻的镜像是有依赖关系的
+    5.docker commit可以把当前的读写层及其底层依赖的镜像关系打包成一个镜像层存储在Graph Driver当中，并且指向底层依赖的镜像层，
+    形成一个新的镜像层，如果基于同一个镜像commit多个可写层，这些新的镜像层都是指向之前的底层镜像的，这也是docker镜像不是很大的原因。
+    6.所以在制作镜像时，完全不必基于某个基础镜像显示启动一个新容器，然后在上面创建修改可写层并打包成镜像；commit只是一种方式，
+    也可以使用dokcerfile
     7.如果再本地将软件源码编译/二进制编译到容器也是可以的
 </code></pre><h3 id="dockerfile基本要求"><a href="#dockerfile基本要求" class="headerlink" title="dockerfile基本要求"></a>dockerfile基本要求</h3><pre><code>1.dockerfile的工作逻辑：
-    制作镜像无非就是基于某个基础镜像创建一个可写层修改后再commit成一层新的镜像
-    这个过程可以由docker自身完成，只需要在dockerfile配置文件中写清楚，基于哪个基础镜像，
-    按需修改(通过各种指令生成)，而docker build可以读取dockerfile文件，隐
-    式的执行这些指令集生成一个新的镜像层保存在Graph Driver中
+    制作镜像无非就是基于某个基础镜像创建一个可写层修改后再commit成一层新的镜像这个过程可以由docker自身完成，只需要在
+    dockerfile配置文件中写清楚，基于哪个基础镜像，按需修改(通过各种指令生成)，而docker build可以读取dockerfile文件，
+    隐式的执行这些指令集生成一个新的镜像层保存在Graph Driver中
 2.工作目录
-    构建docker镜像时，必须有一个工作目录docker,这个目录下只存在dockerfile和在
-    dockerfile中定义要复制的文件，是起始目录
-
+    构建docker镜像时，必须有一个工作目录docker,这个目录下只存在dockerfile和在dockerfile中定义要复制的文件，是起始目录
 3.dockerfile format：语法
     dockerfile就是一个纯文本文件;
         注释行
@@ -616,9 +608,8 @@
         第一条指令必须是FROM：基础镜像名称
         docker build是按顺序读取执行dockerfile中的指令集的
 4.dockerfile中的每一条指令都会生成一个新的镜像层
-    如果指令比较多，生成的镜像层就比较多，就会造成第一次的CoW从底层读取数据时很慢
-    但是镜像层比较多又容易被分享和易控，较少又会比较繁琐
-    所以一般是把做同一个件事的多个操作通过\换行符，用一条指令完成(见下文)
+    如果指令比较多，生成的镜像层就比较多，就会造成第一次的CoW从底层读取数据时很慢但是镜像层比较多又容易被分享和易控，较少又会
+    比较繁琐所以一般是把做同一个件事的多个操作通过\换行符，用一条指令完成(见下文)
 5.镜像内唯一要运行的程序一定必须要运行在前台
 </code></pre><h3 id="dockerfile中的环境变量"><a href="#dockerfile中的环境变量" class="headerlink" title="dockerfile中的环境变量"></a>dockerfile中的环境变量</h3><pre><code>1.docker为了满足同一镜像在不同环境下的使用场景引入了环境变量的方式
     某个容器基于镜像启动时，通过传递环境变量参数，来生成容器内的不同的配置文件
@@ -626,11 +617,9 @@
     这样一来，就可以用基于同一基础镜像，传递不同的环境变量作为参数值，创建适应
     于不同环境的容器
 2.entrypoint.sh脚本
-    但是传统的代码不支持传环境变量作为参数，而在docker中又需要传参，这时就有了衔接
-    层也就是shell脚本，这个脚本作为容器第一个要运行的程序然后运行完退出，再退出去
-    之前读取用户传的环境变量，将环境变量的值写到程序的配置文件中；
-    而且很多镜像通过docker image inspect mysql:8.0 |grep entrypoint过滤是可以
-    看到有这个脚本的
+    但是传统的代码不支持传环境变量作为参数，而在docker中又需要传参，这时就有了衔接层也就是shell脚本，这个脚本作为容器第一个要
+    运行的程序然后运行完退出，再退出去之前读取用户传的环境变量，将环境变量的值写到程序的配置文件中；
+    而且很多镜像通过docker image inspect mysql:8.0 |grep entrypoint过滤是可以看到有这个脚本的
 3.环境变量的两类用法：
     a.在构建dockerfile中使用
     b.以dockerfile构建的镜像为基础镜像，启动容器时使用
@@ -827,18 +816,31 @@ CMD：
         2.而以往我们用systemctl start httpd启动一个程序时他代表是运行在后台的，而且事实上它是托管在systemd的前台上；
         3.但是我们现在不打算用systemd来启动，就是手动启动，即便是以shell的子进程来启动他也是手动启动的，而不是使用systemd来控制，因为可能这里并没有systemd;
 ENTRYPOINT：
-    1.CMD和ENTRYPOINT都表示镜像启动为容器时，容器默认运行的程序，而且CMD和ENTRYPOINT有多个，也都是最后一个生效
-    2.如果CMD和ENTRYPOINT同时存在，CMD和ENTRYPONIT需要组合起来，则CMD指定的内容
-    都作为ENTRYPOINT所指定内容的参数
+    1.ENTRYPOINT存在的主要意义是给容器传递变量、文件、做一些启动容器前的准备工作的，所以：
+        1.当只有CMD命令时，可以使用CMD以前台方式运行一个进程来支撑容器不退出；
+            如：CMD [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]
+        2.当只有entrypoint脚本是，那么entrypoint.sh中，可以有一些准备工作+需要运行的进程和一个前台进程；如：
+            CMD [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]
+            或者
+            ENTRYPOINT [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]
+            这里可以是CMD也可以是ENTRYPOINT
+                ~]# vim run_tomcat.sh 
+                #!/bin/bash
+                su - tomcat -c &quot;/apps/tomcat/bin/catalina.sh start&quot;
+                tail -f /etc/hosts
+        3.当CMD和ENTRYPOINT同时存在时，这个时候有些特殊，需使用特殊方法；
+            1.前提：CMD和ENTRYPOINT同时存在时的逻辑是：
+                CMD中的命令都将作为ENTRYPOINT脚本的参数运行，而我们知道shell脚本运行时会再开启一个shell进程，那么CMD命令就会
+                是这个新的shell进程下的子进程，而shell进程是不能作为容器的前台进程运行的，所以必须让这个ENTRYPOINT的shell进程
+                强行退出，让CMD命令作为前台进程运行保证容器不退出，所以就可以在ENTRYPOINT中使用exec&quot;$@&quot;来实现这个目的；
+            2.这种方法是使用Dockerfile构建镜像时的常用方法，示例详见下文：制作httpd镜像；
+    2.CMD和ENTRYPOINT都表示镜像启动为容器时，容器默认运行的程序，而且CMD和ENTRYPOINT有多个，也都是最后一个生效；
     3.基于镜像运行的容器启动时，是可以运行指定的命令来覆盖容器内CMD定义的默认的程序的，如果不想让其覆盖，可以在ENTRYPOINT中
     定义默认程序，因为ENTRYPOINT中定义的默认运行命令在run时是不允许覆盖的!!!
         但是如果再run时，通过选项--entrypoint &quot;/bin/bash&quot; 还是可以被覆盖的
-    语法：
+    4.ENTRYPOINT语法：
         ENTRYPOINT &lt;command&gt;或者
         ENTRYPOINT [&quot;&lt;executable&gt;&quot;, &quot;&lt;param1&gt;&quot;, &quot;&lt;param2&gt;&quot;]
-    docker run命令传入的命令参数会覆盖CMD指令的内容并且附加到
-    ENTRYPOINT命令最后做为其参数使用
-    Dockerfile文件中也可以存在多个ENTRYPOINT指令，但仅有最后一个会生效
 
 CMD和ENTRYPONIT同时存在的意义？
     1.可以把CMD /usr/sbin/httpd -DFOREGROUND写成
@@ -858,8 +860,54 @@ CMD和ENTRYPONIT同时存在的意义？
     2.自己制作或者从网上下载的image可以先通过docker image inspect name查看是否
         entrypoint脚本，再查看脚本中定义的内容和变量，可以根据不同的环境，run时，
         -e 传递不同的变量值生成不同配置文件的容器
-</code></pre><p>示例：<br>    docker run –name c1 -P -d myimg:v0.1 以后台运行容器</p>
-
+</code></pre><h3 id="Dockerfile示例：基于centos-7制作httpd镜像"><a href="#Dockerfile示例：基于centos-7制作httpd镜像" class="headerlink" title="Dockerfile示例：基于centos:7制作httpd镜像"></a>Dockerfile示例：基于centos:7制作httpd镜像</h3><pre><code>~]# vim Dockerfile              #httpd的dockerfile
+    FROM centos:7
+    LABEL maintainer=&quot;liu &lt;liu@163.com&gt;&quot;
+    ENV home=&quot;/data/test&quot;
+    RUN yum repolist &amp;&amp; \
+        yum install iproute vim -y &amp;&amp; \
+        yum install httpd php php-mysql iproute vim -y &amp;&amp; \
+        yum clean all
+    ADD entrypoint.sh /bin/                 #将entrypoint.sh放到bin目录下
+    EXPOSE 80 8080
+    CMD [&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;]  #表示不以shell解释运行；
+    ENTRYPOINT [&quot;/bin/entrypoint.sh&quot;]
+~]# vim entrypoint.sh
+    #!/bin/bash
+    #
+    listen_port=${LISTEN_PORT:-80}          #变量赋值用法，设置默认值
+    server_name=${SERVER_NAME:-localhost}   #如上
+    doc_root=${DOC_ROOT:-/var/www/html}     #如上 
+    cat &gt; /etc/httpd/conf.d/virtual.conf &lt;&lt;EOF  #定义httpd的配置文件
+    listen $listen_port
+    &lt;VirtualHost *:${listen_port}&gt;
+            ServerName &quot;$server_name&quot;
+            DocumentRoot &quot;$doc_root&quot;
+            &lt;Directory &quot;$doc_root&quot;&gt;
+                    Options none
+                    AllowOverride none
+                    Required all granted
+            &lt;/Directory&gt;
+    &lt;/VirtualHost&gt;
+    EOF
+    exec &quot;$@&quot;
+备注：重点解释exec &quot;$@&quot;的作用：
+    exec是指用目标进程替换当前shell进程，让当前entrypoint开启的shell进程终止退出
+    1.前提:
+        可以看到Dockerfile中CMD和ENTRYPOINT是同时存在的，那么就意味着&quot;/usr/sbin/httpd&quot;,&quot;-DFOREGROUND&quot;就将作为这个entrypoint.sh的两个参数$1,$2运行,而根据shell的特性：运行脚本时会开启一个新的shell进程，这样一来CMD的命令就会运行为新的shell进程下的子进程，此时通过dockerfile制作的镜像就会以entrypoint.sh开启的shell进程作为前台进程运行，而我们知道shell是不能作为容器的前台进程运行的，所以需要有一种办法：关闭entrypoint.sh的shell进程，让CMD的命令代替作为容器中唯一的进程且PID=1并且运行在前台；
+    2.exec &quot;$@&quot;
+        首先CMD中的内容都将传递给entrypoint作为参数运行，而在脚本中规定引用一个脚本的所有参数要使用$@符号，而使用exec替换命令来运行所有传递给entrypoint的参数（即CMD中的命令），表示用目标进程（$@）替换当前entrypoint开启的shell进程，让entrypoint开启的shell进程（entrypoint）终止退出，这样的话CMD用来运行前台程序进程的目的就达到了；
+    3.所以这才是ENTRYPOINT和CMD同时存在时的正确使用方法，ENTRYPOINT准备一些容器运行CMD命令前的文件存在性判断、准备配置文件等功能，虽然此时有CMD命令，但可以使用exec&quot;$@&quot;来让CMD命令退出entrypoint的shell进程，成为容器中唯一的进程；
+附录：
+    如果不了解shell中exec的作用，可参考：4.shell中exec解析.txt
+    简单来说就是：
+        exec命令在执行时会把当前的shell_process关闭，然后换到后面的命令继续执行；
+~]# chmod +x entrypoint.sh
+    #记得要设置执行权限,防止运行制作好的镜像时报错：permission deniey
+~]# docker build -t httpd:v1 .          #制作镜像
+~]# docker run --name c1 -P -d httpd:v1 #基于制作好的镜像运行，测试容器是否正常运行
+~]# docker save httpd:v1 -o httpd.tar   #打包制作好的镜像，可以基于FTP、NFS共享
+</code></pre>
       
     </div>
 
@@ -1002,8 +1050,8 @@ CMD和ENTRYPONIT同时存在的意义？
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/23/Kubernetes-CNI和网络插件/" rel="prev" title="Kubernetes-CNI和网络插件">
-                Kubernetes-CNI和网络插件 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
+                docker存储卷 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1336,7 +1384,7 @@ CMD和ENTRYPONIT同时存在的意义？
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell和RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">6.</span> <span class="nav-text">shell和RUN,CMD,ENTRYPOINT的区别</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerFile：构建镜像"><span class="nav-number">1.</span> <span class="nav-text">DockerFile：构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile基本要求"><span class="nav-number">2.</span> <span class="nav-text">dockerfile基本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile中的环境变量"><span class="nav-number">3.</span> <span class="nav-text">dockerfile中的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerignore-file"><span class="nav-number">4.</span> <span class="nav-text">.dockerignore file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile基本语法"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell和RUN-CMD-ENTRYPOINT的区别"><span class="nav-number">6.</span> <span class="nav-text">shell和RUN,CMD,ENTRYPOINT的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile示例：基于centos-7制作httpd镜像"><span class="nav-number">7.</span> <span class="nav-text">Dockerfile示例：基于centos:7制作httpd镜像</span></a></li></ol></div>
             
 
           </div>
@@ -1381,7 +1429,7 @@ CMD和ENTRYPONIT同时存在的意义？
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">15:28</span>
+    <span title="站点阅读时长">15:30</span>
   
 </div>
 
