@@ -136,27 +136,28 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI所以现在更多使用Cobbler来实现自动化部署.">
-<meta name="keywords" content="运维，linux，windows">
+  <meta name="description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
+<meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cobbler">
-<meta property="og:url" content="https://www.liukui.tech/2017/05/06/Cobbler/index.html">
+<meta property="og:title" content="Kubernetes-ELK收集日志">
+<meta property="og:url" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI所以现在更多使用Cobbler来实现自动化部署.">
+<meta property="og:description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2017/05/06/Cobbler/cobbler工作原理.png">
-<meta property="og:updated_time" content="2019-01-07T11:23:00.393Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/收集的日志.png">
+<meta property="og:updated_time" content="2019-07-21T07:24:24.258Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cobbler">
-<meta name="twitter:description" content="在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI所以现在更多使用Cobbler来实现自动化部署.">
-<meta name="twitter:image" content="https://www.liukui.tech/2017/05/06/Cobbler/cobbler工作原理.png">
+<meta name="twitter:title" content="Kubernetes-ELK收集日志">
+<meta name="twitter:description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2017/05/06/Cobbler/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/">
 
 
 
@@ -166,7 +167,7 @@
   };
 </script>
 
-  <title>Cobbler | Coool's Blog</title>
+  <title>Kubernetes-ELK收集日志 | Coool's Blog</title>
   
 
 
@@ -452,7 +453,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/05/06/Cobbler/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -469,7 +470,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cobbler
+          <h1 class="post-title" itemprop="name headline">Kubernetes-ELK收集日志
               
             
           </h1>
@@ -495,7 +496,7 @@
                 
               
 
-              <time title="创建时间：2017-05-06 08:00:00" itemprop="dateCreated datePublished" datetime="2017-05-06T08:00:00+08:00">2017-05-06</time>
+              <time title="创建时间：2018-11-03 08:00:00" itemprop="dateCreated datePublished" datetime="2018-11-03T08:00:00+08:00">2018-11-03</time>
             
 
             
@@ -513,7 +514,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/系统安装/" itemprop="url" rel="index"><span itemprop="name">系统安装</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a></span>
 
                 
                 
@@ -541,7 +542,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">12k</span>
+                <span title="本文字数">9.3k</span>
               
 
               
@@ -555,7 +556,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">11 分钟</span>
+                <span title="阅读时长">8 分钟</span>
               
             </div>
           
@@ -575,319 +576,219 @@
       
 
       
-        <p><strong>在服务器很多的情况下，用U盘或者光盘安装时，就显得有点吃力了，虽然可以用PXE进行安装，但是PXE不支持UEFI<br>所以现在更多使用Cobbler来实现自动化部署.</strong></p>
-<a id="more"></a>
-<h3 id="Cobbler工作原理"><a href="#Cobbler工作原理" class="headerlink" title="Cobbler工作原理"></a>Cobbler工作原理</h3><p><img src="/2017/05/06/Cobbler/cobbler工作原理.png" alt=""></p>
-<h3 id="系统自动安装之-cobbler"><a href="#系统自动安装之-cobbler" class="headerlink" title="系统自动安装之-cobbler"></a>系统自动安装之-cobbler</h3><p>之前写过PXE自动化安装的文档，但是PXE只支持BIOS，不支持UEFI:<a href="">PXE系统自动化部署</a><br>Cobbler可以同时支持BIOS和UEFI两种：基于PXE技术为基础的整合</p>
-<p>BIOS+MBR：分区最多支持2T的<br>UEFI+GPT：分区可以支持大于2T的分区<br>    在之前的工作中，需要建立大于2T的分区时，PXE安装就不合适了</p>
-<h3 id="cobbler-具有图形化管理界面的工具"><a href="#cobbler-具有图形化管理界面的工具" class="headerlink" title="cobbler:具有图形化管理界面的工具"></a>cobbler:具有图形化管理界面的工具</h3><pre><code>cobbler是什么？
-    实际上是把PXE技术用python代码做了封装，形成了相对完整的自动化安装，
-    但是实现PXE的原有的httpd，DHCP，tftp服务还是需要提前安装的。
+        <h3 id="使用EL-FK收集k8s容器日志"><a href="#使用EL-FK收集k8s容器日志" class="headerlink" title="使用EL/FK收集k8s容器日志"></a>使用EL/FK收集k8s容器日志</h3><p>更新于：19.01.19<br><a id="more"></a></p>
+<h3 id="1-日志收集方式及其架构"><a href="#1-日志收集方式及其架构" class="headerlink" title="1.日志收集方式及其架构"></a>1.日志收集方式及其架构</h3><p><img src="/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png" alt="filebeat-log-collector.png"></p>
+<pre><code>前言：
+    1.由于运行在k8s中业务pod的IP不固定、业务A的pod不只一个来回切换查看日志太麻烦，而且生产中制作的业务镜像是不安装SSH
+    服务的，所以需要将一类pod中的日志收集到一起放到es中通过kibana去查看更方便；
+    2.kubernetes官方插件使用EFK来处理容器日志,其中F指代Fluentd（Fluentd属于CNCF项目）,用于收集容器的日志。但是由于
+    Fluentd用起来的确不怎么舒服（Ruby风格配置文件）,而Logstash又过于重量级(光启动就需要消耗大约500M内存),
+    而Elatic家族的Beats系列中的Filebeat既轻量又无依赖，因此filebeat是无二选择；
+1.官方日志方案
+    Kubernetes官方提供了EFK的日志收集解决方案，但是这种方案并不适合所有的业务场景，它本身就有一些局限性，例如：
+        1.所有日志都必须是out前台输出，真实业务场景中无法保证所有日志都在前台输出
+        2.只能有一个日志输出文件，而真实业务场景中往往有多个日志输出文件
+        3.Fluentd并不是常用的日志收集工具，我们更习惯用logstash，现使用filebeat替代；
+        4.我们已经有自己的ELK集群且有专人维护，没有必要再在kubernetes上做一个日志收集服务
+2.Kubernetes集群中的日志收集解决方案
+    1.每个app的镜像中都集成日志收集组件：
+        优点：
+            部署方便，kubernetes的yaml文件无须特别配置，可以为每个app自定义日志收集配置
+        缺点：
+            强耦合，不方便应用和日志收集组件升级和维护且会导致镜像过大
+    2.单独创建一个日志收集组件跟app的容器一起运行在同一个pod中：
+        优点：
+            低耦合，扩展性强，方便维护和升级
+        缺点：
+            需要对kubernetes的yaml文件进行单独配置，略显繁琐
+    3：将所有的Pod的日志都挂载到宿主机上，每台主机上单独起一个日志收集Pod：
+        优点：
+            完全解耦，性能最高，管理起来最方便
+        缺点：
+            需要统一日志收集规则，目录和输出方式
+3.方案选择
+    1.综合以上方案，由于filebeat不大放在每个容器中镜像也不会很大，虽然后期filebeat版本升级有点繁琐，但这样不需要在
+    yaml清单中对日志收集进行定义，所以选择了第一种方式；
+        虽然在进行日志收集的过程中,我们首先想到的是使用Logstash,它用于日志的原始数据的分析和转换(grok)；但是在k8s容器
+        时代，更为轻量级的方案中首选Beats系列,上面就是基于ELK改造过后的基于Filebeat的容器日志处理方案；
+    2.filebeat部署：
+        1.Filebeat可以使用DaemonSet的方式部署在每个k8s节点上，它会将Docker容器的日志
+        目录(/var/lib/docker/containers)挂载进去开启一个prospector来进行处理；
+        2.将filebeat构建在每个业务镜像中，作为业务容器中的一个进程对外发送日志；
+4.最终日志收集流程
+    由于第二种方式更简单所以选择第二种方式收集日志，收集流程：
+    业务A-filebeat将pod日志--&gt;redis--&gt;logstach--&gt;elasticsearch--&gt;kibana展示
+        #当然也可以使用zookeeper+kafka代替redis集群
+</code></pre><h3 id="2-使用filebeat收集kubernetes容器日志"><a href="#2-使用filebeat收集kubernetes容器日志" class="headerlink" title="2.使用filebeat收集kubernetes容器日志"></a>2.使用filebeat收集kubernetes容器日志</h3><pre><code>部署方式：
+    1.elasticsaerch、logstash、redis、kibana都部署在k8s集群外
+    2.docker镜像中都安装filebeat客户端
 
-Cobbler:
-快速网络安装linux操作系统的服务，支持众多的Linux发行版：Red Hat、
-    Fedora、CentOS、Debian、Ubuntu和SuSE，也可以支持网络安装windows
-PXE的二次封装，将多种安装参数封装到一个菜单
-Python编写
-提供了CLI和Web的管理形式
-</code></pre><h3 id="安装cobbler：EPEL源"><a href="#安装cobbler：EPEL源" class="headerlink" title="安装cobbler：EPEL源"></a>安装cobbler：EPEL源</h3><pre><code>安装包
-    cobbler 基于EPEL源
-    cobbler 服务集成
-        前面说过因为是基于PXE的,安装cobbler因为有依赖性，会自动安装下面的服务
-        PXE
-        DHCP
-        rsync
-        Httpd
-        DNS
-        Kickstart
-        syslinux 
-        tftp-server 
-        IPMI 电源管理
-启动cobbler:依赖于httpd，要想启动cobbler,必须先启动httpd
-    systemctl start httpd tftp dhcp
-    systemctl start cobblerd
-然后再检查cobbler环境
-    cobbler check
-</code></pre><h3 id="cobbler的相关配置文件"><a href="#cobbler的相关配置文件" class="headerlink" title="cobbler的相关配置文件"></a>cobbler的相关配置文件</h3><pre><code>安装：yum install cobbler dhcp
-配置文件目录 /etc/cobbler
-    /etc/cobbler/settings : cobbler 主配置文件(下文会对该文件修改4行)
-    /etc/cobbler/iso/: iso模板配置文件
-    /etc/cobbler/pxe: pxe模板文件
-    /etc/cobbler/power: 电源配置文件
-    /etc/cobbler/user.conf: web服务授权配置文件
-    /etc/cobbler/users.digest: web访问的用户名密码配置文件
-    /etc/cobbler/dhcp.template : dhcp服务器的的配置末班
-    /etc/cobbler/dnsmasq.template : dns服务器的配置模板
-    /etc/cobbler/tftpd.template : tftp服务的配置模板
-    /etc/cobbler/modules.conf : 模块的配置文件
-数据目录
-    /var/lib/cobbler/config/: 用于存放distros，system，profiles 等信息配置文件
-    /var/lib/cobbler/triggers/: 用于存放用户定义的cobbler命令
-    /var/lib/cobbler/kickstart/: 默认存放kickstart文件
-    /var/lib/cobbler/loaders/: 存放各种引导程序
-镜像目录
-    /var/www/cobbler/ks_mirror/: 导入的发行版系统的所有数据
-    /var/www/cobbler/images/ : 导入发行版的kernel和initrd镜像用于远程网络启动
-    /var/www/cobbler/repo_mirror/: yum 仓库存储目录
-日志目录
-    /var/log/cobbler/installing: 客户端安装日志
-    /var/log/cobbler/cobbler.log : cobbler日志
-</code></pre><h3 id="cobbler命令介绍"><a href="#cobbler命令介绍" class="headerlink" title="cobbler命令介绍"></a>cobbler命令介绍</h3><pre><code>cobbler commands介绍
-cobbler check 核对当前设置是否有问题
-cobbler list 列出所有的cobbler元素
-cobbler report 列出元素的详细信息
-cobbler sync 同步配置到数据目录,更改配置最好都要执行下
-cobbler reposync 同步yum仓库
-cobbler distro 查看导入的发行版系统信息
-cobbler system 查看添加的系统信息
-cobbler profile 查看配置信息
-</code></pre><h3 id="cobbler重要的参数-及下面需要修改的4行内容"><a href="#cobbler重要的参数-及下面需要修改的4行内容" class="headerlink" title="cobbler重要的参数:及下面需要修改的4行内容"></a>cobbler重要的参数:及下面需要修改的4行内容</h3><pre><code>/etc/cobbler/settings中重要的参数设置
-    default_password_crypted: &quot;$1$gEc7ilpP$pg5iSOj/mlxTxEslhRvyp/&quot;
-    server: 192.168.34.17
-    next_server: 192.168.34.17  
-        server：&lt;cobbler服务器的 IP 地址&gt;
-    manage_dhcp: 1
-    manage_tftpd：1
-    pxe_just_once：1
-</code></pre><h3 id="cobbler环境检查：先启动cobbler服务再检查"><a href="#cobbler环境检查：先启动cobbler服务再检查" class="headerlink" title="cobbler环境检查：先启动cobbler服务再检查"></a>cobbler环境检查：先启动cobbler服务再检查</h3><pre><code>1.先启动cobbler服务，再用cobbler check 进行检查
+1.安装elasticsearch集群
+    对ES添加添加一些我们需要的插件：
+        ~]# cd /usr/share/elasticsearch
+        ~]# bin/elasticsearch-plugin install ingest-geoip
+        ~]# bin/elasticsearch-plugin install x-pack
+        ~]# systemctl restart elasticsearch
+        #ES的地图需要使用GEOIP来解索IP的经纬度, 所以ES还需要安装一个GEOIP的插件
+2.安装logstach
+3.安装zk+kafka或者redis
+    此处使用redis，安装redis,设置密码等；redis服务器地址是192.168.1.118
+    zk+kafka部署参考：k8s中的文章
+4.安装kibana
+    #以上步骤全部省略
 
-执行Cobbler check命令会报如下异常
-1 : The ‘server’ field in /etc/cobbler/settings must be set to something 
-    other than localhost, or kickstarting features will not work. This
-    should be a resolvable hostname or IP for the boot server as reachable by all machines that will use it.
-2 : For PXE to be functional, the ‘next_server’ field in /etc/cobbler/
-    settings must be set to something other than 127.0.0.1, and should
-    match the IP of the boot server on the PXE network.
-3 : some network boot-loaders are missing from /var/lib/cobbler/loaders,
-     you may run ‘cobbler get-loaders’ to download them, or, if you
-    only want to handle x86/x86_64 netbooting, you may ensure that you have installed a recent version of the syslinux package installed and
-    can ignore this message entirely. Files in this directory, should you want to support all architectures, should include pxelinux.0, menu.c32,
-    elilo.efi, and yaboot. The ‘cobbler get-loaders’ command is the easiest way to resolve these requirements.
-4 : change ‘disable’ to ‘no’ in /etc/xinetd.d/rsync
-5 : comment ‘dists’ on /etc/debmirror.conf for proper debian support
-6 : comment ‘arches’ on /etc/debmirror.conf for proper debian support
-7 : The default password used by the sample templates for newly installed 
-    machines (default_password_crypted in /etc/cobbler/settings)
-    is still set to ‘cobbler’ and should be changed, try: “openssl passwd -1 -salt ‘random-phrase-here’ ‘your-password-here’” to generate new
-    one
-8 : fencing tools were not found, and are required to use the (optional) 
-    power management features. install cman or fence-agents to use them
-</code></pre><h3 id="Cobbler的8项报错解决方法"><a href="#Cobbler的8项报错解决方法" class="headerlink" title="Cobbler的8项报错解决方法"></a>Cobbler的8项报错解决方法</h3><pre><code>错误信息都是在/etc/cobbler/settings文件改了4行，在下文体现
+5.制作包含filebeat的tomcat8基础镜像
+    生产环境下我们会将filebeat程序制作成系统基础镜像，然后业务镜像再基于这个镜像构建成业务镜像，就能够收集日志了；
+    ~]# tree tomcat8/       #以centos为基础镜像     
+        tomcat8/
+        ├── build-command.sh            #build脚本
+        └── Dockerfile                  #centos的Dockerfile文件
+        └── filebeat-6.4.2-x86_64.rpm   #准备日志服务filebeat
+        ├── apache-tomcat-8.0.38.tar.gz #tomcat8
+        ├── jdk-8u162-linux-x64.tar.gz  #jdk8
+        └── profile                     #jdk的profile文件
+    ~]# vim Dockerfile 
+        #Centos Base Image
+        FROM 192.168.1.101/baseimage/centos:7.6    #基于官方镜像构建
+        MAINTAINER lk &quot;645150765@qq.com&quot;           #author
+        ADD filebeat-6.4.2-x86_64.rpm /tmp/
+        RUN yum install -y epel-release  vim wget tree  pcre pcre-devel gcc gcc-c++  zlib zlib-devel openssl openssl-devel net-tools iotop unzip zip iproute ntpdate nfs-utils tcpdump telnet traceroute /tmp/filebeat-6.4.2-x86_64.rpm &amp;&amp; rm -rf /tmp/
+        RUN rm -rf /etc/localtime &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+            #安装了常用的基础命令、上传安装filebeat、修改镜像默认时区
+        ADD jdk-8u162-linux-x64.tar.gz /usr/local/src/
+        RUN ln -sv /usr/local/src/jdk1.8.0_162 /usr/local/jdk
+        ADD profile /etc/profile
+        RUN mkdir /data/tomcat/webapps -pv
 
-执行Cobbler check报错解决方式
-    第一个错误解决方法：
-    1.修改/etc/cobbler/settings文件中的server参数的值为提供cobbler服务的主机相
-        应的IP地址或主机名：384行，然后重新启动cobbler
-            server: 192.168.34.107
-    2.修改/etc/cobbler/settings文件中的next_server参数的值为提供PXE服务的主机
-        相应的IP地址:272行，指定的tftp的服务器地址
-            next_server: 192.168.34.107
-    3.执行cobbler get-loaders和cobbler sync；
-        如果当前节点可以访问互联网，执行&quot;cobbler get-loaders&quot;命令即可；
-         cobbler会自动通过互联网把最小化的系统启动文件下载下来放到
-        /var/lib/cobbler/loaders/下，再通过&quot;cobbler sync&quot;命令同步到/var/lib/tftpboot/下
+        ENV JAVA_HOME /usr/local/jdk
+        ENV JRE_HOME $JAVA_HOME/jre
+        ENV CLASSPATH $JAVA_HOME/lib/:$JRE_HOME/lib/
+        ENV PATH $PATH:$JAVA_HOME/bin
 
-    4.cobbler认为是在centos6上，tftp服务是依赖于xinetd的，提示启动xinetd,在
-        这里，由于是在cnetos7上安装的，这项可以忽略
-    5.执行“chkconfig rsync on”命令即可
-        4,5,6项如果是在centos7上安装的cobbler是不需要修改也可以启动的
-    7.第7项是说安装的操作系统密码cobbler事先已经帮忙设置好了，但是不安全，需要自己
-        去修改一个自定义的密码(通过openssl passwd -1)生成：101行
-            default_password_crypted：修改成自己设置的密码
-备注：在这个提示里，还有一项建议修改，之前用PXE的时候，搭建的DHCP服务，dhcpd.conf
-    文件时通过模板生成的，但是在cobbler中，可以通过colbber来生成，但是需要改
-    /etc/cobbler/settings一项配置：242行
-        manage_dhcp: 0 改成 manage_dhcp: 1
-    再通过cobbler自带的dhcp模板：/etc/cobbler/dhcp.template，生成dhcpd.conf
-    只需要把这个模板改一下就行了，而不用想PXE那样通过模板生成dhcpd.conf文件
-    把dhcp.template里的网段地址改一下
-        subnet 192.168.34.0 netmask 255.255.255.0 {
-             option subnet-mask         255.255.255.0;
-             range dynamic-bootp        192.168.34.20 192.168.34.100;
-    再通过cobbler sync重新生成/etc/dhcp/dhcpd.conf,并且会开启DHCP服务
-</code></pre><h3 id="上面的报错全部解决之后，且httpd-tftp，dhcp-cobbler都启动之后，实际上就已经具备了雏形了"><a href="#上面的报错全部解决之后，且httpd-tftp，dhcp-cobbler都启动之后，实际上就已经具备了雏形了" class="headerlink" title="上面的报错全部解决之后，且httpd,tftp，dhcp,cobbler都启动之后，实际上就已经具备了雏形了"></a>上面的报错全部解决之后，且httpd,tftp，dhcp,cobbler都启动之后，实际上就已经具备了雏形了</h3><h3 id="var-lib-tftpboot的目录结构-上面的第三步完成后就生成下面的所有文件了"><a href="#var-lib-tftpboot的目录结构-上面的第三步完成后就生成下面的所有文件了" class="headerlink" title="/var/lib/tftpboot的目录结构:上面的第三步完成后就生成下面的所有文件了"></a>/var/lib/tftpboot的目录结构:上面的第三步完成后就生成下面的所有文件了</h3><pre><code>[root@mini7-1 tftpboot]#tree /var/lib/tftpboot
-    /var/lib/tftpboot
-    ├── boot
-    │   └── grub
-    │       └── menu.lst
-    ├── etc
-    ├── grub
-    │   ├── efidefault
-    │   ├── grub-x86_64.efi
-    │   ├── grub-x86.efi
-    │   └── images -&gt; ../images
-    ├── images
-    ├── images2
-    ├── memdisk
-    ├── menu.c32
-    ├── ppc
-    ├── pxelinux.0
-    ├── pxelinux.cfg
-    │   └── default
-    ├── s390x
-    │   └── profile_list
-    └── yaboot
-</code></pre><h3 id="接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘-centos6-amp-centos7"><a href="#接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘-centos6-amp-centos7" class="headerlink" title="接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘(centos6&amp;centos7)"></a>接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘(centos6&amp;centos7)</h3><pre><code>cobbler命令的选项：
-cobbler &lt;distro|profile|system|repo|image|mgmtclass|package|file&gt; ... 
-        [add|edit|copy|getks*|list|remove|rename|report] [options|--help]
-cobbler &lt;aclsetup|buildiso|import|list|replicate|report|reposync|sync|validateks|version|signature|get-loaders|hardlink&gt; [options|--help]
+        ADD  apache-tomcat-8.0.38.tar.gz /apps
+        RUN ln -sv /apps/apache-tomcat-8.0.38 /apps/tomcat
+        RUN useradd tomcat -u 2001
 
-这里用import选项将6和7的光盘导入cobbler的主机上
-    mount /dev/sr0 /mnt/   ---&gt;挂载centos7光盘
-    mount /dev/sr1 /media  ---&gt;挂载centos6光盘
-    cobbler import --path=/mnt/ --name=Centos-7.5-x86_64 --arch=x86_64
-    cobbler import --path=/media/ --name=Centos-6.10-x86_64 --arch=x86_64
+    ~]# bash build-command.sh   #构建镜像
+        #!/bin/bash
+        docker build -t 192.168.1.101/serverbase/tomcat-base:v1 .
+        sleep 1
+        docker push  192.168.1.101/serverbase/tomcat-base:v1   
+6.构建业务镜像
+    ~]# tree cre-app1/
+        cre-app1/
+        ├── cre-app1.tar.gz
+        ├── build-command.sh
+        ├── catalina.sh
+        ├── Dockerfile
+        ├── filebeat.yml
+        ├── cre-app1
+        │   └── index.html
+        ├── run_tomcat.sh
+        └── server.xml
+    ~]# vim filebeat.yml         #修改filebeat文件
+        filebeat.prospectors:
+        - type: log
+          enabled: true
+          paths:
+            - /apps/tomcat/logs/catalina.out
+          fields:
+            log_type: web-test-creapp1-catalina-outlog
+        filebeat.config.modules:
+          path: ${path.config}/modules.d/*.yml
+          reload.enabled: false
+        setup.template.settings:
+          index.number_of_shards: 3
+        output.redis:
+          hosts: [&quot;192.168.1.118:6379&quot;]
+          key: &quot;web-test&quot;
+          db: 1
+          timeout: 5
+          password: &quot;123456&quot;
+    备注：
+        1.paths：指定要收集当前pod的哪个日志文件；
+        2.fields：
+            log_type:在logstach中做if判断它是哪个业务的哪个日志
+        3.output.redis:  先输出到redis,logstach再从redis取数据
+            hosts：redis的地址，这里使用单机redis
+            key：
+                一个业务只有一个key即可，无论这个业务里有多少nginx或tomcat都写到这个key中即可，如果key太多的话，那么logstach的input就需要写很多个；
+    ~]# vim Dockerfile 
+        #tomcat cre-app1
+        FROM 192.168.1.101/serverbase/tomcat-base:v1
+        ADD catalina.sh /apps/tomcat/bin/catalina.sh
+        ADD server.xml /apps/tomcat/conf/server.xml
+        ADD cre-app1.tar.gz /data/tomcat/webapps/myapp/
+        ADD run_tomcat.sh /apps/tomcat/bin/run_tomcat.sh
+        ADD filebeat.yml /etc/filebeat/filebeat.yml
+        RUN chown  -R tomcat.tomcat /data/ /apps/ &amp;&amp; chmod a+x /apps/tomcat/bin/*.sh
+        EXPOSE 8080 8443
+        CMD [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]
+    ~]# vim run_tomcat.sh 
+        #!/bin/bash
+        echo &quot;192.168.1.248 k8s-vip.example.com&quot; &gt;&gt; /etc/hosts
+        /usr/share/filebeat/bin/filebeat -c /etc/filebeat/filebeat.yml -path.home /usr/share/filebeat -path.config /etc/filebeat -path.data /var/lib/filebeat -path.logs /var/log/filebeat &amp;
+        su - tomcat -c &quot;/apps/tomcat/bin/catalina.sh start&quot;
+        tail -f /etc/hosts
+        备注：
+            filebeat在容器启动方式如上，这种方式是在物理机上安装启动后按照实际路径修改的,让filebeat在容器中以进程的方式运行，&amp;表示放到run_tomcat.sh这个shell的后台去；
+    ~]# bash build-command.sh 2018-10-20
+        192.168.1.101/cre/cre-app1:2018-10-20
+    测试镜像：
+        ~]# docker run --name app1 -d 192.168.1.101/cre/cre-app1:2018-10-20
+        ~]# docker exec -it app1 /bin/bash
+        [root@488da447ab60 /]# ps aux
+        USER    PID %CPU %MEM   VSZ   RSS TTY  STAT START   TIME COMMAND
+        root    1    0.0  0.0  11684  1400 ?    Ss   14:01   0:00 /bin/bash /apps/tomcat/bin/run_tomcat.sh
+        root    6  0.1  0.7 288584 13304 ?      Sl   14:01   0:00 /usr/share/filebeat/bin/filebeat...
+        tomcat  32  6.2  6.9 3049932 129176 ?   Sl   14:01   0:02 /usr/local/jdk/bin/java
+            确保tomcat、filebeat都是运行的即可
 
-cobbler会把光盘拷贝到/var/www/cobbler/下分开存放，目录结构如下
-
-[root@mini7-1 cobbler]#tree -d /var/www/cobbler
-/var/www/cobbler
-├── images
-│   ├── Centos-6.10-x86_64
-│   └── Centos-7.5-x86_64
-├── ks_mirror
-│   ├── Centos-6.10-x86_64
-│   │   ├── EFI
-│   │   │   └── BOOT
-│   │   ├── images
-│   │   │   └── pxeboot
-│   │   ├── isolinux
-│   │   ├── Packages
-│   │   └── repodata
-│   ├── Centos-7.5-x86_64
-│   │   ├── EFI
-│   │   │   └── BOOT
-│   │   │       └── fonts
-│   │   ├── images
-│   │   │   └── pxeboot
-│   │   ├── isolinux
-│   │   ├── LiveOS
-│   │   ├── Packages
-│   │   └── repodata
-│   └── config
-├── links
-│   ├── Centos-6.10-x86_64 -&gt; /var/www/cobbler/ks_mirror/Centos-6.10-x86_64
-│   └── Centos-7.5-x86_64 -&gt; /var/www/cobbler/ks_mirror/Centos-7.5-x86_64
-├── localmirror
-├── misc
-├── pub
-├── rendered
-├── repo_mirror
-└── svc
-
-拷贝完，cobbler sync再同步一次
-然后cobbler会把/var/lib/tftpboot/pxelinux.cfg/default文件自动更新，生成新的菜单
-DEFAULT menu
-PROMPT 0
-MENU TITLE Cobbler | http://cobbler.github.io/
-TIMEOUT 200
-TOTALTIMEOUT 6000
-ONTIMEOUT local
-
-LABEL local
-        MENU LABEL (local)
-        MENU DEFAULT
-        LOCALBOOT -1
-
-LABEL Centos-6.10-x86_64
-        kernel /images/Centos-6.10-x86_64/vmlinuz
-        MENU LABEL Centos-6.10-x86_64
-        append initrd=/images/Centos-6.10-x86_64/initrd.img ksdevice=bootif lang=  kssendmac text  ks=http://192.168.34.107/cblr/svc/op/ks/profile/Centos-6.10-x86_64
-        ipappend 2
-
-LABEL Centos-7.5-x86_64
-        kernel /images/Centos-7.5-x86_64/vmlinuz
-        MENU LABEL Centos-7.5-x86_64
-        append initrd=/images/Centos-7.5-x86_64/initrd.img ksdevice=bootif lang=  kssendmac text  ks=http://192.168.34.107/cblr/svc/op/ks/profile/Centos-7.5-x86_64
-        ipappend 2
-MENU end
-</code></pre><p> 此时，就可以用cobbler实现自动化安装了，但是不能自定义ks应答文件安装，下面会讲解如何自定义cobbler的应答文件</p>
-<h3 id="Cobbler中自定义应答文件"><a href="#Cobbler中自定义应答文件" class="headerlink" title="Cobbler中自定义应答文件"></a>Cobbler中自定义应答文件</h3><p>之前在PXE安装时，是自定义的kickstart应答文件，在cobbler中如何实现？</p>
-<pre><code>1.在cobbler中，应答文件是放在/var/lib/cobbler/kickstarts/中
-2.把之前制作的ks6-mini.cfg，ks7-mini.cfg拷贝到此目录，但是拷贝完，但cobbler是无
-    法识别这些应答文件是对应的那个发行版本的，所以要绑定
-3.将自定义的应答文件和安装版本进行绑定
-4.这两个应答文件有一项需要修改
-    即url --url=这一项，要改成cobbler的yum源路径，$tree
-
-这里只显示ks6-mini.cfg的详细信息
-    install
-    url --url=http://192.168.34.103/centos/6/os/x86_64/  (PXE下的源路径)
-        #httpd的yum源路径，要改成$tree
-        或者改成具体的地址：即光盘拷贝到cobbler的具体路径
-        http://192.168.34.107/cobbler/ks_mirror/Centos-6.10-x86_64/
-    lang en_US.UTF-8
-    keyboard us
-    text      #纯文本安装
-    reboot    #安装完重启
-    network --onboot yes --device eth0 --bootproto dhcp --noipv6
-    rootpw  --iscrypted $6$6zeqEsKimGywyY3J$ngSoHUIrLaydTMIwnYX9tg4HOeOCXogU03miaQIc8sOwmq5N6.fPk3Jrmouns8VOekZkn0YQjQkt
-    JjA57WrZO0
-    firewall --service=ssh      关闭防火墙
-    authconfig --enableshadow --passalgo=sha512
-    selinux --enforcing         关闭selinux
-    timezone Asia/Shanghai      时区信息
-    bootloader --location=mbr --driveorder=sda --append=&quot;crashkernel=auto rhgb quiet&quot; 
-    # The following is the partition information you requested
-    # Note that any partitions you deleted are not expressed
-    # here so unless you clear all partitions first, this is
-    # not guaranteed to work
-    clearpart --all        清空分区信息
-    zerombr                清空mbr
-    #自定义的分区信息
-    part /boot --fstype=ext4 --size=1024
-    part / --fstype=ext4 --size=50000
-    part /data --fstype=ext4 --size=30000
-    part swap --size=2048
-    #自定义的分区信息
-    %packages
-    @core
-    %end   只安装最基本的核心包，后面也可以加上安装后脚本
-</code></pre><h3 id="将KS和OS关联，生成启动新的菜单"><a href="#将KS和OS关联，生成启动新的菜单" class="headerlink" title="将KS和OS关联，生成启动新的菜单"></a>将KS和OS关联，生成启动新的菜单</h3><p>自定义的应答文件的绑定、删除、重命名、显示菜单栏对应的ks应答文件信息</p>
-<pre><code>在cobberl中
-    distro中记录的是cobbler中安装的发型版本对应的原文件的
-    [root@mini7-1 kickstarts]#cobbler distro list
-       Centos-6.10-x86_64
-       Centos-7.5-x86_64
-在cobberl中
-    profile是对应的各个发型版本的安装方法，就是安装启动界面的选择菜单栏，有多少个
-        就对应多少个菜单栏：如下图只有两个
-    [root@mini7-1 kickstarts]#cobbler profile list
-       Centos-6.10-x86_64
-       Centos-7.5-x86_64
-
-将自定义的应答文件和安装版本进行绑定：cobbler profile命令绑定
-将ks6-mini.cfg和centos6进行绑定
-    cobbler profile add --name=centos-6.10-x86_64_mini --distro=Centos-6.10-x86_64 
-     --kickstart=/var/lib/cobbler/kickstarts/ks6-mini.cfg
-
-cobbler profile add --name=centos-7.5-x86_64_mini 
-    --distro=Centos-7.5-x86_64 
-    --kickstart=/var/lib/cobbler/kickstarts/ks7-mini.cfg
-
-也可以删除应答文件：
-    cobbler profile remove --name=Centos-6.10-x86_64
-    cobbler profile remove --name=Centos-7.5-x86_64
-也可以修改带单名
-    cobbler profile rename --name=Centos-7.5-x86_64 
-            --newname=centos-7.5-x86_64_desktop
-查看菜单项对应的具体是哪个应答文件信息
-    cobbler profile report --name=centos-7.5-x86_64_mini
-
-
-/var/lib/tftpboot/pxelinux.cfg/default会自动生成新的菜单项，从cobbler profile list,也可以看出来
-[root@mini7-1 tftpboot]#cobbler profile list
-   Centos-6.10-x86_64
-   Centos-7.5-x86_64
-   centos-6.10-x86_64_mini
-   centos-7.5-x86_64_mini
-</code></pre><h3 id="cobbler的web管理实现"><a href="#cobbler的web管理实现" class="headerlink" title="cobbler的web管理实现"></a>cobbler的web管理实现</h3><p>此外cobbler是带有web管理界面的，不过需要安装web界面的包<br>    yum install cobbler-web -y</p>
-<pre><code>配置文件：
-    [root@mini7-1 kickstarts]#rpm -qf cobbler-web
-    /etc/httpd/conf.d/cobbler_web.conf
-    cobbler-web是经过http协议的，所以 安装完，需要重启httpd服务
-    然后看到对应的是443端口启动了
-</code></pre><p>登录界面是，因为cobbler-web是https加密的<br>/etc/cobbler/modules.conf 验证方法;<br>/etc/cobbler/users.digest 记录的用户<br>增加用户</p>
+7.部署cre-app1项目并收集其日志
+    1.部署cre-app1项目
+        ~]# tree cre-app1/
+            cre-app1/
+            └── cre-app1.yaml
+        ~]# kubectl apply -f cre-app1.yaml
+        ~]# kubectl get pods -n cre
+            #1.确保cre-app1的svc、pod等正常运行
+            #2.启动cre-app1-pod时，filebeat会先运行起来然后检测tomcat的运行日志；
+    2.确认redis中有数据
+        ~]# redis-cli -h192.168.1.118 -p123456
+            192.168.1.118&gt; SELECT 1
+            192.168.1.118&gt; KEYS * 
+            1) &quot;web-test&quot;    #确认filebeat中指定的key传进来了
+            192.168.1.118&gt; LPOP web-test
+            &quot;{\&quot;@timestamp\&quot;:\&quot;2018-1020T04:16:02.103z\&quot;,\&quot;@metadata\&quot;:{\&quot;beat&quot;}...,\&quot;fileds\&quot;:{\&quot;log_type\&quot;:\&quot;web-test-creapp1-catalina-outlog\&quot;}...:&quot;/apps/tomcat/logs/catalina.out\&quot;}&quot;
+        #确保key中filebeat定义的fields.log_type:web-test-creapp1-catalina-outlog是否存在，logstach会过滤这个log_type；
+    3.logstash从redis取数据传给elasticsearch
+        ~]# cd /etc/logstash/conf.d/
+        ~]# vim redis-logstash-es.conf
+            input {
+                redis {
+                    host =&gt; &quot;192.168.1.118&quot;
+                    port =&gt; &quot;6379&quot;
+                    db =&gt; &quot;1&quot;
+                    key =&gt; &quot;web-test&quot;
+                    data_type =&gt; &quot;list&quot;
+                    password =&gt; &quot;123456&quot;
+                }
+            }
+            output {
+                if [filed][log_type] == &quot;web-test-creapp1-catalina-outlog&quot; {
+                elasticsearch {
+                    hosts =&gt; [&quot;192.168.1.116:9200&quot;]
+                    index =&gt; &quot;web-test-container-creapp1-catalina-outlog-%{+YYYY.MM.dd}&quot;
+                }}
+            }
+        ~]# /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/redis-logstash-es.conf
+    4.像catalina.out追加信息
+        ~]# kubectl exec -it web-test-cre-deployment-sa9nsha-m7mga bash -n cre
+        #
+        # echo &quot;tomcat log test&quot; &gt;&gt; /apps/tomcat/logs/catalina.out
+    5.在kibana上验证
+</code></pre><p>–收集的日志<br><img src="/2018/11/03/Kubernetes-ELK收集日志/收集的日志.png" alt="收集的日志"></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_17016649/article/details/79297823" target="_blank" rel="noopener">使用filebeat收集kubernetes容器日志</a><br><a href="https://www.elastic.co/guide/en/beats/libbeat/6.1/getting-started.html" target="_blank" rel="noopener">Getting Started With Beats and the Elatic Stack</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.1/installing-xpack-es.html" target="_blank" rel="noopener">Elasticsearch 安装X-Pack</a><br><a href="">Deploy filebeat as daemonset in kubernetes cluste</a><br><a href="https://www.elastic.co/guide/en/beats/filebeat/6.1/filebeat-modules.html" target="_blank" rel="noopener">Filebeat 模块列表</a><br><a href="https://jimmysong.io/kubernetes-handbook/practice/app-log-collection.html" target="_blank" rel="noopener">应用日志收集</a></p>
 
       
     </div>
@@ -954,7 +855,7 @@ cobbler profile add --name=centos-7.5-x86_64_mini
       
         <div class="post-tags">
           
-            <a href="/tags/运维，linux，windows/" rel="tag"><i class="fa fa-tag"></i> 运维，linux，windows</a>
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
           
         </div>
       
@@ -1021,8 +922,8 @@ cobbler profile add --name=centos-7.5-x86_64_mini
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/22/mysql读写分离/" rel="next" title="mysql读写分离">
-                <i class="fa fa-chevron-left"></i> mysql读写分离
+              <a href="/2018/11/03/ceph存储基础/" rel="next" title="ceph存储基础">
+                <i class="fa fa-chevron-left"></i> ceph存储基础
               </a>
             
           </div>
@@ -1031,8 +932,8 @@ cobbler profile add --name=centos-7.5-x86_64_mini
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/17/mysql备份恢复/" rel="prev" title="mysql备份恢复">
-                mysql备份恢复 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/03/TiDB基础/" rel="prev" title="TiDB基础">
+                TiDB基础 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1361,7 +1262,7 @@ cobbler profile add --name=centos-7.5-x86_64_mini
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cobbler工作原理"><span class="nav-number">1.</span> <span class="nav-text">Cobbler工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统自动安装之-cobbler"><span class="nav-number">2.</span> <span class="nav-text">系统自动安装之-cobbler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler-具有图形化管理界面的工具"><span class="nav-number">3.</span> <span class="nav-text">cobbler:具有图形化管理界面的工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装cobbler：EPEL源"><span class="nav-number">4.</span> <span class="nav-text">安装cobbler：EPEL源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler的相关配置文件"><span class="nav-number">5.</span> <span class="nav-text">cobbler的相关配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler命令介绍"><span class="nav-number">6.</span> <span class="nav-text">cobbler命令介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler重要的参数-及下面需要修改的4行内容"><span class="nav-number">7.</span> <span class="nav-text">cobbler重要的参数:及下面需要修改的4行内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler环境检查：先启动cobbler服务再检查"><span class="nav-number">8.</span> <span class="nav-text">cobbler环境检查：先启动cobbler服务再检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cobbler的8项报错解决方法"><span class="nav-number">9.</span> <span class="nav-text">Cobbler的8项报错解决方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上面的报错全部解决之后，且httpd-tftp，dhcp-cobbler都启动之后，实际上就已经具备了雏形了"><span class="nav-number">10.</span> <span class="nav-text">上面的报错全部解决之后，且httpd,tftp，dhcp,cobbler都启动之后，实际上就已经具备了雏形了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#var-lib-tftpboot的目录结构-上面的第三步完成后就生成下面的所有文件了"><span class="nav-number">11.</span> <span class="nav-text">/var/lib/tftpboot的目录结构:上面的第三步完成后就生成下面的所有文件了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘-centos6-amp-centos7"><span class="nav-number">12.</span> <span class="nav-text">接下来就要准备yum源了，只不过不用像PXE那样，不用自己搭建httpd服务，创建centos各个版本的目录了，通过cobbler集成命令将centos6和centos7的光盘文件导入，实际上就是拷贝到cobbler对应的目录下，查看一下磁盘空间，因为要导入两个光盘(centos6&amp;centos7)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cobbler中自定义应答文件"><span class="nav-number">13.</span> <span class="nav-text">Cobbler中自定义应答文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将KS和OS关联，生成启动新的菜单"><span class="nav-number">14.</span> <span class="nav-text">将KS和OS关联，生成启动新的菜单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cobbler的web管理实现"><span class="nav-number">15.</span> <span class="nav-text">cobbler的web管理实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用EL-FK收集k8s容器日志"><span class="nav-number">1.</span> <span class="nav-text">使用EL/FK收集k8s容器日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-日志收集方式及其架构"><span class="nav-number">2.</span> <span class="nav-text">1.日志收集方式及其架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用filebeat收集kubernetes容器日志"><span class="nav-number">3.</span> <span class="nav-text">2.使用filebeat收集kubernetes容器日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
