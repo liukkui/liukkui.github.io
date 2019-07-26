@@ -139,32 +139,28 @@
   <meta name="description" content="Docker仓库管理工具Harbor">
 <meta name="keywords" content="容器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Docker仓库管理工具Harbor">
-<meta property="og:url" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/index.html">
+<meta property="og:title" content="Docker-基于SSL的Harbor双向复制">
+<meta property="og:url" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="Docker仓库管理工具Harbor">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor安装过程.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/和harbor相关的所有容器.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/登录页面.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/登录报错.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/成功登录.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/上传镜像.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/拉取镜像.png">
-<meta property="og:updated_time" content="2019-01-27T03:25:41.692Z">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/harbor架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/新建1-2的复制规则.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/为1的baseimage添加复制规则.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/新建2-1的复制规则.png">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/为2的baseimage添加复制规则.png">
+<meta property="og:updated_time" content="2019-07-26T14:52:57.286Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Docker仓库管理工具Harbor">
+<meta name="twitter:title" content="Docker-基于SSL的Harbor双向复制">
 <meta name="twitter:description" content="Docker仓库管理工具Harbor">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/harbor架构.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/">
+  <link rel="canonical" href="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/">
 
 
 
@@ -174,7 +170,7 @@
   };
 </script>
 
-  <title>Docker仓库管理工具Harbor | Coool's Blog</title>
+  <title>Docker-基于SSL的Harbor双向复制 | Coool's Blog</title>
   
 
 
@@ -460,7 +456,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/18/Docker仓库管理工具Harbor/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/10/18/Docker-基于SSL的Harbor双向复制/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -477,7 +473,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Docker仓库管理工具Harbor
+          <h1 class="post-title" itemprop="name headline">Docker-基于SSL的Harbor双向复制
               
             
           </h1>
@@ -556,7 +552,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">4.2k</span>
+                <span title="本文字数">8.6k</span>
               
 
               
@@ -570,7 +566,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">4 分钟</span>
+                <span title="阅读时长">8 分钟</span>
               
             </div>
           
@@ -591,8 +587,7 @@
 
       
         <h3 id="Docker仓库管理工具Harbor"><a href="#Docker仓库管理工具Harbor" class="headerlink" title="Docker仓库管理工具Harbor"></a>Docker仓库管理工具Harbor</h3><a id="more"></a>
-<p><img src="/2018/10/18/Docker仓库管理工具Harbor/harbor架构.png" alt="harbor架构"></p>
-<p><a href="https://goharbor.io/" target="_blank" rel="noopener">HARBOR</a><br><a href="https://github.com/goharbor/harbor" target="_blank" rel="noopener">github上的harbor</a></p>
+<p><a href="https://goharbor.io/" target="_blank" rel="noopener">HARBOR</a><br><a href="https://github.com/goharbor/harbor" target="_blank" rel="noopener">github上的harbor</a><br><img src="/2018/10/18/Docker-基于SSL的Harbor双向复制/harbor架构.png" alt="harbor架构"></p>
 <pre><code>harbor官方功能介绍：
     1.基于角色的访问控制 - 用户与Docker镜像仓库通过“项目”进行组织管理，一个用户可
         以对多个镜像仓库在同一命名空间（project）里有不同的权限。
@@ -610,16 +605,60 @@
     3.harbor为了安全，也需要以https运行，需要在harbor服务器提供证书，而且也需要为
         其他客户端提供证书，为harbor验证使用，当然可以关闭https功能
     4.因为需要实时下载镜像，提供了离线安装和在线安装，也可以安装到vSphere平台(OVA方式)虚拟设备。
-</code></pre><h3 id="离线版安装和配置："><a href="#离线版安装和配置：" class="headerlink" title="离线版安装和配置："></a>离线版安装和配置：</h3><p><a href="https://storage.googleapis.com/harbor-releases/release-1.7.0/harbor-online-installer-v1.7.1.tgz" target="_blank" rel="noopener">harbor离线安装包下载</a><br><a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">离线版安装部署文档</a></p>
-<pre><code>1.先安装docker-compose，docker-ce
-    yum install docker-compose docker-ce -y
-2.tar xf harbor-offline-installer-v1.4.0.tgz -C /usr/local/
-3.cd /usr/local/harbor并修改主配置文件harbor.cfg
-    [root@mysql_2 harbor]# grep &quot;^[a-Z]&quot; harbor.cfg 
-        hostname = mysql_2      #设置主机名/IP
-        ui_url_protocol = http      #访问协议，支持http和https
-        max_job_workers = 10        #最大进程连接数
-    #####设置使用https协议的证书和路径#####
+</code></pre><h3 id="1-基于Http的Harbor双向复制"><a href="#1-基于Http的Harbor双向复制" class="headerlink" title="1.基于Http的Harbor双向复制"></a>1.基于Http的Harbor双向复制</h3><p><a href="https://storage.googleapis.com/harbor-releases/release-1.2.0/harbor-online-installer-v1.2.1.tgz" target="_blank" rel="noopener">harbor离线安装包下载</a><br><a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">离线版安装部署文档</a></p>
+<pre><code>1.版本和服务器要求
+    1.版本
+        新版本的harbor测试时发现有点问题，所以公司一般用v1.2.2版本的.
+        这里使用harbor-offline-installer-v1.2.2离线版的v1.2.2版本进行安装
+    2.服务器要求：
+        1.磁盘空间：
+            harbor作为存放镜像的仓库，磁盘空间要足够大，最好使用NFS或者商业存储保证数据安全；所以镜像目录/var/lib/docker需要使用NFS挂载
+        2.网络要求：万兆或网卡绑定
+            千兆网卡带宽也就100多M，很多业务同时使用时很容易就打满了，所以最好使用万兆网卡、光纤或者做网卡绑定升级为2000M的；
+    3.环境
+        192.168.1.101    harbor1
+        192.168.1.102    harbor2
+2.先安装docker-compose，docker-ce并修改配置文件
+    ~]# yum install docker-compose docker-ce -y
+        #两个harbor节点都安装
+    ~]# vim /usr/lib/systemd/system/docker.service
+        ...
+        ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --insecure-registry 192.168.1.101 --insecure-registry 192.168.1.107
+        ExecStartPost=/usr/sbin/iptables -P FORWARD ACCEPT
+        ...
+        #1.使用--insecure-registry添加两个harbor的地址；
+        #2.将iptables的FORWARD默认策略为DROP改成ACCEPT；
+    或者
+        使用daemon.json方式添加两个harbor地址：
+        ~]# vim /etc/docker/daemon.json 
+        {
+          &quot;registry-mirrors&quot;: [&quot;https://registry.docker-cn.com&quot;],
+          &quot;insecure-registries&quot;: [&quot;192.168.1.101&quot;，&quot;192.168.1.107&quot;]
+        }
+        这种方式测试过有时不能同时登录两台harbor，会报错：
+            443:connect:connection refused的情况，好像是只生效了一个地址，所以推荐使用上面第一种方式添加；
+3.使用NFS挂载docker镜像目录：/var/lib/docker
+    这里NFS共享的是192.168.1.100的/data/imagedata目录
+    ~]# yum install nfs-utils -y
+    ~]# mount -t nfs 192.168.1.100:/data/dockerimage /mnt
+        #先挂载到mnt下测试nfs是否可用
+    ~]# vim /etc/fstab
+    ...
+    192.168.1.100:/data/dockerimage /var/lib/docker nfs default,_netdev 0 0
+    注意：
+        参数项要使用_netdev声明它是一个网络设备，这样开机时如果nfs服务挂了，不会影响当前主机启动，否则服务器会一直卡在那；
+    ~]# mount -a &amp;&amp; df -TH
+        #验证nfs挂载生效了
+    ~]# systemctl start docker      #启动docker
+
+4.安装harbor
+    ~]# tar xf harbor-offline-installer-v1.4.0.tgz -C /usr/local/
+    ~]# cd /usr/local/harbor
+    ~]# grep &quot;^[a-Z]&quot; harbor.cfg        #配置harbor
+        hostname = 192.168.1.101        #设置主机名/IP
+        ui_url_protocol = http          #访问协议，支持http和https
+        max_job_workers = 10            #最大进程连接数
+        #####设置使用https协议的证书和路径#####
         customize_crt = on          #是否使用自定义证书
         ssl_cert = /data/cert/server.crt
         ssl_cert_key = /data/cert/server.key
@@ -629,7 +668,7 @@
         http_proxy =                #是否使用代理
         https_proxy =
         no_proxy = 127.0.0.1,localhost,core,registry
-    ####设置用户上下载镜像时，是否启用发邮件功能#########
+        ####设置用户上下载镜像时，是否启用发邮件功能#########
         email_identity = 
         email_server = smtp.mydomain.com
         email_server_port = 25
@@ -638,66 +677,133 @@
         email_from = admin &lt;sample_admin@mydomain.com&gt;
         email_ssl = false
         email_insecure = false
-    ####使用互联网上的邮箱##############
+        ####使用互联网上的邮箱##############
         harbor_admin_password = Harbor12345    #harbor默认的管理员密码
         auth_mode = db_auth                    #默认使用的数据库类型
         db_host = mysql         #设置连接mysql的端口和用户密码
         db_password = root123
         db_port = 3306
         db_user = root         #这里还支持 ldap 以及 本地文件存储方式。
-    #####修改数据库类型和用户和密码#########
-4.运行install.sh
-    因为是离线安装包，会从tar文件中装入所需的镜像文件并启动，启动时会检查
-    docker-ce和docker-compose的版本开始加载镜像(mysql,redis,nginx等等)
-    [root@mysql_2 harbor]# ./install.sh 
-    [Step 0]: checking installation environment ...
-    Note: docker version: 18.09.0
-    Note: docker-compose version: 1.18.0
-    [Step 1]: loading Harbor images ...
-</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/harbor安装过程.png" alt="创建并启动的所有容器"><br><img src="/2018/10/18/Docker仓库管理工具Harbor/和harbor相关的所有容器.png" alt="创建并启动的所有容器2"></p>
-<pre><code>5.启用的容器可能会使用宿主机的名称空间
-6.通过docker-compose管理harbor
-    cd /usr/local/harbor/
-    docker-compose stop
-    docker-compose start
-</code></pre><p>登录web管理界面：<a href="http://x.x.x.x，默认用户名：admin，密码为配置文件中自定义的密码" target="_blank" rel="noopener">http://x.x.x.x，默认用户名：admin，密码为配置文件中自定义的密码</a><br><img src="/2018/10/18/Docker仓库管理工具Harbor/登录页面.png" alt="登录页面"></p>
-<pre><code>7.创建用户和测试仓库：
-    创建lk用户，测试登录
-    创建test仓库用于测试上传镜像 直接创建test仓库即可
-</code></pre><h3 id="内网服务器登录harbor"><a href="#内网服务器登录harbor" class="headerlink" title="内网服务器登录harbor"></a>内网服务器登录harbor</h3><p>-登录报错<br>–Docker自从1.3.X之后docker registry交互默认使用的是HTTPS，但是搭建私有镜像默认使用的是HTTP服务，所以与私有镜像交时出现以上错误。<br>如果配置文件中启用了https，而且也有证书等信息，就不会有这个报错<br><img src="/2018/10/18/Docker仓库管理工具Harbor/登录报错.png" alt="docker login报错"></p>
-<pre><code>解决方法：
-    1.在所有的内网需要上传下载镜像的服务器上都创建daemon.json文件
-        vim /etc/docker/daemon.json
-        {
-           &quot;insecure-registries&quot;:[&quot;192.168.100.17&quot;]
-           ###该选项表示从不安全的仓库下载或上传镜像
-        }
-    2.还要注意：
-        如果[&quot;192.168.100.17&quot;]中使用的主机名，那么需要在本地hosts文件或者局域网DNS
-        服务器上进行主机名解析
-    3.也可以修改vim /usr/lib/systemd/system/docker.service文件
-        vim /usr/lib/systemd/system/docker.service 
-            ExecStart=/usr/bin/dockerd  --insecure-registry 192.168.100.17
-        重启docker
-            systemctl daemon-reload
-            systemctl restart docker
-    4.docker login 192.168.100.17|主机名 #登录私有harbor仓库
-      docker logout 192.168.100.17|主机名 #退出私有harbor仓库
-</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/成功登录.png" alt="成功登录"></p>
-<pre><code>4.制作镜像并测试上传
-    制作镜像：docker tag httpd:v0.1 192.168.100.17/test/httpd:v1
-                将之前制作好的镜像改标签再上传上去
-            docker image build . -t 192.168.100.17/test/httpd:v2.0
-                也可以通过dockerfile重新制作一个再上传
-    上传到test仓库中: docker push 192.168.100.17/test/httpd:v1
-</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/上传.png" alt="上传镜像"><br><img src="/2018/10/18/Docker仓库管理工具Harbor/上传镜像.png" alt="上传镜像"></p>
-<pre><code>5.测试拉取镜像
-    在页面上点击复按钮，在命令行中就可以拉取镜像了
-</code></pre><p>-<br><img src="/2018/10/18/Docker仓库管理工具Harbor/拉取镜像.png" alt="拉取镜像"></p>
-<h3 id="如何修改配置："><a href="#如何修改配置：" class="headerlink" title="如何修改配置："></a>如何修改配置：</h3><pre><code>[root@linux-host1 harbor]# /usr/local/harbor
-[root@linux-host1 harbor]# docker-compose   stop #先停止服务
-[root@linux-host1 harbor]# vim harbor.cfg  #编辑配置
-[root@linux-host1 harbor]# docker-compose start #重新启动服务
+        #####修改数据库类型和用户和密码#########
+    ~]# ./install.sh      #执行安装
+        [Step 0]: checking installation environment ...
+        Note: docker version: 18.09.0
+        Note: docker-compose version: 1.18.0
+        [Step 1]: loading Harbor images ...
+        ...
+        #因为是离线安装包，会从tar文件中装入所需的镜像文件并启动，启动时会检查docker-ce和docker-compose的版本开始加载
+        镜像(mysql,redis,nginx等等)；
+5.登录harbor
+    http://192.168.1.101      #habor1
+    http://192.168.1.102      #habor2
+        #用户和密码admin/harbor12345
+    创建两个镜像仓库：
+        1.项目--&gt;+项目--&gt;baseimage--&gt;设置仓库为公开
+        2.项目--&gt;+项目--&gt;cre--&gt;设置仓库为公开
+    创建这两个仓库是为了下文做harbor镜像同步用的
+</code></pre><h3 id="2-配置harbor双向复制、删除"><a href="#2-配置harbor双向复制、删除" class="headerlink" title="2.配置harbor双向复制、删除"></a>2.配置harbor双向复制、删除</h3><pre><code>注意事项
+    1.首先复制是针对项目下的某个仓库而言的，不是对整个harbor内的所有仓库，所以需要先创建复制规则，某个仓库再去使用这个规则才行；
+    2.复制是双向的：
+        1.在harbor1上需要建立对应harbor2的某个仓库的规则
+        2.同样早harbor2上也需要建立对应harbor1上的某个仓库规则；
+        需要注意的是如果只配置了harbor1-A--&gt;harbor2-A的规则，则harbor1-A仓库会将镜像都复制到harbor2-A上，但是
+        harbor2-A的镜像不会复制到harbor1-A上；
+    3.下文以上面创建的baseimage仓库为例，添加双向复制规则；
+
+1.先配置harbor1-baseimage--&gt;harbor2-baseimage的复制规则
+    步骤：
+        1.先创建baseimage仓库的复制规则
+            系统管理--&gt;编复制管理--&gt;编+目标--&gt;编辑目标--&gt;见下图1
+        2.再为baseimage添加复制规则
+            项目--&gt;baseimage--&gt;复制--&gt;+复制规则--&gt;见下图2
+    截图如下：
+</code></pre><p>–<br><img src="/2018/10/18/Docker-基于SSL的Harbor双向复制/新建1-2的复制规则.png" alt="新建1-2的复制规则"><br><img src="/2018/10/18/Docker-基于SSL的Harbor双向复制/为1的baseimage添加复制规则.png" alt="为1的baseimage添加复制规则"></p>
+<pre><code>2.再配置harbor2-baseimage--&gt;harbor1-baseimage的复制规则
+    步骤：
+        1.先创建baseimage仓库的复制规则
+            系统管理--&gt;编复制管理--&gt;编+目标--&gt;编辑目标--&gt;见下图1
+        2.再为baseimage添加复制规则
+            项目--&gt;baseimage--&gt;复制--&gt;+复制规则--&gt;见下图2
+    截图如下：
+</code></pre><p>–<br><img src="/2018/10/18/Docker-基于SSL的Harbor双向复制/新建2-1的复制规则.png" alt="新建2-1的复制规则"><br><img src="/2018/10/18/Docker-基于SSL的Harbor双向复制/为2的baseimage添加复制规则.png" alt="为2的baseimage添加复制规则"></p>
+<pre><code>3.测试双向同步复制、删除效果
+    1.先验证harbor1-&gt;harbor2的复制、删除效果
+        1.在harbor1上上传一个新的镜像
+            ~]# docker push 192.168.1.101/baseimage/cre:v1
+        2.验证harbor2上是否同步
+            登录查看，harbor2的baseimage同步了一个新的镜像cre:v1
+        3.在harbor1上删除baseimage/cre:v1镜像
+            直接在harbor1页面上删除即可
+        4.验证harbor2上是否还有/cre:v1镜像
+            harbor2上也被删除了
+    2.再验证harbor2-&gt;harbor1的复制、删除效果
+        1.在harbor2上上传一个新的镜像
+            ~]# docker push 192.168.1.107/baseimage/cre:v2
+        2.验证harbor1上是否同步
+            登录查看，harbor1的baseimage同步了一个新的镜像cre:v2
+        3.在harbor2上删除baseimage/cre:v2镜像
+            直接在harbor2页面上删除即可
+        4.验证harbor1上是否还有/cre:v2镜像
+            harbor1上也被删除了
+    总结：
+        1.可以看到双向复制、删除镜像是没问题的
+        2.在harbor1和harbor2上，镜像的前缀都会自动变成各自的IP地址；
+</code></pre><h3 id="3-配置基于https的Harbor仓库"><a href="#3-配置基于https的Harbor仓库" class="headerlink" title="3.配置基于https的Harbor仓库"></a>3.配置基于https的Harbor仓库</h3><pre><code>和上面没什么区别，只要就是自己制作证书；
+1.时间
+    两台主机的时间必须准确且一致
+2.制作证书
+    ~]# mkdir /usr/local/harbor/certs       #创建证书目录
+    ~]# cd /usr/local/harbor/certs
+    ~]# openssl genrsa -out /usr/local/harbor/certs/server.key 2048
+        #生成私钥
+    ~]# openssl req -x509 -new -nodes -key /usr/local/harbor/certs/server.key -subj &quot;/CN=harbor1.cre.com&quot; -days 7120 -out /usr/local/harbor/certs/server.crt
+        #1.生成自签证书，CN名称必须和harbor.cfg中的hostname保持一致；
+        #2.证书有效期建议设置长一点，这里设置20年有效期；
+    备注：如果需要为多个https的harbor申请证书，安按照上面申请证书即可
+        ~]# openssl req -x509 -new -nodes -key /usr/local/harbor/certs/server.key -subj &quot;/CN=harbor2.cre.com&quot; -days 7120 -out /usr/local/harbor/certs/server.crt
+        #比如为harbor2.cre.com主机也申请一个证书，公钥一套私钥即可
+3.修改harbor.cfg文件
+    ~]# vim /usr/local/harbor/harbor.cfg
+        hostname = harbor1.cre.com
+        ssl_cert = /usr/local/harbor/certs/server.crt
+        ssl_cert_key = /usr/local/harbor/certs/server.key
+    #主要修改这三项即可
+4.安装
+    ~]# ./install.sh     #安装即可
+5.登录验证
+    本机直接在host文件解析即可；windows修改hosts文件
+    https://harbor1.cre.com
+
+6.配置其他docker服务器使用https的harbor镜像服务器
+    1.在每个docker主机上创建存放harbor证书的第一级目录：certs.d
+        ~]# mkdir /etc/docker/certs.d
+            #必须是叫这个目录
+    2.在certs.d再创建二级目录：harbor1.cre.com
+        ~]# mkdir /etc/docker/certs.d/harbor1.cre.com
+        注意：
+        #1.二级目录名必须和这个harbor的hostname一样,即证书中的CN名称；
+        #2.如果有多个https的harbor，按同样方式创建与其hostname一样的目录，如：
+            mkdir /etc/docker/certs.d/harbor2.cre.com
+            mkdir /etc/docker/certs.d/harbor3.cre.com
+            然后把对应的证书放在对应的目录下即可
+    3.拷贝crt文件到二级目录下
+        ~]# scp usr/local/harbor/certs/server.crt 192.168.1.200:/etc/docker/certs.d/harbor1.cre.com
+            #拷贝crt文件到每个需要登录https的harbor的主机上
+    4.重启docker
+        如果daemon.json和docker.service之前设置了非安全登录方式，删除即可，此时有证书了就需要设置非安全登录了；
+        ~]# systemctl restart docker
+    5.登录https-harbor
+        ~]# docker login harbor1.cre.com
+            #直接使用域名登录即可，确保hosts文件或者内网DNS有解析记录；
+    6.测试上传镜像
+        ~]# docker tag 192.168.1.101/cre/cre:v1 harbor1.cre.com/cre/cre:v1
+            #该tag号
+        ~]# docker push harbor1.cre.com/cre/cre:v1
+            #上传
+
+7.其他主机登录harbor
+    1.由于公司内单机服务器和k8s-node节点都需要登录到harbor上，不可能每次都使用docker login登录一次，通常的做法是：
+        1.将daemon.json、docker.service、/root/.docker/config.json文件先在一台服务器上设置好，然后使用ansible将这3个文件统一分发到其他需要登录harbor的服务器上；
 </code></pre>
       
     </div>
@@ -831,8 +937,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
-                <i class="fa fa-chevron-left"></i> Docker镜像
+              <a href="/2018/10/18/docker存储卷/" rel="next" title="docker存储卷">
+                <i class="fa fa-chevron-left"></i> docker存储卷
               </a>
             
           </div>
@@ -841,8 +947,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/18/docker存储卷/" rel="prev" title="docker存储卷">
-                docker存储卷 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/18/Docker网络/" rel="prev" title="Docker网络">
+                Docker网络 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1179,7 +1285,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker仓库管理工具Harbor"><span class="nav-number">1.</span> <span class="nav-text">Docker仓库管理工具Harbor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#离线版安装和配置："><span class="nav-number">2.</span> <span class="nav-text">离线版安装和配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内网服务器登录harbor"><span class="nav-number">3.</span> <span class="nav-text">内网服务器登录harbor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何修改配置："><span class="nav-number">4.</span> <span class="nav-text">如何修改配置：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker仓库管理工具Harbor"><span class="nav-number">1.</span> <span class="nav-text">Docker仓库管理工具Harbor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-基于Http的Harbor双向复制"><span class="nav-number">2.</span> <span class="nav-text">1.基于Http的Harbor双向复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配置harbor双向复制、删除"><span class="nav-number">3.</span> <span class="nav-text">2.配置harbor双向复制、删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-配置基于https的Harbor仓库"><span class="nav-number">4.</span> <span class="nav-text">3.配置基于https的Harbor仓库</span></a></li></ol></div>
             
 
           </div>
@@ -1224,7 +1330,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">16:18</span>
+    <span title="站点阅读时长">16:22</span>
   
 </div>
 
