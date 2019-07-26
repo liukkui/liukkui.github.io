@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="ActiveMQ基础">
+<meta name="keywords" content="MQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MQ-activemq">
+<meta property="og:url" content="https://www.liukui.tech/2017/09/16/MQ-activemq/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="ActiveMQ基础">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/09/16/MQ-activemq/activemq内部实现.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/09/16/MQ-activemq/activemq管理界面.png">
+<meta property="og:updated_time" content="2019-07-26T10:19:50.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MQ-activemq">
+<meta name="twitter:description" content="ActiveMQ基础">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/09/16/MQ-activemq/activemq内部实现.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/09/16/MQ-activemq/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MQ-activemq | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">69</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/09/16/MQ-activemq/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MQ-activemq
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-09-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-09-16T08:00:00+08:00">2017-09-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/MQ/" itemprop="url" rel="index"><span itemprop="name">MQ</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">10k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">9 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="ActiveMQ基础"><a href="#ActiveMQ基础" class="headerlink" title="ActiveMQ基础"></a>ActiveMQ基础</h3><a id="more"></a>
+<p><a href="https://activemq.apache.org/" target="_blank" rel="noopener">ActiveMQ官方</a></p>
+<pre><code>1.ActiveMQ
+    ActiveMQ是Apache所提供的一个开源的消息系统，完全采用Java来实现，因此，它能很好地支持J2EE提出的
+    JMS（Java Message Service,即Java消息服务）规范。JMS是一组Java应用程序接口，它提供消息的创建、发送、读取等一系列服务。
+    JMS提供了一组公共应用程序接口和响应的语法，类似于Java数据库的统一访问接口JDBC,它是一种与厂商无关的API，使得Java程序
+    能够与不同厂商的消息组件很好地进行通信；
+2.JMS：Java Message Service
+    JMS支持两种消息发送和接收模型：
+    1.P2P(Ponit to Point)：点对点模型
+        P2P模型是基于队列的，消息生产者发送消息到队列，消息消费者从队列中接收消息，队列的存在使得消息的异步传输称为可能，
+        P2P模型在点对点的情况下进行消息传递时采用
+    2.Pub/Sub(Publish/Subscribe):发布订阅模型
+        发布-订阅模型定义了如何向一个内容节点发布和订阅消息，这个内容节点称为topic(主题)。主题可以认为是消息传递的中介，
+        消息发布这将消息发布到某个主题，而消息订阅者则从主题订阅消息。主题使得消息的订阅者与消息的发布者互相保持独立，不需要进行接触即可保证消息的传递，发布-订阅模型在消息的一对多广播时采用
+    3.JMS术语
+        * Provider/MessageProvider：生产者
+        * Consumer/MessageConsumer：消费者
+        * PTP：Point To Point，点对点通信消息模型
+        * Pub/Sub：Publish/Subscribe，发布订阅消息模型
+        * Queue：队列，目标类型之一，和PTP结合
+        * Topic：主题，目标类型之一，和Pub/Sub结合
+        * ConnectionFactory：连接工厂，JMS用它创建连接
+        * Connnection：JMS Client到JMS Provider的连接
+        * Destination：消息目的地，由Session创建
+        * Session：会话，由Connection创建，实质上就是发送、接受消息的一个线程，因此生产者、消费者都是Session创建的
+    4.JMS和MQ的关系：
+        1.JMS是一个用于提供消息服务的技术规范，它制定了在整个消息服务提供过程中的所有数据结构和交互流程。而MQ则是消息队列
+        服务，是面向消息中间件（MOM）的最终实现，是真正的服务提供者；MQ的实现可以基于JMS，也可以基于其他规范或标准；
+        2.支持JMS的开源MQ：
+            前选择的最多的是ActiveMQ，ActiveMQ是一个完全支持JMS1.1和J2EE1.4规范的JMS Provider实现；
+3.项目要求
+    1.由于最近一个项目并发请求压力比较大，所以考虑改进架构，引入消息中间件集群作为一个缓冲消息队列，具体需求：
+        1.将大量的WebService请求报文发送到mq集群之中，并保持消息先后顺序
+        2.保证每个消息的可靠性
+        3.维护MQ服务器的可扩展性
+    2.权衡利弊，公司倾向于使用activemq这种能力强劲的开源消息总线。本项目使用的是：
+        activemq5.12，activemq5.12要求jdk6+，本次使用jdk8，并引入activemq服务器。
+</code></pre><p>–activemq内部实现<br><img src="/2017/09/16/MQ-activemq/activemq内部实现.png" alt="activemq内部实现"></p>
+<pre><code>4.ActiveMQ内部实现,如上图
+    生产者进程向activeMQ所在进程发送消息和消费者消费消息的过程如上图所示，消息传递的路径经过了核心领域模型，具体步骤如下：
+    1.生产者通过向activeMQ为它建立好的TransportConnection发送消息给activeMQ。
+    2.TransportConnection对象找到RegionBroker。
+    3.RegionBroker根据消息的类型找到对应的消息区域(Region)。
+    4.该Region在它自己里面找到相应的消息目的地。
+    5|6.该目的地首先根据需要进行持久化操作，并使用待发送消息指针对象。
+    7.当有合适的消息消费者、订阅者来到时，目的地会找到这些消费者。
+    8|9.通过该消费者对应的TransportConnection，消息从activeMQ中出来，发给相应的消费者进程
+5.queue和topic
+    1.在JMS中，topic实现的是发布订阅的语义，在发布消息时，它将发送给所有感兴趣的订阅者——因此，对于许多订阅者来说，得到许
+    多订阅者将收到消息的副本。值得注意的是只有在代理接收到消息的时候拥有一个活跃订阅的订阅者将获得消息的副本；
+    2.queue实现的是负载均衡的语义。一条消息只被一个消费者接收，如果在发送消息时没有可用的用户，则将该消息保留，直到可以接收
+    该消息的用户可用为止。如果消费者收到一条消息，并且在关闭之前不承认它（not ack），那么消息将被重新发送到另一个消费者。
+    队列可以让许多消费者在可用的消费者之间平衡消息负载；
+6.消息持久化
+    JMS规范支持两种类型的消息传递：持久性和非持久性；
+    1.持久性消息传递必须将持久性属性记录到稳定存储中，非持久性只是进行最大努力的传递信息，不用记录。ActiveMQ支持这两种消息
+    传递，也可配置为支持消息恢复，介于两者之间的状态的消息被存在内存中；
+    2.ActiveMQ很好的支持了消息的持久性(Persistence)。消息持久性对于可靠消息传递来说应该是一种比较好的方法，有了消息持久化，
+    即使发送者和接受者不是同时在线或者消息中心在发送者发送消息后宕机了，在消息中心重新启动后仍然可以将消息发送出去，
+    如果把这种持久化和ReliableMessaging结合起来应该是很好的保证了消息的可靠传送；
+    3.消息持久性的原理：
+        在发送者将消息发送出去后，消息中心首先将消息存储到本地数据文件、内存数据库或者远程数据库等，然后试图将消息发送给接
+        收者，发送成功则将消息从存储中删除，失败则继续尝试。消息中心启动以后首先要检查制定的存储位置，如果有未发送成功的
+        消息，则需要把消息发送出去。 对于ActiveMQ，消息的持久化是很简单的，仅仅通过配置信息就可以实现。非持久性消息通常被用
+        在发送通知和实时数据。当性能要求是第一位，确认消息交付在第二位时应该选用非持久性消息；
+</code></pre><h3 id="2-ActiveMQ-Zookeeper集群"><a href="#2-ActiveMQ-Zookeeper集群" class="headerlink" title="2.ActiveMQ+Zookeeper集群"></a>2.ActiveMQ+Zookeeper集群</h3><pre><code>1.环境准备
+    activemq1 192.168.1.101
+    activemq2 192.168.1.102
+    activemq3 192.168.1.103
+    软件版本：activemq-5.12.1、zookeeper-3.4.13
+2.zookeeper集群安装
+    参考：zookeeper集群部署.txt
+3.部署ActiveMQ
+    ~]# wget https://mirrors.aliyun.com/apache/activemq/5.12.1/apache-activemq-5.12.1-bin.tar.gz
+        #active官方下载太慢，这里使用阿里云提供的地址下载
+    ~]# tar xf apache-activemq-5.15.9-bin.tar.gz -C /usr/local/src/
+    ~]# ln -sv /usr/local/src/apache-activemq-5.15.9 /usr/local/activemq
+        #创建软链
+4.修改配置文件activemq.xml称为集群
+    ~]# cd /usr/local/activemq/conf/
+    ~]# cp activemq.xml  activemq.xml.bak   #先备份一个文件再修改
+    ~]# vim activemq.xml
+    ...
+    &lt;broker xmlns=&quot;http://activemq.apache.org/schema/core&quot; brokerName=&quot;mq-cluster1&quot; dataDirectory=&quot;${activemq.data}&quot; useJmx=&quot;true&quot;&gt;
+    ...
+    &lt;!--
+        &lt;persistenceAdapter&gt;
+            &lt;kahaDB directory=&quot;${activemq.data}/kahadb&quot;/&gt;
+        &lt;/persistenceAdapter&gt;
+    --&gt;
+        &lt;persistenceAdapter&gt;
+          &lt;replicatedLevelDB  
+              directory=&quot;${activemq.data}/leveldb&quot; 
+              replicas=&quot;3&quot;
+              bind=&quot;tcp://192.168.1.101:62621&quot;
+              zkAddress=&quot;192.168.1.101:2181,192.168.1.102:2181,192.168.1.103:2181&quot; 
+              zkPassword=&quot;&quot; 
+              hostname=&quot;192.168.1.101&quot;
+              sync=&quot;local_disk&quot; 
+              zkPath=&quot;/activemq/leveldb-stores&quot;/&gt;
+        &lt;/persistenceAdapter&gt;
+        ...
+          &lt;systemUsage&gt;
+            &lt;systemUsage&gt;
+                &lt;memoryUsage&gt;
+                    &lt;memoryUsage percentOfJvmHeap=&quot;70&quot; /&gt;
+                &lt;/memoryUsage&gt;
+                &lt;storeUsage&gt;
+                    &lt;storeUsage limit=&quot;100 gb&quot;/&gt;
+                &lt;/storeUsage&gt;
+                &lt;tempUsage&gt;
+                    &lt;tempUsage limit=&quot;50 gb&quot;/&gt;
+                &lt;/tempUsage&gt;
+            &lt;/systemUsage&gt;
+          &lt;/systemUsage&gt;
+        ...
+    &lt;transportConnectors&gt;
+        &lt;!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB --&gt;
+        &lt;transportConnector name=&quot;openwire&quot; uri=&quot;tcp://192.168.1.101:61616?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&quot;/&gt;
+    &lt;!--
+        &lt;transportConnector name=&quot;amqp&quot; uri=&quot;amqp://0.0.0.0:5672?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&quot;/&gt;
+        &lt;transportConnector name=&quot;stomp&quot; uri=&quot;stomp://0.0.0.0:61613?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&quot;/&gt;
+        &lt;transportConnector name=&quot;mqtt&quot; uri=&quot;mqtt://0.0.0.0:1883?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&quot;/&gt;
+        &lt;transportConnector name=&quot;ws&quot; uri=&quot;ws://0.0.0.0:61614?maximumConnections=1000&amp;amp;wireFormat.maxFrameSize=104857600&quot;/&gt;
+    --&gt;
+    &lt;/transportConnectors&gt;
+    需要修改的地方：
+        1.brokerName=&quot;mq-cluster1&quot;和seJmx=&quot;true&quot;
+            1.修改集群内的所有的mq的brokerName为同一个值，也就是mq集群名称，不能使用默认的localhost;
+            2.useJmx=&quot;true&quot;的属性，用作server的负载均衡使用
+        2.注释掉kahaDB段，并新增replicatedLevelDB字段：
+            replicas: 3     #表示activemq集群内有三个mq节点
+            bind:      #不要使用tcp://0.0.0.0:0，改成192.168.1.130:62621
+            zkAddress:  #zk集群三个节点的IP+port
+            zkPasswdord: #zk的密码，如果没有留空就行
+            hostname:    #当前主机的名称，可填IP或者主机名
+            zkPath=&quot;/activemq/leveldb-stores&quot;
+                #activemq注册到zk集群中的ZNode节点路径，下文创建好activemq集群，在zk集群上就可以看到了；
+        3.ActiveMQ的内存分配信息
+            memoryUsage：表示所有队列对象占用的内存大小为70mb，可以不修改
+        4.配置activemq的服务端口：61616
+            1.注释name为amqp、stomp、mqtt、ws几行
+            2.修改openwire中的IP为本机IP；
+5.另外两个节点配置
+    ~]# scp /usr/local/activemq/conf/activemq.xml 192.168.1.102:/usr/local/activemq/conf/
+    ~]# scp /usr/local/activemq/conf/activemq.xml 192.168.1.103:/usr/local/activemq/conf/
+        #经修改后的文件拷贝到各自目录，activemq.xml中也要改成各自的IP
+6.启动三个节点的activeMQ
+    ~]# /usr/local/activemq/bin/activemq start
+        INFO: Loading &apos;/usr/local/src/apache-activemq-5.12.1//bin/env&apos;
+        INFO: Using java &apos;/usr/bin/java&apos;
+        INFO: Starting - inspect logfiles specified in logging.properties and log4j.properties to get details
+        INFO: pidfile created : &apos;/usr/local/src/apache-activemq-5.12.1//data/activemq.pid&apos; (pid &apos;17915&apos;)
+    #3个节点的activemq都要启动
+7.验证activemq的高可用
+    1.因为使用zookeeper做负载均衡，三台activemq服务器中只会有一台是master，其他两台处于等待状态，所以只有其中一台提供服务。
+    2.所以其他两台服务器虽然active程序启动了，但是61616服务端口和8161管理端口是关闭等待状态（即也就是说这两台节点的这两个端口不会起来，只有当master节点故障时，他们中的一个节点的这两个端口才会接着起来）
+    3.查看3台activemq的端口情况
+        ~]# ss -tnl
+        LISTEN     0      50            :::8161
+        LISTEN     0      128           ::ffff:192.168.1.101:61616 
+        #1.8161是activemq的管理端口，可在jetty.xml中修改端口
+        #2.61616是active的服务端
+        #3.这有activemq的master节点才会监听8161和61616端口，其他两节点此时端口不会起来，只有master故障时才另外
+        两台activemq有一台会成为master;
+8.查看zk集群上activemq集群的ZNode注册信息
+    ~]# /usr/local/zookeeper/bin/zkCli.sh
+        [zk: localhost:2181(CONNECTED) 0] ls /
+        [activemq, zookeeper]
+        [zk: localhost:2181(CONNECTED) 2] ls /activemq
+        [leveldb-stores]
+        [zk: localhost:2181(CONNECTED) 3] ls /activemq/leveldb-stores
+        [00000000003, 00000000004, 00000000005]
+    #可以看到activemq注册的ZNode数据节点是/activemq/leveldb-stores和上文中activema.xml中的zkPath是一致的；
+
+9.登录activemq的管理页面
+    http://192.168.1.101:8161/admin
+    http://192.168.1.102:8161/admin
+    http://192.168.1.103:8161/admin
+    #只有master节点才会登录到管理页面，用户和密码都是admin
+</code></pre><p>–activemq管理界面<br><img src="/2017/09/16/MQ-activemq/activemq管理界面.png" alt="activemq管理界面"></p>
+<pre><code>9.故障模拟
+    1.停止activemq的master：192.168.1.101
+        ~]# ps -ef|grep activemq|grep -v grep|awk &apos;{print $2}&apos;|xargs kill -9
+        或者
+        ~]# /usr/local/activemq/bin/activemq stop
+    2.查看另外两节点的端口监听情况
+        ~]# ss -tnl
+        LISTEN     0      50            :::8161
+        LISTEN     0      128           ::ffff:192.168.1.103:61616 
+        #最终查看master转移到了192.168.1.103主机上了
+
+10.其他建议修改的地方，可改可不改
+    1.修改activemq管理端口
+        ~]# vim /usr/local/activemq/conf/jetty.xml
+        &lt;property name=&quot;port&quot; value=&quot;8161&quot;/&gt;
+            #管理端口不建议修改
+        ~]# /usr/local/activemq/bin/activemq stop
+        ~]# /usr/local/activemq/bin/activemq start  #重启activemq
+    2.修改activemq管理界面登陆的用户名和密码
+        默认的用户名和密码为admin，内部使用还好，但如果是对外服务，安全考虑，最好还是将用户名和密码修改下；
+        ~]# vim /usr/local/activemq/conf/activemq.xml
+        ...
+            &lt;/shutdownHooks&gt;
+        &lt;plugins&gt;
+            &lt;simpleAuthenticationPlugin&gt;
+                &lt;users&gt;
+                    &lt;authenticationUser username=&quot;${activemq.username}&quot; password=&quot;${activemq.password}&quot; groups=&quot;users,admins&quot;/&gt;
+                &lt;/users&gt;
+            &lt;/simpleAuthenticationPlugin&gt;
+        &lt;/plugins&gt;
+        &lt;/broker&gt;
+        备注：
+            账号密码时调用../conf/credentials-enc.properties文件中的activemq.username、activemq.password值；
+        ~]# /usr/local/activemq/bin/activemq stop
+        ~]# /usr/local/activemq/bin/activemq start  
+            #重启activemq后使用户名和密码system：manager登录即可；
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MQ/" rel="tag"><i class="fa fa-tag"></i> MQ</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/16/MongoDB索引和副本集实现/" rel="next" title="MongoDB索引和副本集实现">
+                <i class="fa fa-chevron-left"></i> MongoDB索引和副本集实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
+                旧事-大好河山 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ActiveMQ基础"><span class="nav-number">1.</span> <span class="nav-text">ActiveMQ基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ActiveMQ-Zookeeper集群"><span class="nav-number">2.</span> <span class="nav-text">2.ActiveMQ+Zookeeper集群</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.1m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">16:18</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

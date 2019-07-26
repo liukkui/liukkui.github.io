@@ -145,7 +145,7 @@
 <meta property="og:description" content="RabbitMQ分布式集群架构和高可用性(HA)">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2017/03/12/RabbitMQ高可用集群/rabbitmq集群.png">
-<meta property="og:updated_time" content="2019-07-23T15:06:27.525Z">
+<meta property="og:updated_time" content="2019-07-23T15:18:04.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ高可用集群">
 <meta name="twitter:description" content="RabbitMQ分布式集群架构和高可用性(HA)">
@@ -308,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">29</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
 
   </li>
         
@@ -327,7 +327,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">34</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
 
   </li>
         
@@ -346,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">68</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">69</span></a>
 
   </li>
         
@@ -541,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">8.5k</span>
+                <span title="本文字数">9.5k</span>
               
 
               
@@ -555,7 +555,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">8 分钟</span>
+                <span title="阅读时长">9 分钟</span>
               
             </div>
           
@@ -664,8 +664,13 @@
     ~]# systemctl restart rabbitmq-server &amp;&amp; systemctl enable rabbitmq-server
 7.配置指定虚拟主机的所有队列为镜像模式
     ~]# rabbitmqctl set_policy -p /myhost1/test2 ha-all &quot;^\.*&quot; &apos;{&quot;ha-mode&quot;:&quot;all&quot;}&apos;
-    #配置指定虚拟主机的所有队列为镜像模式，-p指定虚拟主机，不指定默认为/这样配置后我们将会有两个镜像节点，只要保障
-    有一台rabbitmq正常工作那么集群就可以提供服务；
+        #配置指定虚拟主机的所有队列为镜像模式，-p指定虚拟主机，不指定默认为/这样配置后我们将会有两个镜像节点，
+        只要保障有一台rabbitmq正常工作那么集群就可以提供服务；
+    ~]# rabbitmqctl list_policies
+        Listing policies ...
+        /   ha-all  all ^\\.*   {&quot;ha-mode&quot;:&quot;all&quot;}   0
+        ...done.
+        #验证
 </code></pre><h3 id="基于HAProxy-Keepalived的LB集群实现RabbitMQ负载均衡"><a href="#基于HAProxy-Keepalived的LB集群实现RabbitMQ负载均衡" class="headerlink" title="基于HAProxy+Keepalived的LB集群实现RabbitMQ负载均衡"></a>基于HAProxy+Keepalived的LB集群实现RabbitMQ负载均衡</h3><pre><code>备注：
     1.为了实现我们的RabbitMQ集群高可用，我们需要在前端加一个HAProxy来代理RabbitMQ访问，另外防止HAProxy单节点故障，所以
     我们使用HAProxy+Keepalived+RabbitMQ的方案来实现整套集群环境；
@@ -802,7 +807,29 @@
 7.测试
     登录http://192.168.1.200:15670查看集群信息
 </code></pre><p>–rabbitmq集群<br><img src="/2017/03/12/RabbitMQ高可用集群/rabbitmq集群.png" alt="rabbitmq集群"></p>
-
+<h3 id="附录：rabbitmq集群常用命令"><a href="#附录：rabbitmq集群常用命令" class="headerlink" title="附录：rabbitmq集群常用命令"></a>附录：rabbitmq集群常用命令</h3><pre><code>1.将node2rabbitmq移除集群
+    node2:  rabbitmqctl stop_app
+    node2:  rabbitmqctl reset (force_reset 强制重置)
+    node2:  rabbitmqctl start_app
+2.将node3rabbitmq由磁盘节点转换成内存节点
+    node3:  rabbitmqctl stop_app
+    node3:  rabbitmqctl change_cluster_node_type ram
+    node3:  rabbitmqctl start_app   
+3.远程移除节点,在node1上移除node3节点
+    node1:  rabbitmqctl stop_app
+    node1:  rabbitmqctl forget_cluster_node rabbit@node3
+4.更改节点储存类型:
+    node1:  rabbitmqctl stop_app
+    node1:  rabbitmqctl change_cluster_node_type disc|ram
+    node1:  rabbitmqctl start_app
+5.查看集群的用户
+    node1:  rabbitmqctl list_users
+6.重启集群,(最后一个关闭的集群最先启动,如果不知道可使用以下命令)
+    rabbitmqctl force_boot
+    rabbit-server start
+7.rabbitmq内存使用控制(默认使用物理内存的40%,到达40会做gc,设置为0关闭),
+    rabbitmqctl set_vm_memory_high_watermark 0
+</code></pre>
       
     </div>
 
@@ -1019,7 +1046,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">68</span>
+                    <span class="site-state-item-count">69</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1100,7 +1127,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">34</span>
+                      
+                    
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1171,7 +1200,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">29</span>
+                      
+                    
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1279,7 +1310,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RabbitMQ分布式集群架构和高可用性-HA"><span class="nav-number">1.</span> <span class="nav-text">RabbitMQ分布式集群架构和高可用性(HA)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RabbitMQ-Cluster配置"><span class="nav-number">2.</span> <span class="nav-text">1.RabbitMQ Cluster配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于HAProxy-Keepalived的LB集群实现RabbitMQ负载均衡"><span class="nav-number">3.</span> <span class="nav-text">基于HAProxy+Keepalived的LB集群实现RabbitMQ负载均衡</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RabbitMQ分布式集群架构和高可用性-HA"><span class="nav-number">1.</span> <span class="nav-text">RabbitMQ分布式集群架构和高可用性(HA)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RabbitMQ-Cluster配置"><span class="nav-number">2.</span> <span class="nav-text">1.RabbitMQ Cluster配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于HAProxy-Keepalived的LB集群实现RabbitMQ负载均衡"><span class="nav-number">3.</span> <span class="nav-text">基于HAProxy+Keepalived的LB集群实现RabbitMQ负载均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录：rabbitmq集群常用命令"><span class="nav-number">4.</span> <span class="nav-text">附录：rabbitmq集群常用命令</span></a></li></ol></div>
             
 
           </div>
@@ -1324,7 +1355,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">16:08</span>
+    <span title="站点阅读时长">16:18</span>
   
 </div>
 
