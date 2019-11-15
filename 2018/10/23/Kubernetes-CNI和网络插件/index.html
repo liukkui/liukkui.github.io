@@ -149,10 +149,11 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/叠加网络模型.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/flannel原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/flannel是怎么工作的.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/Flannel下的Pod间的通信过程.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/10/23/Kubernetes-CNI和网络插件/networkpolicy.png">
-<meta property="og:updated_time" content="2019-07-21T04:39:21.796Z">
+<meta property="og:updated_time" content="2019-08-09T14:17:40.868Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-CNI和网络插件">
 <meta name="twitter:description" content="Kubernetes-CNI和网络插件更新于：18.11.20">
@@ -334,7 +335,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
 
   </li>
         
@@ -353,7 +354,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">69</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">71</span></a>
 
   </li>
         
@@ -548,7 +549,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">41k</span>
+                <span title="本文字数">42k</span>
               
 
               
@@ -562,7 +563,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">37 分钟</span>
+                <span title="阅读时长">38 分钟</span>
               
             </div>
           
@@ -744,7 +745,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             flannel是非常依赖防火墙的转发规则的，而calico并不依赖
         4.网络策略
             如果想在k8s中使用网络策略功能，那么必然是caclio了；
-</code></pre><h3 id="6-Flannel网络原理和部署"><a href="#6-Flannel网络原理和部署" class="headerlink" title="6.Flannel网络原理和部署"></a>6.Flannel网络原理和部署</h3><p><a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel项目</a><br>–flannel原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/flannel原理图.png" alt="flannel原理图"><br>–flannel是怎么工作的<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/flannel是怎么工作的.jpg" alt="flannel是怎么工作的"></p>
+</code></pre><h3 id="6-Flannel网络原理和部署"><a href="#6-Flannel网络原理和部署" class="headerlink" title="6.Flannel网络原理和部署"></a>6.Flannel网络原理和部署</h3><p><a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel项目</a><br>–flannel原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/flannel原理图.png" alt="flannel原理图"><br>–flannel是怎么工作的<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/flannel是怎么工作的.jpg" alt="flannel是怎么工作的"><br>–Flannel下的Pod间的通信过程<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/Flannel下的Pod间的通信过程.png" alt="Flannel下的Pod间的通信过程"></p>
 <pre><code>1.Flannel网络原理
     关于Flannel使用的原理这里不做深入的探讨，只讲解Pod同一node节点与不同Worker节点的通讯原理，如上图示：
     1.Flannel网络插件只负责Pod间的网络通讯问题，那么一般Flannel会被部署在node节点上面，但如果Master节点也是使用容器部署的，那么Flannel也会被部署到Master节点;
@@ -754,7 +755,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         到cni0的虚拟交换机，这个IP也相当于是一个网关，而剩下的可用IP会被当前node节点的Pod所使用;
     3.Pod同k8s-node节点通讯:
         同node节点的比较简单，数据包到达cni0虚拟交换机后就转发到了目标的Pod;
-    4.Pod跨node节点通讯过程：
+    4.Pod跨node节点通讯过程：通信逻辑如上图
         1.数据包首先会到达cni0虚拟交换机；
         2.数据包到达虚拟交换机后，发现不是发送到本交换机下的数据包。这时候会通过对应的路由将数据包转发至flannel1.1。这里的路由信息由本机；
         3.数据包到达flannel1.1的时候会对数据包进行第一次封装，然后再将数据包c通过eth0发送到node节点的网卡上。因为flannel是通过eth0的网卡
@@ -871,13 +872,20 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             flannel.alpha.coreos.com/kube-subnet-manager: &quot;true&quot;
             flannel.alpha.coreos.com/public-ip: xx.xx.xx.xx
             flannel.alpha.coreos.com/public-ip-overwrite:yy.yy.yy.yy (ps:optional)
+    5.host-gw模式原理
+        1.flannel不仅提供基于封装类型的互联技术，也提供基于路由技术的互联技术，那就是host-gw模式;
+        2.host-gw模式通过建立主机IP到主机上对应flannel子网的mapping，以直接路由的方式联通flannel的各个子网;
+        3.这种互联方式没有vxlan等封装方式带来的负担，通过路由机制，实现flannel网络数据包在主机之间的转发;
+        4.缺点：
+            所有节点之间都要相互有点对点的路由覆盖，并且所有加入flannel网络的主机需要在同一个LAN里面；所以每个节点上有
+            n-1个路由，而n个节点一共有n(n-1)/2个路由以保证flannel的flat网络能力；
 6.~]# kubectl get pods -n kube-system
     NAME                         READY   STATUS     RESTARTS    AGE
     kube-flannel-ds-amd64-csa29l  1/1     Running      0         10s
     kube-flannel-ds-amd64-vskspz  1/1     Running      0         20s
     kube-flannel-ds-amd64-x38cks  1/1     Running      0         30s
         #因为只是pod-pod间通信，所以flannel网络插件只会运行在node节点上
-    5.1.kube-flannel容器
+    6.1.kube-flannel容器
         在kube-flannel容器里面运行的是我们的主角flanneld，我们需要关注的这个容器里面的目录/文件：
             /etc/kube-flannel/cni-conf.json
             /etc/kube-flannel/net-conf.json
@@ -909,7 +917,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
             FLANNEL_SUBNET=10.244.26.1/24
             FLANNEL_MTU=1500
             FLANNEL_IPMASQ=true
-    5.2.initContainers:：install-cni辅助容器
+    6.2.initContainers:：install-cni辅助容器
         install-cni容器顾名思义就是负责安装cni插件的，把镜像里的flannel等二进制文件复制到宿主机的/etc/cni/net.d，注意这个目录要匹配
         kubelet对应的cni配置项，如果你没改kubelet默认配置，那么kubelet默认也是配置的这个cni目录。我们需要关注install-cni容器内的目录/文件：
             /host/etc/cni/net.d/
@@ -942,7 +950,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 }
               ]
             }
-    7.验证flannel网络
+7.验证flannel网络
     在集群创建几个测试pod:
         ~]# kubectl run test --image=busybox --replicas=3 sleep 30000`
     ~]# kubectl get pod --all-namespaces -o wide|head -n 4
@@ -962,6 +970,9 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         ~]# ping 172.20.2.7
         ~]# ping 172.20.1.5
         ~]# ping 172.20.0.6
+8.Flannel部署及使用时的排错帮助
+    https://github.com/coreos/flannel/blob/master/Documentation/troubleshooting.md
+    官方列出了flannel常见的报错信息，可以参考此文章！
 </code></pre><p>–抓包测试<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/抓包测试.png" alt="抓包测试"></p>
 <h3 id="7-部署Caclio"><a href="#7-部署Caclio" class="headerlink" title="7.部署Caclio"></a>7.部署Caclio</h3><p><a href="https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/calico" target="_blank" rel="noopener">caclio官方安装介绍</a><br>–caclio原理图<br><img src="/2018/10/23/Kubernetes-CNI和网络插件/caclio原理图.png" alt="caclio原理图"></p>
 <pre><code>   环境要求：
@@ -1566,8 +1577,8 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/Docker镜像/" rel="next" title="Docker镜像">
-                <i class="fa fa-chevron-left"></i> Docker镜像
+              <a href="/2018/10/18/Dockerfile/" rel="next" title="Dockerfile">
+                <i class="fa fa-chevron-left"></i> Dockerfile
               </a>
             
           </div>
@@ -1650,7 +1661,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-count">71</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1733,7 +1744,11 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1959,7 +1974,7 @@ dockerdocker网络的节点，因此网络解决方案本质上是没什么区�
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">16:22</span>
+    <span title="站点阅读时长">16:41</span>
   
 </div>
 

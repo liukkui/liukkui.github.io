@@ -145,7 +145,7 @@
 <meta property="og:description" content="Heapster和Dashboard">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2018/06/28/Kubernetes-监控Heapster和Dashboard/dashboard.png">
-<meta property="og:updated_time" content="2019-07-15T11:38:49.686Z">
+<meta property="og:updated_time" content="2019-08-06T12:43:16.098Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-监控Heapster和Dashboard">
 <meta name="twitter:description" content="Heapster和Dashboard">
@@ -327,7 +327,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">35</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
 
   </li>
         
@@ -346,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">69</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">71</span></a>
 
   </li>
         
@@ -541,7 +541,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">16k</span>
+                <span title="本文字数">17k</span>
               
 
               
@@ -555,7 +555,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">14 分钟</span>
+                <span title="阅读时长">15 分钟</span>
               
             </div>
           
@@ -676,7 +676,7 @@
         k8s-app: heapster
 2.部署
     ~]# kubectl apply -f heapster.yaml
-</code></pre><h3 id="2-Dashboard部署"><a href="#2-Dashboard部署" class="headerlink" title="2.Dashboard部署"></a>2.Dashboard部署</h3><p><a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">github链接</a></p>
+</code></pre><h3 id="2-Dashboard部署"><a href="#2-Dashboard部署" class="headerlink" title="2.Dashboard部署"></a>2.Dashboard部署</h3><p><a href="https://github.com/kubernetes/dashboard" target="_blank" rel="noopener">github链接</a><br><a href="https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above" target="_blank" rel="noopener">dashboard官方重要说明</a></p>
 <pre><code>dashboard:
     1.DashBoard是k8s的Web UI:用户的访问界面，可以看到查看pod,svc等等资源;必要时可以先写好yaml格式的资源清单直接粘贴到文本框中就
     可以创建资源了.
@@ -953,9 +953,28 @@
     生成read-user的kubeconfig文件：
         同上，省略
 
-7.登录：
-    https://www.cre.com:30443
-    #使用上面做成的两个kubeconfig文件登录即可；
+7.访问Dashboard：
+    根据官方文档，目前访问Dashboard有四种方式：
+      1.NodePort
+      2.API Server
+      3.kubectl proxy
+      4.Ingress
+        测试了前三种，目前只有NodePort和kubectl proxy可用，API Server暂时没有解决
+    1.使用NodeIP+NodePort方式访问
+        因为配置了tls证书，需要使用https登录
+          https://192.168.1.20:30443登录即可
+        或者使用证书中的域名加NodePort访问
+          https://www.cre.com:30443   #最好使用NodeIP+port方式不会出错
+    2.使用API Server
+        1.使用kubectl cluster-info命令显示的dashboard的apiserver地址登录
+        注意：
+          API Server方式登录会出现403、401,具体报错和解决办法见下文附录;
+    3.使用kubectl proxy
+        在主节点上执行kubectl proxy --address=192.168.34.117 --disable-filter=true
+        其中：
+          address表示外界可以使用192.168.34.117来访问Dashboard，我们也可以使用0.0.0.0
+          disable-filter=true表示禁用请求过滤功能，否则我们的请求会被拒绝，并提示 Forbidden (403) Unauthorized。
+        当然也可以指定端口，具体请查看kubectl proxy --help
 </code></pre><p>–Dashboard登录页面<br><img src="/2018/06/28/Kubernetes-监控Heapster和Dashboard/dashboard.png" alt="dashboard"></p>
 <h3 id="3-安装报错问题汇总"><a href="#3-安装报错问题汇总" class="headerlink" title="3.安装报错问题汇总"></a>3.安装报错问题汇总</h3><pre><code>1.system:anonymous，code:403问题
   访问dashboard网页时，可能出现下面这种报错：
@@ -974,15 +993,16 @@
         &quot;code&quot;: 403
       }
     原因:
-      1.原因是由于kube-apiserver使用了TLS认证，而我们的真实物理机上的浏览器使用匿名证书（因为没有可用的证书）去访问Dashboard，导致授权
-      失败而不无法访问。官方提供的解决方法是将kubelet的证书转化为浏览器可用的证书，然后导入进浏览器；
-      2.Kubernetes API Server新增了–anonymous-auth选项，允许匿名请求访问secure-port。没有被其他authentication方法拒绝的请求即
-      Anonymous-requests，这样的匿名请求的username为system:anonymous, 归属的组为system:unauthenticated。并且该选线是默认的。
-      这样一来，当采用chrome浏览器访问dashboard UI时很可能无法弹出用户名、密码输入对话框，导致后续authorization失败。为了保证用户名、
-      密码输入对话框的弹出，需要将–anonymous-auth设置为false;
+        1.出现system:anonymous，403的原因是Kubernetes API Server新增了–anonymous-auth选项，允许匿名请求访问
+        secure-port。没有被其他authentication方法拒绝的请求即Anonymous-requests，这样的匿名请求的username为
+        system:anonymous,归属的组为system:unauthenticated。并且该选线是默认的。这样一来，当采用chrome浏览器访问
+        dashboard UI时很可能无法弹出用户名、密码输入对话框，导致后续authorization失败。为了保证用户名、密码输入对话框的弹出，需要将–anonymous-auth设置为false;
+        2.或者可以这么理解：
+            使用API-Server方式访问dashboard相当于当前主机是apiserver的客户端，由于主机作为客户端没有证书所以认证失败了，
+            但官方提供的解决方法是将kubelet的证书转化为浏览器可用的证书，然后导入进浏览器就行了；或者也可以使用下面这种方法；
     解决办法：
-      在api-server配置文件中启用--anonymous-auth=false
-      ~]# vim /usr/lib/systemd/system/kube-apiserver.service
+        在api-server配置文件中启用--anonymous-auth=false
+        ~]# vim /usr/lib/systemd/system/kube-apiserver.service
         [Service]
         User=root
         ExecStart=/usr/local/bin/kube-apiserver \
@@ -1035,6 +1055,12 @@
         ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
           #将Forward的默认策略改为ACCEPT;
       ~]# systemctl restart dcoker     #重启Docker即可；
+
+4.getsockopt: no route to host问题
+  出现这个问题大概为三种情况：
+    一种是权限问题，node节点与master节点之间因为权限问题无法访问；
+    二是防火墙、iptable，这块如果开启了iptalbe的话需要配置一些端口的访问，比如6443；
+    三就是节点之间的内部网络不通导致无法访问到内部的8443端口，可以尝试ping一下看网络是否通畅；
 </code></pre>
       
     </div>
@@ -1252,7 +1278,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-count">71</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1335,7 +1361,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">35</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1561,7 +1591,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">16:22</span>
+    <span title="站点阅读时长">16:41</span>
   
 </div>
 
