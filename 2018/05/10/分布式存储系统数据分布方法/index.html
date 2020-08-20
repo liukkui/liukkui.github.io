@@ -151,7 +151,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2018/05/10/分布式存储系统数据分布方法/分片2.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/05/10/分布式存储系统数据分布方法/CRUSH算法.png">
 <meta property="og:image" content="https://www.liukui.tech/2018/05/10/分布式存储系统数据分布方法/CRUSH算法2.png">
-<meta property="og:updated_time" content="2019-07-27T07:07:52.209Z">
+<meta property="og:updated_time" content="2020-06-28T01:19:54.443Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式存储系统数据分布方法">
 <meta name="twitter:description" content="分布式存储系统数据分布方法">
@@ -333,7 +333,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
 
   </li>
         
@@ -352,7 +352,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">71</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">72</span></a>
 
   </li>
         
@@ -558,7 +558,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">3.3k</span>
+                <span title="本文字数">3.2k</span>
               
 
               
@@ -653,23 +653,22 @@
 到最终的存储节点Node Server
 </code></pre><h4 id="6-CRUSH算法"><a href="#6-CRUSH算法" class="headerlink" title="6.CRUSH算法"></a>6.CRUSH算法</h4><p><img src="/2018/05/10/分布式存储系统数据分布方法/CRUSH算法.png" alt="CRUSH算法"></p>
 <p><img src="/2018/05/10/分布式存储系统数据分布方法/CRUSH算法2.png" alt="CRUSH算法2"></p>
-<pre><code>    CRUSH算法本质上也是一种分片的数据分布方式，其试图在以下几个方面进行优化：
-    1.分片映射信息量：避免中心目录服务和存储节点及客户端之间需要交互大量的分片映射信息，而改由存储节点或客户端自
-    己根据少量且稳定的集群节点拓扑和确定的规则自己计算分片映射。
-    2.完善的故障域划分：支持层级的故障域控制，将同一分片的不同副本按照配置划分到不同层级的故障域中。
+<pre><code>CRUSH算法本质上也是一种分片的数据分布方式，其试图在以下几个方面进行优化：
+1.分片映射信息量：避免中心目录服务和存储节点及客户端之间需要交互大量的分片映射信息，而改由存储节点或客户端自
+己根据少量且稳定的集群节点拓扑和确定的规则自己计算分片映射。
+2.完善的故障域划分：支持层级的故障域控制，将同一分片的不同副本按照配置划分到不同层级的故障域中。
 
-    客户端或存储节点利用key、存储节点的拓扑结构和分配算法，独立进行分片位置的计算，得到一组负责对应分片及副本的存
-    储位置。如下图所示是一次定位的过程，最终选择了一个row下的cab21，cab23，cab24三个机柜下的三个存储节点;
+客户端或存储节点利用key、存储节点的拓扑结构和分配算法，独立进行分片位置的计算，得到一组负责对应分片及副本的存
+储位置。如下图所示是一次定位的过程，最终选择了一个row下的cab21，cab23，cab24三个机柜下的三个存储节点;
 
-    当节点变化时，由于节点拓扑的变化，会影响少量分片数据进行迁移，如下图新节点加入是引起的数据迁移，通过良好的分
-    配算法，可以得到很好的负载均衡和稳定性，CRUSH提供了Uniform、List、Tree、Straw四种分配算法
-
-常见的存储系统大多采用类似于分片的数据分布和定位方式：
-    * Dynamo及Cassandra采用分片的方式并通过Gossip在对等节点间同；
-    * Redis Cluster将key space划分为slots，同样利用Gossip通信；
-    * Zeppelin将数据分片为Partition，通过Meta集群提供中心目录服务；
-    * Bigtable将数据切割为Tablet，类似于可变的分片，Tablet Server可以进行分片的切割，最终分片信息记录在Chubby中；
-    * Ceph采用CRUSH方式，由中心集群Monitor维护并提供集群拓扑的变化
+当节点变化时，由于节点拓扑的变化，会影响少量分片数据进行迁移，如下图新节点加入是引起的数据迁移，通过良好的分
+配算法，可以得到很好的负载均衡和稳定性，CRUSH提供了Uniform、List、Tree、Straw四种分配算法
+</code></pre><p>常见的存储系统大多采用类似于分片的数据分布和定位方式：</p>
+<pre><code>* Dynamo及Cassandra采用分片的方式并通过Gossip在对等节点间同；
+* Redis Cluster将key space划分为slots，同样利用Gossip通信；
+* Zeppelin将数据分片为Partition，通过Meta集群提供中心目录服务；
+* Bigtable将数据切割为Tablet，类似于可变的分片，Tablet Server可以进行分片的切割，最终分片信息记录在Chubby中；
+* Ceph采用CRUSH方式，由中心集群Monitor维护并提供集群拓扑的变化
 </code></pre><p><a href="http://catkang.github.io/2017/12/17/data-placement.html" target="_blank" rel="noopener">原文引用于:浅谈分布式存储系统数据分布方法</a></p>
 
       
@@ -888,7 +887,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">71</span>
+                    <span class="site-state-item-count">72</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -975,7 +974,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">37</span>
+                      
+                    
+                    <span class="site-state-item-count">38</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1176,7 +1177,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
