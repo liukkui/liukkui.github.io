@@ -1,0 +1,3026 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="文本处理三剑客之awk">
+<meta name="keywords" content="文本处理工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文本三剑客之awk">
+<meta property="og:url" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="文本处理三剑客之awk">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/awk.png">
+<meta property="og:updated_time" content="2019-01-07T11:23:00.443Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文本三剑客之awk">
+<meta name="twitter:description" content="文本处理三剑客之awk">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/18/文本三剑客之awk/awk.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/10/18/文本三剑客之awk/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>文本三剑客之awk | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">72</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/18/文本三剑客之awk/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">文本三剑客之awk
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+            <i class="fa fa-thumb-tack"></i>
+            <font color="808080">置顶</font>
+            <span class="post-meta-divider">|</span>
+          
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-10-18 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-18T00:00:00+08:00">2017-10-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/linux基础/" itemprop="url" rel="index"><span itemprop="name">linux基础</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">45k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">41 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="文本处理三剑客之awk"><a href="#文本处理三剑客之awk" class="headerlink" title="文本处理三剑客之awk"></a>文本处理三剑客之awk</h1><p><img src="/2017/10/18/文本三剑客之awk/awk.png" alt=""><br><a id="more"></a></p>
+<p>Awk的用户使用指南<a href="http://www.gnu.org/software/gawk/manual/gawk.html" target="_blank" rel="noopener">awk用户指南</a></p>
+<p>相关链接文章：<br>正则表达式： <a href="https://www.jianshu.com/p/4a0d64bf615f" target="_blank" rel="noopener">正则表达式</a><br>grep文本编辑： <a href="https://www.jianshu.com/p/4a0d64bf615f" target="_blank" rel="noopener">grep用法</a><br>sed文本编辑： <a href="https://www.jianshu.com/p/4a0d64bf615f" target="_blank" rel="noopener">sed用法</a></p>
+<h3 id="总结对比一下这三个剑客的特长之处"><a href="#总结对比一下这三个剑客的特长之处" class="headerlink" title="总结对比一下这三个剑客的特长之处"></a>总结对比一下这三个剑客的特长之处</h3><p>grep、sed、awk被称为linux中的三剑客</p>
+<p>grep更适合单纯的查找或匹配文件.<br>sed更适合编辑皮匹配到的文本<br>awk更适合格式化文本，对文本进行比较复杂格式处理</p>
+<p>文本三剑客都是默认逐行处理，自带循环<br>sed 可以对文本进行修改，而grep&amp;awk 只是对文本进行过滤,不进行内容修改</p>
+<p>awk中的-F后面的分隔符,要用单引号’’,双引号””会产生弱引用,比如特殊符号’\\‘ ‘\\$’<br>关于awk中的单引号和双引号的问题参照：<a href="https://blog.csdn.net/swinfans/article/details/82991077" target="_blank" rel="noopener">awk中的输入分隔符单引号&amp;双引号</a></p>
+<p>学习awk的一个重要知识点</p>
+<pre><code>先举两个例子：
+awk &apos;/^UUID/&apos; /etc/fstab = awk &apos;/^UUID/{print $0}&apos; /etc/fstab 
+其实是隐藏了{print $0}的写法
+数组中的例子
+awk &apos;!line[$0]++&apos; f6 = awk &apos;!line[$0]++{print $0}&apos; f6
+实际上是隐藏了{print $0}
+</code></pre><h3 id="学习中遇到的混淆的问题："><a href="#学习中遇到的混淆的问题：" class="headerlink" title="学习中遇到的混淆的问题："></a>学习中遇到的混淆的问题：</h3><pre><code>&apos;!line[$0]++&apos;= &apos;!line[$0]++{print $0}&apos;是省略了写法，是patter的关系表达式中，先判断再打印
+而后面的数组里的是加了双括号{}，即用的patter的空模式，即文本中的每一行都处理
+</code></pre><hr>
+<hr>
+<h2 id="Awk"><a href="#Awk" class="headerlink" title="Awk"></a>Awk</h2><p>基本用法和功能以及各个功能示例：<br>awk介绍<br>awk基本用法<br>awk变量<br>awk格式化-printf<br>awk操作符<br>awk条件判断<br>awk循环<br>awk数组<br>awk函数<br>调用系统命令</p>
+<hr>
+<hr>
+<h3 id="awk介绍："><a href="#awk介绍：" class="headerlink" title="awk介绍："></a>awk介绍：</h3><pre><code>whatis awk？
+awk：Aho, Weinberger, Kernighan，报告生成器，格式化文本输出，输出成报表格式
+linux上默认使用 GNU awk(gawk)
+
+[root@centos7 data]which awk
+/usr/bin/awk
+[root@centos7 data]ll /usr/bin/awk 
+lrwxrwxrwx. 1 root root 4 Sep 19 11:45 /usr/bin/awk -&gt; gawk
+
+which awk=/usr/bin/awk 是gawk的软链接 
+</code></pre><hr>
+<hr>
+<h3 id="awk基本用法"><a href="#awk基本用法" class="headerlink" title="awk基本用法"></a>awk基本用法</h3><pre><code>awk [options] &apos;program&apos; var=value file…
+awk [options] -f programfile var=value file…
+awk [options] &apos;BEGIN{action;… }pattern{action;… }END{action;… }&apos; file ...
+awk 程序可由：BEGIN语句块、能够使用模式匹配的通用语句块、END语句
+块，共3部分组成
+program 通常是被放在单引号中 
+选项：
+    -F “分隔符” 指明输入时用到的字段分隔符
+    -v var=value 变量赋值
+
+基本格式：awk [options] &apos;program&apos; file…
+         Program：pattern{action statements;..}
+也就是说awk用法：awk [options] &apos;pattern{action statements;..}&apos; file…
+    pattern和action
+    • pattern部分决定动作语句何时触发及触发事件
+    BEGIN,END
+    • action statements对数据进行处理，放在{}内指明
+print, printf
+分割符、域和记录
+    • awk执行时，由分隔符分隔的字段（域）标记$1,$2...$n称为域标识。$0
+    为所有域，注意：此时和shell中变量$符含义不同
+    • 文件的每一行称为记录
+    • 省略action，则默认执行 print $0 的操作
+
+print格式：print item1, item2, ...
+    要点：
+    (1) 逗号分隔符
+    (2) 输出item可以字符串，也可是数值；当前记录的字段、变量或awk的表达式
+    (3) 如省略item，相当于print $0
+</code></pre><h3 id="用法解析及示例："><a href="#用法解析及示例：" class="headerlink" title="用法解析及示例："></a>用法解析及示例：</h3><pre><code>$0=代表处理的整行的内容
+$1,$2,$3..代表每一列，也就域
+BEGIN，END是为生成一个报表的头和尾准备的，用法通常为：
+BEGIN：为生成报告模式 添加表头;END:为生成的报告 进行信息汇总
+awk &apos;BEGIN{print xxx}{print xxx}END{print xxx}&apos;
+注意：BEGIN{print *xxx}处理文本前，打印一遍xxx的内容当成表头
+     END{print xxx},处理文本后，打印一遍xxx的内容作为表尾
+</code></pre><h2 id="BEGIN-amp-END"><a href="#BEGIN-amp-END" class="headerlink" title="BEGIN&amp;END"></a>BEGIN&amp;END</h2><pre><code>BEGIN：让用户指定在第一条输入记录被处理之前所发生的动作，通常可在这里设置全局变量。
+END：让用户在最后一条输入记录被读取之后发生的动作。
+</code></pre><h2 id="分隔符："><a href="#分隔符：" class="headerlink" title="分隔符："></a>分隔符：</h2><pre><code>awk默认使用空白符作为字段或列的分隔符；多个空白符被认为是一个，空白符包括空格，tab键/t，回车\n
+也可以自定义-F&quot;分隔符&quot;自定义分隔符
+</code></pre><h3 id="print-amp-printf的区别："><a href="#print-amp-printf的区别：" class="headerlink" title="print&amp;printf的区别："></a>print&amp;printf的区别：</h3><pre><code>print命令只是单纯的把特定的内容进行打印，默认换行
+printf命令可以把内容以灵活的格式进行显示,如左对齐,右对齐
+</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><pre><code>1.awk支持标准输入输出，后面可以不跟文件
+[root@centos7 ~]#awk &apos;{print $0}&apos;
+aaaa
+aaaa
+abcabc
+abcabc
+
+2.打印/etc/passwd：对比几个输出结果
+awk &apos;{print $0}&apos; /etc/passwd 把passwd文件全部打印出来
+awk &apos;{print &quot;abc&quot;}&apos; /etc/passwd   读入的是passwd文件所有行，打印的是abc
+awk -v abc=1 &apos;{print abc}&apos; /etc/passwd  读入的是passwd文件所有行，打印的都是1
+awk &apos;{print &quot;abc&quot;$0}&apos; /etc/passwd 把passwd文件所有行前都加一个abc,进行输出
+所以在awk中不加双引号，abc被识别为变量，如果要引用变量，需要-v先定义值
+如果只是想输出abc字符串，需要加双引号
+
+3.awk{}中支持数字运算
+awk &apos;{print 1+2}&apos; /etc/passwd 打印多行1+2=3的值
+awk &apos;{print &quot;1+2&quot;}&apos; /etc/passwd 加双引号会把1+2当成字符串，输出多行1+2
+
+4.取分区利用率df,
+df |awk &apos;{print $1,$5}&apos;| awk -F&quot;%&quot; &apos;{print $1}&apos;
+
+5.以输入重定向方式，打印 passwd 文件的第1列，即获取当前系统中存在的所有用户和UID
+awk -F: &apos;{print $1,$3}&apos; &lt; /etc/passwd
+cat /etc/passwd | awk -F: &apos;{print $1,$3}&apos;
+awk -F: &apos;{print $1：$3}&apos;  /etc/passwd  两列输出时，指定以：进行隔开，默认为空格隔开
+awk -F: &apos;{print $1、$3}&apos;  /etc/passwd  两列输出时，指定以：进行隔开，默认为空格隔开
+cat /etc/passwd | awk -F: &apos;{print $1&quot;\n&quot; $3}&apos; 两列输出时,进行换行
+cat /etc/passwd | awk -F: &apos;{print $1&quot;\t&quot; $3}&apos; 两列输出时,以tab键隔开
+
+备注：多行输出时，可以在双引号之间加自定义的分隔符
+格式：awk -F: &apos;{print $1&quot;=======&quot;$3}&apos;  /etc/passwd 
+</code></pre><hr>
+<hr>
+<h2 id="Awk中的变量："><a href="#Awk中的变量：" class="headerlink" title="Awk中的变量："></a>Awk中的变量：</h2><h3 id="变量分为：内置变量和自定义变量"><a href="#变量分为：内置变量和自定义变量" class="headerlink" title="变量分为：内置变量和自定义变量"></a>变量分为：内置变量和自定义变量</h3><pre><code>awk中的内置变量除了$0,$1,$2等，还有以下几种；
+如果要使用这些变量需要加-v 选项先进行定义
+
+FS：输入字段分隔符，默认为空白字符  =filed separator=域或列的分隔符
+等于-F的选项，-F是选项，而FS是变量，实际作用是相等的
+与-F的区别在于：可以下次调用FS变量
+awk -v FS=&apos;:&apos; &apos;{print $1,$3}&apos; /etc/passwd  = awk -F:&apos;{print $1,$3}&apos; /etc/passwd
+awk -v FS=&apos;:&apos; &apos;{print $1,FS$3}&apos; /etc/passwd  两列输出时以：做分隔符，调用变量FS
+awk -v FS=&apos;:&apos; &apos;{print $1,FS FS$3}&apos; /etc/passwd  两列输出时以：：做分隔符，调用2次变量FS 以空格隔开
+可以先定义shell中的变量fs=:,awk再进行调用
+fs=:;awk -v FS=$fs &apos;{print $1,FS,$3}&apos; /etc/passwd  
+fs=:;awk –F$fs &apos;{print $1,$3,$7}&apos; /etc/passwd
+
+OFS：输出字段分隔符，默认为空白字符 =output filed separator
+定义输出分隔符，不指定默认空空格做分隔符
+awk -v FS=: -v OFS=+++ &apos;{print $1,$3,$7}&apos; /etc/passwd
+fs=+++;awk -v FS=: -v OFS=$fs &apos;{print $1,$3}&apos; /etc/passwd  调用shell变量做输出分隔符
+
+RS：输入记录分隔符，指定输入时的换行符,自定义行的分隔符 =record记录
+默认一行叫记录，行是以\n回车作为切割符的，RS可以自定义不用回车作为分隔符
+    awk -v RS=&apos; &apos; ‘{print }’ /etc/passwd
+    awk -v RS=&apos;:&apos; &apos;{print NR,$0}&apos;/etc/passwd 
+    [root@centos7 ~]cat f1
+    aa;xxx:bb;bzzzz:cc
+    dd:eex;zccc:xxxx
+    [root@centos7 ~]cat f1| awk -v RS=&quot;:&quot; &apos;{print $0}&apos;
+    aa;xxx
+    bb;bzzzz
+    cc
+    dd
+    eex;zccc
+    xxxx
+    以RS=：冒号自定义行的分隔符，输出结果如上
+    [root@centos7 ~]#cat f1| awk -v FS=&quot;;&quot; -v RS=&quot;:&quot; &apos;{print $1}&apos;
+    aa
+    bb
+    cc
+    dd
+    eex
+    xxxx
+    自定义FS&amp;RS，输出结果如上
+
+ORS：输出记录分隔符，输出时用指定符号代替换行符 
+awk -v RS=&apos; &apos; -v ORS=&apos;###&apos;‘{print }’ /etc/passwd
+[root@centos7 ~]cat f1
+aa;xxx:bb;bzzzz:cc
+dd:eex;zccc:xxxx
+[root@centos7 ~]cat f1| awk -v FS=&quot;;&quot; -v RS=&quot;:&quot; -v ORS&quot;===&quot; &apos;{print $1}&apos;
+aa==bb==cc
+dd==eex==xxxx
+==
+自定义FS,RS,ORS结果很明显
+
+接下来是一个比较重要的变量
+NF：字段数量,也就是域或列的总数量
+awk -F: &apos;{print NF}&apos; /etc/passwd 以冒号做分隔符，显示每行的列的总数量
+awk -F: &apos;{print $NF}&apos; /etc/passwd 显示以冒号做分隔符，每一行的最后一个字段即bash类型
+awk -F：&apos;{print $(NF-1)}&apos; /etc/passwd 显示以冒号做分隔符，每一行的倒数第二个字段
+统计光盘中所有安装包适用的cpu架构类型
+root@centos7 mnt]#ls /mnt/Packages/*.rpm | awk -F&quot;.&quot; &apos;{print $(NF-1)}&apos;|sort|uniq -c
+   1371 noarch
+   2600 x86_64
+
+NR：记录号，可以显示行数，如果有多个文件会合并后再统计总行
+awk &apos;{print NR,$0}&apos; /etc/fstab 在每一行前加一个行号
+
+awk BEGIN&apos;{print NR}&apos; /etc/fstab 输出结果为0  awk还没开始处理行，所以记录为0
+
+awk END&apos;{print NR}&apos; /etc/fstab  输出结果为12 可以看出END是统计,awk处理的行数
+
+1.通过加行号，可以很明显看出以冒号作为行的分隔符，每一行的都有什么；可以看出cc dd是一行的
+[root@centos7 ~]cat f1
+aa;xxx:bb;bzzzz:cc
+dd:eex;zccc:xxxx
+[root@centos7 ~]cat f1| awk  -v RS=&quot;:&quot; &apos;{print NR$0}&apos;
+1aa;xxx
+2bb;bzzzz
+3cc
+dd
+4eex;zccc
+5xxxx
+
+2.备注：如果awk跟两个文件，awk会把两文件合并成一个文件，统计总行数，都取第一个字段的信息
+如果需要分开显示统计，则用FNR
+[root@centos7 ~]awk -F: &apos;{print NR,$1}&apos; /etc/passwd /etc/group
+1 root
+2 bin
+3 daemon
+4 adm
+
+FNR：各文件分别计数,记录号
+
+1.FNR:多个文件，每个分别统计显示第一个字段并列出来
+awk &apos;{print FNR}&apos; /etc/fstab /etc/inittab
+[root@centos7 ~]awk -F: &apos;{print FNR,$1}&apos; /etc/passwd /etc/group
+1 root
+2 bin
+3 daemon
+48 quagga
+49 httpd
+1 root
+2 bin
+
+FILENAME：当前文件名
+
+1.统计时，加上变量可以显示文件名
+awk &apos;{print FILENAME}&apos; /etc/fstab
+[root@centos7 ~]awk -F: &apos;{print FILENAME,FNR,$1}&apos; /etc/passwd 
+/etc/passwd 1 root
+/etc/passwd 2 bin
+/etc/passwd 3 daemon
+
+ARGC：命令行参数的个数
+awk &apos;{print ARGC}&apos; /etc/fstab /etc/inittab 结果为3
+awk &apos;BEGIN {print ARGC}&apos; /etc/fstab /etc/inittab 结果为3
+ARGC统计参数：awk单独算一个参数，后面的每个文件算一个参数,通过下面的数组可以体现出来
+
+ARGV：数组，保存的是命令行所给定的各参数
+
+1.显示awk的每个参数分别是哪个
+[root@centos7 ~]awk &apos;{print ARGV[0]}&apos; /etc/fstab /etc/inittab
+awk
+[root@centos7 ~]awk &apos;{print ARGV[1]}&apos; /etc/fstab /etc/inittab
+/etc/fstab
+</code></pre><h3 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h3><pre><code>1.统计当前网络连接情况的ip地址是 ss -nt
+ss -nt | awk &apos;{print $5}&apos;
+
+2.取/var/log/httpd/access_log的时间如下：
+root@centos7 ~]cat /var/log/httpd/access_log
+192.168.34.1 - - [15/Oct/2018:22:02:35 +0800] &quot;GET / HTTP/1.1&quot; 403 4897 &quot;-&quot; 
+分两步取：
+cat /var/log/httpd/access_log | awk &apos;{print $4}&apos;|awk -F&quot;[&quot; &apos;{print $2}&apos;
+一步取：
+cat /var/log/httpd/access_log | awk -F &quot;[\[ ]&quot; &apos;{print $5}&apos;
+原理分析：[\[ ]代表（转义）\[和空格都算是分隔符，正则表达式的写法,或的关系，
+而以空格分隔符，时间段为$4,那为什么是$5?在空格的标准里，[算$4,所以时间段为$5
+
+3.取出磁盘分区利用率 -这次只取出利用率
+两步取出：
+df | awk -F% &apos;{print $1}&apos;|awk &apos;{print $5}&apos;
+一步取出：
+df | awk -F&quot;[[:space:]]+|%&quot; &apos;{print $5}&apos; awk用的是扩展的正则表达式
+
+
+面试题：3-1,取出fstab中挂载的目录
+[root@centos7 ~]cat /etc/fstab 
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+UUID=9612633f-e7f1-4b28-8813-403d209d7abc /                       xfs     defaults        0 0
+UUID=0eba9e52-43a4-4c64-89bd-3fb639f0a6c1 /boot                   xfs     defaults        0 0
+UUID=06fe63d1-9b57-436f-ad7d-1c01c7a60aee /data                   xfs     defaults        0 0
+UUID=48e92f06-6fcb-4a21-8ba0-e7d1c5c1af39 swap                    swap    defaults        0 0
+[root@centos7 ~]cat /etc/fstab | awk -F&quot;[ ]/?&quot; &apos;/^UUID/{print $2}&apos;
+boot
+data
+swap
+或者
+[root@centos7 ~]cat /etc/fstab | awk -F&quot;[ ]/|[ ]&quot; &apos;/^UUID/{print $2}&apos;
+boot
+data
+swap
+
+
+4.面试题：将文件f3中的第一个点前的字符串取出再写进去
+[root@centos7 ~]cat f3
+1 test.sina.com.cn
+2 music.sina.com.cn
+3 sports.sina.com.cn
+4.news.sina.com.cn
+[root@centos7 ~]cat f3 | awk -F&quot;[ .]&quot; &apos;{print $2}&apos; &gt;&gt; f3
+[root@centos7 ~]cat f3
+1 test.sina.com.cn
+2 music.sina.com.cn
+3 sports.sina.com.cn
+4.news.sina.com.cn
+test
+music
+sports
+news
+
+4-1,扩展
+前面-F&quot;[ .]&quot;既然是表达或的意思，那么是否可以这么写-F&quot;[ ]|.&quot;？？？
+答案：不可以！
+原因：因为此处用的是正则表达式，在正则表达式中点(.)代表任意单个字符，会把空格后的字母当成分隔符！
+所以是不可以的，那么如何写？
+
+如果不是点而是%呢？%是可以的，因为在正则表达式中%就是代表%，
+但是$,或其他在正则表达式中有特殊含义的不可以作为分隔符，如果一定要做分隔符，需要反斜线转义
+如下：
+此处用3个反斜线转义
+[root@centos7 ~]cat f2 | awk -F&quot;[ ]|\\\.&quot; &apos;{print $2}&apos;
+test
+music
+sports
+news
+
+那如果文本中的第一个点是$呢？
+此处是4个反斜线进行转义
+[root@centos7 ~]cat f2
+1 test$sina.com.cn
+2 music$sina.com.cn
+3 sports$sina.com.cn
+4 news$sina.com.cn
+[root@centos7 ~]cat f2 | awk -F&quot;[ ]|\\\\$&quot; &apos;{print $2}&apos;
+test
+music
+sports
+news
+[root@centos7 ~]cat f2 | awk -F&quot;[ $]&quot; &apos;{print $2}&apos;
+test
+music
+sports
+news
+当用一个空格和具有特殊含义的符号时，最好是写在中括号[]里的
+</code></pre><h3 id="AWK中自定义变量"><a href="#AWK中自定义变量" class="headerlink" title="AWK中自定义变量"></a>AWK中自定义变量</h3><pre><code>自定义变量(区分字符大小写)
+(1) -v var=value
+(2) 在program中直接定义
+(2-1)program可以放到一个文本里,awk -f 直接调用即可
+</code></pre><h5 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h5><pre><code>自定义变量可以-v var定义，也可以放到program即{}里，变量要先定义，后使用
+awk -F:  &apos;{name=&quot;magedu&quot;;print $1,name}&apos; /etc/passwd
+awk -F: -v name=&quot;magedu&quot; &apos;{print $1,name}&apos; /etc/passwd
+例如
+cat awk.txt
+{print $1,$2,$6}
+awk -F： -f awk.txt /etc/passwd =awk -F: &apos;{print $1,$2,$6}&apos; /etc/passwd
+</code></pre><hr>
+<hr>
+<h3 id="Awk中的格式化"><a href="#Awk中的格式化" class="headerlink" title="Awk中的格式化"></a>Awk中的格式化</h3><p>在介绍printf前，先对其进行总结：<br>1.使用printf动作输出的文本不会换行，如果需要换行，可以在对应的格式替换符后加入”\n”进行转义<br>2.使用printf动作时，指定的格式和被格式化的文本之间，需要用”逗号”隔开。<br>3.使用printf动作时，格式中的格式替换符比喻与被格式化的文本一一对应</p>
+<h4 id="printf命令-类似于shell里的printf"><a href="#printf命令-类似于shell里的printf" class="headerlink" title="printf命令-类似于shell里的printf"></a>printf命令-类似于shell里的printf</h4><pre><code>printf命令可以把内容以灵活的格式进行显示，如左对齐,右对齐
+格式化输出：printf &quot;FORMAT&quot;, item1, item2, ...
+(1) 必须指定FORMAT
+(2) 不会自动换行，需要显式给出换行控制符，\n
+(3) FORMAT中需要分别为后面每个item指定格式符
+格式符：与item一一对应
+%c：显示字符的ASCII码
+%d, %i：显示十进制整数   -用的比较多
+%e, %E：显示科学计数法数值
+%f：显示为浮点数
+%g, %G：以科学计数法或浮点形式显示数值
+%s：显示字符串  -用的比较多
+%u：无符号整数 -用的比较多
+%%：显示%自身
+修饰符
+#[.#] 第一个数字控制显示的宽度；第二个#表示小数点后精度，%3.1f
++ 左对齐（默认右对齐） %-15s
+* 显示数值的正负符号 %+d
+</code></pre><h4 id="printf示例："><a href="#printf示例：" class="headerlink" title="printf示例："></a>printf示例：</h4><pre><code>1.设置对齐格式以及字符数
+[root@centos7 ~]awk -F: &apos;{printf &quot;%-20s %-5d\n&quot;,$1,$3}&apos; /etc/passwd
+root                 0    
+bin                  1       
+pulse                171  
+gdm                  42   
+gnome-initial-setup  990  
+$1为字符串，所以设置左对齐为20s个字符，$3为数字所以设置左对齐为5d个字符
+printf默认不换行，所以需要加一个换行符  
+
+2.打印一个完整的报表格式
+root@centos7 ~]awk -F: &apos;BEGIN{print &quot;username   |uid\n--------&quot;}
+{printf &quot;%-10s |%-5d\n&quot;,$1,$3}END{print &quot;-------------&quot;}&apos; /etc/passwd
+
+username             |uid
+-----------------------
+root                 |0    
+bin                  |1    
+daemon               |2 
+memcached            |987  
+ceshi                |1009 
+quagga               |92   
+httpd                |80   
+-------------------------
+awk生成报表格式大概就是这个样子，所以awk称为报表生成器
+
+
+3.
+[root@centos7 ~]awk -F: &apos;{printf &quot;Username: %s,UID:%d\n&quot;,$1,$3}&apos; /etc/passwd
+Username: root,UID:0
+Username: bin,UID:1
+Username: daemon,UID:2
+Username: adm,UID:3
+
+4.
+[root@centos7 ~]awk -F: &apos;{printf &quot;Username: %-15s,UID:%d\n&quot;,$1,$3}&apos; /etc/passwd
+Username: root           ,UID:0
+Username: bin            ,UID:1
+Username: daemon         ,UID:2
+</code></pre><hr>
+<hr>
+<h3 id="awk操作符"><a href="#awk操作符" class="headerlink" title="awk操作符"></a>awk操作符</h3><pre><code>a.算术操作符：
+x+y, x-y, x*y, x/y, x^y, x%y
+- x：转换为负数
++x：将字符串转换为数值
+字符串操作符：没有符号的操作符，字符串连接
+赋值操作符：
+=, +=, -=, *=, /=, %=, ^=，++, --,
+
+b.比较操作符：
+==, !=, &gt;, &gt;=, &lt;, &lt;=
+模式匹配符：
+ ~：左边是否和右边匹配包含 !~：是否不匹配
+
+c.逻辑操作符：与&amp;&amp;，或||，非!
+
+d.条件表达式（三目表达式）
+ selector?if-true-expression:if-false-expression
+ 表达式；if-ture-xx:else-xxx
+ eg:x&gt;y?var=x;var=y
+</code></pre><h3 id="操作符用法示例："><a href="#操作符用法示例：" class="headerlink" title="操作符用法示例："></a>操作符用法示例：</h3><pre><code>1.下面两语句有何不同
+• awk &apos;BEGIN{i=0;print ++i,i}&apos; 结果 1 1
+• awk &apos;BEGIN{i=0;print i++,i}&apos; 结果 0 1
+实际上AWK的语法是采用VC语言风格的
+
+2.示例：
+awk中~&amp;!~是否包含的用法：
+[root@centos7 ~]awk -F: &apos;$0 ~ /root/{print $1}&apos; /etc/passwd
+root
+operator
+意思是如果过滤的行中有包含root字符串的，则打印出这行的用户名
+
+用到下文提到的patter模式，在这里是匹配是否包含root字符串
+[root@centos7 ~]awk -F: &apos;$0 ~ &quot;/root&quot;{print $1}&apos; /etc/passwd
+root
+operator
+区别上面的这个写法，在这里是包含/root字符串的行
+
+[root@centos7 ~]awk -F: &apos;$0 !~ /root/{print $1}&apos; /etc/passwd
+bin
+daemon
+adm
+和上面的命令刚好相反，如果行不包含字符串root，则打印该行用户名
+
+[root@centos7 ~]awk -F: &apos;$3==0&apos; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+意思：判断UID是否等于0，是则打印该行，判断是否为管理员
+
+[root@centos7 ~]awk &apos;$0~&quot;^root&quot;&apos; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+意思：判断该行是不是以root开头的行，是则打印
+
+3.awk中的与&amp;&amp;，或|| 非!的使用示例：
+示例：
+• awk –F: &apos;$3&gt;=0 &amp;&amp; $3&lt;=1000 {print $1}&apos; /etc/passwd
+如果0&lt;=UID&lt;=1000，则打印出该用户
+
+• awk -F: &apos;$3==0 || $3&gt;=1000 {print $1,$3}&apos; /etc/passwd
+打印出UID等于0和UID&gt;=1000的用户名和他的UID
+
+• awk -F: &apos;!($3==0) {print $1}&apos; /etc/passwd -要加括号
+打印出UID不等于0的用户名
+
+• awk -F: &apos;!($3&gt;=500) {print $3}&apos; /etc/passwd
+如果UID&lt;=500,时，打印出该用户的UID
+
+4.AWK中的条件判断表达式
+即三目表达式
+相当于把shell中的if;then,else,fi的放到awk中
+• 示例：
+[root@centos7 ~]awk -F: &apos;{$3&gt;=1000?name=&quot;common&quot;:name=&quot;sys&quot;;print name,$1,$3}&apos; /etc/passwd
+sys root 0
+sys bin 1
+sys tcpdump 72
+common test 1000
+common nginx 1008
+判断用户是否为系统用户，是则打印并在开头加common,不是也打印在开头加sys
+</code></pre><hr>
+<hr>
+<h3 id="awk中的PATTERN和action"><a href="#awk中的PATTERN和action" class="headerlink" title="awk中的PATTERN和action"></a>awk中的PATTERN和action</h3><p>模式匹配和处理动作=sed的地址定界+修饰符<br>功能：和sed中的pattern一样起到过滤的功能，=sed的地址定界</p>
+<h5 id="PATTERN-根据pattern条件，过滤匹配的行，再做处理"><a href="#PATTERN-根据pattern条件，过滤匹配的行，再做处理" class="headerlink" title="PATTERN:根据pattern条件，过滤匹配的行，再做处理"></a>PATTERN:根据pattern条件，过滤匹配的行，再做处理</h5><pre><code>(1)如果未指定：空模式，匹配每一行
+(2) /regular expression/：仅处理能够模式匹配到的行，需要用/ /括起来
+awk &apos;/^UUID/{print $1}&apos; /etc/fstab
+awk &apos;!/^UUID/{print $1}&apos; /etc/fstab
+awk的匹配模式支持的是扩展的正则表达式
+注意：不支持直接给出数字格式，但是可以变向的打印输出，详见下面的示例
+(3) relational expression: 关系表达式，结果为“真”才会被处理
+真：结果为非0值，非空字符串
+假：结果为空字符串或0值都是假
+字符串为空或者0为假
+(4) line ranges：行范围
+startline,endline：/pat1/,/pat2/ 不支持直接给出数字格式
+awk -F: &apos;/^root\&gt;/,/^nobody\&gt;/{print $1}&apos; /etc/passwd
+awk -F: &apos;(NR&gt;=10&amp;&amp;NR&lt;=20){print NR,$1}&apos; /etc/passwd
+NR表示行
+(5) BEGIN/END模式
+BEGIN{}: 仅在开始处理文件中的文本之前执行一次
+END{}：仅在文本处理完成之后执行一次
+</code></pre><p>模式：指定一个行的范围。该语法不能包括BEGIN和END模式。<br>BEGIN：让用户指定在第一条输入记录被处理之前所发生的动作，通常可在这里设置全局变量。<br>END：让用户在最后一条输入记录被读取之后发生的动作。</p>
+<h5 id="patter用法示例："><a href="#patter用法示例：" class="headerlink" title="patter用法示例："></a>patter用法示例：</h5><pre><code>先写一个特殊的用法
+1.当在awk命令中使用正则模式时，使用到的正则用法属于&quot;扩展的正则表达式&quot;
+2.当使用{x,y}这种次数匹配正则表达式，需要配合--posix或者--re-interval选项
+备注：这是网上找到一个示例，文中提到{x,y}必须加这个选项，然而不加选项也是可以过滤的
+awk是是支持posix字符集的
+[root@centos7 ~]cat f3 
+seex
+sex
+seeex
+seeeeex
+[root@centos7 ~]cat f3 | awk &apos;/se{2,3}x/{print $0}&apos;
+seex
+seeex
+[root@centos7 ~]cat f3 | awk -posix &apos;/se{2,3}x/{print $0}&apos;
+seex
+seeex
+[root@centos7 ~]cat f3 | awk --re-interval  &apos;/se{2,3}x/{print $0}&apos;
+seex
+seeex
+[root@centos7 ~]cat f3|grep  -E &quot;se{2,3}x&quot;
+seex
+seeex
+[root@centos7 ~]cat f3|sed -nr &apos;/se{2,3}x/p&apos;
+seex
+seeex
+
+
+1.取系统磁盘分区空间利用率df,/dev/sd开头的分区(上文中虽然取出来了，但是没过滤)
+[root@centos7 ~]#df | awk -F&quot;[[:space:]]+|%&quot; &apos;/^\/dev\/sd/{print $1,$5}&apos;
+/dev/sda2 8
+/dev/sda3 1
+/dev/sda1 17
+
+2.取当前连接主机的IP地址(上文中虽然取出来了，但是没过滤)
+[root@centos7 ~]ss -nt| awk -F&quot;[[:space:]]+|:&quot; &apos;/^ESTAB/{print $6}&apos;
+192.168.34.1
+192.168.34.105
+或者用NF的表达方式
+[root@centos7 ~]ss -nt| awk -F&quot;[[:space:]]+|:&quot; &apos;/^ESTAB/{print $(NF-2)}&apos;
+192.168.34.1
+192.168.34.105
+
+
+3.取登录当前系统失败（lastb）用户的IP
+[root@centos7 ~]#lastb
+root     ssh:notty    192.168.34.105   Sun Nov 11 17:25 - 17:25  (00:00)    
+root23   ssh:notty    192.168.34.1     Mon Nov  5 15:43 - 15:43  (00:00)    
+btmp begins Fri Nov  2 09:58:52 2018
+[root@centos7 ~]#lastb|awk &apos;$3 ~ /[[:digit:]]/{print $3}&apos;|sort|uniq -c
+3 192.168.34.1
+1 192.168.34.101
+因为最后一行有btmp这样的字样，只能通过包含的功能来过滤掉最后一行
+
+如果要取失败连接次数大于3的扔到防火墙，可以先取出来
+root@centos7 ~]lastb|awk &apos;$3 ~ /[[:digit:]]/{print $3}&apos;|sort|uniq -c| awk &apos;$1 &gt;=3{print $2}&apos;
+192.168.34.1
+
+4.patter中为关系表达式的示例
+空字符串或0值都是假，其他为真
+awk &apos;0{print $0}&apos; /etc/passwd -0为假，结果为空
+awk &apos;&quot;&quot;{print $0}&apos; /etc/passwd -空也为假，结果为空
+awk &apos;1{print $0}&apos; /etc/passwd -1为真
+awk &apos;&quot; &quot;{print $0}&apos; /etc/passwd -空白符也为真
+awk -v abc=&quot; &quot; &apos;abc{print $0}&apos; /etc/passwd -abc为空白,不是空字符串,也为真
+awk -v abc=&quot; &quot; &apos;! abc{print $0}&apos; /etc/passwd -abc为空白,为真,对真取反，结果为假
+
+5.awk中patter的地址定界
+root@centos7 ~]#awk -F: &apos;/^root/,/^adm/{print $0}&apos; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+打印以root开头的行到以adm开头的行之间的所有行
+等于 sed -nr &apos;/^root/,/^adm/p&apos; /etc/passwd
+
+6.如何打印从多少行到多少行之间的行？？
+[root@centos7 ~]#awk -F: &apos;NR&gt;=10 &amp;&amp; NR&lt;=12 {print NR,$0}&apos; /etc/passwd
+10 operator:x:11:0:operator:/root:/sbin/nologin
+11 games:x:12:100:games:/usr/games:/sbin/nologin
+12 ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+通过变量NR变向的打印出行
+
+7.取出/etc/fstab配置文件中以UUID开头的行
+[root@centos7 ~]#cat /etc/fstab | awk &apos;/^UUID/{print $0}&apos;
+UUID=9612633f-e7f1-4b28-8813-403d209d7abc /    xfs  defaults 0 0
+UUID=0eba9e52-43a4-4c64-89bd-3fb639f0a6c1 /boot   xfs defaults  0 0
+效果等于  grep &quot;^UUID&quot; /etc/fstab
+效果等于  sed -n &apos;/^UUID/p&apos; /etc/fstab
+
+8.
+awk &apos;!0&apos; /etc/passwd =awk &apos;!0{print $0}&apos; /etc/passwd 省略了{print $0}的写法
+结果为真，即打印全部行
+
+root@centos7 ~]#awk -F: &apos;i=1;j=1{print i,j}&apos; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+1 1
+bin:x:1:1:bin:/bin:/sbin/nologin
+1 1
+？？？
+
+[root@centos7 ~]#awk -F: &apos;$NF ~ /bash$/{print $1,$NF}&apos; /etc/passwd
+root /bin/bash
+test /bin/bash
+判断用户shell是否为/bin/bash，是则打印用户名和shell类型，此处用变量NF来实现
+效果等于 awk -F: &apos;$NF==&quot;/bin/bash&quot;{print $1,$NF}&apos; /etc/passwd
+效果等于 awk -F: &apos;$7 == &quot;/bin/bash&quot;{print $1,$NF}&apos; /etc/passwd
+效果等于 awk -F: &apos;$0 ~ /bash$/{print $1,$NF}&apos; /etc/passwd
+
+
+9.打印奇数行和偶数行
+[root@centos7 ~]#seq 6 | awk &apos;i=!i&apos;  打印奇数行
+1
+3
+5
+原理：i初始值为空，为假，取反时，则打印第一行，此时i=1
+i=1时，为真，取反为假，所以第二行不打印，然后i=0
+依次类推所以只打印奇数行
+
+[root@centos7 ~]#seq 6 | awk &apos;!(i=!i)&apos; 打印偶数行
+2
+4
+6
+效果等于 seq 10 |awk -v i=1 &apos;i=!i&apos;
+原理：同上，只要先定义i=1，为真，第一行就不打印了
+或者用sed打印奇数行和偶数行(用sed步进的方式)
+ seq 6 | sed -n &apos;1~2p&apos; 打印奇数行
+ seq 6 | sed -n &apos;2~2p&apos; 打印偶数行
+</code></pre><hr>
+<hr>
+<h3 id="awk-action"><a href="#awk-action" class="headerlink" title="awk action"></a>awk action</h3><h4 id="action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能"><a href="#action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能" class="headerlink" title="action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能"></a>action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能</h4><pre><code>• (1) Expressions:算术，比较表达式等
+• (2) Control statements：if, while等
+• (3) Compound statements：组合语句
+• (4) input statements
+• (5) output statements：print等
+</code></pre><h4 id="下面专门研究awk的控制语句包含if-while-do-for-break-continue-数组，exit等控制语句"><a href="#下面专门研究awk的控制语句包含if-while-do-for-break-continue-数组，exit等控制语句" class="headerlink" title="下面专门研究awk的控制语句包含if,while,do,for,break,continue,数组，exit等控制语句"></a>下面专门研究awk的控制语句包含if,while,do,for,break,continue,数组，exit等控制语句</h4><h5 id="awk中if-else控制语句的语法及用法"><a href="#awk中if-else控制语句的语法及用法" class="headerlink" title="awk中if-else控制语句的语法及用法"></a>awk中if-else控制语句的语法及用法</h5><pre><code>语法：
+双分支if
+if(condition){statement;…}(多条语句用;隔开)[else statement]
+多分支if
+if(condition1){statement1}else if(condition2){statement2}else{statement3}
+使用场景：对awk取得的整行或某个字段做条件判断
+</code></pre><h6 id="if-else示例："><a href="#if-else示例：" class="headerlink" title="if-else示例："></a>if-else示例：</h6><pre><code>如判断考试分数，写法如下
+[root@centos7 ~]awk -v score==80 &apos;BEGIN{if(score &lt;60){print &quot;no pass&quot;}
+else if(score &lt;=80){print &quot;soso&quot;}else {print good}}&apos;
+soso
+
+awk -F: &apos;{if($3&gt;=1000)print $1,$3}&apos; /etc/passwd
+判断UID是否大于1000，是则打印用户名和UID
+
+awk -F: &apos;{if($NF==&quot;/bin/bash&quot;) print $1}&apos; /etc/passwd
+判断用户shell是否为/bin/bash,是则打印用户名
+
+awk &apos;{if(NF&gt;5) print $0}&apos; /etc/fstab
+判断域或列个数是否大于5，是则打印该行
+
+awk -F: &apos;{if($3&gt;=1000) {printf &quot;Common user: %s\n&quot;,$1} else {printf &quot;root or
+Sysuser: %s\n&quot;,$1}}&apos; /etc/passwd
+等于上文中的 awk -F: &apos;{$3&gt;=1000?name=&quot;common&quot;:name=&quot;sys&quot;;print name,$1,$3}&apos; /etc/passwd
+
+例如：随机生成1000个数字，用awk取出最大值和最小值(可以用shell写法)
+    1.生成1000个数字
+        for i in {1..1000};do if [ $i -eq 1 ];then echo -e &quot;$RANDOM\c&quot; 
+            &gt;&gt; f1.txt;else echo -e &quot;,$RANDOM\c&quot; &gt;&gt; f1.txt ;fi;done
+    2.用awk取出最大值和最小值
+        awk -F&apos;,&apos; &apos;{i=2;max=$1,while(i&lt;=NF){if($i &gt; max){max=$i}else 
+        if($i &lt; min){min=$i};i++}}END{print &quot;max=&quot;max,&quot;min=&quot;min}&apos; f1.txt
+验证用awk是否取出的值为正确的：
+    方法一：用tr验证
+        tr &apos;,&apos; &apos;\n&apos; &lt; f1.txt | sort -nr | head -n1
+        tr &apos;,&apos; &apos;\n&apos; &lt; f1.txt | sort -nr | tail -n1
+    方法二：用shell脚本验证
+    #!/bin/bash
+    for i in {1..1000};do
+</code></pre><h4 id="awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，"><a href="#awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，" class="headerlink" title="awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，"></a>awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，</h4><h4 id="这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理"><a href="#这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理" class="headerlink" title="这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理"></a>这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理</h4><h4 id="awk中while循环控制语句的语法及用法"><a href="#awk中while循环控制语句的语法及用法" class="headerlink" title="awk中while循环控制语句的语法及用法"></a>awk中while循环控制语句的语法及用法</h4><pre><code>语法：while(condition){statement;…}
+条件“真”，进入循环；条件“假”，退出循环
+使用场景：
+对一行内的多个字段逐一类似处理时使用
+对数组中的各元素逐一处理时使用
+
+此时涉及到系统自带的一个函数length(函数在下面会有介绍)
+示例：
+1.统计每一行第一个字段的长度
+root@centos7 ~]awk -F: &apos;{print length($1),$1}&apos; /etc/passwd
+4 root
+3 bin
+6 daemon
+3 adm
+
+2.统计/etc/passwd第一行的每个字段的长度
+[root@centos7 ~]awk -F: &apos;NR==1{i=1;while(i&lt;=NF){print $i,length($i);i++}}&apos; /etc/passwd
+root 4
+x 1
+0 1
+0 1
+root 4
+/root 5
+/bin/bash 9
+
+3.统计grub2.cfg文件中linux16那行的每个字段的长度
+[root@centos7 ~]awk &apos;/^[[:space:]]*linux16/{i=1;while(i&lt;=NF){print $i,length($i);i++}}&apos; /etc/grub2.cfg
+linux16 7
+/vmlinuz-3.10.0-862.el7.x86_64 30
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+ro 2
+crashkernel=auto 16
+rhgb 4
+quiet 5
+LANG=en_US.UTF-8 16
+linux16 7
+/vmlinuz-0-rescue-d874c9913a8e4f4f8b615f29c9a0388e 50
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+ro 2
+crashkernel=auto 16
+rhgb 4
+quiet 5
+
+4.统计grub2.cfg文件中linux16那行的字段长度大于10的字段-用while循环
+root@centos7 ~]awk &apos;/^[[:space:]]*linux16/{i=1;while(i&lt;=NF){if(length($i)&gt;=10)
+{print $i,length($i)};i++}}&apos; /etc/grub2.cfg
+/vmlinuz-3.10.0-862.el7.x86_64 30
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+crashkernel=auto 16
+LANG=en_US.UTF-8 16
+/vmlinuz-0-rescue-d874c9913a8e4f4f8b615f29c9a0388e 50
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+crashkernel=auto 16
+
+5.面试题
+用awk取出文本f5的最大值和最小值，需要先生成1000个随机数存到f5中
+如何做？
+1.不用awk，可以通过脚本实现最大值和最小值
+2.用awk如何来做？？
+先生成1000个随机数
+[root@centos7 ~]for i in `seq 1000`;do if [ $i -eq 1 ];then echo -e &quot;$RANDOM\c&quot; &gt;&gt; f5;
+else echo -e &quot;,$aRANDOM\c&quot; &gt;&gt; f5 ;fi;done
+生成了1000随机数，如何取最大值最小值？
+[root@centos7 ~]awk -F&quot;,&quot; &apos;{i=2;max=$1;min=$1;while(i&lt;=NF){if($i &gt; max){max=$i}
+else if($i &lt; min){min=$i};i++}}END{print &quot;max=&quot;max,&quot;min=&quot;min}&apos; &lt; f5
+max=32643 min=60
+</code></pre><h3 id="awk中do-while循环控制语句"><a href="#awk中do-while循环控制语句" class="headerlink" title="awk中do-while循环控制语句"></a>awk中do-while循环控制语句</h3><pre><code>语法：do {statement;…}while(condition)
+意义：无论真假，至少执行一次循环体
+</code></pre><h5 id="do-while使用示例："><a href="#do-while使用示例：" class="headerlink" title="do-while使用示例："></a>do-while使用示例：</h5><pre><code>求1-100正整数的和
+[root@centos7 ~]awk &apos;BEGIN{ total=0;i=0;do{ total+=i;i++;}while(i&lt;=100);print total}&apos;
+5050
+</code></pre><h3 id="awk中for循环控制语句"><a href="#awk中for循环控制语句" class="headerlink" title="awk中for循环控制语句"></a>awk中for循环控制语句</h3><pre><code>语法：for(expr1;expr2;expr3) {statement;…}
+常见用法：
+for(variable assignment;condition;iteration process)
+{for-body}
+特殊用法：能够遍历数组中的元素
+语法：for(var in array) {for-body}
+</code></pre><h6 id="for循环使用示例："><a href="#for循环使用示例：" class="headerlink" title="for循环使用示例："></a>for循环使用示例：</h6><pre><code>1.求1-100正整数的和：
+[root@centos7 ~]awk &apos;BEGIN{for(i=1;i&lt;=100;i++)sum+=i;print sum}&apos;
+5050
+
+2.统计grub2.cfg文件中linux16那行的字段长度大于10的字段-用for循环
+
+[root@centos7 ~]awk &apos;/^[[:space:]]*linux16/{for(i=1;i&lt;=NF;i++){if(length($i)&gt;=10){print $i,length($i)}}}&apos; /etc/grub2.cfg
+/vmlinuz-3.10.0-862.el7.x86_64 30
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+crashkernel=auto 16
+LANG=en_US.UTF-8 16
+/vmlinuz-0-rescue-d874c9913a8e4f4f8b615f29c9a0388e 50
+root=UUID=9612633f-e7f1-4b28-8813-403d209d7abc 46
+crashkernel=auto 16
+</code></pre><h3 id="awk中的switch控制语句"><a href="#awk中的switch控制语句" class="headerlink" title="awk中的switch控制语句"></a>awk中的switch控制语句</h3><pre><code>类似于shell中的case语句
+语法：switch(expression) {case VALUE1 or /REGEXP/: statement1; caseVALUE2 or /REGEXP2/: statement2; ...; default: statementn}
+</code></pre><h3 id="awk中的continue-break，next控制语句"><a href="#awk中的continue-break，next控制语句" class="headerlink" title="awk中的continue,break，next控制语句"></a>awk中的continue,break，next控制语句</h3><p>break和continue<br>next:<br>提前结束对本行处理而直接进入下一行处理（awk自身循环）</p>
+<h5 id="continue的示例"><a href="#continue的示例" class="headerlink" title="continue的示例"></a>continue的示例</h5><pre><code>求1000以内偶数的和
+[root@centos7 ~]awk &apos;BEGIN{sum=0;for(i=1;i&lt;=100;i++){if(i%2==0)continue;sum+=i}print sum}&apos;
+2500
+求1000以内奇数的和
+[root@centos7 ~]awk &apos;BEGIN{sum=0;for(i=1;i&lt;=100;i++){if(i%2==1)continue;sum+=i}print sum}&apos;
+2550
+求1000以内除了66的所有数字的和
+[root@centos7 ~]awk &apos;BEGIN{sum=0;for(i=1;i&lt;=100;i++){if(i==66)continue;sum+=i}print sum}&apos;
+4984
+</code></pre><h5 id="break的示例："><a href="#break的示例：" class="headerlink" title="break的示例："></a>break的示例：</h5><pre><code>求1000数字中，当大于100时，跳出循环，即求100以内的和
+[root@centos7 ~]#awk &apos;BEGIN{sum=0;for(i=1;i&lt;=1000;i++){if(i&gt;100)break;sum+=i}print sum}&apos;
+5050
+</code></pre><h5 id="next的示例："><a href="#next的示例：" class="headerlink" title="next的示例："></a>next的示例：</h5><pre><code>因为提前结束对本行处理而直接进入下一行处理（因为awk本身就是循环行的功能），所以示例
+打印/etc/passwd下的奇数行
+[root@centos7 ~]awk -F: &apos;{if(NR%2==0)next;print NR,$0}&apos; /etc/passwd
+1 root:x:0:0:root:/root:/bin/bash
+3 daemon:x:2:2:daemon:/sbin:/sbin/nologin
+5 lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+7 shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+9 mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+11 games:x:12:100:games:/usr/games:/sbin/nologin
+13 nobody:x:99:99:Nobody:/:/sbin/nologin
+还可以这样写：awk -F: &apos;NR%2==1{print NR,$0}&apos; /etc/passwd
+</code></pre><hr>
+<hr>
+<h3 id="awk数组-一个非常使用的功能"><a href="#awk数组-一个非常使用的功能" class="headerlink" title="awk数组-一个非常使用的功能"></a>awk数组-一个非常使用的功能</h3><h6 id="awk的数组全都是关联数组"><a href="#awk的数组全都是关联数组" class="headerlink" title="awk的数组全都是关联数组"></a>awk的数组全都是关联数组</h6><pre><code>关联数组：array[index-expression]
+index-expression:
+• (1) 可使用任意字符串；字符串要使用双引号括起来
+• (2) 如果某数组元素事先不存在，在引用时，awk会自动创建此元素，并将其值
+初始化为“空串”
+• (3) 若要判断数组中是否存在某元素，要使用“index in array”格式进行遍历
+</code></pre><h4 id="数组的去重的效果示例："><a href="#数组的去重的效果示例：" class="headerlink" title="数组的去重的效果示例："></a>数组的去重的效果示例：</h4><pre><code>awk &apos;!arr[$0]++&apos; dupfile
+awk &apos;{!arr[$0]++;print $0, arr[$0]}&apos; dupfile
+echo abc abc ccc bcd ddd ddd abc abc &gt;&gt; f1.txt
+</code></pre><h4 id="awk关联数组的遍历："><a href="#awk关联数组的遍历：" class="headerlink" title="awk关联数组的遍历："></a>awk关联数组的遍历：</h4><pre><code>若要遍历数组中的每个元素，要使用for循环:因为关联数组下标是无序性
+for(var in array) {for-body}
+注意：var会遍历array的每个索引
+</code></pre><h4 id="数组的使用示例："><a href="#数组的使用示例：" class="headerlink" title="数组的使用示例："></a>数组的使用示例：</h4><pre><code>示例1.定义awk数组
+[root@centos7 ~]awk &apos;BEGIN{title[&quot;ceo&quot;]=&quot;zhang&quot;;title[&quot;coo&quot;]=&quot;liu&quot;;
+title[&quot;cto&quot;]=&quot;wang&quot;;print title[&quot;ceo&quot;]}&apos;
+zhang
+
+可以用for循环把每一个数组的值都表示出来
+[root@centos7 ~]awk &apos;BEGIN{title[&quot;ceo&quot;]=&quot;zhang&quot;;title[&quot;coo&quot;]=&quot;liu&quot;;title[&quot;cto&quot;]=&quot;wang&quot;;print title[&quot;ceo&quot;];
+for(i in title){print i,title[i]}}&apos;
+zhang
+coo liu
+ceo zhang
+cto wang
+但输出时数组元素时，是无序的，这就是关联数组的特性
+
+示例2.awk数组中的重要功能
+    [root@centos7 ~]cat f6
+    abc
+    abc
+    ddd
+    ccc
+    aaa
+    ccc
+    ccc
+    [root@centos7 ~]awk &apos;!line[$0]++&apos; f6
+    abc
+    ddd
+    ccc
+    aaa
+问题：为什么执行结果是这个？？
+原因：
+awk &apos;!line[$0]++&apos; f6 = awk &apos;!line[$0]++{print $0}&apos; f6
+实际上是隐藏了{print $0}，这个隐藏功能在awk很重要！！！，
+但是要和后面patter中的空模式区别开
+&apos;!line[$0]++&apos;= &apos;!line[$0]++{print $0}&apos;是省略了写法，是patter的关系表达式中，先判断再打印
+而后面的数组里的是加了双括号{}，{line[$0]++}即用的patter的空模式，即文本中的每一行都处理
+这两个写法是不一样的，别混淆了
+
+分析：
+基于这个考虑进行分析 &apos;!line[$0]++&apos; = &apos;!line[$0]++{print $0}&apos;
+当读取文本f6的第一行时=abc
+!line[&quot;abc&quot;]++，因为abc没有值，line[&quot;abc&quot;]=0为假，取反！line[&quot;abc&quot;]后为真
+所以把第一行的abc打印了一次，打印第一行结束后line[&quot;abc&quot;]=1
+当读取文本f6的第二行时=abc
+!line[&quot;abc&quot;]++，在之前基础上line[&quot;abc&quot;]=1为假，取反！line[&quot;abc&quot;]=0后为假
+所以把第二行的abc不打印，结束后line[&quot;abc&quot;]=2
+以此类推，发现后续出现abc都不会打印，但是line[&quot;abc&quot;]都会在之前的基础上+1，即达到去重并统计的目的
+而处理第三行!line[&quot;ddd&quot;]++时，和上述abc一样，第一次出现则打印，后续也不会打印
+所以，命令执行结果为去重的效果
+
+从这个命令执行结果也可以明显看到上述的分析结果
+可以看出abc的值是递增的，也就是abc出现的次数
+[root@centos7 ~]awk &apos;{!line[$0]++;print $0, line[$0]}&apos; f6
+abc 1
+abc 2
+ddd 1
+ccc 1
+aaa 1
+ccc 2
+</code></pre><hr>
+<h3 id="awk数组中的重要功能之for循环遍历数组，很具有实用性"><a href="#awk数组中的重要功能之for循环遍历数组，很具有实用性" class="headerlink" title="awk数组中的重要功能之for循环遍历数组，很具有实用性"></a>awk数组中的重要功能之for循环遍历数组，很具有实用性</h3><h6 id="在后面的统计服务的一些日志文件很有作用"><a href="#在后面的统计服务的一些日志文件很有作用" class="headerlink" title="在后面的统计服务的一些日志文件很有作用"></a>在后面的统计服务的一些日志文件很有作用</h6><pre><code>如果要理解遍历awk数组，需要深刻理解上述的示例2:awk &apos;!line[$0]++&apos; f6是怎么实现的
+但还是有些和数组里的，遍历$2,把$2不同的值，当成数组的下标有些区别的
+</code></pre><h3 id="若要遍历数组中的每个元素，要使用for循环"><a href="#若要遍历数组中的每个元素，要使用for循环" class="headerlink" title="若要遍历数组中的每个元素，要使用for循环"></a>若要遍历数组中的每个元素，要使用for循环</h3><pre><code>for(var in array) {for-body}
+注意：var会遍历array的每个索引
+</code></pre><h6 id="为什么要通过特殊写法去遍历awk中的数组？"><a href="#为什么要通过特殊写法去遍历awk中的数组？" class="headerlink" title="为什么要通过特殊写法去遍历awk中的数组？"></a>为什么要通过特殊写法去遍历awk中的数组？</h6><pre><code>如果是普通数组，用循环0,1,2,3做个循环即可；而awk的数组都是关联数组，[]中括号里的下标都不固定
+所以要通过 for(var in array(数组名称)) {for-body}这样的特殊写法，var的值会从array数组元素
+取其下标，相当于每次循环var的值是等于array数组的下标的
+
+注意：当我们直接引用一个数组中不存在的元素时，awk会自动创建这个元素，并且为其赋值为&quot;空字符串&quot;
+</code></pre><h4 id="for循环遍历数组使用示例："><a href="#for循环遍历数组使用示例：" class="headerlink" title="for循环遍历数组使用示例："></a>for循环遍历数组使用示例：</h4><pre><code>示例1：
+[root@centos7 ~]awk &apos;BEGIN{print test[&quot;ip&quot;];test[&quot;ip&quot;]++;print test[&quot;ip&quot;]}&apos;
+
+1
+第一次输出为空，第二次自动加1
+
+
+示例2：
+1.
+[root@centos7 ~]awk &apos;BEGIN{title[&quot;ceo&quot;]=&quot;zhang&quot;;title[&quot;coo&quot;]=&quot;liu&quot;;title[&quot;cto&quot;]=&quot;wang&quot;;for(i in title){print title[i]}}&apos;
+liu
+zhang
+wang
+分析：
+for(i in title){print title[i]，i的值来自于title的下标，即i=ceo coo cto,而且是无序打印
+
+示例3：
+[root@centos7 ~]netstat -tan
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN     
+tcp        0      0 192.168.122.1:53        0.0.0.0:*               ESTABLISTEN     
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN     
+tcp        0     52 192.168.34.103:22       192.168.34.1:8816       ESTABLISHED
+tcp        0      0 192.168.34.103:22       192.168.34.105:49746    ESTABLISHED
+tcp6       0      0 :::111                  :::*                    LISTEN     
+tcp6       0      0 :::22                   :::*                    LISTEN     
+tcp6       0      0 ::1:631                 :::*                    LISTEN     
+tcp6       0      0 ::1:25                  :::*                    LISTEN     
+
+[root@centos7 ~]netstat -tan | awk &apos;/^tcp/{state[$NF]++}END{for(i in state) { print i,state[i]}}&apos;
+LISTEN 8
+ESTABLISHED 3
+分析：
+state[$NF]++以空白做分隔符，统计同一类型的状态有多少个
+for(i in state) { print i,state[i]} 即统计了出现状态的多少种以及出现的次数
+不明白的可以看上文中的示例2：awk数组中的重要功能
+
+当然，看懂这个命令，需要知道两个知识点
+1.空模式，即全文反复提到的{state[$NF]++}={state[$NF]++}{print $0}
+2.END模式，END的模式是在前面动作结束之后，最后执行依次END模式中的命令，所以先不用考虑空模式
+下面再一次对空模式中的处理过程，做详细的描述
+空模式中，我们创建了一个state数组，并将状态值(LISTEN、ESTABLISHED)作为引用下标，
+所以执行到第一行时，我们引用的是state[&quot;LISTEN&quot;],很明显，这个元素并不存在，所以，当第一行被空模式的动作处理完毕后
+state[&quot;LISTEN&quot;]的值已经被赋值为1了。
+这时，空模式中的动作继续处理下一行，而下一行的$NF=ESTABLISTEN；state[&quot;ESTABLISTEN&quot;]
+所以，state[&quot;ESTABLISTEN&quot;]第一次参与运算过程与上一个原理相同
+直到再次遇到相同的状态时，使用同样一个IP地址作为下标的元素将会再次被自加
+直到处理完所有的行，开始执行END模式中的动作。
+而END模式中，我们打印出state数组中的所有元素的下标，以及元素对应的值。
+此刻，state数组中的下标即为各种状态，元素的值即为对应状态出现的次数，
+最终，我们统计出每个状态出现的次数。
+
+
+3.统计/var/log/httpd/access_log，每个IP链接的次数
+
+root@centos7 ~]cat /var/log/httpd/access_log 
+192.168.34.1 - - [15/Oct/2018:22:02:35 +0800] &quot;GET / HTTP/1.1&quot; 403 4897 &quot;-&quot; &quot;Mozil&quot;
+192.168.34.1 - - [15/Oct/2018:22:02:35 +0800] &quot;GET /noindex/css/bootstrap.min.css&quot;
+192.168.34.103 - - [15/Oct/2018:22:02:35 +0800] &quot;GET /noindex/css/bootstrap.min.css&quot;
+192.168.34.1 - - [15/Oct/2018:22:02:35 +0800] &quot;GET /noindex/css/bootstrap.min.css&quot;
+[root@centos7 ~]awk &apos;{ip[$1]++}END{for(i in ip){print i,ip[i]}}&apos; /var/log/httpd/access_log
+192.168.34.101 9
+192.168.34.103 13
+::1 4
+192.168.34.1 88
+效果等于：
+[root@centos7 ~]awk &apos;{print $1}&apos; /var/log/httpd/access_log |sort|uniq -c
+4 ::1
+88 192.168.34.1
+9 192.168.34.101
+13 192.168.34.103
+
+4.统计ss -nt ip链接次数
+[root@centos7 ~]ss -nt
+State      Recv-Q Send-Q                 Local Address:Port                                Peer Address:Port              
+ESTAB      0      52                    192.168.34.103:22                                  192.168.34.1:8816               
+ESTAB      0      0                     192.168.34.103:22                                192.168.34.105:49746              
+[root@centos7 ~]ss -nt|awk -F&quot;[[:space:]]+|:&quot; &apos;/^ESTAB/{ip[$(NF-2)]++}END{for(i in ip){print i,ip[i]}}&apos;
+192.168.34.105 1
+192.168.34.1 1
+效果等于：
+[root@centos7 ~]ss -nt|awk -F&quot;[[:space:]]+|:&quot; &apos;/^ESTAB/{print $(NF-2)}&apos;|sort|uniq -c
+1 192.168.34.1
+1 192.168.34.105
+
+5.统计/etc/fstab文件系统类型分别有多少个
+[root@centos7 ~]cat /etc/fstab 
+# /etc/fstab
+# Created by anaconda on Wed Sep 19 11:44:48 2018
+UUID=9612633f-e7f1-4b28-8813-403d209d7abc /                       xfs     defaults        0 0
+UUID=0eba9e52-43a4-4c64-89bd-3fb639f0a6c1 /boot                   xfs     defaults        0 0
+UUID=06fe63d1-9b57-436f-ad7d-1c01c7a60aee /data                   xfs     defaults        0 0
+UUID=48e92f06-6fcb-4a21-8ba0-e7d1c5c1af39 swap                    swap    defaults        0 0
+[root@centos7 ~]cat /etc/fstab | awk &apos;/^UUID/{file[$3]++}END{for(i in file){print i,file[i]}}&apos;
+swap 1
+xfs 3
+
+6.求下表中的男生和女生的平均成绩
+[root@centos7 ~]cat f9
+name sex score
+a     m   90
+b     f   80
+c     f   99
+d     m   88
+e     m   80
+如何利用awk的数组功能来求？
+思路先求男的和和女的和？
+利用两个数组？
+[root@centos7 ~]cat f9|awk &apos;!/^name/{sum[$2]+=$3}END{for(i in sum){print i,sum[i]}}&apos; -求男女分的和
+m 258
+f 179
+[root@centos7 ~]cat f9|awk &apos;!/^name/{sum[$2]+=$3;num[$2]++}END{for(i in sum){print i,sum[i]/num[i]}}&apos;
+m 86
+f 89.5
+
+7.统计下面每个名字出现的次数
+[root@centos7 ~]cat f1
+Allen Phillips
+Green Lee
+William Aiden Janmes Lee
+Angel Jack
+Jack Thomas
+Lucas Kevin
+Tyler Lee
+William Allen
+[root@centos7 ~]cat f1 | awk &apos;{for(i=1;i&lt;=NF;i++){count[$i]++}}END{for(j in count){print j,cuont[j]}}&apos;
+Tyler 
+Angel 
+Lucas 
+William 
+Thomas 
+Green 
+Jack 
+Phillips 
+Kevin 
+</code></pre><hr>
+<hr>
+<h3 id="awk函数"><a href="#awk函数" class="headerlink" title="awk函数"></a>awk函数</h3><h6 id="awk也包括内置函数和自定义函数"><a href="#awk也包括内置函数和自定义函数" class="headerlink" title="awk也包括内置函数和自定义函数"></a>awk也包括内置函数和自定义函数</h6><h6 id="内置函数包括-rand-length，sub-gsub-split，system"><a href="#内置函数包括-rand-length，sub-gsub-split，system" class="headerlink" title="内置函数包括 rand,length，sub,gsub,split，system"></a>内置函数包括 rand,length，sub,gsub,split，system</h6><pre><code>数值处理：
+rand(i)：返回0和1之间一个随机数
+awk &apos;BEGIN{srand(); for (i=1;i&lt;=10;i++)print int(rand()*100) }&apos;
+字符串处理：
+• length([s])：返回指定字符串的长度
+
+• sub(r,s,[t])：对t字符串搜索r表示模式匹配的内容，并将第一个匹配内容替换为s
+echo &quot;2008:08:08 08:08:08&quot; | awk &apos;sub(/:/,“-&quot;,$1)&apos;
+
+• gsub(r,s,[t])：对t字符串进行搜索r表示的模式匹配的内容，并全部替换为s所表
+示的内容
+echo &quot;2008:08:08 08:08:08&quot; | awk &apos;gsub(/:/,&quot;-&quot;,$0)&apos;
+
+• split(s,array,[r])：以r为分隔符，切割字符串s，并将切割后的结果保存至array所
+表示的数组中，第一个索引值为1,第二个索引值为2,…
+netstat -tn | awk &apos;/^tcp\&gt;/{split($5,ip,&quot;:&quot;);count[ip[1]]++}&apos;
+END{for (i in count) {print i,count[i]}
+</code></pre><h4 id="awk内置函数之sub、gsub、split实现搜索替换切割的用法"><a href="#awk内置函数之sub、gsub、split实现搜索替换切割的用法" class="headerlink" title="awk内置函数之sub、gsub、split实现搜索替换切割的用法"></a>awk内置函数之sub、gsub、split实现搜索替换切割的用法</h4><pre><code>示例1：
+sub(r,s,[t])：对t字符串搜索r表示模式匹配的内容，并将第一个匹配内容替换为s
+gsub(r,s,[t])表示全局替换
+sub(r,s,[t])不是贪婪模式，默认值替换搜索出来的第一个
+[root@centos7 ~]#echo &quot;2008:08:08 08:08:08&quot; | awk &apos;sub(/:/,&quot;-&quot;,$1)&apos;
+2008-08:08 08:08:08
+只替换$1
+root@centos7 ~]#echo &quot;2008:08:08 08:08:08&quot; | awk &apos;gsub(/:/,&quot;-&quot;,$1)&apos;
+2008-08-08 08:08:08
+全局替换$0
+[root@centos7 ~]#echo &quot;2008:08:08 08:08:08&quot; | awk &apos;gsub(/:/,&quot;-&quot;,$0)&apos;
+2008-08-08 08-08-08
+示例2：
+统计字符串中每个字母出现的次数abcdaabbccdd
+[root@centos7 mnt]#echo abcdaabbccdd | awk &apos;gsub(//,&quot;.&quot;,$0)&apos;|awk -F&quot;.&quot; &apos;{for(i=2;i&lt;=NF-1;i++)num[$i]++}END{for(j in num){print j,num[j]}}&apos;
+a 3
+b 3
+c 3
+d 3
+在文章最后会用另外一种写法进行过滤(文章最后会以以空位分隔符的特殊写法来表示)
+</code></pre><h5 id="awk内置函数split的切割功能"><a href="#awk内置函数split的切割功能" class="headerlink" title="awk内置函数split的切割功能"></a>awk内置函数split的切割功能</h5><pre><code>示例1:
+    统计链接本机的IP和端口号
+    [root@centos7 ~]#netstat -tn
+    Active Internet connections (w/o servers)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+    tcp        0     52 192.168.34.103:22       192.168.34.1:8816       ESTABLISHED
+    tcp        0      0 192.168.34.103:22       192.168.34.105:49746    ESTABLISHED
+    [root@centos7 ~]netstat -tn | awk &apos;/^tcp\&gt;/{split($5,ip,&quot;:&quot;);count[ip[1]]++}END{for (i in count) {print i,count[i]}}&apos;
+    192.168.34.105 1
+    192.168.34.1 1
+    [root@centos7 ~]netstat -tn | awk &apos;/^tcp\&gt;/{split($5,ip,&quot;:&quot;);count[ip[2]]++}END{for (i in count) {print i,count[i]}}&apos;
+    8816 1
+    49746 1
+    分析：
+    split($5,ip,&quot;:&quot;)将192.168.34.1:8816进行切割，数组ip的下标1放IP地址，下标2放端口号
+    count[ip[1]]++ 把ip下标为1也就是IP地址，把出现的IP个数，又给count当下标，就统计每个IP出现的次数
+    count[ip[2]]++ 把ip下标为2也就是端口号，把出现的端口号个数，又给count当下标，就统计每个端口号出现的次数
+</code></pre><h3 id="awk中的自定义函数格式："><a href="#awk中的自定义函数格式：" class="headerlink" title="awk中的自定义函数格式："></a>awk中的自定义函数格式：</h3><pre><code>awk自定义函数是用正规开发语言的函数格式
+function name ( parameter, parameter, ... ) {
+ statements
+ return expression
+}
+</code></pre><h5 id="awk自定义函数的用法："><a href="#awk自定义函数的用法：" class="headerlink" title="awk自定义函数的用法："></a>awk自定义函数的用法：</h5><pre><code>cat fun.awk,把函数写到文件中
+function max(x,y) {
+x&gt;y?var=x:var=y
+return var
+}
+BEGIN{print max(i,j)}
+
+awk -v i=10 -v j=20 -f fun.awk 
+调用函数即可，和shell中的函数类似
+</code></pre><h4 id="awk中很实用的内置函数system命令"><a href="#awk中很实用的内置函数system命令" class="headerlink" title="awk中很实用的内置函数system命令"></a>awk中很实用的内置函数system命令</h4><h6 id="system函数作用：在awk可以反过来调用linux里的命令"><a href="#system函数作用：在awk可以反过来调用linux里的命令" class="headerlink" title="system函数作用：在awk可以反过来调用linux里的命令"></a>system函数作用：在awk可以反过来调用linux里的命令</h6><pre><code>示例：
+    空格是awk中的字符串连接符，如果system中需要使用awk中的变量可以使用
+    空格分隔，或者说除了awk的变量外其他一律用&quot;&quot;引用起来
+
+示例1:
+显示/boot/grub2下的文件列表；调用命令时要加双引号
+[root@centos7 ~]#awk &apos;BEGIN{system(&quot;ls /boot/grub2&quot;)}&apos;
+device.map  fonts  grub.cfg  grubenv  i386-pc  locale
+或者这么写，先定义变量等于路径，再调用变量
+[root@centos7 ~]#awk &apos;BEGIN{dir=&quot;/boot/grub2&quot;;system(&quot;ls &quot;dir)}&apos;
+device.map  fonts  grub.cfg  grubenv  i386-pc  locale
+调用hostname命令，显示主机名
+[root@centos7 ~]#awk &apos;BEGIN{system(&quot;hostname&quot;)}&apos;
+centos7.localdomain
+
+示例2：
+之前处理过lastb中登录失败的IP，如果失败登录次数大于3次，扔到防火墙里，
+当时是先取出IP放到文件里，然后iptables再禁用；
+现在可以在awk中先取出IP,然后通过system(&quot;iptables &quot; IP)就可以直接扔到防火墙中
+
+具体实现？
+</code></pre><h3 id="awk脚本"><a href="#awk脚本" class="headerlink" title="awk脚本"></a>awk脚本</h3><pre><code>将awk程序写成脚本，直接调用或执行
+
+awk脚本使用示例：
+1.先写文本再调用
+cat f1.awk
+{if($3&gt;=1000)print $1,$3}
+ awk -F: -f f1.awk /etc/passwd
+
+2.也可以写成脚本形式
+先写再调用
+[root@centos7 ~]vim f2.awk
+#!/bin/awk -f
+{if($3 &gt;=1000)print $1,$3} 
+
+[root@centos7 ~]./f2.awk -F: /etc/passwd
+nfsnobody 65534
+test 1000
+gentoo 1007
+nginx 1008
+ceshi 1009
+</code></pre><h4 id="向awk脚本传递参数"><a href="#向awk脚本传递参数" class="headerlink" title="向awk脚本传递参数"></a>向awk脚本传递参数</h4><pre><code>格式：
+awkfile var=value var2=value2... Inputfile
+注意：在BEGIN过程中不可用。直到首行输入完成以后，变量才可用。可以通
+过-v 参数，让awk在执行BEGIN之前得到变量的值。命令行中每一个指定的变
+量都需要一个-v参数
+</code></pre><h6 id="awk脚本传参使用示例："><a href="#awk脚本传参使用示例：" class="headerlink" title="awk脚本传参使用示例："></a>awk脚本传参使用示例：</h6><pre><code>cat test.awk
+ #!/bin/awk –f
+ {if($3 &gt;=min &amp;&amp; $3&lt;=max)print $1,$3}
+
+chmod +x test.awk
+test.awk -F: min=100 max=200 /etc/passwd
+</code></pre><h4 id="工作中遇到的常用awk文本解决案例："><a href="#工作中遇到的常用awk文本解决案例：" class="headerlink" title="工作中遇到的常用awk文本解决案例："></a>工作中遇到的常用awk文本解决案例：</h4><h5 id="Linux-Web服务器网站故障分析常用的命令"><a href="#Linux-Web服务器网站故障分析常用的命令" class="headerlink" title="Linux Web服务器网站故障分析常用的命令"></a>Linux Web服务器网站故障分析常用的命令</h5><pre><code>系统连接状态篇：
+1.查看TCP连接状态
+netstat -nat |awk &apos;{print $6}&apos;|sort|uniq -c|sort -rn
+每出现一被/^tcp/模式匹配到的行，数组S[$NF]就加1，NF为当前匹配到的行的最后一个字段，此处用其值做为数组S的元素索引；
+netstat -n | awk &apos;/^tcp/ {++S[$NF]};END {for(a in S) print a, S[a]}&apos; 或
+netstat -n | awk &apos;/^tcp/ {++state[$NF]}; END {for(key in state) print key,&quot;\t&quot;,state[key]}&apos;
+netstat -n | awk &apos;/^tcp/ {++arr[$NF]};END {for(k in arr) print k,&quot;t&quot;,arr[k]}&apos;
+
+netstat -n |awk &apos;/^tcp/ {print $NF}&apos;|sort|uniq -c|sort -rn
+
+netstat -ant | awk &apos;{print $NF}&apos; | grep -v &apos;[a-z]&apos; | sort | uniq -c    
+
+2.查找请求数请20个IP（常用于查找攻来源）：
+方法一：
+netstat -anlp|grep 80|grep tcp|awk ‘{print $5}’|awk -F: ‘{print $1}’|sort|uniq -c|sort -nr|head -n20
+方法二：
+netstat -ant |awk &apos;/:80/{split($5,ip,&quot;:&quot;);++A[ip[1]]}END{for(i in A) print A[i],i}&apos; |sort -rn|head -n20
+
+3.用tcpdump嗅探80端口的访问看看谁最高
+tcpdump -i eth0 -tnn dst port 80 -c 1000 | awk -F&quot;.&quot; ‘{print $1&quot;.&quot;$2&quot;.&quot;$3&quot;.&quot;$4}’ | sort | uniq -c | sort -nr |head -20
+
+4.查找较多time_wait连接
+netstat -n|grep TIME_WAIT|awk ‘{print $5}’|sort|uniq -c|sort -rn|head -n20
+
+5.找查较多的SYN连接
+netstat -an | grep SYN | awk ‘{print $5}’ | awk -F: ‘{print $1}’ | sort | uniq -c | sort -nr | more
+
+6.根据端口列进程
+netstat -ntlp | grep 80 | awk ‘{print $7}’ | cut -d/ -f1
+</code></pre><h5 id="网站日志分析篇1（Apache）："><a href="#网站日志分析篇1（Apache）：" class="headerlink" title="网站日志分析篇1（Apache）："></a>网站日志分析篇1（Apache）：</h5><pre><code>1.获得访问前10位的ip地址
+cat access.log|awk ‘{print $1}’|sort|uniq -c|sort -nr|head -10
+cat access.log|awk ‘{counts[$(11)]+=1}; END {for(url in counts) print counts[url], url}’
+
+2.访问次数最多的文件或页面,取前20
+cat access.log|awk ‘{print $11}’|sort|uniq -c|sort -nr|head -20
+
+3.列出传输最大的几个exe文件（分析下载站的时候常用）
+cat access.log |awk ‘($7~/.exe/){print $10 &quot; &quot; $1 &quot; &quot; $4 &quot; &quot; $7}’|sort -nr|head -20
+
+4.列出输出大于200000byte(约200kb)的exe文件以及对应文件发生次数
+cat access.log |awk ‘($10 &gt; 200000 &amp;&amp; $7~/.exe/){print $7}’|sort -n|uniq -c|sort -nr|head -100
+
+5.如果日志最后一列记录的是页面文件传输时间，则有列出到客户端最耗时的页面
+cat access.log |awk ‘($7~/.php/){print $NF &quot; &quot; $1 &quot; &quot; $4 &quot; &quot; $7}’|sort -nr|head -100
+
+6.列出最最耗时的页面(超过60秒的)的以及对应页面发生次数
+cat access.log |awk ‘($NF &gt; 60 &amp;&amp; $7~/.php/){print $7}’|sort -n|uniq -c|sort -nr|head -100
+
+7.列出传输时间超过 30 秒的文件
+cat access.log |awk ‘($NF &gt; 30){print $7}’|sort -n|uniq -c|sort -nr|head -20
+
+8.统计网站流量（G)
+cat access.log |awk ‘{sum+=$10} END {print sum/1024/1024/1024}’
+
+9.统计404的连接
+awk ‘($9 ~/404/)’ access.log | awk ‘{print $9,$7}’ | sort
+
+10. 统计http status
+cat access.log |awk &apos;{counts[$(9)]+=1}; END {for(code in counts) print code, counts[code]}&apos;
+cat access.log |awk &apos;{print $9}&apos;|sort|uniq -c|sort -rn
+
+10.蜘蛛分析，查看是哪些蜘蛛在抓取内容。
+/usr/sbin/tcpdump -i eth0 -l -s 0 -w - dst port 80 | strings | grep -i user-agent | grep -i -E &apos;bot|crawler|slurp|spider&apos;
+</code></pre><h5 id="网站日分析2-Squid篇）按域统计流量"><a href="#网站日分析2-Squid篇）按域统计流量" class="headerlink" title="网站日分析2(Squid篇）按域统计流量"></a>网站日分析2(Squid篇）按域统计流量</h5><pre><code>cat squid_access.log.tar.gz| awk &apos;{print $10,$7}&apos; |awk &apos;BEGIN{FS=&quot;[ /]&quot;}{trfc[$4]+=$1}END{for(domain in trfc){printf &quot;%st%dn&quot;,domain,trfc[domain]}}&apos;
+</code></pre><h5 id="安全篇：-ssh-lastb"><a href="#安全篇：-ssh-lastb" class="headerlink" title="安全篇：(ssh lastb)"></a>安全篇：(ssh lastb)</h5><pre><code>ssh日志中失败登录的IP，取出来 /var/log/secure
+awk &apos;/Failed PASSWORD/{IP[$(NF-3)]++}END{for(i in IP){print i,IP[i]}&apos; /var/log/secure
+
+
+1、文件ip_list.txt如下格式，请提取”.magedu.com”前面的主机名部分并写
+入到回到该文件中
+1 blog.magedu.com
+2 www.magedu.com
+…
+999 study.magedu.com
+
+2、统计/etc/fstab文件中每个文件系统类型出现的次数
+[root@centos7 ~]cat /etc/fstab | awk &apos;/^UUID/{print $3}&apos;|sort|uniq -c |sort -nr
+      3 xfs
+      1 swap
+[root@centos7 ~]cat /etc/fstab | awk &apos;/^UUID/{file[$3]++}END{for(i in file){print i,file[i]}}&apos;
+swap 1
+xfs 3
+
+3、统计/etc/fstab文件中每个单词出现的次数
+root@centos7 ~]cat /etc/fstab |awk &apos;{for(i=1;i&lt;=NF;i++){count[$i]++}}END{for(j in count){print j,count[j]}}&apos;
+man 1
+
+4、提取出字符串Yd$C@M05MB%9&amp;Bdh7dq+YVixp3vpw中的所有数字
+[root@centos7 ~]echo &quot;Yd$C@M05MB%9&amp;Bdh7dq+YVixp3vpw&quot;|awk &apos;gsub(/[^0-9]/,&quot;&quot;,$0)&apos;
+05973
+[root@centos7 ~]echo &quot;Yd$C@M05MB%9&amp;Bdh7dq+YVixp3vpw&quot;|tr -dc &quot;[0-9]&quot;
+05973
+
+5、有一文件记录了1-100000之间随机的整数共5000个，存储的格式
+100,50,35,89…请取出其中最大和最小的整数
+6、解决DOS攻击生产案例：根据web日志或者或者网络连接数，监控当某个IP
+并发连接数或者短时内PV达到100，即调用防火墙命令封掉对应的IP，监控频
+率每隔5分钟。防火墙命令为：iptables -A INPUT -s IP -j REJECT
+[root@centos7 ~]awk &apos;{access[$1]++}END{for(i in access){if(access[i]&gt;=1){print i,access[i]}}}&apos; 
+/var/log/httpd/access_log 
+192.168.34.101 9
+192.168.34.103 13
+只过滤出IP，监控任务可以写到计划任务里，
+
+或者用内置函数system[&quot;iptables&quot;]调用？
+
+7、将以下文件内容中FQDN取出并根据其进行计数从高到低排序
+http://mail.magedu.com/index.html
+http://www.magedu.com/test.html
+http://study.magedu.com/index.html
+http://blog.magedu.com/index.html
+http://www.magedu.com/images/logo.jpg
+http://blog.magedu.com/20080102.html
+[root@centos7 ~]#cat f5|sed -nr &apos;s@.*//([^/]+)/.*@\1@p&apos;|sort|uniq -c|sort -nr
+      2 www.magedu.com
+      2 blog.magedu.com
+      1 study.magedu.com
+      1 mail.magedu.com
+[root@centos7 ~]#cat f5|awk -F&quot;/&quot; &apos;{print $3}&apos;|sort|uniq -c|sort -nr
+      2 www.magedu.com
+      2 blog.magedu.com
+      1 study.magedu.com
+      1 mail.magedu.com
+
+8、将以下文本以inode为标记，对inode相同的counts进行累加，并且统计出
+同一inode中，beginnumber的最小值和endnumber的最大值
+inode|beginnumber|endnumber|counts|
+106|3363120000|3363129999|10000|
+106|3368560000|3368579999|20000|
+310|3337000000|3337000100|101|
+310|3342950000|3342959999|10000|
+310|3362120960|3362120961|2|
+311|3313460102|3313469999|9898|
+311|3313470000|3313499999|30000|
+311|3362120962|3362120963|2|
+输出的结果格式为：
+310|3337000000|3362120961|10103|
+311|3313460102|3362120963|39900|
+106|3363120000|3368579999|30000|
+awk -F&apos;|&apos; &apos;NR==1{print;next}{a[$1]?(a[$1]&gt;$2?a[$1]=$2:0):(a[$1]=$2);b[$1]?(b[$1]&lt;$3?b[$1]=$3:0):(b[$1]=$3);c[$1]+=$4}
+END{l=asorti(a,d);for(i=1;i&lt;=l;i++)print d[i] FS a[d[i]] FS b[d[i]] FS c[d[i]] FS}&apos; file
+[解析]
+  第一行直接打印。从第2行开始以$1为下标，建立3个数组，比较出$2的最小值，$3的最大值，然后把$4进行累加，最后进行排序后依次取出各项值。
+  这其中运用了三目运算的嵌套，跟我们 if(){if(){}}else{} 的使用是一个道理，不要认为复杂，如果觉得模糊不清，仔细读懂流程控制。
+
+9.统计字符串中每个字母出现的次数abcdaabbccdd
+[root@centos7 mnt]#echo abcdaabbccdd | awk &apos;gsub(//,&quot;.&quot;,$0)&apos;|awk -F&quot;.&quot; &apos;{for(i=2;i&lt;=NF-1;i++)num[$i]++}END{for(j in num){print j,num[j]}}&apos;
+a 3
+b 3
+c 3
+d 3
+下面的写法在双引号前一定要加一个空格才能匹配出来
+或者用单引号，但是也需要在前面几个空格
+[root@centos7 mnt]#echo abcdaabbccdd|awk -F &quot;&quot; &apos;{for(i=1;i&lt;=NF;i++)x[$i]++}END{for(i in x){print i,x[i]}}&apos; 
+a 3                                 此处一定有个空格
+b 3
+c 3
+d 3
+或者用单引号，但是也需要在前面几个空格
+[root@mini7-1 ~]#echo abcdaabbccdd |awk -F &apos;&apos; &apos;{for(i=2;i&lt;=NF-1;i++)num[$i]++}END{for(j in num){print j,num[j]}}&apos;
+a 2
+b 3
+c 3
+d 2
+
+root@centos7 mnt]#echo abcdaabbccdd | grep -o &quot;[a-z]&quot;|sort|uniq -c
+      3 a
+      3 b
+      3 c
+      3 d
+
+10.面试题：取出/etc/fstab中的挂载目录
+    [root@node7-1 data]#cat /etc/fstab | awk -F &quot;[ ]/?&quot; &apos;/^UUID/{print $2}&apos;
+    boot
+    data
+    swap
+    [root@node7-1 data]#cat /etc/fstab | awk -F &quot;[ ]/|[ ]&quot; &apos;/^UUID/{print $2}&apos;
+    boot
+    data
+    swap
+</code></pre><h3 id="AWK中的输入分隔符"><a href="#AWK中的输入分隔符" class="headerlink" title="AWK中的输入分隔符"></a>AWK中的输入分隔符</h3><h6 id="我们可以使用两次awk-F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。"><a href="#我们可以使用两次awk-F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。" class="headerlink" title="我们可以使用两次awk -F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。"></a>我们可以使用两次awk -F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。</h6><pre><code>要一次指定多个分隔符，需要将分隔符用中括号[]包裹起来，如果多个分隔符中有至少一个特殊字符，那么还需要在中括号外加上双引号或者单引号，并且使用两个或两个以上的\将其进行转义
+$、^、(、)、[、]、?、.、|
+
+示例1：
+        [root@node7-1 data]cat b.txt 
+        ssh:user1@192.168.1.10
+        ssh:user2@192.168.1.11
+        ssh:user3@192.168.1.12
+    1.取user和IP
+        [root@node7-1 data]awk -F [:@] &apos;{print $2,$3}&apos; b.txt 
+        user1 192.168.1.10
+        user2 192.168.1.11
+        user3 192.168.1.12
+    2.上面b.txt中的：和@换成^和|，又该怎么取？
+        [root@node7-1 data]awk -F &apos;[\\^\\|]&apos; &apos;{print $2,$3}&apos; b.txt 
+        user1 192.168.1.10
+        user2 192.168.1.11
+        user3 192.168.1.12
+示例2：
+    示例1：
+        george[walker]bush
+        william[jefferson]clinton
+    如果要打印出由分隔符[和]分隔的三段数据，即可以分别使用两个或两个以上的\对[和]进行转义，如下所示
+    方法一：
+        awk -F &apos;[\\[\\]]&apos; &apos;{ print $1,$2,$3}&apos; name.txt
+        george walker bush
+        william jefferson clinton
+    方法二：
+        awk -F &apos;[][]&apos; &apos;{ print $1,$2,$3}&apos; name.txt
+        george walker bush
+        william jefferson clinton
+
+11.取出文本中的姓名和FQDN，awk的方法参照文章最上面的链接文章
+    [root@node7-1 data]cat a.txt 
+    xiaoming\t20\thttp://sougou.com
+    xiaohua\t25\thttp://www.baidu.com
+    xiaodong\t30\thttp://www.jidong.com
+方法一：用awk取，以\t做分隔符，但是在表示方法上比较特殊
+    root@node7-1 data]awk -F&apos;\\\\t&apos; &apos;{print $1,$3}&apos; a.txt 
+    xiaoming http://sougou.com
+    xiaohua http://www.baidu.com
+    xiaodong http://www.jidong.com
+分析：
+    第一个给第二个转义，第三个给第四个转义，传给awk对就是\\t，awk再将\\解释成\t
+方法二：用awk和sed取
+    [root@node7-1 data]awk -F&apos;\\&apos; &apos;{print $1,$3}&apos; a.txt |sed -r &apos;s@(.* )t(.*)@\1\2@&apos;
+    xiaoming http://sougou.com
+    xiaohua http://www.baidu.com
+    xiaodong http://www.jidong.com
+12.扩展11题的内容把t换成$,又该如何取？
+    [root@node7-1 data]cat a.txt 
+    xiaoming\$20\$http://sougou.com
+    xiaohua\$25\$http://www.baidu.com
+    xiaodong\$30\$http://www.jidong.com
+方法一：还是只用awk来取
+    [root@node7-1 data]awk -F&apos;\\\\\\$&apos; &apos;{print $1,$3}&apos; a.txt 
+    xiaoming http://sougou.com
+    xiaohua http://www.baidu.com
+    xiaodong http://www.jidong.com
+    分析：
+        1.\\$是转义$的
+        2.前四个\\\\是转义\的
+方法二：awk和sed取
+    [root@node7-1 data]awk -F&apos;\\&apos; &apos;{print $1,$3}&apos; a.txt |sed -r &apos;s@(.* )\$(.*)@\1\2@&apos;
+    xiaoming http://sougou.com
+    xiaohua http://www.baidu.com
+    xiaodong http://www.jidong.com
+分析：先用awk用\做分隔符来取，再用sed取，sed中的$需要转义
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/文本处理工具/" rel="tag"><i class="fa fa-tag"></i> 文本处理工具</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/16/MongoDB的profile、监控和备份恢复/" rel="next" title="MongoDB的profile、监控和备份恢复">
+                <i class="fa fa-chevron-left"></i> MongoDB的profile、监控和备份恢复
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/18/搭建内网yum源/" rel="prev" title="搭建内网yum源">
+                搭建内网yum源 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文本处理三剑客之awk"><span class="nav-number">1.</span> <span class="nav-text">文本处理三剑客之awk</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#总结对比一下这三个剑客的特长之处"><span class="nav-number">1.0.1.</span> <span class="nav-text">总结对比一下这三个剑客的特长之处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#学习中遇到的混淆的问题："><span class="nav-number">1.0.2.</span> <span class="nav-text">学习中遇到的混淆的问题：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Awk"><span class="nav-number">1.1.</span> <span class="nav-text">Awk</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#awk介绍："><span class="nav-number">1.1.1.</span> <span class="nav-text">awk介绍：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk基本用法"><span class="nav-number">1.1.2.</span> <span class="nav-text">awk基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用法解析及示例："><span class="nav-number">1.1.3.</span> <span class="nav-text">用法解析及示例：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BEGIN-amp-END"><span class="nav-number">1.2.</span> <span class="nav-text">BEGIN&amp;END</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分隔符："><span class="nav-number">1.3.</span> <span class="nav-text">分隔符：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#print-amp-printf的区别："><span class="nav-number">1.3.1.</span> <span class="nav-text">print&amp;printf的区别：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">1.4.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Awk中的变量："><span class="nav-number">1.5.</span> <span class="nav-text">Awk中的变量：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量分为：内置变量和自定义变量"><span class="nav-number">1.5.1.</span> <span class="nav-text">变量分为：内置变量和自定义变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例："><span class="nav-number">1.5.2.</span> <span class="nav-text">示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AWK中自定义变量"><span class="nav-number">1.5.3.</span> <span class="nav-text">AWK中自定义变量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#示例：-1"><span class="nav-number">1.5.3.0.1.</span> <span class="nav-text">示例：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Awk中的格式化"><span class="nav-number">1.5.4.</span> <span class="nav-text">Awk中的格式化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#printf命令-类似于shell里的printf"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">printf命令-类似于shell里的printf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#printf示例："><span class="nav-number">1.5.4.2.</span> <span class="nav-text">printf示例：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk操作符"><span class="nav-number">1.5.5.</span> <span class="nav-text">awk操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作符用法示例："><span class="nav-number">1.5.6.</span> <span class="nav-text">操作符用法示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中的PATTERN和action"><span class="nav-number">1.5.7.</span> <span class="nav-text">awk中的PATTERN和action</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#PATTERN-根据pattern条件，过滤匹配的行，再做处理"><span class="nav-number">1.5.7.0.1.</span> <span class="nav-text">PATTERN:根据pattern条件，过滤匹配的行，再做处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#patter用法示例："><span class="nav-number">1.5.7.0.2.</span> <span class="nav-text">patter用法示例：</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#awk-action"><span class="nav-number">1.5.8.</span> <span class="nav-text">awk action</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能"><span class="nav-number">1.5.8.1.</span> <span class="nav-text">action除了上文中支持的算术、条件判断，表达式，还支持循环，输入语句，输出语句、组合语句等功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面专门研究awk的控制语句包含if-while-do-for-break-continue-数组，exit等控制语句"><span class="nav-number">1.5.8.2.</span> <span class="nav-text">下面专门研究awk的控制语句包含if,while,do,for,break,continue,数组，exit等控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#awk中if-else控制语句的语法及用法"><span class="nav-number">1.5.8.2.1.</span> <span class="nav-text">awk中if-else控制语句的语法及用法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#if-else示例："><span class="nav-number">1.5.8.2.1.1.</span> <span class="nav-text">if-else示例：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，"><span class="nav-number">1.5.8.3.</span> <span class="nav-text">awk中的循环不是对行的循环，因为awk本身就支持文本中行的循环，</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理"><span class="nav-number">1.5.8.4.</span> <span class="nav-text">这里是指对每一行中的字段或域或列进行循环，分别对行中的每个字段进行循环处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awk中while循环控制语句的语法及用法"><span class="nav-number">1.5.8.5.</span> <span class="nav-text">awk中while循环控制语句的语法及用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中do-while循环控制语句"><span class="nav-number">1.5.9.</span> <span class="nav-text">awk中do-while循环控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#do-while使用示例："><span class="nav-number">1.5.9.0.1.</span> <span class="nav-text">do-while使用示例：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中for循环控制语句"><span class="nav-number">1.5.10.</span> <span class="nav-text">awk中for循环控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#for循环使用示例："><span class="nav-number">1.5.10.0.0.1.</span> <span class="nav-text">for循环使用示例：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中的switch控制语句"><span class="nav-number">1.5.11.</span> <span class="nav-text">awk中的switch控制语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中的continue-break，next控制语句"><span class="nav-number">1.5.12.</span> <span class="nav-text">awk中的continue,break，next控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#continue的示例"><span class="nav-number">1.5.12.0.1.</span> <span class="nav-text">continue的示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#break的示例："><span class="nav-number">1.5.12.0.2.</span> <span class="nav-text">break的示例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#next的示例："><span class="nav-number">1.5.12.0.3.</span> <span class="nav-text">next的示例：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk数组-一个非常使用的功能"><span class="nav-number">1.5.13.</span> <span class="nav-text">awk数组-一个非常使用的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#awk的数组全都是关联数组"><span class="nav-number">1.5.13.0.0.1.</span> <span class="nav-text">awk的数组全都是关联数组</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数组的去重的效果示例："><span class="nav-number">1.5.13.1.</span> <span class="nav-text">数组的去重的效果示例：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awk关联数组的遍历："><span class="nav-number">1.5.13.2.</span> <span class="nav-text">awk关联数组的遍历：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数组的使用示例："><span class="nav-number">1.5.13.3.</span> <span class="nav-text">数组的使用示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk数组中的重要功能之for循环遍历数组，很具有实用性"><span class="nav-number">1.5.14.</span> <span class="nav-text">awk数组中的重要功能之for循环遍历数组，很具有实用性</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#在后面的统计服务的一些日志文件很有作用"><span class="nav-number">1.5.14.0.0.1.</span> <span class="nav-text">在后面的统计服务的一些日志文件很有作用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若要遍历数组中的每个元素，要使用for循环"><span class="nav-number">1.5.15.</span> <span class="nav-text">若要遍历数组中的每个元素，要使用for循环</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#为什么要通过特殊写法去遍历awk中的数组？"><span class="nav-number">1.5.15.0.0.1.</span> <span class="nav-text">为什么要通过特殊写法去遍历awk中的数组？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#for循环遍历数组使用示例："><span class="nav-number">1.5.15.1.</span> <span class="nav-text">for循环遍历数组使用示例：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk函数"><span class="nav-number">1.5.16.</span> <span class="nav-text">awk函数</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#awk也包括内置函数和自定义函数"><span class="nav-number">1.5.16.0.0.1.</span> <span class="nav-text">awk也包括内置函数和自定义函数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#内置函数包括-rand-length，sub-gsub-split，system"><span class="nav-number">1.5.16.0.0.2.</span> <span class="nav-text">内置函数包括 rand,length，sub,gsub,split，system</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awk内置函数之sub、gsub、split实现搜索替换切割的用法"><span class="nav-number">1.5.16.1.</span> <span class="nav-text">awk内置函数之sub、gsub、split实现搜索替换切割的用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#awk内置函数split的切割功能"><span class="nav-number">1.5.16.1.1.</span> <span class="nav-text">awk内置函数split的切割功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk中的自定义函数格式："><span class="nav-number">1.5.17.</span> <span class="nav-text">awk中的自定义函数格式：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#awk自定义函数的用法："><span class="nav-number">1.5.17.0.1.</span> <span class="nav-text">awk自定义函数的用法：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#awk中很实用的内置函数system命令"><span class="nav-number">1.5.17.1.</span> <span class="nav-text">awk中很实用的内置函数system命令</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#system函数作用：在awk可以反过来调用linux里的命令"><span class="nav-number">1.5.17.1.0.1.</span> <span class="nav-text">system函数作用：在awk可以反过来调用linux里的命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk脚本"><span class="nav-number">1.5.18.</span> <span class="nav-text">awk脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#向awk脚本传递参数"><span class="nav-number">1.5.18.1.</span> <span class="nav-text">向awk脚本传递参数</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#awk脚本传参使用示例："><span class="nav-number">1.5.18.1.0.1.</span> <span class="nav-text">awk脚本传参使用示例：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工作中遇到的常用awk文本解决案例："><span class="nav-number">1.5.18.2.</span> <span class="nav-text">工作中遇到的常用awk文本解决案例：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Linux-Web服务器网站故障分析常用的命令"><span class="nav-number">1.5.18.2.1.</span> <span class="nav-text">Linux Web服务器网站故障分析常用的命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#网站日志分析篇1（Apache）："><span class="nav-number">1.5.18.2.2.</span> <span class="nav-text">网站日志分析篇1（Apache）：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#网站日分析2-Squid篇）按域统计流量"><span class="nav-number">1.5.18.2.3.</span> <span class="nav-text">网站日分析2(Squid篇）按域统计流量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安全篇：-ssh-lastb"><span class="nav-number">1.5.18.2.4.</span> <span class="nav-text">安全篇：(ssh lastb)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AWK中的输入分隔符"><span class="nav-number">1.5.19.</span> <span class="nav-text">AWK中的输入分隔符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#我们可以使用两次awk-F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。"><span class="nav-number">1.5.19.0.0.1.</span> <span class="nav-text">我们可以使用两次awk -F命令，每次分别指定一个分隔符来进行操作，但是这样太麻烦，还有更简单的方法，即一次指定多个分隔符。</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.3m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">19:21</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

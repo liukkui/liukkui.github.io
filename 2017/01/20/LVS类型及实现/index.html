@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="LVS">
+<meta name="keywords" content="LB负载均衡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVS类型及实现">
+<meta property="og:url" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="LVS">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR网络模型.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-DR模型的工作原理.jpg">
+<meta property="og:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-TUN模型的工作原理.jpg">
+<meta property="og:updated_time" content="2019-03-09T08:25:50.405Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LVS类型及实现">
+<meta name="twitter:description" content="LVS">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>LVS类型及实现 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">72</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/01/20/LVS类型及实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LVS类型及实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-01-20 08:00:00" itemprop="dateCreated datePublished" datetime="2017-01-20T08:00:00+08:00">2017-01-20</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/" itemprop="url" rel="index"><span itemprop="name">负载均衡</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/LVS/" itemprop="url" rel="index"><span itemprop="name">LVS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">16k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">14 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="LVS"><a href="#LVS" class="headerlink" title="LVS"></a>LVS</h3><a id="more"></a>
+<h3 id="LVS集群的4种网络模型"><a href="#LVS集群的4种网络模型" class="headerlink" title="LVS集群的4种网络模型"></a>LVS集群的4种网络模型</h3><pre><code>LVS Type是指lvs工作的拓扑结构和转发机制
+
+1.NAT:多目标DNAT，通过修改请求报文的目标IP和Port为经由调度算法挑选出的某后端RS的
+    RIP和PORT，再发送到POSTROUTING链上 
+
+2.DR:不动源IP、源端口、目标IP、目标端口，即传输层TCP/UDP首部保持不变，转发方式通过
+    先拆除帧首部再在IP报文外封装新的以太网帧首部(源MAC-DIPmac,目标MAC-RIPmac)扔回给交换机，由交换机通过MAC地址完成调度，
+    目标MAC是由调度算法挑选出的某后端
+    RS的MAC地址; 而MAC地址通信就意味着是在本地网络中，所以DR模型就限制了DIP和RIP在同一个二层网络设备中，
+    中间不能隔路由器和网关只能由交换机来进行交换，来实现调度.
+
+3.TUN:IP隧道方式;转发方式：
+    不修改请求报文的IP首部（源IP为CIP，目标IP为VIP），而是在原IP报文之外再封装
+    一个新的IP首部（源IP是DIP，目标IP是RIP），这样报文就有两个IP首部(内部一个，外部还一个)，这就叫做IP隧道，将报文发往挑选出的目标
+    RS；RS直接响应给客户端（源IP是VIP，目标IP是CIP）,这样就弥补了DR模型必须在同
+    一个物理网络的限制，TUN模型不受限于网络.
+
+4.FULLNAT:默认不支持，需要打内核补丁
+    通过修改请求报文的源IP和目标IP为经由调度算法挑选出的某后端的RS的RIP和PORT；
+    不过一般不修改源端口和目标端口。CIP--&gt;DIP;VIP--&gt;RIP、
+</code></pre><h3 id="LVS-NAT模式和特性"><a href="#LVS-NAT模式和特性" class="headerlink" title="LVS-NAT模式和特性"></a>LVS-NAT模式和特性</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-NAT模式工作原理.jpg" alt="LVS-NAT模式"></p>
+<p>NAT:多目标DNAT，通过修改请求报文的目标IP和Port为经由调度算法挑选出的某后端RS的<br>        RIP和PORT，再发送到POSTROUTING链上 </p>
+<pre><code>1.DIP和各个RIP必须在同一个网段内；
+2.RS应该使用私有地址，且RS的网关必须指向DIP;RIP:GW---&gt;DIP；
+3.支持端口映射(转换)；VIP:80---&gt;RIP:8080,而后端有多个RS，所以也叫多目标IP的DNAT
+4.请求和响应报文都必须经过Director Server转发,高负载场景中，Director Server易成为性能瓶颈；
+    DNAT的工作原理：
+        请求报文中的源IP(CIP)--&gt;目标IP(VIP);而响应报文中的源IP(RIP)--&gt;目标IP(CIP),
+        对于客户端来说并未访问RIP，所以响应报文必须经由DIP(网关)，将源IP(RIP)改成VIP，对CIP来说才能接收
+        到正常的响应报文，这就是为什么RIP的网关必须指向DIP，而这个过程是由NAT内部的连接追踪功能自动完成的.
+5.LVS必须是linux系统，因为LVS只支持linux,而RS可以使用任意操作系统,因为只是应用层协议的交互调度.
+
+缺陷：
+    1.对Director Server压力会比较大，因为请求和响应都需经过director server
+    一般来说web应用的GET中用户的请求报文很轻，而响应报文中要承载用户资源数据(很大)，由于NAT模型的原因响应报文还必须经由Director Server,
+    那么Director Server服务器的压力就很大，后端的RS最多也就5、6个而已，这就是为什么有DR模型的存在了.
+    2.DIP和RIP必须在同一个IP网段，中间不能隔路由器，Director和RS的位置就不能距离太远，一般是在同一个机架上.
+
+lvs-nat：    
+    设计要点：
+        (1) RIP与DIP在同一IP网络, RIP的网关要指向DIP；
+        (2) 支持端口映射；
+        (3) Director要打开核心转发功能；
+
+    实践作业（博客）：负载均衡两个php应用（wordpress，discuzx）；
+        测试：(1) 是否需要会话保持；(2) 是否需要共享存储；
+</code></pre><h3 id="LVS-DR模式和特性"><a href="#LVS-DR模式和特性" class="headerlink" title="LVS-DR模式和特性"></a>LVS-DR模式和特性</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-DR网络模型.jpg" alt="LVS-DR模式"><br><img src="/2017/01/20/LVS类型及实现/LVS-DR模型的工作原理.jpg" alt="LVS-DR模式"></p>
+<pre><code>1.DR模型是如何解决NAT模型中Director Server易成为性能瓶颈的问题的？
+    响应报文是不需要不经由Director Server的，所以极大的缓解了
+Director只需要有一个网卡和RS在同一个二层网络中(可以连不同交换机，交换机在连接)
+特点：
+    1.Director Server和RS在同一个二层网络中(可以在同一个交换机也可以在不同
+        交换机，但交换机是相连的),中间是不能隔路由器的！
+    2.Director Server只有VIP，没有DIP
+    3.响应报文由RS直接通过交换机--&gt;路由器发送给客户端，所以就要求各个RS有两个IP
+        一个是RIP，一个是VIP，而且响应报文发出时的源IP必须是VIP不能是RIP.
+    4.RS和Director必须在同一物理网络，因为需要MAC地址完成地址解析报文转发的;
+    5.RS的RIP可以使用私网地址，也可以是公网地址，RIP与DIP在同一IP网络(因为要apr的广播应答找到某一RS的MAC地址完成报文传输)，
+    RIP的网关一定不能指向Director(一旦指定DIP，那么响应报文就会经由Director进行转发了!)
+    6.请求报文必须先经由Director，但响应报文不能经由Director(理由同上5)，而是由RS直接发往客户端;
+    7.不支持端口映射；因为报文是由RS直接发往客户端的，如果Director转发时将端口进行映射80:8080，那么RS的VIP响应时也是8080端口响应的！
+
+LVS-DR模型必须要解决地址冲突问题：
+    1.Director Server和RS是在同一个网络中的，如何解决地址冲突问题的？
+        由于ARP本地工作逻辑和地址解析协议，每个主机加入到网络中来时，一般来说会有两类ARP报文发送；
+        即通告和广播请求，但arp解析地址缓存有效时长是5min(IP和
+        MAC的对应关系)，再次需要通信时，就需要arp_request请求，而请求是广播式的，
+        由于本地有多个VIP，就会产生arp冲突。
+    解决arp冲突的办法：
+        1.在前端的路由器上把VIP和Director的MAC进行绑定，如果LVS使用keepalived做
+        高可用，备用的LVS的MAC地址肯定和主LVS的MAC地址不一样，所以切换时还需要重新绑定，这样可用性就很差了，无法实现.
+        2.让RS的VIP地址的ARP通告和广播应答出不去即可，而方式又有两种
+            a.arptables就是arp防火墙，但是依赖第三方工具.
+            b.通过修改各个RS服务器的内核参数达到不让RS的VIP进行ARP通告和响应的目的；而linux内核从2.4.x，
+            2.6.x只要是linux系统都可以修改内核参数中的apr通告和应答方式就能做到加入到当前网络时，
+            不与通告apr信息,不与应答前端路由器和网关发送的apr路由信息;
+    2.RS是如何做到响应报文源IP是VIP而不是RIP的？
+        因为Director将源报文(CIP-VIP)进行封装一次以太网帧首部(DIP-MAC--&gt;RIP-MAC),RS收到报文后拆除
+        以太网帧首部后看到的IP层的源IP是CIP，目标IP是本机的VIP，所以响应时的源IP是本机的VIP，目标IP是CIP，完成报文传输.
+缺点：
+    DR类型，DIP和RIP是通过MAC地址传输报文的，所以和NAT类型一样也需要在同一物理网络中，而且不能隔路由器，不易于异地容灾.
+
+lvs-dr：
+    设计要点：    
+    dr模型中，各主机上均需要配置VIP，解决地址冲突的方式有三种：
+        (1) 在前端网关做静态绑定；
+        (2) 在各RS使用arptables；
+        (3) 在各RS修改内核参数，来限制arp响应和通告的级别；
+            限制响应级别：arp_ignore
+                0：默认值，表示可使用本地任意接口上配置的任意地址进行响应；
+                1: 仅在请求的目标IP配置在本地主机的接收到请求报文接口上时，才给予响应；
+            限制通告级别：arp_announce
+                0：默认值，把本机上的所有接口的所有信息向每个接口上的网络进行通告；
+                1：尽量避免向非直接连接网络进行通告；
+                2：必须避免向非本网络通告；
+    注意：
+        arp_ignore和arp_announce这两个参数是接口级别的，应该在服务器所在的所有接口上都配置，避免出现问题；
+</code></pre><h4 id="LVS-DR类型实现之-调整内核中的APR参数"><a href="#LVS-DR类型实现之-调整内核中的APR参数" class="headerlink" title="LVS-DR类型实现之-调整内核中的APR参数"></a>LVS-DR类型实现之-调整内核中的APR参数</h4><pre><code>APR通告和应答：
+    1.如果服务器有多个网卡，当加入到某个网络，默认会把IP和MAC地址的对应关系通告给每一个网络；
+    2.2.4.x kernels和2.6.x kernels都支持修改内核中的apr参数来限制apr的通告和应答，避免各个RS的lo回环网卡在配置上VIP时通告给其他网络.
+    3.arp_ignore参数是关闭了前端直连网关的arp应答；
+    4.arp_announce参数，由于VIP是配置在lo上的，arp通告只是通告给其直接连接的所在网络，而lo所在网络是
+    专有网关不是直连网络所以不会进行arp通告.
+注意：
+    1.为了避免出现问题，最好是在/proc/sys/net/ipv4/conf下的all和lo网卡上都对这两项参数做限制；
+    2.Director的VIP的设置需要注意的是使用255.255.255.255netmask，使用此掩码是为了避免与其他主机进行多余
+    通信，然后广播只发给自己broadcat VIP》
+
+脚本实现：
+    各个RS都执行此脚本，方便关闭和启用：
+    [root@node03 ~]# lvs_dr_rs.sh
+    #!/bin/bash
+    vip=172.18.140.10         #VIP地址
+    mask=&apos;255.255.255.255&apos;    #
+    interface=&quot;lo:0&quot;
+    #rpm -q httpd &amp;&gt; /dev/null || yum -y install httpd &amp;&gt;/dev/null
+    #service httpd start &amp;&gt; /dev/null &amp;&amp; echo &quot;The httpd Server is Ready!&quot;
+    #echo &quot;&lt;h1&gt;`hostname`&lt;/h1&gt;&quot; &gt; /var/www/html/index.html
+
+    case $1 in
+    start)
+        echo 1 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 1 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        ifconfig $interface $vip netmask $mask broadcast $vip up
+        route add -host $vip dev $interface   #添加到达VIP的路由信息
+        echo &quot;The RS Server is Ready!&quot;
+        ;;
+    stop)
+        ifconfig $interface down   
+            #VIPdown后，路由和IP也就没有了只需清楚内核参数即可
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        echo &quot;The RS Server is Canceled!&quot;
+        ;;
+    *) 
+        echo &quot;Usage: $(basename $0) start|stop&quot;
+        exit 1
+        ;;
+    esac
+</code></pre><h3 id="IPIP-LVS-TUN：异地容灾"><a href="#IPIP-LVS-TUN：异地容灾" class="headerlink" title="IPIP:LVS-TUN：异地容灾"></a>IPIP:LVS-TUN：异地容灾</h3><p><img src="/2017/01/20/LVS类型及实现/LVS-TUN模型的工作原理.jpg" alt="LVS-TUN模式"></p>
+<pre><code>目的：
+    不管是NAT还是DR类型，由于其特点限制必须在同一个机房中，不易于容灾，所以就需要有IP隧道(TUN)类型的.
+
+转发方式：
+    1.Director不修改请求报文的IP首部(源IP为CIP，目标IP为VIP)，而在原IP报文之外再
+        封装一个IP首部(源IP是DIP，目标IP是RIP,将报文发往挑选出的目标RS；
+        RS直接响应给客户端(源IP是VIP，目标IP是CIP);
+    2.当RS收到报文后，拆除第一层IP首部(VIP-RIP)看到的是(CIP-VIP),那么所有的RS都需要配置一个VIP,
+    但此时确不会出现DR模型的apr冲突的问题，因为这些服务器在不同的机房中，不存在这种情况.
+特点：
+    1.DIP,VIP,RIP都需要是公网地址；
+    2.由于距离的限制，RS的网关也不能指向DIP的；
+    3.请求报文要经由Director，但响应报文不能经由Director(同DR模型)；
+    4.不支持端口映射(同DR模型原理)；
+    5.RS的操作系统需要支持IP隧道功能；
+缺点：
+    由于MTU的最大值是1500字节，留给IP层、TCP层、传输层、首部的也就40字节，而IPIP类型则会多出一个IP层首部，
+    即1520字节，而很多路由器设备会将1520的传输单元进行切片才能进行传输,所以对于TUN类型的必须人为指定最大传
+    输单元，留出额外需要封装的IP首部大小而不超过1500.
+</code></pre><h3 id="FullNat"><a href="#FullNat" class="headerlink" title="FullNat"></a>FullNat</h3><pre><code>FullNat类型没有收录到linux内核中；需要打补丁;
+FullNAT工作原理：
+    为了弥补NAT类型的DNAT中的RS网关必须指向DIP，FullNAT则在转发给RS时的源IP和目标IP由CIP-&gt;VIP修改为
+    DIP-&gt;RIP,RS的响应报文则由RS直接响应给DIP，即使中间跨多个路由器，也会转发给Director,Director最终响应给CIP
+优点：
+    既有DR模型中不受限于距离限制的，又可以通过NAT模型不直接将RS暴露在公网的完全有点.
+</code></pre><h3 id="LVS的实现：ipvsadm"><a href="#LVS的实现：ipvsadm" class="headerlink" title="LVS的实现：ipvsadm"></a>LVS的实现：ipvsadm</h3><pre><code>1.ip_vs:先启用内核中的ip_vs模块，默认是没启用的
+2.生成ipvs规则：使用ipvsadm工具
+    1.先定义集群服务：service
+        三种定义集群服务的方式：
+            1.TCP协议+端口
+            2.UDP协议+端口
+            3.FireWall Mark：混合上面两种方式
+    2.编辑管理集群服务的RS Server
+        RIP+端口
+3.安装ipvsadm，
+    [root@node01 ~]# yum -y install ipvasdm
+    [root@node01 ~]# rpm -ql ipvsadm
+    /etc/sysconfig/ipvsadm-config
+    /usr/lib/systemd/system/ipvsadm.service  #Unitfile文件
+    /usr/sbin/ipvsadm                        #二进制主程序
+    /usr/sbin/ipvsadm-restore                #重载规则
+    /usr/sbin/ipvsadm-save                   #保存现有规则
+
+4.负载均衡集群设计时要注意的问题：
+    (1) 是否需要会话保持；
+    (2) 是否需要共享存储；
+        共享存储：NAS， SAN， DS（分布式存储）
+        数据同步：
+            课外作业：rsync+inotify实现数据同步 
+5.健康状态检测缺点：
+    1.LVS的Director不会对后端RS集群的健康状态做检测，不像Nginx或者HAproxy可以对后端集群对健康状态检测，
+    并根据检测结果动态的添加或移除某个RS，这也是LVS的极大缺陷.
+    2.但可以通过其他软件实现，如keepalived高可用IPVS，顺便为ipvs添加了多个checks检测器，从而周期性的检测
+    后端RS是否为健康的.
+</code></pre><h3 id="FireWall-Mark：防火墙标记"><a href="#FireWall-Mark：防火墙标记" class="headerlink" title="FireWall Mark：防火墙标记"></a>FireWall Mark：防火墙标记</h3><pre><code>为服务提供分类器，从而实现将多个服务归类一个服务；
+1.比如对80和443端口的访问，如果不用防火墙标记的话，需要定义两个LVS集群;但是这两个端口对应的又是一个服务，
+我们不希望区别对待,就可以对进来的报文进行标记;
+2.iptables的mangle表(修改报文格式)，对报文进行分类，在PREROUTING链上对进来的报文进行标记，对80和443端口
+的报文都定义为一类服务，然后再ipvsadm进行firewalld mark进行定义.
+
+示例：
+    1.标记
+    iptables -t mangle -A PREROUTING -d 172.18.140.10 -p -m multiport --dports 80,443 -j MARK --set-mark 6
+        #在刚进入linux服务器时，对进来对172.18.140.10的80和8080的访问都归于6号mark中
+    2.添加集群：
+        ipvsadm -A -f 6 -s wrr
+        #对FWM为6的设置一个集群，因为FWM=6已经有IP了只需要指定算法就行了.
+    3.添加RS
+        ipvsadm -a -f 6 172.18.140.5 -g -w 1
+        ipvsadm -a -f 6 172.18.140.6 -g -w 1
+        #因为访问的端口有80和8080，所以后端RS是不能写端口的
+    4.查看规则：
+    [root@node01 data]# ipvsadm -Ln     
+    FWM  6 wrr
+      -&gt; 172.18.140.5:0               Route   1      0          0         
+      -&gt; 172.18.140.6:0               Route   1      0          0    
+      #因为0端口代表通配，用于通配FWM 6中的80和8080端口
+</code></pre><h3 id="ipvsadm命令："><a href="#ipvsadm命令：" class="headerlink" title="ipvsadm命令："></a>ipvsadm命令：</h3><pre><code>核心功能：
+    集群服务管理：增、删、改；
+    集群服务的RS管理：增、删、改；
+    查看：
+##大写的命令是用来管理集群服务的，后面必须跟集群服务地址
+##小写的命名是用来管理后端RS集群的；
+
+ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]] [-M netmask] [--pe persistence_engine] [-b sched-flags]
+ipvsadm -D -t|u|f service-address
+ipvsadm -C
+ipvsadm -R
+ipvsadm -S [-n]
+ipvsadm -a|e -t|u|f service-address -r server-address [options]
+ipvsadm -d -t|u|f service-address -r server-address
+ipvsadm -L|l [options]
+ipvsadm -Z [-t|u|f service-address]  #清空集群的连接数计算器
+
+管理集群服务：增、改、删；
+    增、改：
+        ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]]
+
+    删：
+        ipvsadm -D -t|u|f service-address
+
+    service-address：
+        -t|u|f：
+            -t: TCP协议的端口，VIP:TCP_PORT
+            -u: UDP协议的端口，VIP:UDP_PORT
+            -f：firewall MARK，是一个数字；
+
+    [-s scheduler]：指定集群的调度算法，默认为wlc；
+
+管理集群上的RS：增、改、删；
+    增、改：
+        ipvsadm -a|e -t|u|f service-address -r server-address [-g|i|m] [-w weight]
+
+    删：
+        ipvsadm -d -t|u|f service-address -r server-address
+
+    server-address：
+        rip[:port]
+
+    选项：
+        lvs类型：
+            -g: gateway, DR类型
+            -i: ipip, TUN类型
+            -m: masquerade, NAT类型
+
+        -w weight：权重；
+
+清空定义的所有内容：
+    ipvsadm -C
+
+查看：
+    ipvsadm -L|l [options]
+        --numeric, -n：numeric output of addresses and ports 
+        --exact：expand numbers (display exact values)
+
+        --connection， -c：output of current IPVS connections
+        --stats：统计计算器的总和值
+        --rate ：统计速率值
+保存和重载：
+    ipvs和iptables一样，规则写完是送到内核内存中保存的，内核一旦关闭，规则也就没有了，所以必要时一定要将规则保存起来.
+    保存：
+        ipvsadm -S = ipvsadm-save &gt; /etc/sysconfig/ipvsadm
+    重载：
+        ipvsadm -R = ipvsadm-restore 
+    设置开机自启：
+        systemctl enable ipvsadm  #启动时自动加载保存好的规则
+##因为ipvsadm启动时加载的文件是/etc/sysconfig/ipvsadm，只需要将规则保
+存到此文件中，就会启动时自动加载，规则就不会丢失了.
+[root@node01 data]# vim /usr/lib/systemd/system/ipvsadm.service
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c &quot;exec /sbin/ipvsadm-restore &lt; /etc/sysconfig/ipvsadm&quot;
+ExecStop=/bin/bash -c &quot;exec /sbin/ipvsadm-save -n &gt; /etc/sysconfig/ipvsadm&quot;
+</code></pre><h3 id="LVS-NAT类型实验-Docker上实现-："><a href="#LVS-NAT类型实验-Docker上实现-：" class="headerlink" title="LVS-NAT类型实验(Docker上实现)："></a>LVS-NAT类型实验(Docker上实现)：</h3><pre><code>1.先在docker上启动两个容器作为RS，为了方便区别，分别在web页面下创建index.html文件以示区别
+    [root@node01 ~]# docker run --name c1  -it -v /data/vols/vol1:/data/web/html busybox
+    cd /data/web/html
+    vim index.html
+    nginx1
+    [root@node01 ~]# docker run --name c2  -it -v /data/vols/vol2:/data/web/html busybox
+    cd /data/web/html
+    vim index.html
+    nginx2
+2.定义集群，以宿主机的桥接IP为VIP
+    [root@node01 vols]# ipvsadm -A -t 172.18.140.6:80 -s wrr
+        #创建一个集群，并指定调度算法为wrr加权轮询
+3.向集群添加两个RS
+    #向集群添加RS，并指定-m为NAT类型，权重为都是1
+    [root@node01 vols]# ipvsadm -a -t 172.18.140.6:80 -r 172.17.0.2:80 -m -w 1
+    [root@node01 vols]# ipvsadm -a -t 172.18.140.6:80 -r 172.17.0.3:80 -m -w 1
+    #查看定义好的集群
+    [root@node01 vols]# ipvsadm -Ln
+    IP Virtual Server version 1.2.1 (size=4096)
+    Prot LocalAddress:Port Scheduler Flags
+      -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+    TCP  172.18.140.6:80 wrr
+      -&gt; 172.17.0.2:80                Masq    1      0          0         
+      -&gt; 172.17.0.3:80                Masq    1      0          0  
+4.在其他服务器进行测试
+    [root@node02 ~]# while true;do curl 172.18.140.6; done
+    nginx1
+    nginx2
+    nginx1
+    nginx2
+    nginx1
+    nginx2
+    #可以看到是根据wrr算法进行调度的
+5.修改其中一个RS的权重：
+    修改：
+    [root@node01 vols]# ipvsadm -e -t 172.18.140.6:80 -r 172.17.0.2:80 -m -w 2
+    #此时权重就为2：
+    [root@node01 vols]# ipvsadm -Ln 
+    IP Virtual Server version 1.2.1 (size=4096)
+    Prot LocalAddress:Port Scheduler Flags
+      -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+    TCP  172.18.140.6:80 wrr
+      -&gt; 172.17.0.2:80                Masq    2      0          37        
+      -&gt; 172.17.0.3:80                Masq    1      0          36  
+    测试：
+        [root@node02 ~]# while true;do curl 172.18.140.6; done
+        nginx2
+        nginx1
+        nginx1
+        nginx2
+    #可以看到权重比和调度的关系
+6.终止其中一个后端RS：
+    docker kill c2   #终止RS-c2
+    [root@node02 ~]# while true;do curl --connect-timeout 1 172.18.140.6 sleep .5; done
+    curl: (28) Connection timed out after 1001 milliseconds
+    curl: (28) Resolving timed out after 1517 milliseconds
+    curl: (6) Could not resolve host: .5; Unknown error
+    nginx2
+    curl: (28) Resolving timed out after 1517 milliseconds
+    #因为LVS没有对后端RS健康状态检测的功能，所以即使后端的RSdown了，也会被调度上去,这也是LVS的一个重要缺点.
+</code></pre><h3 id="LVS-DR类型实验："><a href="#LVS-DR类型实验：" class="headerlink" title="LVS-DR类型实验："></a>LVS-DR类型实验：</h3><pre><code>1.环境准备：
+    4台物理机：
+    node01 172.18.140.6
+    node02 172.18.140.5
+    node03 172.18.140.7
+    #都关闭防火墙
+    [root@node01 ~]# systemctl stop firewalld.service
+    [root@node01 ~]# systemctl disable firewalld.service
+2.安装httpd
+    [root@node01 ~]# yum install httpd -y
+    [root@node01 ~]# systemctl start httpd
+3.为node2和ndoe3进行内核参数设置
+    [root@node03 ~]# lvs_dr_rs.sh
+    #!/bin/bash
+    vip=172.18.140.10         #VIP地址
+    mask=&apos;255.255.255.255&apos;    #
+    interface=&quot;lo:0&quot;
+    #rpm -q httpd &amp;&gt; /dev/null || yum -y install httpd &amp;&gt;/dev/null
+    #service httpd start &amp;&gt; /dev/null &amp;&amp; echo &quot;The httpd Server is Ready!&quot;
+    #echo &quot;&lt;h1&gt;`hostname`&lt;/h1&gt;&quot; &gt; /var/www/html/index.html
+
+    case $1 in
+    start)
+        echo 1 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 1 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 2 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        ifconfig $interface $vip netmask $mask broadcast $vip up
+        route add -host $vip dev $interface   #添加到达VIP的路由信息
+        echo &quot;The RS Server is Ready!&quot;
+        ;;
+    stop)
+        ifconfig $interface down   
+            #VIPdown后，路由和IP也就没有了只需清楚内核参数即可
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore
+        echo 0 &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 0 &gt; /proc/sys/net/ipv4/conf/lo/arp_announce
+        echo &quot;The RS Server is Canceled!&quot;
+        ;;
+    *) 
+        echo &quot;Usage: $(basename $0) start|stop&quot;
+        exit 1
+        ;;
+    esac
+4.为node1设置VIP
+    ifconfig ens37:0 172.18.140.10 netmask 255.255.255.255 broadcast 172.18.140.10
+5.添加集群和RS
+    ipvsadm -A -t 172.18.140.10:80 -s wrr
+    ipvsadm -a -t 172.18.140.10:80 -r 172.18.140.5 -g -w 1
+    ipvsadm -a -t 172.18.140.10:80 -r 172.18.140.7 -g -w 2
+6.测试调度效果：
+    [root@node04 ~]# while true; do curl 172.18.140.10 ; done
+    node03
+    node03
+    node2
+    node03
+    node03   #显示轮询调度效果
+7.修改调度算法：
+    修改为源地址sh的算法：
+    [root@node01 data]# ipvsadm -E -t 172.18.140.10:80 -s sh
+    测试：
+    [root@node04 ~]# while true; do curl 172.18.140.10 ; done
+    node2
+    node2
+    node2
+    #可以看到同一个地址，始终会被调度到一个后端RS上.
+</code></pre><h3 id="LVS的持久连接机制实现"><a href="#LVS的持久连接机制实现" class="headerlink" title="LVS的持久连接机制实现"></a>LVS的持久连接机制实现</h3><pre><code>lvs persistence：持久连接
+    持久连接模板：实现无论使用任何调度算法，在一段时间内，能够实现将来自同一个地址的请求始终发往同一个RS；
+
+        ipvsadm -A|E -t|u|f service-address [-s scheduler] [-p [timeout]]
+
+    port Affinity：
+        每端口持久：每个端口对应定义为一个集群服务，每集群服务单独调度；
+        每防火墙标记持久：基于防火墙标记定义集群服务；可实现将多个端口上的应用统一调度，即所谓的port Affinity；
+        每客户端持久：基于0端口定义集群服务，即将客户端对所有应用的请求统统调度至后端主机，必须定义为持久模式；
+
+持久连接和算法无关系，和采用的持久连接方式有关！
+session 绑定：对共享同一组RS的多个集群服务，需要统一进行绑定，lvs sh算法无法实现
+
+
+对于sh的算法来说，某个IP地址的访问会通过hash
+PCC:所有端口
+PFWM:持久防火墙标记
+PPC:单个端口
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LB负载均衡/" rel="tag"><i class="fa fa-tag"></i> LB负载均衡</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/12/mysql的日志/" rel="next" title="mysql的日志">
+                <i class="fa fa-chevron-left"></i> mysql的日志
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/01/linux网络管理命令/" rel="prev" title="linux网络管理命令">
+                linux网络管理命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS"><span class="nav-number">1.</span> <span class="nav-text">LVS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS集群的4种网络模型"><span class="nav-number">2.</span> <span class="nav-text">LVS集群的4种网络模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-NAT模式和特性"><span class="nav-number">3.</span> <span class="nav-text">LVS-NAT模式和特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-DR模式和特性"><span class="nav-number">4.</span> <span class="nav-text">LVS-DR模式和特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LVS-DR类型实现之-调整内核中的APR参数"><span class="nav-number">4.1.</span> <span class="nav-text">LVS-DR类型实现之-调整内核中的APR参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPIP-LVS-TUN：异地容灾"><span class="nav-number">5.</span> <span class="nav-text">IPIP:LVS-TUN：异地容灾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FullNat"><span class="nav-number">6.</span> <span class="nav-text">FullNat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的实现：ipvsadm"><span class="nav-number">7.</span> <span class="nav-text">LVS的实现：ipvsadm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FireWall-Mark：防火墙标记"><span class="nav-number">8.</span> <span class="nav-text">FireWall Mark：防火墙标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipvsadm命令："><span class="nav-number">9.</span> <span class="nav-text">ipvsadm命令：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-NAT类型实验-Docker上实现-："><span class="nav-number">10.</span> <span class="nav-text">LVS-NAT类型实验(Docker上实现)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS-DR类型实验："><span class="nav-number">11.</span> <span class="nav-text">LVS-DR类型实验：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LVS的持久连接机制实现"><span class="nav-number">12.</span> <span class="nav-text">LVS的持久连接机制实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.3m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">19:21</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

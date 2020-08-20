@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="1.mongoDB的优化-Profiling捕捉慢查询">
+<meta name="keywords" content="MongoDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB的profile、监控和备份恢复">
+<meta property="og:url" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="1.mongoDB的优化-Profiling捕捉慢查询">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控2.png">
+<meta property="og:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控3.png">
+<meta property="og:updated_time" content="2019-06-05T14:03:53.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB的profile、监控和备份恢复">
+<meta name="twitter:description" content="1.mongoDB的优化-Profiling捕捉慢查询">
+<meta name="twitter:image" content="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>MongoDB的profile、监控和备份恢复 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">72</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MongoDB的profile、监控和备份恢复
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-10-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T08:00:00+08:00">2017-10-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-mongoDB的优化-Profiling捕捉慢查询"><a href="#1-mongoDB的优化-Profiling捕捉慢查询" class="headerlink" title="1.mongoDB的优化-Profiling捕捉慢查询"></a>1.mongoDB的优化-Profiling捕捉慢查询</h3><a id="more"></a>
+<pre><code>因为Mongodb中如果不添加索引，对Mongodb数据表进行查询操作的时候，需要把数据都加载到内存。当数据的数量达到几十万乃至上百万的
+时候，查询就会变慢、而且Mongodb一直占据99%的CPU，
+    如果此时使用netstat -anp | grep ESTABLISHED过滤就会看到应用服务器有正在处理的连接请求，此时可以开启慢查询
+1.1.开启profile的相关命令
+    db.setProfilingLevel(level,&lt;slowms&gt;) 0=off 1=slow 2=all
+        #设置profile的级别和慢查询的超时时间
+        0代表关闭，1代表记录慢命令，2代表全部
+        注意：
+            1.profile需要在所有的集合下设置或则在开启的时候开启参数
+                ~]# vim /etc/mongodb.conf
+                    profile = 1
+                    slowms = 200
+            2.每次设置之后返回给你的结果是修改之前的状态（包括级别、时间参数）
+    db.getProfilingStatus() - returns if profiling is on and slow threshold
+        #查看当前设置是否开启了profile
+    db.system.profile.find()
+        #开启了慢查询后，使用此命令可以看到超市时长的查询命令
+1.2.示例：
+    &gt; db.setProfilingLevel(1,100)  #开启慢查询级别为1,时间为100ms
+    &gt; db.system.profile.find({millis:{$gt:500}})  
+        #查看慢查询时间超过500ms的查询语句
+    { 
+        &quot;op&quot; : &quot;query&quot;,                     #操作类型，有insert、query、update、remove、getmore、command  
+        &quot;ns&quot; : &quot;F10data3.f10_2_8_3_jgcc&quot;, 
+        &quot;query&quot; : {                         #具体的查询语句 包括过滤条件，limit行数  排序字段
+            filter&quot; : {
+                &quot;jzrq&quot; : {
+                    &quot;$gte&quot; : ISODate(&quot;2017-03-31T16:00:00.000+0000&quot;), 
+                    &quot;$lte&quot; : ISODate(&quot;2017-06-30T15:59:59.000+0000&quot;)
+                }, 
+                &quot;jglxfldm&quot; : 10.0
+            }, 
+            &quot;ntoreturn&quot; : 200.0,    
+            &quot;sort&quot; : {                      #如果有排序  则显示排序的字段 这里是 RsId
+                &quot;RsId&quot; : 1.0
+            }
+        }, 
+        &quot;keysExamined&quot; : 0.0,               #索引扫描数量 这里是全表扫描，没有用索引 所以是 0
+        &quot;docsExamined&quot; : 69608.0,           #浏览的文档数 这里是全表扫描 所以是整个collection中的全部文档数
+        &quot;numYield&quot; : 546.0,                 #该操作为了使其他操作完成而放弃的次数。通常来说，当他们需要访问
+                                            还没有完全读入内存中的数据时，操作将放弃。这使得在MongoDB为了
+                                            放弃操作进行数据读取的同时，还有数据在内存中的其他操作可以完成。
+        &quot;locks&quot; : {                         #锁信息，R：全局读锁；W：全局写锁；r：特定数据库的读锁；w：特定数据库的写锁
+            &quot;Global&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(1094)  #该操作获取一个全局级锁花费的时间。
+                }
+            }, 
+            &quot;Database&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(547)  
+                }
+            }, 
+            &quot;Collection&quot; : {
+                &quot;acquireCount&quot; : {
+                    &quot;r&quot; : NumberLong(547)
+                }
+            }
+        }, 
+        &quot;nreturned&quot; : 200.0,                #返回的文档数量
+        &quot;responseLength&quot; : 57695.0,         #返回字节长度，如果这个数字很大，考虑值返回所需字段
+        &quot;millis&quot; : 264.0,                   #消耗的时间（毫秒）
+        &quot;planSummary&quot; : &quot;COLLSCAN, COLLSCAN&quot;, #执行概览 从这里看来 是全表扫描 
+        &quot;execStats&quot; : {                       #详细的执行计划 这里先略过 后续可以用 explain来具体分析
+        }, 
+        &quot;ts&quot; : ISODate(&quot;2017-08-24T02:32:49.768+0000&quot;),  #命令执行的时间
+        &quot;client&quot; : &quot;10.3.131.96&quot;,                        #访问的ip或者主机
+        &quot;allUsers&quot; : [
+        ], 
+        &quot;user&quot; : &quot;&quot;
+    }
+    解释：
+        ts：命令执行时间
+        info：命令的内容
+        query：代表查询
+        order.order： 代表查询的库与集合
+        reslen：返回的结果集大小，byte数
+        nscanned：扫描记录数量
+        nquery：后面是查询条件
+        nreturned：返回记录数及用时
+        millis：所花时间
+    分析和优化：
+        1.millis的时间较大，那么就需要作优化
+        2.nscanned或docsExamined数很大，或者接近记录总数，那么可能没有用到索引查询
+        3.如果keysExamined数为0，也可能是没用索引
+        4.结合 planSummary 中的显示，上例中是  &quot;COLLSCAN, COLLSCAN&quot; 确认是全表扫描
+        5.如果 keysExamined 值高于 nreturned 的值，说明数据库为了找到目标文档扫描了很多文档。这时可以考虑创建索引来提高效率
+1.3.system.profile的结果中的&apos;type&apos;的返回参数说明
+    COLLSCAN     #全表扫描                避免
+    IXSCAN       #索引扫描                可以改进 选用更高效的索引
+    FETCH        #根据索引去检索指定document                    
+    SHARD_MERGE  #将各个分片返回数据进行merge     尽可能避免跨分片查询
+    SORT         #表明在内存中进行了排序（与老版本的scanAndOrder:true一致） 排序要有index  
+    LIMIT        #使用limit限制返回数    要有限制 Limit+（Fetch+ixscan）最优
+    SKIP         #使用skip进行跳过       避免不合理的skip
+    IDHACK       #针对_id进行查询        推荐,_id 默认主键,查询速度快
+    SHARDING_FILTER  #通过mongos对分片数据进行查询 SHARDING_FILTER+ixscan最优 
+    COUNT        #利用db.coll.explain().count()之类进行count运算             
+    COUNTSCAN    #count不使用Index进行count时的stage返回 避免这种情况建议加索引
+    COUNT_SCAN   #count使用了Index进行count时的stage返回    推荐
+    SUBPLA       #未使用到索引的$or查询的stage返回           避免
+    TEXT         #使用全文索引进行查询时候的stage返回  
+    PROJECTION   #限定返回字段时候stage的返回  选择需要的数据,推荐PROJECTION+ixscan
+</code></pre><h3 id="2-使用zabbix监控MongoDB"><a href="#2-使用zabbix监控MongoDB" class="headerlink" title="2.使用zabbix监控MongoDB"></a>2.使用zabbix监控MongoDB</h3><pre><code>由于所存储的业务数据比较重要，所以对MongoDB的监控显得尤为重要！Zabbix监控MongoDB性能的原理：
+    通过echo &quot;db.serverStatus()&quot; | mongo admin 来查看mongodb的状态;
+1.1.Zabbix监控MongoDB性能，主要监控以下项目：
+    - 连接数
+        db.serverStatus().connections.current：当前连接数
+        db.serverStatus().connections.available:可用连接数
+        注意：
+            mongodb最大处理到2000个连接就不行了（要根据你的机器性能和业务来设定），所以设大了没意义。设个合理值的话，到达
+            这个值mongodb就拒绝新的连接请求，避免被太多的连接拖垮；
+    - 内存使用情况：
+        vsize 虚拟内存使用量，单位MB：db.serverStatus().mem.virtual
+        res 物理内存使用量，单位MB：db.serverStatus().mem.resident
+    - 每秒执行的查询、插入、删除、更新、getmore、等操作次数
+        query/s 每秒查询次数:db.serverStatus().opcounters.query
+        inserts/s 每秒插入次数:db.serverStatus().opcounters.insert
+        delete/s 每秒删除次数:db.serverStatus().opcounters.delete
+        update/s 每秒更新次数:db.serverStatus().opcounters.update
+        getmore/s:每秒getmore次数:db.serverStatus().opcounters.getmore
+    - 每秒执行fsync将数据写入硬盘的次数
+        flushs/s
+    - command/s 
+        每秒的命令数，比以上插入、查找、更新、删除的综合还多，还统计了别的命令
+    - 所有的被mmap的数据量，单位是MB
+        mapped/s
+    - 锁
+    - 每秒访问的索引次数，每秒命中索引的次数
+        Index hit
+    - MongoDB产生的总的页面错误数量
+        db.serverStatus().extra_info.page_faults
+    - MongoDB的网络流量状况
+1.2.mongod上安装zabbix_agent客户端
+    ~]# cat /usr/local/zabbix/etc/zabbix_agentd.conf|grep -v &quot;#&quot;|grep -v &quot;^$&quot;
+    Include=/usr/local/zabbix/etc/zabbix_agentd.conf.d/
+    UnsafeUserParameters=1 #配置成1，表示启用自定义脚本功能！
+1.3.自定义监控脚本
+    ~]# vim /usr/local/zabbix/etc/zabbix_agentd.conf.d/MongoDB.sh
+        #!/bin/bash
+        database=monitor
+        user=monitor
+        password=pass0p-!
+        case $# in
+          1)
+            output=$(/bin/echo &quot;db.serverStatus().$1&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+          2)
+            output=$(/bin/echo &quot;db.serverStatus().$1.$2&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+          3)
+            output=$(/bin/echo &quot;db.serverStatus().$1.$2.$3&quot; |/bin/mongo 127.0.0.1:27017/$database -u$user -p$password|sed -n &apos;3p&apos;)
+            ;;
+        esac
+        #check if the output contains &quot;NumberLong&quot;
+        if [[ &quot;$output&quot; =~ &quot;NumberLong&quot;   ]];then
+          echo $output|sed -n &apos;s/NumberLong(//p&apos;|sed -n &apos;s/)//p&apos;
+        else
+          echo $output
+        fi
+    ~]# setfacl -Rm u:zabbix:rwx /root  #为脚本赋予zabbix执行权限
+    ~]# vim /usr/local/zabbix/etc/zabbix_agentd.conf.d/userparameter_MongoDB.conf
+    UserParameter=MongoDB.Status[*],/usr/local/zabbix/monitor_scripts/MongoDB.sh &quot;$1&quot; &quot;$2&quot;
+1.4.导入监控模板，重启zabbix_agent测试即可
+</code></pre><p>–mongodb监控1<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控1.png" alt="mongodb监控"><br>–mongodb监控2<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控2.png" alt="mongodb监控"><br>–mongodb监控3<br><img src="/2017/10/16/MongoDB的profile、监控和备份恢复/mongodb监控3.png" alt="mongodb监控"></p>
+<h3 id="3-MongoDB的单个collection和整库备份"><a href="#3-MongoDB的单个collection和整库备份" class="headerlink" title="3.MongoDB的单个collection和整库备份"></a>3.MongoDB的单个collection和整库备份</h3><pre><code>1.单个collection的导入与导出
+    1.1》导出工具：mongoexport
+        mongoDB中的mongoexport工具可以把一个collection导出成JSON格式或CSV格式的文件
+        语法：
+            mongoexport -d dbname -c collectionname -o file --type json/csv -f field
+            参数说明：
+            -d ：数据库名
+            -c ：collection名
+            -o ：输出的文件名
+            --type ： 输出的格式，默认为json
+            -f ：输出的字段，如果-type为csv，则需要加上-f &quot;字段名&quot;
+        示例：
+            ~]# mongoexport -d testdb -c users -o /data/testdb_user.json --type json 
+            2017-05-24T22:08:04.926+0800    connected to: localhost
+            2017-05-24T22:08:05.237+0800    exported 10000 records  #总记录数
+                #将testdb库的users这个collection导出到/data/testdb_user.json文件
+    1.2.数据导入：mongoimport
+        语法：
+        mongoimport -d dbname -c collectionname --file filename --headerline --type json/csv -f field
+        参数说明：
+            -d ：数据库名
+            -c ：collection名
+            --type ：导入的格式默认json
+            -f ：导入的字段名
+            --headerline ：如果导入的格式是csv，则可以使用第一行的标题作为导入的字段
+            --file ：要导入的文件
+        示例：删除后恢复
+            ~]# systemctl stop mongod #关闭mongod实例
+            ~]# rm -rf /data/mongodb/data/*   #先删除所有数据
+            ~]# systemctl start mongod   #重启mongod实例
+            ~]# mongoimport -d testdb -c users --file /data/testdb_user.json --type json
+            2017-05-24T22:09:52.189+0800    connected to: localhost
+            2017-05-24T22:09:52.396+0800    imported 10000 documents
+                #将第一步备份的数据再导入进来     
+
+2.MongoDB备份与恢复        
+    2.1.MongoDB数据库备份
+        语法：
+        mongodump -h dbhost -d dbname -o dbdirectory
+        参数说明：
+            -h： MongDB所在服务器地址，例如：127.0.0.1，当然也可以指定端口号：127.0.0.1:27017
+            -d： 需要备份的数据库实例，例如：test
+            -o： 备份的数据存放位置，例如：/home/mongodump/，当然该目录需要提前建立，这个目录里面存放该数据库实例的备份数据。
+        示例：
+            ~]# mongodump -d hello -o /data/mongobak/
+            2017-05-24T22:32:38.573+0800    writing hello.hello12345678 to 
+            2017-05-24T22:32:38.573+0800    writing hello.hello to 
+            2017-05-24T22:32:38.670+0800    done dumping hello.hello12345678 (10000 documents)
+            2019-05-24T22:32:38.704+0800    done dumping hello.hello (10000 documents)
+                #可以看到hello库的所有collections都备份了
+            ~]# cd /data/mongobak/hello/
+            ~]# ls
+            hello12345678.bson  hello12345678.metadata.json  hello.bson  hello.metadata.json
+                #可以看到collection的数据和元数据是分开存放的
+    2.2.MongoDB数据库恢复
+        语法：
+        mongorestore -h dbhost -d dbname --dir dbdirectory
+        参数说明：
+            -h： MongoDB所在服务器地址
+            -d： 需要恢复的数据库实例，例如：test，当然这个名称也可以和备份时候的不一样，比如test2
+            --dir： 备份数据所在位置，例如：/home/mongodump/itcast/
+            --drop： 恢复的时候，先删除当前数据，然后恢复备份的数据。就是说，恢复后，备份后添加修改的数据都会被删除，慎用！
+        示例：
+            1.删除
+                &gt; use hello
+                switched to db hello
+                &gt; db.dropDatabase()
+                { &quot;dropped&quot; : &quot;hello&quot;, &quot;ok&quot; : 1 }
+                    #先将hello库删除
+            2.恢复
+                [root@node02 ~]# mongorestore -d hellodb --dir /data/mongobak/hello/
+                2017-05-24T22:35:40.192+0800    building a list of collections to restore from /data/mongobak/hello dir
+                2017-05-24T22:35:40.212+0800    reading metadata for hellodb.hello12345678 from /data/mongobak/hello/hello12345678.metadata.json
+                2017-05-24T22:35:40.227+0800    restoring hellodb.hello12345678 from /data/mongobak/hello/hello12345678.bson
+                2017-05-24T22:35:40.240+0800    reading metadata for hellodb.hello from /data/mongobak/hello/hello.metadata.json
+                2017-05-24T22:35:40.255+0800    restoring hellodb.hello from /data/mongobak/hello/hello.bson
+                2017-05-24T22:35:40.517+0800    restoring indexes for collection hellodb.hello from metadata
+                2017-05-24T22:35:40.528+0800    finished restoring hellodb.hello (10000 documents)
+                2017-05-24T22:35:40.544+0800    restoring indexes for collection hellodb.hello12345678 from metadata
+                2017-05-24T22:35:40.544+0800    finished restoring hellodb.hello12345678 (10000 documents)
+                2017-05-24T22:35:40.544+0800    done
+            3.数据库验证
+                &gt; show dbs
+                hellodb  0.001GB
+                local    0.000GB
+                testdb   0.000GB
+                &gt; use hellodb
+                switched to db hellodb
+                &gt; show collections
+                hello
+                hello12345678
+                    #可以看到库和所有collection都恢复了
+            4.备注
+                恢复时-d databaseName 指定数据库名时可以和备份的库的名字不同!
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MongoDB/" rel="tag"><i class="fa fa-tag"></i> MongoDB</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/16/MongoDB的Sharding集群实现/" rel="next" title="MongoDB的Sharding集群实现">
+                <i class="fa fa-chevron-left"></i> MongoDB的Sharding集群实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/18/文本三剑客之awk/" rel="prev" title="文本三剑客之awk">
+                文本三剑客之awk <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-mongoDB的优化-Profiling捕捉慢查询"><span class="nav-number">1.</span> <span class="nav-text">1.mongoDB的优化-Profiling捕捉慢查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用zabbix监控MongoDB"><span class="nav-number">2.</span> <span class="nav-text">2.使用zabbix监控MongoDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-MongoDB的单个collection和整库备份"><span class="nav-number">3.</span> <span class="nav-text">3.MongoDB的单个collection和整库备份</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.3m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">19:21</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

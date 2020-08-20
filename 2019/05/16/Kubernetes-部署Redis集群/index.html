@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="k8s集群部署Redis Cluster更新于：19.6.18">
+<meta name="keywords" content="Kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes-部署Redis集群">
+<meta property="og:url" content="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="k8s集群部署Redis Cluster更新于：19.6.18">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/redis集群架构图.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/statefulset部署redis集群.png">
+<meta property="og:updated_time" content="2019-11-15T13:34:56.131Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes-部署Redis集群">
+<meta name="twitter:description" content="k8s集群部署Redis Cluster更新于：19.6.18">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/redis集群架构图.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Kubernetes-部署Redis集群 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">72</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/05/16/Kubernetes-部署Redis集群/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes-部署Redis集群
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-16 08:00:00" itemprop="dateCreated datePublished" datetime="2019-05-16T08:00:00+08:00">2019-05-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">18k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">16 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="k8s集群部署Redis-Cluster"><a href="#k8s集群部署Redis-Cluster" class="headerlink" title="k8s集群部署Redis Cluster"></a>k8s集群部署Redis Cluster</h3><p>更新于：19.6.18<br><a id="more"></a><br><img src="/2019/05/16/Kubernetes-部署Redis集群/redis集群架构图.png" alt="redis集群架构图"><br><img src="/2019/05/16/Kubernetes-部署Redis集群/statefulset部署redis集群.png" alt="statefulset部署redis集群"></p>
+<pre><code>1.redis cluster架构
+    1.redis高可用可以是主从+Sentinel或redis cluster，这里是部署redis cluster；
+    2.上图为redis集群的架构图，每个Master都可以拥有多个Slave。当Master下线后，Redis集群会从多个Slave中选举出一个新的Master作
+    为替代，而旧Master重新上线后变成新Master的Slave；
+2.方案
+    1.这里采用github上的方案，项目地址:
+        https://github.com/zuxqoj/kubernetes-redis-cluster
+    2.这个项目提供了两种部署Redis集群的方式： 
+        在该项目的README.md中两个方式的部署链接：
+            StatefulSet和
+            Service&amp;Deployment
+    3.使用statefulSet方案
+        在k8s上，对于像Mysql、redis、Mongodb、Zookeeper、es等有状态的服务，使用StatefulSet是首选方式，下面就是通过使用
+        StatefulSet进行redis集群;
+3.StatefulSet控制器的基本要求
+    1.StatefulSet是为了解决Pod重启、迁移后，Pod的IP、主机名等网络标识会改变而带来的问题的，所以有以下基本要求：
+        1.每个实例具有唯一的网络标识符(有序的pod名称)
+        2.每一个Pod必须有唯一的持久存储
+        3.有序的部署和实例扩展
+        4.有序的删除和终止
+        5.有序的自动滚动更新(按照彼此之间的关联关系进行更新)
+        6.Headless service：ClusterIP=None
+            为了保证每个pod对象的使用持久且唯一的标识符，稳定的网络标志（包括Pod的hostname和DNS Records），使得Pod重新调度后也保持不变；
+        7.PVC template
+            每个Pod用到的存储卷必须使用有storageclass动态供给或由管理员事先创建好的PV
+</code></pre><h3 id="2-部署过程"><a href="#2-部署过程" class="headerlink" title="2.部署过程"></a>2.部署过程</h3><p><a href="https://github.com/zuxqoj/kubernetes-redis-cluster/blob/master/README-using-statefulset.md" target="_blank" rel="noopener">Statefulset based setup</a><br><a href="https://github.com/zuxqoj/kubernetes-redis-cluster" target="_blank" rel="noopener">redis构建项目参考</a></p>
+<pre><code>前提准备：
+    1.上面链接是基于StatefulSet的Redis创建步骤：
+        1.创建NFS存储
+        2.创建PV
+        3.创建PVC(PVC由statefulSet自动创建并绑定PV)
+        4.创建Configmap
+        5.创建headless服务
+        6.创建Redis StatefulSet
+        7.初始化Redis集群
+    2.备注：
+        这个项目中的yaml清单中都是创建在default名称空间下，我这里做一下修改都创建在redis-ns名称空间中，下文中的yaml清单和项目
+        中并不完全一样!
+    3.项目所需的redis镜像和版本
+        1.首先redis的版本应该是3.0以后的!!!
+        2.redis镜像来源：
+            1.可以下载项目中的kubernetes-redis-cluster/Docker-image/Dockerfile在本地构建redis镜像；
+            2.也可以在DockerHub上下载最新的redis镜像,这里推荐几个镜像：
+                官方：redis:lasted
+                第三方：redis:5.0-rc5-alpine3.8
+1.创建NFS存储
+    内网服务器中192.168.34.118是专门提供NFS服务的主机，导出为redis准备的数据目录即可；
+    ~]# mkdir /data/{redis-pv1,redis-pv2,redis-pv3,redis-pv4,redis-pv5,redis-pv6}
+        #创建6个数据目录给6个redis-pod
+    ~]# chmod 777 /data/redis-pv* -R       #修改权限为777,避免权限问题
+    ~]# vim /etc/exports
+        /data  *(rw,no_root_squash)
+    ~]# systemctl start nfs &amp;&amp; systemctl enable nfs   #启动NFS
+    测试：
+        在k8s的随便一个Node上使用mount挂载然后测试是否可以读写操作
+2.创建NFS静态供给PV
+    1.yaml清单参考项目下的：/persistentvolume/vol-*.yaml
+    2.提示：如果生产环境下实现了NFS的动态供给，这里创建静态PV的过程是不需要的，只需要在StatefulSet的volumeClaimTemplates中
+    填写NFS的SC即可，然后NFS会自动创建PV和PVC；
+    3.每一个Redis Pod都需要一个独立的PV来存储自己的数据，因此可以创建一个pv.yaml文件，包含6个PV：
+    ~]# vim redis-pv.yaml
+        apiVersion: v1
+        kind: PersistentVolume
+        metadata:
+          name: redis-pv1
+          labels:
+            app: redis-pv
+        spec:
+          capacity:
+            storage: 500Mi
+          accessModes:
+            - ReadWriteMany
+          nfs:
+            server: 192.168.34.118
+            path: &quot;/data/redis-pv1&quot;
+        ---
+        做的修改：
+            1.下面5个PV省略粘贴，
+            2.项目中定义存储大小是1Gi大小，这里改成500Mi
+            3.pv的名称也做了相应修改，并且都加了label:app: redis-pv
+    ~]# kubectl create -f redis-pv.yaml
+        persistentvolume &quot;redis-pv1&quot; created
+        persistentvolume &quot;redis-pv2&quot; created
+        persistentvolume &quot;redis-pv3&quot; created
+        persistentvolume &quot;redis-pv4&quot; created
+        persistentvolume &quot;redis-pv5&quot; created
+        persistentvolume &quot;redis-pv6&quot; created
+    ~]# kubectl get pv
+3.StatefuleSet中每个Pod使用的PVC说明：
+    注意：
+        1.StatefulSet中是无需管理员事先创建PVC的；
+        2.因为StatefulSet中的每个Pod的PVC是通过其中的PVC模板volumeClaimTemplates自动为每个Pod创建并关联存储大小合适的PV的!
+4.创建Configmap
+    1.redis.conf配置文件参考：kubernetes-redis-cluster/redis.conf
+    将Redis的配置文件转化为Configmap，这是一种更方便的配置读取方式。配置文件redis.conf如下：
+    ~]# vim redis.conf
+        appendonly yes
+        cluster-enabled yes
+        cluster-config-file /var/lib/redis/nodes.conf
+        cluster-node-timeout 5000
+        dir /var/lib/redis
+        port 6379
+    ~]# kubectl create configmap redis-conf --from-file=redis.conf -n redis-ns
+        #在redis-ns名称空间下创建conifgmap
+    ~]# kubectl describe cm redis-conf -n redis-ns   #确认configmap内容是对的
+        Name:         redis-conf
+        Namespace:    redis-ns
+        Labels:       &lt;none&gt;
+        Annotations:  &lt;none&gt;
+        Data
+        ====
+        redis.conf:
+        ----
+        appendonly yes
+        cluster-enabled yes
+        cluster-config-file /var/lib/redis/nodes.conf
+        cluster-node-timeout 5000
+        dir /var/lib/redis
+        port 6379
+        Events:  &lt;none&gt;
+5.创建Headless service
+    1.yaml清单参考项目下的：/statefulset-services/redis-headless.yaml
+    Headless service是StatefulSet实现稳定网络标识的基础，需要管理员手动创建；
+    ~]# vim redis-headless-service.yaml
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: redis-headless-service
+          namespace: redis-ns
+          labels:
+            app: redis
+        spec:
+          clusterIP: None
+          ports:
+          - name: redis-port
+            port: 6379
+          selector:          #使用两个标签来关联的后端redis-pod
+            app: redis
+            appCluster: redis-cluster
+        #在redis-ns名称空间下创建此headless-service;service的名称做了一下修改；
+    ~]# kubectl create -f redis-headless-service.yaml
+    ~]# kubectl get svc redis-service
+        NAME                   TYPE     CLUSTER-IP EXTERNAL-IP PORT(S)    AGE
+        redis-headless-service ClusterIP None       &lt;none&gt;     6379/TCP   20s
+        #可以看到此headless service创建好了；
+6.创建6个redis集群节点
+    1.核心yaml清单参考：/statefulset/redis-statefulset.yaml
+    2.清单中利用StatefulSet创建6个副本的Redis集群节点，下面列出几处重点内容，完整内容参考该项目的清单：
+    ~]# vim redis-statefulset.yaml
+        ...
+          name: redis-app
+          namespace: redis-ns
+        spec:
+          serviceName: &quot;redis-headless-service&quot;
+          replicas: 6
+        ...
+            spec:
+              terminationGracePeriodSeconds: 20
+              affinity:
+                podAntiAffinity:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                        - key: app
+                          operator: In
+                          values:
+                          - redis
+                      topologyKey: kubernetes.io/hostname
+        ...
+                volumeMounts:
+                  - name: &quot;redis-conf&quot;
+                    mountPath: &quot;/etc/redis&quot;
+                  - name: &quot;redis-data&quot;
+                    mountPath: &quot;/var/lib/redis&quot;
+              volumes:
+              - name: &quot;redis-conf&quot;
+                configMap:
+                  name: &quot;redis-conf&quot;
+                  items:
+                    - key: &quot;redis.conf&quot;
+                      path: &quot;redis.conf&quot;
+          volumeClaimTemplates:
+          - metadata:
+              name: redis-data
+            spec:
+              accessModes: [ &quot;ReadWriteMany&quot; ]
+              resources:
+                requests:
+                  storage: 300Mi
+    yaml清单重要字段说明：
+        1.和项目中不同的是，把该资源都放在redis-ns名称空间下了；
+        2.replicas:6：redis的pod数量定义为6个
+        3.Affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+            #1.使用反亲和性定义使得这6个redis-pod尽量不在一个Node上，从物理节点先保证redis是高可用的；
+            2.因为yaml中为每个redis都定义了两个label，使用matchExpressions使得如果node上已经有app:redis的pod时，就尽量不要
+            再向此node上调度，这两条都是保证高可用的方案；
+        4.volumeMounts:两个mount:
+            一个是将redis.conf配置文件configmap挂载到/etc/redis下；
+            一个是使用将redis的数据目录持久化到PVC上；
+        5.volumeClaimTemplates:
+            StatefulSet需要使用PVC模板来为每个pod提供持久存储
+        6.serviceName: &quot;redis-headless-service&quot;
+            headless-service的名称之前做过自定义修改，这里也需要改成一致的；
+    ~]# kubectl apply -f redis-statefulset.yaml
+    ~]# kubectl get pods -n redis-ns
+        NAME          READY      STATUS    RESTARTS     AGE
+        redis-app-0    1/1       Running      0         1h        
+        redis-app-1    1/1       Running      0         1h 
+        redis-app-2    1/1       Running      0         1h       
+        redis-app-3    1/1       Running      0         1h 
+        redis-app-4    1/1       Running      0         1h 
+        redis-app-5    1/1       Running      0         1h 
+        备注：
+            1.如上，可以看到这些Pods在部署时是以StatefulSet的名字+{0..N-1}的顺序依次创建的;
+            2.而且只有当redis-app-0状态启动后达到Running状态之后，redis-app-1 才开始启动，其他几个pod也同样被依次创建运行的；
+    每个Pod都会得到集群内的一个DNS域名，格式为$(podname).$(service name).$(namespace).svc.cluster.local，也即是：
+        redis-app-0.redis-headless-service.redis-ns.svc.cre.local
+        redis-app-1.redis-headless-service.redis-ns.svc.cre.local
+        redis-app-2.redis-headless-service.redis-ns.svc.cre.local
+        redis-app-3.redis-headless-service.redis-ns.svc.cre.local
+        redis-app-4.redis-headless-service.redis-ns.svc.cre.local
+        redis-app-5.redis-headless-service.redis-ns.svc.cre.local
+        其中：
+            cre.local是搭建k8s集群时自定义的集群后缀；
+    ~]# kubectl get pvc -n redis-ns
+        NAME                     STATUS   VOLUME    CAPACITY  ACCESS MODES
+        redis-data-redis-app-0   Bound   redis-pv6   500Mi        RWX
+        redis-data-redis-app-1   Bound   redis-pv2   500Mi        RWX
+        redis-data-redis-app-2   Bound   redis-pv3   500Mi        RWX
+        redis-data-redis-app-3   Bound   redis-pv4   500Mi        RWX
+        redis-data-redis-app-4   Bound   redis-pv5   500Mi        RWX
+        redis-data-redis-app-5   Bound   redis-pv1   500Mi        RWX
+        注意：
+            1.get pvc可以看到6个pvc都被自动创建且绑定到了PV上；
+            2.而且PVC的名称命名是pvc名字+StatefulSet的名字{0..N-1}顺序创建的；
+    ~]# kubectl get pv
+        #get pv也可以看到每个都被绑定了，而且在CLAIM项中还显示该PV是绑定到哪个PVC上了，这里省略粘贴了；
+
+7.初始化redis集群
+    1.redis集群初始化逻辑和工具：
+        1.由于将初始化逻辑写入Statefulset中，则是一件非常复杂而且低效的行为，所以在K8S上创建一个额外的容器，专门用于进行K8S集群内部某些服务的管理控制；
+        2.redis-trib.rb是官方提供的Redis-Cluster的管理工具,可以对上面6个redis-Pod进行集群初始化；
+        3.初始化逻辑：
+            在k8s上创建一个pod然后安装redis-trib.rb工具，redis集群初始化工具就由这个pod完成；
+        4.方法有两种：
+            1.k8s上运行一个ubuntu或者Centos基础镜像，然后登陆进去安装redis-trib.rb命令，这也是/zuxqoj/kubernetes-redis-cluster这个项目推荐使用的方式；
+            2.直接运行一个包含redis-trib.rb命令工具的镜像，这里推荐几个：
+                racccosta/redis镜像    #在其内部已经安装好了redis-trib.rb
+            两种方式都会在下面介绍
+    2.创建包含redis-trib.rb工具的Pod
+        1.项目推荐：参考项目中的README-using-deployment.md
+            ~]# kubectl run -i --tty ubuntu --image=ubuntu --restart=Never /bin/bash
+            / # apt-get update
+            / # apt-get install -y vim wget python2.7 python-pip redis-tools dnsutils
+            / # pip install redis-trib
+            #在Ubuntu容器中安装依赖环境和redis-trib.rb二进制命令，yum源可能会用影响，建议修改yum源；
+        2.下载redis-trib.rb命令镜像
+            ~]# docker pull racccosta/redis
+    3.使用redis-trib创建集群,分两步创建集群
+        先创建只有master节点的集群，再为每个master分别指定一个slave节点；
+    3.1.创建只有Master节点的集群：
+        ~]# redis-trib.py create \
+            `dig +short redis-app-0.redis-headless-service.redis-ns.svc.cre.local`:6379 \
+            `dig +short redis-app-1.redis-headless-service.redis-ns.svc.cre.local`:6379 \
+            `dig +short redis-app-0.redis-headless-service.redis-ns.svc.cre.local`:6379
+        解释：
+            命令dig +short redis-app-0.redis-headless-service.redis-ns.svc.cre.local用于将Pod的域名转化为IP，这是因为redis-trib不支持域名来创建集群;
+    3.2.再为每个Master添加Slave：
+        ~]# redis-trib.py replicate \
+              --master-addr `dig +short redis-app-0.redis-headless-service.redis-ns.svc.cre.local`:6379 \
+              --slave-addr `dig +short redis-app-3.redis-headless-service.redis-ns.svc.cre.local`:6379
+        ~]# redis-trib.py replicate \
+              --master-addr `dig +short redis-app-1.redis-headless-service.redis-ns.svc.cre.local`:6379 \
+              --slave-addr `dig +short redis-app-4.redis-headless-service.redis-ns.svc.cre.local`:6379
+        ~]# redis-trib.py replicate \
+              --master-addr `dig +short redis-app-2.redis-headless-service.redis-ns.svc.cre.local`:6379 
+              --slave-addr `dig +short redis-app-5.redis-headless-service.redis-ns.svc.cre.local`:6379
+        #为3个master分别指定一个slave节点；
+8.验证redis集群是否成功
+    ~]# kubectl exec -it redis-app-2 /bin/bash #随便连入一个redis-pod进行验证
+    root@redis-app-2:/data# /usr/local/bin/redis-cli -c
+    127.0.0.1:6379&gt; cluster nodes      #查看集群信息
+    c15f378a604ee5b200f06cc23e9371cbc04f4559 192.168.169.197:6379@16379 master - 0 1526454835084 1 connected 10923-16383
+    96689f2018089173e528d3a71c4ef10af68ee462 192.168.169.204:6379@16379 slave d884c4971de9748f99b10d14678d864187a9e5d3 0 1526454836491 4 connected
+    d884c4971de9748f99b10d14678d864187a9e5d3 192.168.169.199:6379@16379 master - 0 1526454835487 4 connected 5462-10922
+    c3b4ae23c80ffe31b7b34ef29dd6f8d73beaf85f 192.168.169.198:6379@16379 myself,master - 0 1526454835000 3 connected 0-5461
+    c8a8f70b4c29333de6039c47b2f3453ed11fb5c2 192.168.169.201:6379@16379 slave c3b4ae23c80ffe31b7b34ef29dd6f8d73beaf85f 0 1526454836000 3 connected
+    237d46046d9b75a6822f02523ab894928e2300e6 192.168.169.200:6379@16379 slave c15f378a604ee5b200f06cc23e9371cbc04f4559 0 1526454835000 1 connected
+    127.0.0.1:6379&gt; cluster info
+    cluster_state:ok
+    cluster_slots_assigned:16384
+    cluster_slots_ok:16384
+    cluster_slots_pfail:0
+    cluster_slots_fail:0
+    cluster_known_nodes:6
+    cluster_size:3
+    cluster_current_epoch:4
+    ...
+    注意：
+        从cluster nodes的信息看到每个redis节点是使用IP：Port端口通信的，为什么不是使用pod的Name呢，statefulSet的意义何在？在文章最后解释；
+
+9.验证NFS上的redis数据目录是否有数据
+    ~]# ls /data/redis-pv1
+        appendonly.aof dump.rdb nodes.conf
+
+10.创建用于访问的redis-cluster的Service
+    三个service区别：
+        1.前面Headless-Service只是为StatefulSet控制器为每个Pod提供稳定的网络标记，并不能作为redis-cluster集群的访问入口；
+        2.所以需要再创建一个Service为这个redis-cluster集群作为其他应用的访问入口和负载均衡；
+        3.而且这个redis-cluster是为k8s集群内部使用的，所以service只需要是ClusterIP类型的即可；
+        4.当然也可以再创建一个NodePort类型的service让k8s集群外的应用能够访问redis-cluster，下文会解释这方法搭建的redis集群只能为k8s集群内部使用，不能提供为k8s集群外的服务!
+    ~]# vim redis-access-service.yaml
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: redis-access-service
+          namespace: redis-ns
+          labels:
+            app: redis
+        spec:
+          ports:
+          - name: redis-port
+            protocol: &quot;TCP&quot;
+            port: 6379            #此service的端口
+            targetPort: 6379      #后端代理pod的端口
+          selector:
+            app: redis
+            appCluster: redis-cluster
+    解释：
+        该Service名称为redis-access-service，在k8s集群中暴露6379端口，并且会对labels name为app: redis或appCluster: redis-cluster的pod进行负载均衡
+    ~]# kubectl apply -f redis-access-service.yml
+    ~]# kubectl get svc redis-access-service -n redis-ns -o wide
+        NAME                 TYPE       CLUSTER-IP   EXTERNAL-IP PORT(S)  AGE  SELECTOR
+        redis-access-service ClusterIP  10.20.101.172  &lt;none&gt;   6379/TCP   41m  app=redis,appCluster=redis-cluster
+        #在k8s集群中，所有应用都可以通过10.20.101.172:6379来访问Redis集群,NodePort的service也是同样方式创建即可；
+
+11.测试主从切换
+    1.将redis集群迁移到k8s集群上，最大的问题就是Redis集群原有的高可用机制是否正常；
+    2.下文以master节点redis-app-2为例，进行主从切换测试
+        ~]# kubectl get pods redis-app-2 -o wide
+            NAME          READY STATUS RESTARTS AGE IP              NODE
+            redis-app-2   1/1   Running 0       20s 192.168.10.20 k8s-node2
+                #先看一下此时redis-app2的pod的IP地址是192.168.10.20
+        ~]#  kubectl exec -it redis-app-2 /bin/bash    #连接到redis-app2
+            root@redis-app-2:/data# /usr/local/bin/redis-cli -c
+            127.0.0.1:6379&gt; role
+            1) &quot;master&quot;
+            2) (integer) test
+            3) 1) 1) &quot;192.168.20.131&quot;
+                  2) &quot;6379&quot;
+                  3) &quot;test&quot;
+        #如上可以看到，其为master，slave为192.168.20.131即redis-app-5；
+    3.手动删除redis-app-2：
+        ~]# kubectl delete pods redis-app-2
+            pod &quot;redis-app-2&quot; deleted
+        ~]# kubectl get pods redis-app-2 -o wide
+            NAME          READY STATUS RESTARTS AGE IP              NODE
+            redis-app-2   1/1   Running 0       20s 192.168.10.31 k8s-node2
+            #可以看到redis-app2重建之后IP地址变为192.168.10.31了；
+        ~]# kubectl exec -it redis-app-2 /bin/bash
+            root@redis-app-2:/data# /usr/local/bin/redis-cli -c
+            127.0.0.1:6379&gt; role
+            1) &quot;slave&quot;
+            2) &quot;192.168.20.131&quot;
+            3) (integer) 6379
+            4) &quot;connected&quot;
+            5) (integer) 8960
+            127.0.0.1:6379&gt;
+        #redis-app2重建后，角色变成了slave，而它的master是192.168.20.131即redis-app-5；
+
+12.此方法搭建redis-cluster的疑问：
+    1.在第8步时说过从cluster-nodes的信息看到每个redis节点是使用IP：Port端口通信而不是使用StatefulSet的pod的Name!
+    那么Pod通信时没有使用稳定的标志，Redis-Pods间又是如何实现正常的故障转移呢？
+    2.原因：
+        1.这是因为Redis本身的机制，在Redis集群中每个节点都有自己的NodeId（保存在自动生成的nodes.conf中），并且该NodeId不会
+        随着IP的变化和变化，这其实也是一种固定的网络标志。也就是说，就算某个Redis-Pod重启了，该Pod依然会加载保存的NodeId来维持
+        自己的身份；
+    3.我们可以在NFS上查看redis-app-1的nodes.conf文件：
+        ~]# vim /data/redis-pv1/nodes.conf 
+            96689f2018089173e528d3a71c4ef10af68ee462 192.168.169.209:6379@16379 slave d884c4971de9748f99b10d14678d864187a9e5d3 0 1526460952651 4 connected
+            ...后文省略
+        其中：
+        1.第一列为NodeId，稳定不变；第二列为IP和端口信息，可能会改变；
+        2.NodeId的两种使用场景：
+            1.当某个Slave-Pod断线重连后IP改变，但是它的Master发现其NodeId依旧，就认为该Slave还是之前的Slave。
+            2.当某个Master Pod下线后，集群在其Slave中选举出一个成为Master。待旧Master上线后，集群发现其NodeId依旧，会让旧Master变成新Master的slave；
+        可以通过上面的方式对这两种情况进行验证，观察redis的日志记录即可验证；
+
+13.搭建redis集群时可能会出现的问题：
+    如果pip install安装的redis-trib是0.6.1版本的，在执行redis-trib create命令时会报下面这个错误：
+        TypeError: sequence index must be integer, not &apos;slice&apos;
+    解决方法：
+        1.pip list | grep redis-trib
+        2.pip uninstall redis-trib
+        3.pip install redis-trib==0.5.1
+    错误解决issues详见：
+        https://github.com/TykTechnologies/tyk-kubernetes/issues/16
+
+14.此方法搭建redis-cluster的局限性：
+    1.无法为k8s集群外的应用服务；
+        这个方案只能提供给k8s集群内的应用使用，对集群外的应用根本用不了，因为一旦涉及到move命令，redis节点只会给出内部的pod ip，
+        这个使得集群外的应用根本连不上，因为这个涉及到redis的源码，redis集群节点的相互通讯使用的redis进程所在的环境的ip，
+        而这个ip就是pod-ip，相对的节点发送给客户端的move的ip也是pod ip;
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/28/Kubernetes-部署zookeeper集群/" rel="next" title="Kubernetes-部署zookeeper集群">
+                <i class="fa fa-chevron-left"></i> Kubernetes-部署zookeeper集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/10/Rook部署Ceph集群/" rel="prev" title="Rook部署Ceph集群">
+                Rook部署Ceph集群 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s集群部署Redis-Cluster"><span class="nav-number">1.</span> <span class="nav-text">k8s集群部署Redis Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-部署过程"><span class="nav-number">2.</span> <span class="nav-text">2.部署过程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.3m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">19:21</span>
+  
+</div>
+
+
+
+
+
+
+
+
+<center>
+                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
+            </center>
+
+            <script>
+                function runTime() {
+                    var d = new Date(), str = '';
+                    BirthDay = new Date("June 01,2017");
+                    today = new Date();
+                    timeold = (today.getTime() - BirthDay.getTime());
+                    sectimeold = timeold / 1000
+                    secondsold = Math.floor(sectimeold);
+                    msPerDay = 24 * 60 * 60 * 1000
+                    msPerYear = 365 * 24 * 60 * 60 * 1000
+                    e_daysold = timeold / msPerDay
+                    e_yearsold = timeold / msPerYear
+                    daysold = Math.floor(e_daysold);
+                    yearsold = Math.floor(e_yearsold);
+                    str = yearsold + "年";
+                    str += daysold-365 + "天";
+                    str += d.getHours() + '时';
+                    str += d.getMinutes() + '分';
+                    str += d.getSeconds() + '秒';
+                    return str;
+                }
+                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
+            </script>
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
