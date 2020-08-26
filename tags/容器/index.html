@@ -477,6 +477,32 @@
 
       <h2 class="post-title">
         
+            <a class="post-title-link" href="/2018/10/18/Dockerfile/" itemprop="url">
+              
+                <span itemprop="name">Dockerfile</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2018-10-18T08:00:00+08:00" content="2018-10-18">
+          10-18
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
             <a class="post-title-link" href="/2018/10/18/Docker的资源限制/" itemprop="url">
               
                 <span itemprop="name">Docker的资源限制</span>
@@ -529,32 +555,6 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/10/18/docker存储卷/" itemprop="url">
-              
-                <span itemprop="name">docker存储卷</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-10-18T08:00:00+08:00" content="2018-10-18">
-          10-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
             <a class="post-title-link" href="/2018/10/18/Docker-基于SSL的Harbor双向复制/" itemprop="url">
               
                 <span itemprop="name">Docker-基于SSL的Harbor双向复制</span>
@@ -581,9 +581,9 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/10/18/Dockerfile/" itemprop="url">
+            <a class="post-title-link" href="/2018/10/18/Docker网络/" itemprop="url">
               
-                <span itemprop="name">Dockerfile</span>
+                <span itemprop="name">Docker网络</span>
               
             </a>
         
@@ -607,9 +607,9 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2018/10/18/Docker网络/" itemprop="url">
+            <a class="post-title-link" href="/2018/10/18/docker存储卷/" itemprop="url">
               
-                <span itemprop="name">Docker网络</span>
+                <span itemprop="name">docker存储卷</span>
               
             </a>
         
@@ -988,33 +988,32 @@
 
 
 
-<center>
-                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
-            </center>
 
-            <script>
-                function runTime() {
-                    var d = new Date(), str = '';
-                    BirthDay = new Date("June 01,2017");
-                    today = new Date();
-                    timeold = (today.getTime() - BirthDay.getTime());
-                    sectimeold = timeold / 1000
-                    secondsold = Math.floor(sectimeold);
-                    msPerDay = 24 * 60 * 60 * 1000
-                    msPerYear = 365 * 24 * 60 * 60 * 1000
-                    e_daysold = timeold / msPerDay
-                    e_yearsold = timeold / msPerYear
-                    daysold = Math.floor(e_daysold);
-                    yearsold = Math.floor(e_yearsold);
-                    str = yearsold + "年";
-                    str += daysold-365 + "天";
-                    str += d.getHours() + '时';
-                    str += d.getMinutes() + '分';
-                    str += d.getSeconds() + '秒';
-                    return str;
-                }
-                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
-            </script>
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
         
 
 

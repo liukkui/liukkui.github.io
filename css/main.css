@@ -2092,7 +2092,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #13d712;
+  background: #7fe296;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3071,7 +3071,7 @@ ul.breadcrumb li+li:last-child {
   box-sizing: border-box;
   width: 240px;
   color: #555;
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.7);
   box-shadow: initial;
   border-radius: initial;
 }

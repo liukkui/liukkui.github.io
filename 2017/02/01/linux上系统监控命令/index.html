@@ -1278,8 +1278,8 @@ lsof输出信息解释：
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/01/linux网络管理命令/" rel="next" title="linux网络管理命令">
-                <i class="fa fa-chevron-left"></i> linux网络管理命令
+              <a href="/2017/01/20/LVS类型及实现/" rel="next" title="LVS类型及实现">
+                <i class="fa fa-chevron-left"></i> LVS类型及实现
               </a>
             
           </div>
@@ -1288,8 +1288,8 @@ lsof输出信息解释：
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/01/linux防火墙实现原理/" rel="prev" title="linux防火墙实现原理">
-                linux防火墙实现原理 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/01/linux网络管理命令/" rel="prev" title="linux网络管理命令">
+                linux网络管理命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1690,33 +1690,32 @@ lsof输出信息解释：
 
 
 
-<center>
-                <font size="4" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>
-            </center>
 
-            <script>
-                function runTime() {
-                    var d = new Date(), str = '';
-                    BirthDay = new Date("June 01,2017");
-                    today = new Date();
-                    timeold = (today.getTime() - BirthDay.getTime());
-                    sectimeold = timeold / 1000
-                    secondsold = Math.floor(sectimeold);
-                    msPerDay = 24 * 60 * 60 * 1000
-                    msPerYear = 365 * 24 * 60 * 60 * 1000
-                    e_daysold = timeold / msPerDay
-                    e_yearsold = timeold / msPerYear
-                    daysold = Math.floor(e_daysold);
-                    yearsold = Math.floor(e_yearsold);
-                    str = yearsold + "年";
-                    str += daysold-365 + "天";
-                    str += d.getHours() + '时';
-                    str += d.getMinutes() + '分';
-                    str += d.getSeconds() + '秒';
-                    return str;
-                }
-                setInterval(function () { $('#run_time').html(runTime()) }, 1000);
-            </script>
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
         
 
 
