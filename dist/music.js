@@ -8,6 +8,7 @@ const ap = new APlayer({
         artist: 'Prince of Spain',
         url: 'http://music.163.com/song/media/outer/url?id=27810132.mp3',
         cover: 'https://www.liukui.tech/images/haha.gif',
+        lrc: 'https://www.liukui.tech/images/Explore-Prince of Spain.lrc',
       },
     {
         name: "1965",
