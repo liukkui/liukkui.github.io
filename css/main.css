@@ -2092,7 +2092,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #6e2bff;
+  background: #69ff8a;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3231,9 +3231,6 @@ body {
   background-attachment: fixed;
   background-position: center;
 }
-.site-meta {
-  background: $black;
-}
 .github-corner :hover .octo-arm {
   animation: octocat-wave 560ms ease-in-out;
 }
@@ -3515,6 +3512,29 @@ div.vedit {
   content: "点击查看全部" !important;
   font-weight: 400 !important;
 }
+.site-title {
+  background-image: linear-gradient(to right, #ff4500, #ffa500, #ffd700, #90ee90, #0ff, #1e90ff, #9370db, #ff69b4, #ff4500);
+  background-size: 110vw;
+  -webkit-background-clip: text;
+  color: rgba(0,0,0,0.1); /* transparent IE 不支持 */
+  animation: sliding 30s linear infinite;
+}
+.site-meta,
+.site-subtitle {
+  color: rgba(0,0,0,0.1); /* transparent IE 不支持 */
+  animation: hue 1.5s linear infinite;
+  background-image: linear-gradient(to right bottom, #f00, #ff8000, #ff0, #0f0, #00ff80, #0ff, #0080ff, #00f, #8000ff, #f0f, #ff0080);
+  -webkit-background-clip: text;
+}
+.site-meta {
+  background: #ecf9f8;
+}
+@media (max-width: 767px) {
+  .site-meta {
+    padding: 10px 0;
+    background-image: linear-gradient(90deg, #f79533 0, #f37055 15%, #ef4e7b 30%, #a166ab 44%, #5073b8 58%, #1098ad 72%, #07b39b 86%, #6dba82 100%) !important;
+  }
+}
 @-moz-keyframes octocat-wave {
   0%, 100% {
     -webkit-transform: rotate(0);
@@ -3653,5 +3673,57 @@ div.vedit {
     -ms-transform: rotate(10deg);
     -o-transform: rotate(10deg);
     transform: rotate(10deg);
+  }
+}
+@-moz-keyframes sliding {
+  to {
+    background-position: -2000vw;
+  }
+}
+@-webkit-keyframes sliding {
+  to {
+    background-position: -2000vw;
+  }
+}
+@-o-keyframes sliding {
+  to {
+    background-position: -2000vw;
+  }
+}
+@keyframes sliding {
+  to {
+    background-position: -2000vw;
+  }
+}
+@-moz-keyframes hue {
+  from {
+    filter: hue-rotate(0);
+  }
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
+@-webkit-keyframes hue {
+  from {
+    filter: hue-rotate(0);
+  }
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
+@-o-keyframes hue {
+  from {
+    filter: hue-rotate(0);
+  }
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
+@keyframes hue {
+  from {
+    filter: hue-rotate(0);
+  }
+  to {
+    filter: hue-rotate(-360deg);
   }
 }
