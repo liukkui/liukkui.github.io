@@ -136,25 +136,27 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="C&apos;est la vie">
+  <meta name="description" content="使用rook项目在k8s上部署Ceph集群(按需修改案例)更新于：2020.04内容:rook:v1.3和rook:v0.9部署的区别">
 <meta name="keywords" content="Ceph">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Rook部署Ceph集群">
-<meta property="og:url" content="https://www.liukui.tech/2020/05/10/Rook部署Ceph集群/index.html">
+<meta property="og:url" content="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="C&apos;est la vie">
+<meta property="og:description" content="使用rook项目在k8s上部署Ceph集群(按需修改案例)更新于：2020.04内容:rook:v1.3和rook:v0.9部署的区别">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-08-23T15:15:07.440Z">
+<meta property="og:image" content="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/rook-ceph部署逻辑架构图.png">
+<meta property="og:updated_time" content="2020-10-09T13:43:30.036Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rook部署Ceph集群">
-<meta name="twitter:description" content="C&apos;est la vie">
+<meta name="twitter:description" content="使用rook项目在k8s上部署Ceph集群(按需修改案例)更新于：2020.04内容:rook:v1.3和rook:v0.9部署的区别">
+<meta name="twitter:image" content="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/rook-ceph部署逻辑架构图.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2020/05/10/Rook部署Ceph集群/">
+  <link rel="canonical" href="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/">
 
 
 
@@ -449,7 +451,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2020/05/10/Rook部署Ceph集群/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -492,7 +494,7 @@
                 
               
 
-              <time title="创建时间：2020-05-10 08:00:00" itemprop="dateCreated datePublished" datetime="2020-05-10T08:00:00+08:00">2020-05-10</time>
+              <time title="创建时间：2020-02-10 08:00:00" itemprop="dateCreated datePublished" datetime="2020-02-10T08:00:00+08:00">2020-02-10</time>
             
 
             
@@ -525,8 +527,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/05/10/Rook部署Ceph集群/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2020/05/10/Rook部署Ceph集群/" itemprop="commentCount"></span>
+                <a href="/2020/02/10/Rook部署Ceph集群/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2020/02/10/Rook部署Ceph集群/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -548,7 +550,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">0</span>
+                <span title="本文字数">21k</span>
               
 
               
@@ -562,7 +564,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">1 分钟</span>
+                <span title="阅读时长">20 分钟</span>
               
             </div>
           
@@ -582,7 +584,401 @@
       
 
       
-        
+        <h3 id="使用rook项目在k8s上部署Ceph集群-按需修改案例"><a href="#使用rook项目在k8s上部署Ceph集群-按需修改案例" class="headerlink" title="使用rook项目在k8s上部署Ceph集群(按需修改案例)"></a>使用rook项目在k8s上部署Ceph集群(按需修改案例)</h3><p>更新于：2020.04<br>内容:rook:v1.3和rook:v0.9部署的区别<br><a id="more"></a></p>
+<h3 id="1-rook项目和组件说明"><a href="#1-rook项目和组件说明" class="headerlink" title="1.rook项目和组件说明"></a>1.rook项目和组件说明</h3><p>–rook-ceph部署逻辑架构图<br><img src="/2020/02/10/Rook部署Ceph集群/rook-ceph部署逻辑架构图.png" alt="rook-ceph部署逻辑架构图"></p>
+<pre><code>1.Rook是什么?
+    官网：https://rook.io
+    1.为了充分利用k8s的优势，我们可以把ceph集群部署在k8s之上（生产环境建议单独部署）；而Ceph集群是有状态应用，如果使用StatefulSet控制器部署则需要复杂的逻辑实现，而rook则是使用Operator控制器实现的；
+    2.rook is Storage Operators for Kubernetes
+        官方说rook是Storage Operators for Kubernetes，它将存储软件转变为自我管理、自我扩展和自我修复的存储服务，它通过自动化部署、引导、配置、置备、扩展、升级、迁移、灾难恢复、监控和资源管理来实现此目的；
+    3.Rook使用底层云本机容器管理、调度和编排平台提供的工具来实现它自身的功能；
+    4.Rook目前不仅支持Ceph，还支持NFS、Minio Object Store和CockroachDB等存储；
+
+2.rook和k8s的集成机构和rook oprerator
+    1.如上图1示，它说明了Ceph Rook如何与Kubernetes集成；
+        随着Rook在Kubernetes集群中运行，Kubernetes应用程序可以挂载由Rook管理的块设备和文件系统，或者可以使用S3/Swift API提供对象存储。Rook oprerator自动配置存储组件并监控群集，以确保存储处于可用和健康状态；
+    2.rook oprerator:生成很多创建、监控ceph的容器
+        1.Rook oprerator是一个简单的容器，具有引导和监视存储集群所需的全部功能。oprerator将启动并监控ceph monitor pods和OSDs的守护进程，它提供基本的RADOS存储。oprerator通过初始化运行服务所需的pod和其他组件来管理池，对象存储（S3/Swift）和文件系统的CRD;
+        2.oprerator将监视存储后台驻留程序以确保群集正常运行.
+            Ceph mons将在必要时启动或故障转移，并在群集增长或缩小时进行其他调整；oprerator还将监视api服务请求的所需状态更改并应用更改；
+        3.Rook oprerator还创建了Rook agent.
+            这些agent是在每个Kubernetes节点上部署的pod。每个agent都配置一个Flexvolume插件，该插件与Kubernetes的volume controller集成在一起，负责处理节点上所需的所有存储操作，例如附加网络存储设备，安装卷和格式化文件系统；
+        4.该rook容器包括所有必需的Ceph守护进程和工具来管理和存储所有数据-数据路径没有变化.
+            因为rook并没有试图与Ceph保持完全的忠诚度。许多Ceph概念（如placement groups和crush maps）都是隐藏的，因此您无需担心它们。 相反，Rook为管理员创建了一个简化的用户体验，包括物理资源，池，卷，文件系统和buckets.同时，可以在需要时使用Ceph工具应用高级配置.
+</code></pre><h3 id="2-k8s集群规划和rook版本间的区别-rook-v0-9和最新的V1-3"><a href="#2-k8s集群规划和rook版本间的区别-rook-v0-9和最新的V1-3" class="headerlink" title="2.k8s集群规划和rook版本间的区别(rook:v0.9和最新的V1.3)"></a>2.k8s集群规划和rook版本间的区别(rook:v0.9和最新的V1.3)</h3><p><a href="https://rook.io" target="_blank" rel="noopener">rook官网</a><br><a href="https://github.com/rook/rook" target="_blank" rel="noopener">root项目地址</a><br><a href="https://rook.github.io/docs/rook/v0.9/ceph-quickstart.html" target="_blank" rel="noopener">rook:V0.9版官方部署参考文档</a><br><a href="https://rook.io/docs/rook/v1.3/ceph-quickstart.html" target="_blank" rel="noopener">rook:V1.3版官方部署参考文档</a></p>
+<pre><code>Ceph集群性能规划说明：
+    对于Ceph集群来说，CPU一般不是问题，主要就是内存和网络。OSD之间的网络最好是10GbE+；内存会消耗多少呢？以ROOK为例，默认配置部署完成后（假设14块磁盘，每块4TB），会启动：
+        14个ceph-osd、3个ceph-mon、2个ceph-mds、1个ceph-rgw、1个ceph-mgr；
+    对于OSD进程来说，每个daemon每TB需要1GB，那么在这个上下文里：
+        * 每个OSD需要4GB内存，14个OSD就需要56GB内存；
+        * 3个ceph-mon就需要6GB内存；
+        * 2个mds需要4GB内存
+    但是，这是官方最小的内存推荐，在生产环境下建议：
+        * 每个OSD每TB配置2GB内存，因为要考虑recovery，这个是很耗费内存的，于是上述配置需要112GB内存；
+        * 每个ceph-mon配置4GB内存；
+        * 每个ceph-mds需要配置10G内存
+1.k8s集群准备和ceph节点规划
+    1.k8s集群
+        k8s集群使用二进制或者kubeadm部署都可以，但为了满足ceph高可用要求k8s必须至少有三个节点可用，此处部署使用的是ansible二进制部署的8节点k8s集群，其中:3master，5node，并且将node03、node04、node05作为ceph cluster集群节点；
+    2.k8s上ceph的专用节点规划
+        使用rook将ceph部署在k8s上时，ceph的很多进程如mon、mgr、ceph-osd等都是以pod形式提供的，但是在部署时它们可能会随机的运行在k8s的任何一个node节点上，因此为了使得使用rook部署的ceph时的所有以pod形式提供服务的进程只运行在特定的某些k8s-node之上，应该如下规划：
+            第一种方案是：
+                准备特定的k8s-node（准备足够的磁盘osd），将这些node打上污点taints，然后在使用rook部署时容忍此污点即可，就可以达到这些node只运行ceph相关的pod;
+            第二种方案是：
+                将这些node打上标签，部署ceph时让osd选择拥有此标签的node，但其他业务的pod也可以调度到这些node上；
+        备注：生产环境下建议使用标签，将所有ceph相关的都统一调度到专用于Ceph的k8s节点上方便管理.
+2.rook对后端存储磁盘的要求和rook使用存储方式
+    1.前文说过Ceph的OSD设备在使用时有FileStore和BliueStore两种存储引擎，FileStore是使用文件系统的目录模拟成磁盘，BlueStore要求使用裸设备；
+    2.rook使用存储方式
+        rook默认使用所有节点的所有资源，operator自动在所有节点上启动OSD设备，Rook会用如下标准监控并发现可用设备：设备没有分区和设备没有格式化的文件系统，Rook不会使用不满足以上标准的设备。另外也可以通过修改配置文件，指定哪些节点或者设备会被使用(本文就是自定义节点和节点上的磁盘方式创建的Ceph集群)
+3.本文之前安装的是v0.9，在v1.3新版本中安装中还是有些区别的：
+    1.v1.3开始支持使用磁盘里没有格式化文件系统的分区用作OSD，不过没啥意义，因为基本上都是使用一整块完整的裸设备硬盘当做OSD的。
+    2.部署时v1.3需要先执行common.yaml且全局只有创建了一个名称空间rook-ceph，还增加了其他项.
+</code></pre><h3 id="3-部署-以rook-v0-9版本为例，rook新版本安装步骤和清单内容可能会有所不同"><a href="#3-部署-以rook-v0-9版本为例，rook新版本安装步骤和清单内容可能会有所不同" class="headerlink" title="3.部署(以rook:v0.9版本为例，rook新版本安装步骤和清单内容可能会有所不同)"></a>3.部署(以rook:v0.9版本为例，rook新版本安装步骤和清单内容可能会有所不同)</h3><pre><code>1.在k8s中Operator控制器通常是用来部署、管理有状态应用的，而有状态应用会表现为很多pod组成的一个集群；而Operator控制器通常也是一个pod，这个pod中有很多自定义资源（CRD）；所以rook部署ceph分为两步：
+    1.先部署rook的Operator
+    2.再借助于rookOperator中引入的自定义资源（CRD）去部署自定义的集群格式了，也就是ceph cluster；
+2.前期准备工作：
+    1.确保所有节点都安装了lvm2
+        因为ceph也是通过关键lvm来格式化硬盘当做OSD使用的，所以需要所有k8s节点都安装lvm2，好在Centos、Ubuntu基本上都自动安装了.
+        ~]# rpm -q lvm2
+    2.确保内核编译有RBD模块
+        ~]# modprobe rbd
+        ~]# lsmod | grep rbd     
+            rbd                    83640  0 
+            libceph               306625  1 rbd
+    3.在虚拟机上为node03、node04、node05添加两块新磁盘：sdb和sdc
+        为node03、node04、node05各添加两块磁盘共计6块磁盘作为OSD盘，添加完成后扫描磁盘，确保主机能够正常识别到：
+        1.扫描SCSI总线并添加SCSI设备
+            for host in $(ls /sys/class/scsi_host) ; do echo &quot;- - -&quot; &gt; /sys/class/scsi_host/$host/scan; done
+        2.重新扫描SCSI总线
+            for scsi_device in $(ls /sys/class/scsi_device/); do echo 1 &gt; /sys/class/scsi_device/$scsi_device/device/rescan; done
+        注：
+            1.通过命令lsblk查看已添加的磁盘，能够看到sdb和sdc说明添加成功
+            2.如果是将有数据的磁盘当做OSD使用，先使用下面命令将磁盘清理干净
+            dd if=/dev/zero of=/dev/sdb bs=1M count=100 oflag=direct,dsync
+    4.给用于安装Ceph Cluster的3个node节点打标签(非必要设置，取决于架构的规划)
+        下文中在搭建中没有此步骤，因为只需要ceph-osd的Pod运行在node03、node04、node05上即可，其他进程的Pod运行哪个节点相对不是很重要，如果实在想要把所有ceph的pod都运行在特定的nodes上，可以参考下面通过打label，使用nodeAffinity的方式写法：
+        1.先给node03、node04、node05打上额外的标签:app.storage=rook-ceph
+            ~]# kubectl label node k8s-node03.cre.io app.storage=rook-ceph
+            ~]# kubectl label node k8s-node04.cre.io app.storage=rook-ceph
+            ~]# kubectl label node k8s-node05.cre.io app.storage=rook-ceph
+            ~]# kubectl get nodes --show-labels
+                NAME               STATUS  ROLES    AGE    VERSION   LABELS
+                ...
+                k8s-node03.cre.io   Ready  &lt;none&gt;  5d17h  V1.12.2 beta.kubernets.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=k8s-node01.cre.io app.storage=rook-ceph
+                注意这里的hostname名称下文一定要与此处相同，app.storage=rook-ceph在第2步骤使用
+        2.将Mon、mgr等也部署在node03、node04、node05(非必须)
+            ~]# vim cluster.yaml
+                ...
+                placement:
+                  all:
+                    nodeAffinity:
+                      requiredDuringSchedulingIgnoredDuringExecution:
+                        nodeSelectorTerms:
+                        - matchExpressions:
+                          - key: app.storage
+                            operator: In
+                            values:
+                            - rook-ceph
+            注：通过nodeAffinity进行标签匹配即可，taints的方式是通过先打污点再通过tolerations是否容忍污点定义的，逻辑是类似的。
+3.其他注意事项：
+    删除Ceph集群或者重建集群需要把之前Ceph组件节点上的集群的配置信息目录/var/lib/rook删除，不然启动monitor会失败
+        kubectl delete -f cluster.yaml
+        kubectl delete -f operator.yaml
+        kubectl delete -f  common.yaml(v1.3版本需要把这个也删除)
+        在所有节点删除目录/var/lib/rook
+        ~]# vim clean-rook-dir.sh
+            hosts=(
+              k8s-node03
+              k8s-node04
+              k8s-node05
+            )
+            for host in ${hosts[@]} ; do
+              ssh $host &quot;rm -rf /var/lib/rook/*&quot;
+            done
+</code></pre><h4 id="3-1-部署Rook-Operator-rook控制器"><a href="#3-1-部署Rook-Operator-rook控制器" class="headerlink" title="3.1.部署Rook Operator:rook控制器"></a>3.1.部署Rook Operator:rook控制器</h4><pre><code>1.从github上克隆项目
+    ~]# git clone https://github.com/rook/rook.git #下载项目(v:0.9版)
+    ~]# cd cluster/examples/kubernetes/ceph
+2.部署Rook Operator
+    ~]# kubectl create -f operator.yaml
+        注：v0.9版本直接部署，最新的v1.3需要先部署该目录下的common.yaml生成名称空间
+    namespace/rook-ceph-system created
+    customresourcedefinition.apiextensions.k8s.io/cephclusters.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/cephfilesystems.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/cephfses.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/cephobjectstores.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/cephobjectstoreusers.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/cephblockpools.ceph.rook.io created
+    customresourcedefinition.apiextensions.k8s.io/volumes.rook.io created
+    clusterrole.rbac.authorization.k8s.io/rook-ceph-cluster-mgmt created
+    role.rbac.authorization.k8s.io/rook-ceph-system created
+    clusterrole.rbac.authorization.k8s.io/rook-ceph-global created
+    clusterrole.rbac.authorization.k8s.io/rook-ceph-mgr-cluster created
+    serviceaccount/rook-ceph-system created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-system created
+    clusterrolebinding.rbac.authorization.k8s.io/rook-ceph-global created
+    deployment.apps/rook-ceph-operator created
+    注：
+        如上所示，它会创建如下资源：
+            1.namespace：rook-ceph-system，之后的所有rook相关的pod都会创建在该namespace下面
+            2.CRD：创建六个CRDs，*.ceph.rook.io
+            3.role和clusterrole：用户角色和绑定
+            4.serviceaccount：ServiceAccount资源，给Rook创建的Pod使用
+            5.deployment：rook-ceph-operator，部署rook ceph相关的组件
+    ~]# kubectl get ns
+        NAME                STATUS     AGE
+        default             Active    5d18h
+        rook-ceph-system    Active     11s 
+        注：
+            所有rook相关的pod都在此rook-ceph-system名称空间中，而和ceph cluster相关的pod都在rook-ceph名称空间中，注意rook和ceph cluster的pod是不在同一个名称空间的!
+    ~]# kubectl get pods -n rook-ceph-system
+        NAME                               READY  STATUS    RESTARTS   AGE
+        rook-ceph-operator-b9968cfb99-2c78k 1/1   Running   0         9m3s 
+        rook-ceph-agent-429xs               1/1   Running   0         7m48s
+        ...    
+        rook-discover-597sk                 1/1   Running   0         7m48s
+        ...
+    注：
+        1.部署rook-ceph-operator过程中，会触发以DaemonSet的方式在集群部署Agent和Discoverpods。operator会在集群内的每个主机创建两个pod:rook-discover,rook-ceph-agent；其中agent是管理ceph的代理程序、discover是发现节点上可用的OSD程序；
+        2.确保rook-discover-*和rook-ceph-agent-*都是Running的，如果不是Running可使用describe命令查看该pod，不过一般情况下都是镜像下载较慢报错导致的稍等即可，其他错误视describe时详细的报错信息解决.
+        3.rook-discover-*和rook-ceph-agent-*的pod数量和k8s节点的数量保持一致，因为它是以DaemonSet方式部署的.
+</code></pre><h4 id="3-2-部署Ceph-Cluster-根据生产环境自定义Ceph集群"><a href="#3-2-部署Ceph-Cluster-根据生产环境自定义Ceph集群" class="headerlink" title="3.2.部署Ceph Cluster(根据生产环境自定义Ceph集群)"></a>3.2.部署Ceph Cluster(根据生产环境自定义Ceph集群)</h4><pre><code>部署前清单修改说明：
+    项目内的/cluster/examples/kubernetes/ceph/cluster.yaml的清单是需要根据实际生产环境下的规划进行修改的，最重要的就是自定义只在哪些nodes上部署ceph、这些nodes上的哪些磁盘当做OSD使用等等，下面解释几个重要段如何进行自定义：
+~]# vim /cluster/examples/kubernetes/ceph/cluster.yaml
+    ...
+    ...清单内容省略，详细、重要且需要根据实际规划的字段如下...
+    ...
+1.通用字段说明：
+    1.image: ceph/ceph:v13.2.4     #镜像版本，v13代表mimic版, v14是N版
+    2.dataDirHostPath: /var/lib/rook 
+        把当前目录当做ceph-osd使用的FileStore的后端存储，如果要使用FileStore存储引擎则保留该项；
+    3.mon: 
+        count: 3     #mon的数量必须是奇数个
+    4.dashboard:     #rook部署的ceph集群会自动启用ssl协议的面板
+    5.network:       #定义pod是否共享该所在节点的网络，默认是flase？
+2.OSD所在节点的可自定义字段说明：
+    前文说过rook部署的ceph集群，它的mon进程、rgw进程、mgr进程、ceph-osd进程都是以pod形式提供的，而OSD在前文规划中只由node03、node04、node05上的6块硬盘提供，所以ceph-osd进程的pod只能运行在此三个节点上，下面这段配置就是配置哪些节点当做OSD设备节点以及这些节点上的哪些磁盘设备（6块磁盘）可以当做OSD使用，下面是主要修改的字段：
+    storage: # cluster level storage configuration and selection
+      useAllNodes: true #是否使用k8s所有节点，规划的只是特定节点所以改成flase
+      useAllDevices: flase  #是否使用每个节点上的所有磁盘设备，系统预留改成flase
+      #deviceFilter: 
+        当useAllDevices为flase时可以写正则表达式过滤出能当OSD用的磁盘
+      config:
+        #metadataDevice: &quot;md0&quot;  #对性能有着直接的影响
+        #databaseSizeMB: &quot;1024&quot;   #使用bluestore时，rocksdb数据库占用大小
+        #journalSizeMB: &quot;1024&quot;    #使用bluestore时，rocksdb.wal占用大小
+        #osdsPerDevice: &quot;1&quot; 
+        #encryptedDevice: &quot;true&quot; 
+    #    nodes:        
+    #    - name: &quot;172.17.4.201&quot;
+    #      devices: # specific devices to use for storage can be specified for each node
+    #      - name: &quot;sdb&quot;
+    #      - name: &quot;nvme01&quot; # multiple osds can be created on high performance devices
+    #        config:
+    #          osdsPerDevice: &quot;5&quot;
+    #      - name: &quot;/dev/disk/by-id/ata-ST4000DM004-XXXX&quot; # devices can be specified using full udev paths
+    #      config: # configuration can be specified at the node level which overrides the cluster level config
+    #        storeType: filestore
+    #    - name: &quot;172.17.4.301&quot;
+    #      deviceFilter: &quot;^sd.&quot;
+    注：
+        nodes字段是指定安装ceph的node名称以及该node上可作为OSD使用的device名称，上面是官方的多示例写法。
+3.Mon、Mgr、rgw、mds进程的pod的调度机制说明：
+    上面第2条的字段只是定义OSD必须所在的节点，而placement字段自定义的是除了ceph-osd进程pod之外的其他ceph中的进程Mon、Mgr、rgw、mds它们的Pod的调度机制，即是否将除了OSD之外的其他进程pod也部署在node03、node04、node05上，如果需要自定义的话，需要在前期准备时对node03、node04、node05打上label或者taints，然后再在下面字段中使用nodeAffinity或者tolerations选择都可以实现自由调度。
+        #  placement:
+        #    all:
+        #      nodeAffinity:
+        #        requiredDuringSchedulingIgnoredDuringExecution:
+        #          nodeSelectorTerms:
+        #          - matchExpressions:
+        #            - key: role
+        #              operator: In
+        #              values:
+        #              - storage-node
+        #      podAffinity:
+        #      podAntiAffinity:
+        #      topologySpreadConstraints:
+        #      tolerations:
+        #      - key: storage-node
+        #        operator: Exists
+    注：下文中不会修改此部分字段，如有需要参考上文前期准备的第4部分操作.
+
+1.按照前期架构规划自定义的最终cluster.yaml清单如下
+    ~]# vim cluster.yaml
+    ...
+    ...前面都不更改...
+    ...
+    storage: 
+      useAllNodes: flase
+      useAllDevices: flase
+      #deviceFilter: 
+      config:
+        #metadataDevice: &quot;md0&quot; 
+        #databaseSizeMB: &quot;1024&quot;  
+        #journalSizeMB: &quot;1024&quot;   
+        #osdsPerDevice: &quot;1&quot; 
+        #encryptedDevice: &quot;true&quot; 
+      nodes:
+      - name: &quot;k8s-node03.cre.io&quot;
+        deviceFilter: &quot;^sd[^a]&quot;
+      - name: &quot;k8s-node04.cre.io&quot;
+        deviceFilter: &quot;^sd[^a]&quot;
+      - name: &quot;k8s-node05.cre.io&quot;
+        deviceFilter: &quot;^sd[^a]&quot;
+    说明：
+        1.将useAllNodes和useAllDevices都改成flase
+        2.使用nodes选择用于安装ceph的节点，name:&quot;k8s-node03.cre.io&quot;的名字一定要和上文前期准备的第4步骤中命令kubectl get nodes --show-labels显示的hostname名称保持一致。
+        3.规划中3个node节点上都有两块磁盘（sdb和sdc）当做OSD使用，所以在deviceFilter中使用正则表达式匹配过滤掉系统盘sda即可，也可以下面这种方式代替：
+            - name: &quot;k8s-node03.cre.io&quot;
+              devices:
+              - name: &quot;sdb&quot;
+              - name: &quot;sdc&quot;
+
+~]# kubectl apply -f cluster.yaml       #部署集群
+    namespace/rook-ceph created
+    serviceaccount/rook-ceph-osd created
+    serviceaccount/rook-ceph-mgr created
+    role.rbac.authorization.k8s.io/rook-ceph-osd created
+    role.rbac.authorization.k8s.io/rook-ceph-mgr-system created
+    role.rbac.authorization.k8s.io/rook-ceph-mgr created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-cluster-mgmt created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-osd created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-mgr created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-mgr-system created
+    rolebinding.rbac.authorization.k8s.io/rook-ceph-mgr-cluster created
+    cephcluster.ceph.rook.io/rook-ceph created
+    如上所示，它会创建如下资源：
+        1.namespace：rook-ceph  #和Ceph集群相关的pod都会创建在该名称空间下
+        2.serviceaccount：      #ServiceAccount资源，给Ceph集群的Pod使用
+        3.role&amp;rolebinding：    #用户资源控制
+        4.cluster：rook-ceph    #创建的Ceph集群
+~]# kubectl get pod -n rook-ceph
+    NAME                              READY   STATUS      RESTARTS    AGE
+    rook-ceph-mgr-a-8649f78d9b-hlg7t   1/1     Running     0          1h10m
+    rook-ceph-mon-a-7c7df4b5bb-984x8   
+    ...
+    rook-ceph-osd-2-867ddc447d-xkh7k
+    ...
+    rook-ceph-osd-prepare-k8s-node03-jf7qz
+    ...
+    注：这个过程应该会很慢，因为要下载镜像、格式化磁盘等操作，当Ceph集群部署成功后，可以查看到有下面这些资源：
+        Mon：：默认启动三个ceph-mon
+        Mgr：默认启动一个
+        OSDs：rook-ceph-osd-*的数量一定等于所有磁盘的数据（这里是6块），否则会有报错信息.
+自此两步安装步骤也完成，下面就是启用3种接口和如何使用rook搭建的ceph集群了。
+</code></pre><h3 id="4-部署Ceph-toolbox和启用Dashboard"><a href="#4-部署Ceph-toolbox和启用Dashboard" class="headerlink" title="4.部署Ceph toolbox和启用Dashboard"></a>4.部署Ceph toolbox和启用Dashboard</h3><pre><code>1.Rook部署的Ceph集群默认是开启Ceph认证的，需要安装ceph客户端工具toolbox，这样才可以使用ceph命令管理ceph集群、执行CLI命令获取集群状态，命令：
+    ~]# kubectl apply -f rook/cluster/examples/kubernetes/ceph/toolbox.yaml
+    ~]# kubectl -n rook-ceph get pods | grep ceph-tools
+        rook-ceph-tools-45c7d099b2-q2d82   1/1  Running    0    11s
+        注：然后就可以exec该pod执行各种命令了
+    ~]# kubectl -n rook-ceph exec -it rook-ceph-tools-45c7d099b2-q2d82 bash
+    [root@rook-ceph-tools-45c7d099b2-q2d82 /]# ceph status  #查看集群状态
+      cluster:
+        id:     abdd8790-5fa0-42dd-819a-fb3f9b942b3s
+        health: HEALTH_OK
+      services:
+        mon: 3 daemons, quorum a,b.c
+        mgr: a(active)
+        osd: 3 osds: 3 up, 3 in
+    [root@rook-ceph-tools-45c7d099b2-q2d82 /]# cat /ceph/ceph.conf #配置文件
+
+2.dashboard已经在cluster.yaml清单中启用了，默认端口是8443，只需要把其service的服务暴露出来即可，可以用nodeport或者ingress方式，这里使用nodeport方式：
+    ~]$ kubectl get service -n rook-ceph | grep dashboard
+        rook-ceph-mgr-dashboard  ClusterIP   10.93.124.31  &lt;none&gt;  8443/TCP
+        注：
+    ~]# kubectl apply -f rook/cluster/examples/kubernetes/ceph/dashboard-external-https.yaml  #创建nodeport类型的service
+    ~]# kubectl get service -n rook-ceph | grep dashboard
+        rook-ceph-mgr-dashboard  ClusterIP   10.93.124.31  &lt;none&gt;  8443/TCP
+        rook-ceph-mgr-dashboard  ClusterIP   10.94.126.30  &lt;none&gt;  443:30623/TCP
+        注：30623就是以nodeport方式暴露的端口
+    获取dashboard的登陆账号和密码:
+        ~]# kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath=&quot;{[&apos;data&apos;][&apos;password&apos;]}&quot; | base64 --decode &amp;&amp; echo
+        或者使用：
+            ~]# MGR_POD=`kubectl get pod -n rook-ceph | grep mgr | awk &apos;{print $1}&apos;`
+            ~]# kubectl -n rook-ceph logs $MGR_POD | grep password
+                2019-08-12 16:32:00.832 7fced4782700  0 log_channel(audit) log [DBG] : from=&apos;client.4151 10.244.1.2:0/3446600469&apos; entity=&apos;client.admin&apos; cmd=[{&quot;username&quot;: &quot;admin&quot;, &quot;prefix&quot;: &quot;dashboard set-login-credentials&quot;, &quot;password&quot;: &quot;8v2AbqHDj6&quot;, &quot;target&quot;: [&quot;mgr&quot;, &quot;&quot;], &quot;format&quot;: &quot;json&quot;}]: dispatch
+        找到username和password字段登录即可.
+    登录访问：
+        https:k8s-node03-ip:30623  
+</code></pre><h3 id="5-rook提供RBD服务给k8s"><a href="#5-rook提供RBD服务给k8s" class="headerlink" title="5.rook提供RBD服务给k8s"></a>5.rook提供RBD服务给k8s</h3><p><a href="https://rook.github.io/docs/rook/v0.9/ceph-block.html" target="_blank" rel="noopener">rook官方启用rbd说明</a></p>
+<pre><code>k8s使用Rook部署的ceph集群提供的RBD服务和ceph-deploy、ceph-ansible部署提供的RBD服务在使用上是有不同逻辑的：
+    1.ceph-deploy和ceph-ansible部署的ceph集群需要管理员使用rbd命令手动创建存储池、启用rbd、初始化、以PV&amp;PVC或者SC方式提供给Pod使用；
+    2.而Rook部署的ceph集群中，它的所有块存储的创建、存储池的创建等都能够被标准化为k8s自带的格式，它是借助于由rook定义的CRD格式通过写一个yaml清单来完成存储池创建、初始化、启动、创建SC等一系列操作代替手动使用rbd命令；
+    所以Rook在提供块存储之前，它要求必须以yaml清单形式先创建StorageClass和存储池.
+1.官方storageclass.yaml配置示例
+    v0.9版本清单在rook/cluster/examples/kubernetes/ceph/storageclass.yaml
+    v1.3版清单示例在rook/cluster/examples/kubernetes/ceph/csi/rbd/storageclass.yaml
+        两个版本清单内容不太一样，下面是在其基础上完善的；
+    ~]# vim storageclass.yaml
+        apiVersion: ceph.rook.io/v1
+        kind: CephBlockPool
+        metadata:
+          name: replicapool                
+          namespace: rook-ceph
+        spec:
+          failureDomain: host
+          replicated:
+            size: 3 
+        ---
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+           name: rook-ceph-block
+        provisioner: ceph.rook.io/rbd       #rook提供RBD服务的格式
+        parameters:
+          blockPool: replicapool
+          clusterNamespace: rook-ceph
+          fstype: xfs
+        reclaimPolicy: Retain 
+        注：
+            yaml清单中创建了名为replicapool的存储池和名为rook-ceph-block的SC，副本池数量为3、为了数据安全将SC的回收改成Retain.
+    ~]# kubectl apply -f storageclass.yaml         #创建
+    验证创建的SC和存储池：
+        ~]$ kubectl get SC
+            NAME              PROVISIONER          AGE
+            rook-ceph-block   ceph.rook.io/block   201m
+            注：rook-ceph-block这个SC被成功创建
+        登录Dashboard可以看到名为replicapool的存储池被成功创建.
+2.示例
+    1.参考官方文档中以静态方式提供给wordpress的示例，rook项目示例中wordpress.yaml和ysql.yaml定义了一个名为wp-pv-claim的pvc，指定storageClassName为rook-ceph-block，申请的存储空间大小为20Gi.最后一部分创建了一个名为wordpress-persistent-storage的volume，并且指定claimName为pvc的名称，最后将volume挂载到pod的/var/lib/mysql目录下；
+    2.创建并成功运行wordpress和mysql后，这2个应用都会创建一个块存储卷，并且挂载到各自的pod中，查看声明的pvc和pv：
+    ~]# kubectl get pvc
+        NAME            STATUS             VOLUME                 CAPACITY  ACCESS  MODES  STORAGECLASS     AGE
+        mysql-pv-claim  Bound pvc-5bfbe28e-0fc9-11e9-b90d-000c291c25f3   20Gi       RWO           rook-ceph-block   32m
+        wp-pv-claim     Bound pvc-5f56c6d6-0fc9-11e9-b90d-000c291c25f3   20Gi       RWO           rook-ceph-block   32m
+    ~]# kubectl get pv
+        NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS      REASON   AGE
+        pvc-5bfbe28e-0fc9-11e9-b90d-000c291c25f3   20Gi       RWO            Delete           Bound    default/mysql-pv-claim   rook-ceph-block            32m
+        pvc-5f56c6d6-0fc9-11e9-b90d-000c291c25f3   20Gi       RWO            Delete           Bound    default/wp-pv-claim      rook-ceph-block            32m
+        注：这里的pv会自动创建，当提交了包含StorageClass字段的PVC之后，Kubernetes就会根据这个StorageClass创建出对应的PV，这是用到的是Dynamic Provisioning机制来动态创建pv，PV支持Static静态请求，和动态创建两种方式.
+    3.在Ceph集群端验证：
+        ~]# kubectl -n rook-ceph exec -it rook-ceph-tools-45c7d099b2-q2d82 bash
+        [root@rook-ceph-tools-45c7d099b2-q2d82 /]# rbd info -p replicapool pvc-5bfbe28e-0fc9-11e9-b90d-000c291c25f3 
+            rbd image &apos;pvc-5bfbe28e-0fc9-11e9-b90d-000c291c25f3&apos;:
+                    size 20 GiB in 5120 objects
+                    order 22 (4 MiB objects)
+                    id: 88156b8b4567
+                    block_name_prefix: rbd_data.88156b8b4567
+                    format: 2
+                    features: layering
+                    op_features: 
+                    flags: 
+                    create_timestamp: Fri Aug  12 16:35:12 2019
+    4.登录pod验证rbd设备：
+        ~]# kubectl get pod
+            NAME                             READY STATUS RESTARTS  AGE    
+            wordpress-7b6c4c79bb-t5pst       1/1   Running   0      135m   
+            wordpress-mysql-6887bf844f-9pmg8 1/1   Running   0      135m
+        ~]# kubectl exec -it wordpress-7b6c4c79bb-t5pst bash
+            root@wordpress-7b6c4c79bb-t5pst:/var/www/html#  mount | grep rbd
+            dev/rbd0 on /var/www/html type xfs (rw,relatime,attr2,inode64,sunit=8192,swidth=8192,noquota)
+            root@wordpress-7b6c4c79bb-t5pst:/var/www/html# df -h | grep /var/www
+            /dev/rbd0                 20G   59M   20G   1% /var/www/html
+    5.登录dashboard查看创建的images
+        通过dashboard也可以看到在replicapool中创建了两个和pv名称相同的image.
+    6.登录wordpress
+        通过kubectl get svc wordpress获取到svc的映射端口信息就可以登录了
+</code></pre>
       
     </div>
 
@@ -772,8 +1168,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -1052,6 +1457,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用rook项目在k8s上部署Ceph集群-按需修改案例"><span class="nav-number">1.</span> <span class="nav-text">使用rook项目在k8s上部署Ceph集群(按需修改案例)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-rook项目和组件说明"><span class="nav-number">2.</span> <span class="nav-text">1.rook项目和组件说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-k8s集群规划和rook版本间的区别-rook-v0-9和最新的V1-3"><span class="nav-number">3.</span> <span class="nav-text">2.k8s集群规划和rook版本间的区别(rook:v0.9和最新的V1.3)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-部署-以rook-v0-9版本为例，rook新版本安装步骤和清单内容可能会有所不同"><span class="nav-number">4.</span> <span class="nav-text">3.部署(以rook:v0.9版本为例，rook新版本安装步骤和清单内容可能会有所不同)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-部署Rook-Operator-rook控制器"><span class="nav-number">4.1.</span> <span class="nav-text">3.1.部署Rook Operator:rook控制器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-部署Ceph-Cluster-根据生产环境自定义Ceph集群"><span class="nav-number">4.2.</span> <span class="nav-text">3.2.部署Ceph Cluster(根据生产环境自定义Ceph集群)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-部署Ceph-toolbox和启用Dashboard"><span class="nav-number">5.</span> <span class="nav-text">4.部署Ceph toolbox和启用Dashboard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-rook提供RBD服务给k8s"><span class="nav-number">6.</span> <span class="nav-text">5.rook提供RBD服务给k8s</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1356,7 +1777,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">19:31</span>
+    <span title="站点阅读时长">19:49</span>
   
 </div>
 
