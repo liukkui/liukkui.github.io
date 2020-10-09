@@ -145,7 +145,7 @@
 <meta property="og:description" content="使用rook项目在k8s上部署Ceph集群(按需修改案例)更新于：2020.04内容:rook:v1.3和rook:v0.9部署的区别">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2020/02/10/Rook部署Ceph集群/rook-ceph部署逻辑架构图.png">
-<meta property="og:updated_time" content="2020-10-09T13:43:30.036Z">
+<meta property="og:updated_time" content="2020-10-09T13:46:52.042Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rook部署Ceph集群">
 <meta name="twitter:description" content="使用rook项目在k8s上部署Ceph集群(按需修改案例)更新于：2020.04内容:rook:v1.3和rook:v0.9部署的区别">
@@ -756,7 +756,7 @@
         count: 3     #mon的数量必须是奇数个
     4.dashboard:     #rook部署的ceph集群会自动启用ssl协议的面板
     5.network:       #定义pod是否共享该所在节点的网络，默认是flase？
-2.OSD所在节点的可自定义字段说明：
+2.OSD所在节点的可自定义调度字段说明：
     前文说过rook部署的ceph集群，它的mon进程、rgw进程、mgr进程、ceph-osd进程都是以pod形式提供的，而OSD在前文规划中只由node03、node04、node05上的6块硬盘提供，所以ceph-osd进程的pod只能运行在此三个节点上，下面这段配置就是配置哪些节点当做OSD设备节点以及这些节点上的哪些磁盘设备（6块磁盘）可以当做OSD使用，下面是主要修改的字段：
     storage: # cluster level storage configuration and selection
       useAllNodes: true #是否使用k8s所有节点，规划的只是特定节点所以改成flase
@@ -783,7 +783,7 @@
     #      deviceFilter: &quot;^sd.&quot;
     注：
         nodes字段是指定安装ceph的node名称以及该node上可作为OSD使用的device名称，上面是官方的多示例写法。
-3.Mon、Mgr、rgw、mds进程的pod的调度机制说明：
+3.Mon、Mgr、rgw、mds进程的pod的自定义调度机制说明：
     上面第2条的字段只是定义OSD必须所在的节点，而placement字段自定义的是除了ceph-osd进程pod之外的其他ceph中的进程Mon、Mgr、rgw、mds它们的Pod的调度机制，即是否将除了OSD之外的其他进程pod也部署在node03、node04、node05上，如果需要自定义的话，需要在前期准备时对node03、node04、node05打上label或者taints，然后再在下面字段中使用nodeAffinity或者tolerations选择都可以实现自由调度。
         #  placement:
         #    all:
@@ -1777,7 +1777,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">19:49</span>
+    <span title="站点阅读时长">19:50</span>
   
 </div>
 
