@@ -144,7 +144,7 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="linux中的文件查找命令locate和find详解">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-10T16:42:55.985Z">
+<meta property="og:updated_time" content="2020-10-10T16:52:44.639Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux中的压缩-解压缩命令-归档命令">
 <meta name="twitter:description" content="linux中的文件查找命令locate和find详解">
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">3.6k</span>
+                <span title="本文字数">4.9k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">3 分钟</span>
+                <span title="阅读时长">4 分钟</span>
               
             </div>
           
@@ -583,11 +583,16 @@
 
       
         <h3 id="linux中的文件查找命令locate和find详解"><a href="#linux中的文件查找命令locate和find详解" class="headerlink" title="linux中的文件查找命令locate和find详解"></a>linux中的文件查找命令locate和find详解</h3><a id="more"></a>
-<pre><code>linux中的压缩、解压缩及归档命令及其后缀名
+<h3 id="linux中的压缩-amp-解压缩命令-amp-归档命令"><a href="#linux中的压缩-amp-解压缩命令-amp-归档命令" class="headerlink" title="linux中的压缩&amp;解压缩命令&amp;归档命令"></a>linux中的压缩&amp;解压缩命令&amp;归档命令</h3><pre><code>linux中的压缩、解压缩及归档命令及其后缀名
     compress/uncompress(.Z)、gzip/gunzip(.gz)、bzip2/bunzip2(.bz2)、xz/unxz/xzcat(.xz)、zip/unzip(.zip)、tar(.tar)、cpio(.cpio)
     其中：
         1.compress、gzip、bzip2、xz只能针对文件进行压缩，不能针对目录
         2.对于目录需要先打包，再进行压缩：即先zip再tar
+        3.压缩速度和比率对比：
+            gzip压缩速度最快；
+            bzip2压缩生成的文件比gzip小，但使用不如gzip广；
+            xz压缩工具相对较新，但是会提供最佳的压缩率
+
 1.压缩&amp;解压缩
     1.compress/uncompress
         compress [-dfvcVr] [-b maxbits] [file ...] 
@@ -603,10 +608,12 @@
             -#：1-9，指定压缩比，值越大压缩比越大
         zcat：不显式解压缩的前提下查看文本文件内容
         示例： 
-            gzip -c messages  &gt;messages.gz 
-            gzip -c -d messages.gz &gt; messages 
-            zcat messages.gz &gt; messages 
-            cat messages | gzip &gt; m.gz
+            ~]# zip a.zip /etc/passwd   #压缩文件
+            ~]# zip all.zip *.jpg  #将所有.jpg的文件压缩成一个zip包 
+            ~]# zip -r grub.zip /boot/grub #压缩一个目录，一般不用
+            ~]# unzip grub.zip          #解压缩
+            ~]# unzip grub.zip -d /opt/ #-d解压到指定的目标/opt
+            ~]# cat messages | gzip &gt; m.gz
                 作用：把大量的执行结果，进行压缩
                 适用场景：
                     数据库备份：通过数据库的命令把数据库的内容提取出来并压缩，达到备份的效果。
@@ -636,6 +643,13 @@
 2.归档工具tar
     tar（Tape ARchive，磁带归档的缩写）
     1.基础选项说明tar [OPTION]...
+        参数：
+            -c  create创建文件
+            -x  -extract [ˈekstrækt]  提取 解压还原文件
+            -v  --verbose显示执行详细过程
+            -f  --file指定备份文件
+            -t  --list 列出压缩包中包括哪些文件，不解包，查看包中的内容
+            -C （大写）--directory   指定解压位置    
         1.创建归档
             tar -cpvf /PATH/FILE.tar FILE.../creat/files/verson/保留权限
             示例：tar cvf etc.tar /data/etc 对data下的etc目录进行打包
@@ -650,9 +664,25 @@
         5.结合压缩工具实现：归档并压缩成对应的格式后缀文件
             -j: bzip2, -z: gzip, -J: xz
             示例：支持打包时并进行压缩
-                tar Jcvf bin.tar.xz /data/bin/  #xz后文文件
-                tar jcvf bin.tar.bz2 /data/bin/ #bz2后文文件
-                tar zcvf bin.tar.gz /data/bin/  #gz后文文件
+            1.创建.tar.gz包
+                ~]# tar cvf etc.tar /etc
+                ~]# tar zcvf etc.tar.gz /etc  #归档,注意备份的名字后缀
+                ~]# tar zxvf etc.tar.gz       #解压缩
+            2.创建.tar.bz2包
+                ~]# tar -jcvf etc.tar.bz2 /etc   
+                ~]# tar -jxvf etc.tar.bz2 /etc    #解压缩
+                ~]# tar jxvf etc.tar.bz2 -C  /opt #解压到opt目录下
+            3.创建.tar.xz包
+                ~]# tar -Jcvf etc.tar.xz /etc
+                ~]# tar -xvf etc.tar.xz    #tar.xz 这类包，解压缩
+                或：
+                 ~]# tar -Jxvf etc.tar.xz  #
+            对比三种压缩方式后压缩比例：
+            ~]# ll -h etc.tar*
+            -rw-r--r-- 1 0 root   36M 5月  10 12:10 etc.tar
+            -rw-r--r-- 1 0 root   9.6M 5月  10 12:14 etc.tar.bz2    #这个常用
+            -rw-r--r-- 1 0 root   12M 5月  10 12:11 etc.tar.gz    #这个常用
+            -rw-r--r-- 1 0 root   7.7M 5月  10 12:16 etc.tar.xz   #这个压缩比例最高，压缩的时间是最长
     2.-exclude选项是排除文件 
         示例：
             tar zcvf /root/a3.tgz --exclude=/app/host1 --exclude=/app/host2 /app
@@ -1182,7 +1212,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux中的文件查找命令locate和find详解"><span class="nav-number">1.</span> <span class="nav-text">linux中的文件查找命令locate和find详解</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux中的文件查找命令locate和find详解"><span class="nav-number">1.</span> <span class="nav-text">linux中的文件查找命令locate和find详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux中的压缩-amp-解压缩命令-amp-归档命令"><span class="nav-number">2.</span> <span class="nav-text">linux中的压缩&amp;解压缩命令&amp;归档命令</span></a></li></ol></div>
             
 
           </div>

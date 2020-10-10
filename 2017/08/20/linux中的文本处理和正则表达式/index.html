@@ -136,18 +136,18 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch">
+  <meta name="description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch、file">
 <meta name="keywords" content="文本处理工具">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux中的文本处理和正则表达式">
 <meta property="og:url" content="https://www.liukui.tech/2017/08/20/linux中的文本处理和正则表达式/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch">
+<meta property="og:description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch、file">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-10T16:19:37.887Z">
+<meta property="og:updated_time" content="2020-10-10T16:56:08.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux中的文本处理和正则表达式">
-<meta name="twitter:description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch">
+<meta name="twitter:description" content="1.linux中简单的文本查看、分析、统计工具文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch、file">
 
 
 
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">15 分钟</span>
+                <span title="阅读时长">16 分钟</span>
               
             </div>
           
@@ -582,12 +582,12 @@
       
 
       
-        <h3 id="1-linux中简单的文本查看、分析、统计工具"><a href="#1-linux中简单的文本查看、分析、统计工具" class="headerlink" title="1.linux中简单的文本查看、分析、统计工具"></a>1.linux中简单的文本查看、分析、统计工具</h3><p>文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch<br><a id="more"></a></p>
+        <h3 id="1-linux中简单的文本查看、分析、统计工具"><a href="#1-linux中简单的文本查看、分析、统计工具" class="headerlink" title="1.linux中简单的文本查看、分析、统计工具"></a>1.linux中简单的文本查看、分析、统计工具</h3><p>文本处理工具：cat、tac、rev、less、more、head、tail、cut、sort、paste、wc、uniq、diff、patch、file<br><a id="more"></a></p>
 <pre><code>1.抽取文本的工具
     文件内容：less和 cat 
     文件截取：head和tail 
     按列抽取：cut
-    1.文件查看命令： cat，tac，rev 
+    1.文件查看命令：cat，tac，rev 
         基本语法：
             cat [OPTION]... [FILE]...
                 -E：显示行结束符$ 
@@ -602,7 +602,16 @@
                 jupyter notebook --ip=192.168.34.118 --port=8888
             ~]$ rev jupster.txt 
                 8888=trop-- 811.43.861.291=pi-- koobeton retypuj
-    2.分页查看文件内容more和less
+    2.file查看文件
+        作用： file - determine file type  #确定文件类型
+        用法： file /etc/passwd
+        注：
+            linux系统不根据后缀名识别文件类型
+            用file命令查看文件的类型。
+        示例：
+            ~]# file /etc/passwd
+                /etc/passwd: ASCII text
+    3.分页查看文件内容more和less
         1.more: 分页查看文件
             more [OPTIONS...] FILE... 
                 -d: 显示翻页及退出提示 
@@ -611,7 +620,7 @@
                 /文本 搜索 文本 
                 n/N 跳到下一个或上一个匹配 
             less 命令是man命令使用的分页器
-    3.显示文本前或后行内容(常用head和tail、tail -f和tail -F的区别)
+    4.显示文本前或后行内容(常用head和tail、tail -f和tail -F的区别)
         1.head
             head [OPTION]... [FILE]... 
             -c #: 指定获取前#字节 
@@ -630,7 +639,7 @@
                 tail -f 跟踪文件，持续跟踪文件，如果文件被删除，跟踪停止
                 tail -F 跟踪文件名，只要文件名存在，就会一直跟踪
                 tailf   文件不增长时，不访问文件，区别tail -f ,比较省系统资源
-    4.按列抽取文本cut和合并文件paste
+    5.按列抽取文本cut和合并文件paste
         1.cut [OPTION]... [FILE]... 
             用法： cat file| cut -d分隔符 -f第几列
             -d DELIMITER: 指明分隔符，默认tab 
