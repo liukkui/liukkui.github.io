@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
+<meta name="keywords" content="Ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph-cephfs">
+<meta property="og:url" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs/CephFS的存储逻辑.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs/CephFS-MDS动态子树分区逻辑.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs/多活MDS架构.png">
+<meta property="og:updated_time" content="2020-10-10T12:48:45.530Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ceph-cephfs">
+<meta name="twitter:description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs/CephFS的存储逻辑.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2019/09/04/Ceph-cephfs/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Ceph-cephfs | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<!-- 音频播放 -->
+<script src="//lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159888076870" m="1"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">73</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/09/04/Ceph-cephfs/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ceph-cephfs
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-04 08:00:00" itemprop="dateCreated datePublished" datetime="2019-09-04T08:00:00+08:00">2019-09-04</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/ceph/" itemprop="url" rel="index"><span itemprop="name">ceph</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/04/Ceph-cephfs/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/09/04/Ceph-cephfs/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">18k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">17 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解"><a href="#6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解" class="headerlink" title="6.CephFS(Ceph File System)文件系统接口的原理和使用详解"></a>6.CephFS(Ceph File System)文件系统接口的原理和使用详解</h3><p>更新于：2019.09<br><a id="more"></a></p>
+<h4 id="6-1-CephFS的原理和使用"><a href="#6-1-CephFS的原理和使用" class="headerlink" title="6.1.CephFS的原理和使用"></a>6.1.CephFS的原理和使用</h4><p>–CephFS的存储逻辑<br><img src="/2019/09/04/Ceph-cephfs/CephFS的存储逻辑.png" alt="CephFS的存储逻辑"></p>
+<pre><code>文件系统接口是计算机技术领域用到的存储访问中最通用的、最普遍的接口，即便有些厂商或者软件存储直接提供了块设备（如ceph-RBD、SAN），当客户端使用时仍然还需要将这个块设备映射到内核中，分区、格式化创建文件系统、挂载才能使用它，所以能够直接使用裸设备作为存储的应用程序并不多；因此ceph直接还提供了CephFS这种文件系统接口给用户直接存储数据，避免上面的一系列（映射、分区、格式化、挂载等）操作。
+
+1.经典(传统)文件系统概述(用于在原理上区别下面的CephFS)：
+    1.1.索引式文件系统将底层存储数据的磁盘空间切分为&quot;块&quot;），并为每个文件对象所占用所有块建立一个索引表进行统一存放在一个称为&quot;元数据区&quot;的空间中：
+        1.索引表就是块地址数组，每个数组元素就是块的地址，于是，一个文件对象的块可以分散存储到离散块空间中.
+        2.索引表的索引结构称为inode，用于索引、跟踪一个文件对象的权限、隶属关系、时间戳和占据的所有的块等属性信息，不过却不包括文件名和文件内容本身
+    1.2.文件名及其隶属的目录层级关系通过Dentry(目录项)进行描述：
+        1.每个Dentry就像一个映射表，它保存了本级目录或者文件名以及紧邻的下一级目录或者文件的名称与各自inode的映射关系.
+        2.而Dentry自身也需要由专用的inode对象承载，它也拥有自己的inode，于是这种映射便可组织出多级别层次来，这个多级别的层次起始于一个惟一的称之为“根”的起始点，从而形成一个树状组织结构.
+2.CephFS的存储逻辑：如上图示
+    1.CephFS为什么需要部署MDS以及MDS的作用：
+        1.1.启用CephFS接口需要在基础的Rados-Cluster存储集群之上需要额外运行一个MDS（Metadata-Server元数据服务器）的守护进程，由于Rados-Cluster本身就是一个对象存储服务，Rados-Cluster是没办法分开管理上面所说的传统文件系统中的数据和元数据的功能；
+        1.2.因此MDS是专用于模拟传统文件系统所应该具有的将数据和元数据分离存储的方式而专门提供的一个守护进程服务。而且MDS只用来管理元数据；CephFS依赖于专用的MDS（MetaData-Server）组件管理元数据信息并向客户端输出一个倒置的树状层级结构：
+            1.将元数据先缓存于MDS的内存中然后再同步到Metadatapool,可以加快元数据的访问
+            2.将cephfs的元数据的更新日志journal流式化后存储在RADOS集群上，journal日志是用来恢复mds里的元数据缓存。
+            3.重启mds的时候会通过replay的方式从osd上加载之前缓存的元数据
+            4.保存了文件系统的元数据(对象里保存了子目录和子文件的名称和inode编号)
+        1.3.客户端(ceph.ko)--&gt;MDS--&gt;Rados-Cluster
+            客户端要想使用ceph文件系统接口，内核级必须有对应的文件系统模块与之支持也就是ceph.ko模块，ceph.ko作为客户端每一次访问文件时必须基于套接字先连入到MDS来获取、返回文件的inode元数据信息，然后ceph.ko再到Rados-Cluster上以对象的方式把对象模拟成传统文件系统的&quot;块&quot;来加载文件的数据完成文件存取操作。
+    2.CephFS需要元数据存储池(metadatapool)和数据存储池(datapool)
+        1.不管是RBD、CephFS、RadosGW，在Ceph（Rados-Cluster）上所有数据都应该先放在存储池pool中再映射到OSD上，而CephFS文件系统管理其数据和元数据时是分别放置在不同的存储池中进行的；
+        2.Metadata Pool
+            1.所有的元数据都是由MDS守护进程管理的，可以理解为：MDS作为客户端连入Rados-Cluster的CephFS的metadata-pool存储池存储元数据；
+            2.而元数据是一类很密集的IO访问，需要占用的空间不大，但是对于性能的要求比较高，所以Metadata-Server会在本地使用内存当做高速缓存，所有操作都先在内存中完成，一段时间后再同步到MetadataPool当中实现元数据存储的.
+        3.datapool
+            数据直接写入datapool存储池
+        4.需要注意的是：CephFS的Matadatapool一定只能被MDS访问（客户端是不能直接访问的），客户端对元数据的访问必须经由MDS来实现：
+            当客户端打开一个数据时，它首先会向MDS请求此数据的inode,inode信息会告诉客户端此数据所有对象存放datapool中的位置和编号，然后客户端基于编号就可以加载到所有对象并访问到数据了。
+    3.客户端挂载CephFS访问Ceph集群的方法有2种：
+        1.基于内核文件系统：
+            即基于内核中的模块完成挂载，主要依赖ceph.ko模块和libcephfs库文件.
+        2.用户空间文件系统：(FUSE客户端，需要内核):
+            FUSE是指Filesystem-in-Userspace，主要用于非特权用户能够无需操作内核而创建文件系统，借助于libcephfs与Ceph集群交互.
+3.部署、启用CephFS、客户端挂载的步骤：
+    1.至少有一个节点运行ceph-mds守护进程
+        可以通过部署Ceph集群时在管理节点使用ceph-deploy命令部署，部署完后默认处于standby状态，只有真正创建完CephFS的元数据存储池和数据存储池后才会转为Active模式；
+    2.创建存储池：Metadatapool和datapool
+        ceph osd pool create metadata-pool-name #创建元数据池
+        ceph osd pool create data-pool-name     #创建数据池
+    3.激活文件系统(也就是将MDS关联到两个存储池并使用)
+        创建文件系统的命令格式：ceph fs new
+            ceph fs new &lt;fs-name&gt; metadata-pool-name data-pool-name
+        查看文件系统状态：
+            ceph fs status &lt;fsname&gt;
+            ceph mds stat
+    4.创建CephFS客户端账号和secret文件    
+        由于Ceph启用了CephX认证，所以CephFS的客户端完成授权认证后方可挂载访问文件系统，关于创建账号和授权见前文章，这里只列步骤：
+        1.创建专用客户端账号，命令如下：
+            ceph auth get-or-create &lt;username&gt; mon &apos;allow r&apos; mds &apos;allow rw&apos; osd &apos;allow rwx pool=&lt;data-pool-name&gt;&apos; 
+            注意：
+                由于元数据池仅可由MDS访问，无须授权给客户端账号，所以在OSD部分只需要授权客户端访问数据池data-pool-name即可，而且数据池上的权限指定应根据实际需要进行。
+        2.保存用户账号的密钥key信息于secret文件，用于客户端挂载操作认证之用
+            由于CephFS客户端挂载时需要分开指定username和key信息，所以还需要将此用户的key信息单独导出放到secret文件中；
+            1.先导出keyring密钥,通过keyring文件获取key
+                ceph auth get &lt;username&gt; -o cluster-name.user-name.keyring
+                #到出用户账号到指定名称的keyring中
+            2.再将key保存到secret文件
+                ceph authtool -p -n &lt;username&gt; cluster-name.user-name.keyring &gt; &lt;username&gt;.key
+                #保存到指定名称的secret中
+            或者一步到位也行：
+                ceph auth print-key &lt;username&gt; &gt; &lt;username&gt;.key
+        3.拷贝密钥文件到需要挂载CephFS的客户端主机上
+            scp &lt;username&gt;.key root@server01:/etc/ceph/
+            #拷贝到客户端主机
+    5.1.基于内核的客户端挂载(需要key文件)
+        1.客户端主机环境准备
+            • 确保内核装载了ceph.ko模块  ~]$ modinfo ceph #装载ceph模块
+            • 安装ceph-common程序包
+            • 提供ceph.conf配置文件
+            • 获取到用于认证的密钥文件
+        2.挂载CephFS命令：
+            mount -t ceph &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;] mount_point -o name=USERNAME,secretfile=/PATH/TO/USER-SECRET-KEY
+            或者：
+                mount -t &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;] mount_point -o name=USERNAME,secret=xxxx
+            其中：
+                1.挂载时使用逗号指定一个或多个monitorIP+Port，mount_point是指cephfs模拟出的根文件系统和客户端的挂载点，指明连接的用户和secret密钥文件路径。
+                2.其实也可以secret也可以直接指定秘钥，而不是使用secretfile方式
+        3.查看挂载状态
+            stat -f mount_point
+        4.写入/etc/fstab文件，实现自动挂载
+            ~]$ vim /etc/fstab
+                &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;]:/ /data cephname=fsclient,secretfile=/etc/ceph/fsclient.key,_netdev,noatime 0 0
+            其中：
+                _netdev选项是指挂载时间超时跳过否则主机无法正常启动，noatime是指为了提升文件系统性能建议不要实时更新访问的时间戳。
+    5.2.基于FUSE客户端挂载(需要keyring文件)
+        1.客户端主机环境准备
+            • 安装ceph-fuse程序包
+            • 获取到客户端账号的keyring文件和ceph.conf配置文件
+        2.挂载CephFS
+            ceph-fuse [-n client.username] [-m mon-ip-addr:mon-port] &lt;mount-point&gt; [OPTIONS] [--client_mountpoint/ -r &lt;sub_directory&gt;]
+            其中：
+                1.指定用户名、monIP+Port,mount-point和内核挂载时不同，这里只需要指定客户端的挂载点即可，ceph-fuse会默认使用keyring文件；
+                2.-r root_directory把文件系统内的root_directory作为根挂载，而不是整个Ceph文件系统树。
+        3.写入/etc/fstab，实现自动挂载
+            #DEVICE PATH TYPE OPTIONS
+            none &lt;mount-point&gt; fuse.ceph ceph.id=&lt;user-id&gt; [,ceph.conf=&lt;path&gt;],_netdev,defaults 0 0
+            注意：
+                使用fuse挂载时是没有设备的，所以是none,挂载类型时fuse.ceph,选项有用户名、ceph.conf配置文件，不要指明keyring文件因为它会自动在/etc/ceph目录下查找，_netdev同上原理。
+        4.卸载：
+            fusemount -u &lt;mount_point&gt;
+    6.总结：相对于NFS来说
+        1.用于底层Rados功能，使用副本池拥有冗余能力，不存在单点
+        2.底层Rados由N个节点主组成，可以分散IO和增加节点增加IO扩展性更高
+        CephFS还可以在前端虚拟成NFS使用，但一般不这么做，可以参考：
+            https://mp.weixin.qq.com/s/1TMfqxxE5I2eIhtXPPoRpQ
+
+    完整挂载示例：
+        ~]$ ceph osd pool create cephfs-metadata 32 #元数据池
+        ~]$ ceph osd pool create cephfs-data 64     #数据池
+        ~]$ ceph fs new cephfs cephfs-metadatacephfs-data #激活
+        ~]$ ceph mds stat #查看文件系统状态
+            cephfs-1/1/1 up {0=stor01=up:active}
+        ~]$ ceph fs status cephfs #查看名为cephfs文件系统的详细信息
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | stor01 | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +----------------+-----------+--------+---------+
+            |  Pool          |    type   |  used  |  avail  |
+            +----------------+-----------+--------+---------+
+            |cephfs-metadata |  metadata |   2286 |    258G | 
+            | cephfs-data    |    data   |    0   |    258G |
+            +----------------+-----------+--------+---------+
+            +--------------+
+            | Standby MDS  |
+            +--------------+    
+            MDS version: ceph version 13.2.4 (....)mimic(stable)
+        ~]$ ceph auth get-or-create client.fsclient mon &apos;allow r&apos; mds &apos;allow rw&apos; osd &apos;allow rw pool=cephfs-data&apos;
+            创建、授权，其中osd权限只授权数据池cephfs-data
+        ~]$ ceph auth get client.fsclient -o /etc/ceph/ceph.client.fsclient.keyring
+            #导出client.fsclient用户的key信息
+        ~]$ ceph authtool -p -n client.fsclient /etc/ceph/ceph.client.fsclient.keyring &gt; fsclient.key
+            #将client.fsclient的keyring保存到secret中
+        上面两步命令也可合并成：
+            ceph auth print-key client.fsclient &gt; fsclient.key
+        ~]$ scp ceph.client.fsclient.keyring fsclient.key root@server01:/etc/ceph/ 
+            #拷贝
+        1.1.基于内核的客户端挂载
+            ~]$ mkdir /data   #客户端的挂载点
+            ~]$ mmount -t ceph mon01:6789:/ /data -o name=fsclient secretfile=/etc/ceph/fsclient.key
+                #完成挂载
+            ~]$ mount 
+                172.30.0.16:6789:/ on /data type ceph (rw,relatime,name=fsclient,secret=&lt;hidden&gt;,acl,wsize=166777216)
+            ~]$ stat -f /data
+                File:&quot;/data&quot;
+                ID: e68dsand8eh9de41 Namelen: 255 Type:ceph
+                ...
+            ~]$ vim /etc/fstab  #开机自动挂载
+                mon01:6789,mon02:6789:/ /data ceph name=fsclient secretfile=/etc/ceph/fsclient.key,_netdev 0 0
+        1.2.基于FUSE客户端挂载
+            ~]$ yum install ceph-fuse ceph-common
+            ~]$ ceph-fuse -n client.fsclient -m mon01:6789 /data
+                starting fuse     #开始挂载
+            ~]$ mount 
+                ceph-fuse on /data type fuse.ceph-fuse (rw,noatime,use_id=0,group_id=0,allow_other)
+            ~]$ vim /etc/fstab
+                none /data fuse.ceph ceph.id=fsclient,ceph.conf/etc/ceph/ceph.conf,_netdev,default 0 0
+</code></pre><h3 id="6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现"><a href="#6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现" class="headerlink" title="6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现"></a>6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现</h3><p><a href="https://blog.csdn.net/skdkjzz/article/details/41307491" target="_blank" rel="noopener">Ceph论文译文参考</a></p>
+<p>–CephFS-MDS动态子树分区逻辑<br><img src="/2019/09/04/Ceph-cephfs/CephFS-MDS动态子树分区逻辑.png" alt="CephFS-MDS动态子树分区逻辑"><br>–多活MDS架构<br><img src="/2019/09/04/Ceph-cephfs/多活MDS架构.png" alt="多活MDS架构"></p>
+<pre><code>MDS是CephFS的瓶颈？
+    CephFS文件系统是将数据分为元数据Metadata和数据Data分开存放的，Datapool可以随着底层Rados-Cluster的OSD增加完成I/O的自动扩展，Metadatapool也可以扩展，但是从客户端--&gt;MDS--&gt;Metadatapool流程可以知道MDS是Metadatapool的唯一访问入口，当有大量的CephFS客户端同时访问MDS时，Metadatapool可能不会成为瓶颈而MDS服务确有很大可能成为CephFS的瓶颈!
+单纯增加MDS节点无法分担写操作从而达到扩展瓶颈的效果!
+    CephFS的扩展实际上还是对MDS守护进程的扩展，MDS保存的是文件系统的元数据，而文件系统的元数据其实就是一个树状结构（如上图）；比如当有2个MDS时，当客户端通过MDS01写操作和在MDS02上读操作是同一个文件时，就必须保证这两个MDS是互相同步保持一致（相当于是主从复制的副本池），这样一来不管写到哪个MDS都需要同步给其他MDS，写操作没有任何分散负载效果，所以单纯的增加MDS节点没有意义。
+1.元数据分区的解决方案：
+    如上说的单纯增加元数据节点的数量是无意义的，所以为了实现文件系统数据和元数据的负载均衡，分布式文件系统业界提供了将名称空间分割治理的解决方案，方案基本思想是：通过将文件系统根树及其热点子树分别部署于不同的元数据服务器进行负载均衡，从而赋予了元数据存储线性扩展的可能，一般有几种分区方法：
+        1.静态子树分区
+            1.1.静态子树分区的思想是指：通过手工分区方式，把A主机上的根文件系统的一个或多个子目录树如：d1挂载到另外B主机的文件系统上（如NFS），那么所有写在A-d1子树目录下的都会写到了B主机的文件系统目录下，即把一个子目录关联到另外一个分区上去从而减轻了当前文件系统的负载；&quot;静态&quot;子树是指只能减轻被挂载的那个子目录（A-d1）的负载，无法减轻A主机上的其他子目录的负载。
+            1.2.静态子树分区方案在经过长时间数据存取后肯定会出现元数据负载不均衡的情况，可以由管理员手动重新进行分配来解决，所以静态子树分区方式适应于数据位置固定的场景，不适合动态扩展、或者有可能出现异常的场景。
+        2.静态hash分区
+            2.1.静态hash分区是指对A文件系统的目录或者文件名进行路径hash计算来分配数据存储的位置。
+            2.2.这种方式适合数据分布均衡、且需要应用各种异常的情况，但不太适合需要数据分布固定、环境变化频率很高的场景。
+        3.惰性混编分区
+            惰性混编分区是指将静态hash分区和传统的文件系统结合使用，不做详细说明
+        4.动态子树分区
+            通过实时监控集群节点的负载，动态调整子树分布于不同的节点。
+            这种方式适合各种异常场景，能根据负载的情况，动态的调整数据分布，不过如果大量数据的迁移肯定会导致业务抖动，影响性能。
+2.Ceph动态子树分区
+    1.动态是相对于静态而言，静态是将文件系统的某个子目录上的元数据指定由固定的某一个MDS来管理，而&quot;静态&quot;的缺点是肯定会带来元数据分布不均的情况，所以为了避免这种情况，使用&quot;动态子树方式&quot;按照当前每个子目录的实际负载来动态迁移分配当前子树的元数据到其他MDS。
+    2.Ceph就是使用动态子树分区方式，支持多个MDS同时工作，如上图1示：
+        1.其中一个（MDS1）负责根，根上的某个子树动态的分配给第二个MDS服务器，以此类推...
+        2.Rank级别：
+            MDS是有等级划分的，负载根文件系统管理的MDS的Rank为0级别，Rank1、rank2...它们都属于Rank0的子树。
+        3.MDS的冗余实现，如上图1示
+            多个MDS此时只是分担元数据负载而不具有数据冗余能力，虽然元数据是存到Metadata-pool中的，即使管理它的MDS宕了其他MDS可以加载但速度非常慢（元数据是小而密集的IO请求），所以冗余方案有：
+            1.公共冗余MDS(备用MDS、standby)：
+                公共备用MDS会代替任何一个可能出现故障的主MDS
+            2.每个MDS配置一个单独的冷备MDS：
+                冷备MDS的逻辑和存在的问题：主MDS宕机了，冷备MDS需要从Metadatapool中加载数据重新提供服务，中间肯定会出现卡和切换耗时比较高的问题。
+            3.每个MDS配置一个在线备用MDS(热备MDS)：
+                在线备用MDS(热备MDS)的逻辑是：主MDS的元数据操作不但要同步到内存中，同时也要同步给在线备用的MDS，在线备用MDS虽然不提供服务但实时更新数据，这样主从切换减少了数据加载的步骤就会大大减少切换耗时.
+    3.Ceph的MDS集群是基于动态子树分区策略,自适应地分配缓存元数据，分层分布在一组节点上, 如上图2所示：
+        1.通过使用计数器统计每个MDS中元数据的访问量。任何操作使得受影响inode及其上层节点直到根目录的计数都增加,从而提供每个MDS一个权值，来描述最近的载荷分布。定期比较MDS权值, 通过迁移以保证元数据工作负载均匀分布。共享的永久存储和及其名空间锁的结合保证这样的迁移是可行的，转移一些内存缓存的内容到新的节点, 对相干锁或客户端功能影响最小。新导入元数据将写入新MDS的日志中,同时，还有日志分录新旧MDS以确保迁移是安全的（类似于两阶段提交）。子树分区保持以最小化前缀复制开销同时也要保护本地性。
+        2.跨多个MDS节点复制元数据时,inode内容分为三组,每个都有不同的语义一致性:安全（owner,mode）、文件（size,mtime）、不可变性质（inode-number,ctime,layout), 当不可变性质不变，安全和文件锁被独立的状态机管理，都拥有不同状态集，并且根据不同的访问和更新在不同状态之间转换。例如：
+            onwer和mode用于路径访问的安全检查，很少改变，只需要很少几个状态，但是客户端多种访问模式的集合，因为它反应在MDS中，可以控制客户端的访问能力。
+3.单活MDS及其高可用和多活MDS(multi-MDS)
+    综上，MDS作为CephFS的唯一入口，所以：1.MDS进程必须要做冗余；2.如果只有一个MDS进程那么它会成为一个较重文件系统的瓶颈，为了避免其成为瓶颈我们使用元数据分区的动态子树分区方式实现多个MDS同时工作（多活MDS，multi-mds），避免每个MDS成为单点还需要对每个MDS实现高可用；所以MDS的部署方案就有3种方式：
+    1.单活MDS
+        只有一个MDS，不安全且易成为CephFS文件系统的瓶颈，不推荐
+    2.单活MDS高可用
+        对外提供服务只有一个active-mds,多个standby-mds，当active-mds挂掉，standby-mds会立马接替，保证集群高可用性；而standby-mds有2种备用方案：
+        1.冷备MDS
+            冷备MDS其实只是准备了一个备用的mds进程，与主进程保持心跳关系，并不备份lru元数据，一旦主的mds挂了，备份mds会从Metadatapool中replay()元数据到缓存，replay肯定会消耗一定的时间，主从切换一定会有延迟。
+        2.热备MDS
+            热备除了准备了备用的mds进程，元数据缓存先写入主MDS，然后由主mds时时刻刻同步给热备MDS，当主的mds挂了，热备的mds直接变成主mds，并且没有replay()的操作，所以主从切换消耗的时间非常少。
+    3.多活MDS(multi-MDS)
+        使用元数据分区的动态子树分区方式实现，多个MDS同时工作分担前端的读写操作，避免MDS称为CephFS的性能瓶颈，这也是CephFS在Luminous版本中多元数据服务器（Multi-MDS）的功能和目录分片（dirfragment）的功能特性。
+
+4.多活MDS(multi-MDS、active-activr MDSs)--&gt;重要
+    1.多主MDS模式是指CephFS将整个文件系统的名称空间切分为多个子树并配置到多个MDS之上，不过，读写操作的负载均衡策略分别是子树切分和目录副本，意思是：
+        1.将写操作负载较重的目录切分成多个子目录到其他active-MDS以分散负载.
+        2.为读操作负载较重的目录创建多个副本到多个MDS以均衡负载.
+    2.子树分区和迁移的决策是一个同步过程，各MDS每10秒钟做一次独立的迁移决策，每个MDS并不存在一个一致的名称空间视图，且MDS集群也不存在一个全局调度器负责统一的调度决策;
+    3.各MDS彼此间通过交换心跳信息（HeartBeat，简称HB）及负载状态来确定是否要进行迁移、如何分区名称空间，以及是否需要目录切分为子树等
+        管理员也可以配置CephFS负载的计算方式从而影响MDS的负载决策，目前，CephFS支持基于CPU负载、文件系统负载及混合此两种的决策机制
+    4.动态子树分区依赖于共享存储完成热点负载在MDS间的迁移，于是Ceph把MDS的元数据存储于后面的RADOS集群上的专用存储池中，此存储池可由多个MDS共享
+        MDS对元数据的访问并不直接基于RADOS进行，而是为其提供了一个基于内存的缓存区以缓存热点元数据，并且在元数据相关日志条目过期之前将一直存储于内存中
+    5.为了确保多个MDS之间能够共享数据，CephFS使用元数据日志来解决容错问题：
+        1.即每个活跃的MDS都是通过日志保存在底层的Metadatapool中实现的，这个Metadatapool类似于LFS（Log-Structured File System）和WAFL（ Write Anywhere File Layout）的工作机制
+        2.CephFS元数据日志文件的体积可以无限增长以确保日志信息能顺序写入RADOS，并额外赋予守护进程修剪冗余或不相关日志条目的能力
+    6.每个Ceph上可以创建多个CephFS文件系统（但建议只创建一个），而且每个CephFS都会有一个易读的文件系统名称和一个称为FSCID标识符ID，并且每个CephFS都应该配置至少一个Active MDS守护进程对外提供服务。
+    7.一个MDS集群中可处于Active状态的MDS数量的上限由ceph.conf中max_mds参数配置，它控制着可用的rank数量，默认值为1；
+        1.rank是指CephFS上可同时处于Active状态的MDS守护进程的可用编号，其范围从0到max_mds-1；
+        2.一个rank编号意味着一个可承载CephFS层级文件系统目录子树元数据管理功能的Active状态的ceph-mds守护进程编制，max_mds的值为1时意味着仅有一个0号rank可用；
+        3.刚启动的ceph-mds守护进程没有接管任何rank，它随后由MON按需进行分配
+        4.一个ceph-mds一次仅可占据一个rank，并且在守护进程终止时将其释放
+        5. 一个rank可以处于下列三种状态中的某一种：
+            1.Up：rank已经由某个ceph-mds守护进程接管
+            2.Failed：rank未被任何ceph-mds守护进程接管
+            3.Damaged：rank被占用且占用的ceph-mds守护进程处于故障状态，其元数据处于崩溃或丢失状态
+                在管理员修复问题并对其运行&quot;ceph mds repaired&quot;命令之前，处于Damaged状态的rank不能分配给其它任何MDS守护进程.
+    8.增加rank值以配置active-MDS数量
+        要想实现在Ceph集群中配置多个active-MDSs，需要更改系统默认的rank=1的值；
+        1.增加Active MDS的数量的命令：
+            ceph fs set &lt;fsname&gt; max_mds &lt;number&gt;
+            注意：
+                1.仅当存在某个备用守护进程可供新的级别使用时，文件系统中的实际级别数才会增加；
+                2.多活MDS的场景依然要求存在备用的冗余主机以实现服务HA，因此max_mds的值总是应该比实际可用的MDS数量至少小1；
+        2.降低Acitve MDS的数量的命令：
+            ceph mds deactivate {System:rank|FSID:rank|rank}
+            注意：减小max_mds的值仅会限制新的rank的创建，对于已经存在的Active MDS及持有的rank不造成真正的影响，因此降低max_mds的值后，管理员需要手动关闭不再被需要的rank；
+        3.变动max_mds的值后查看其状态
+            ceph status &lt;fsname&gt;
+    9.手动设置MDS的管理故障转移机制
+        出于冗余高可用的目的配置一定数量Standby状态的ceph-mds守护进程如何接管、怎么接管失效的MDS，称为MDS管理故障转移机制，而且CephFS提供了四个选项参数可以手动控制Standby状态的MDS守护进程如何工作：
+        1.mds_standby_replay：也就是上面说的热备MDS高可用模式
+            1.其值为布尔型值，true表示当前MDS守护进程将持续读取某个特定的Up状态的rank的元数据日志，从而持有相关rank的元数据缓存，并在此rank失效时加速故障切换；
+            2.一个up状态的rank仅能拥有一个replay守护进程，多出的会被自动降级为正常的非replay型MDS
+        2.mds_standby_for_name：设置备用的MDS进程仅备用于指定名称的MDS(rank)；
+        3.mds_standby_for_rank：两种用法
+            1.此选项不但可以设置此备用MDS进程仅备用于指定的rank，它不会接替任何其它失效的rank；
+                即有rank0和1时，只设置为rank0的备用MDS，rank1即使故障它也不会接替
+            2.此选项还可以在当一个Ceph集群上创建了多个CephFS文件系统时，他还可以为跨多个文件系统为多个rank进行冗余，但需要联合使用下面的参数来指定；
+                即只设置为指定fscid的文件系统中的rank0的备用MDS。
+        4.mds_standby_for_fscid：联合mds_standby_for_rank参数的值协同生效;
+            同时设置了mds_standby_for_rank：备用于指定fscid的指定rank；
+            未设置mds_standby_for_rank时：备用于指定fscid的任意rank；
+
+5.部署单活MDS高可用和多活MDS高可用
+    此前部署Ceph时只有一个active-mds，在此基础上实现单活高可用和多活MDS高可用
+    ~]$ ceph mds stat
+        cephfs-1/1/1 up {0=mon01=up:active} #当前集群只有一个active-mds=mon01
+    1.单活MDS高可用
+        ~]$ ceph-deploy mds create mon02 mon03 #将mon02和mon03也部署为mds节点
+        ~]$ ceph fs status cephfs 
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | stor01 | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +--------------+
+            | Standby MDS  |
+            |     mon02    |
+            |     mon03    | 此时就是一个单活的MDS高可用，mon2和mon3会在
+            +--------------+  mon01故障时接替mon01
+    2.多活MDS高可用
+        ~]$ ceph fs set cephfs max_mds=2    #设置活动的MDS数量为2
+        ~]$ ceph fs status cephfs 
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | mon01  | Reqs: 0/s | 10  |  13  |
+            |   1   | active | mon02  | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +--------------+
+            | Standby MDS  |
+            |  mon03       | 
+            +--------------+ 
+            此时只有一个备用MDS：mon03,可以通过管理故障转移机制设置备用模式
+        ~]$ vim /etc/ceph/ceph.conf
+            ...
+            [mds.mon03]
+            mds_standby_for_fscid=cephfs
+            意思是指明mon03为名为cephfs文件系统的备用mds，由于cephfs有两个活动mds,所以不管是mon01还是mon02故障，mon03都会以冷备mds的方式接管，但切换时间会较长；
+        ~]$ vim /etc/ceph/ceph.conf
+            ...
+            [mds.mon03]
+            mds_standby_for_name=mon01
+            mds_standby_replay=true
+            [mds.mon04]
+            mds_standby_for_name=mon02
+            mds_standby_replay=true
+            #如果有2个activemds,2个standbymds，可以通过上面两个选项来指定各自的备用mds和其模式为热备，以实现故障切换时加速切换速度.
+</code></pre><h3 id="CephFS-nfs-ganesha实现高可用的NFS"><a href="#CephFS-nfs-ganesha实现高可用的NFS" class="headerlink" title="CephFS+nfs-ganesha实现高可用的NFS"></a>CephFS+nfs-ganesha实现高可用的NFS</h3><p><a href="https://mp.weixin.qq.com/s/1TMfqxxE5I2eIhtXPPoRpQ" target="_blank" rel="noopener">参考</a></p>
+<pre><code>Cephfs需要客户端支持kernel挂载、fuse挂载，这种些方式都限制了一个使用场景，相比传统的NFS协议使用广度上还有一定的差距，所以Ceph中集成了开源软件ganesha实现cephfs和rwg的转换输出到NFS，本文介绍了如何使用Dashboard中NFS模块（ganesha）如何导出NFS
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ceph/" rel="tag"><i class="fa fa-tag"></i> Ceph</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/03/Ceph-RBD/" rel="next" title="Ceph-RBD">
+                <i class="fa fa-chevron-left"></i> Ceph-RBD
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
+                旧事-大好河山 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+      
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">73</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解"><span class="nav-number">1.</span> <span class="nav-text">6.CephFS(Ceph File System)文件系统接口的原理和使用详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-CephFS的原理和使用"><span class="nav-number">1.1.</span> <span class="nav-text">6.1.CephFS的原理和使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现"><span class="nav-number">2.</span> <span class="nav-text">6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CephFS-nfs-ganesha实现高可用的NFS"><span class="nav-number">3.</span> <span class="nav-text">CephFS+nfs-ganesha实现高可用的NFS</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <div style="">
+  <canvas id="canvas" style="width:70%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.4m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">20:32</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="/js/src/Valine.min.js"></script>
+
+  <!-- https://deserts.io/diy-a-comment-system/ -->
+  <script type="text/javascript">
+    new Valine({
+        lang: 'zh-cn',
+        admin_email: '645150765@qq.com', //博主邮箱
+        el: '#comments' ,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        emoticon_url: 'https://cloud.panjunwen.com/alu',
+        emoticon_list: ["吐.png","喷血.png","狂汗.png","不说话.png","汗.png","坐等.png","献花.png","不高兴.png","中刀.png","害羞.png","皱眉.png","小眼睛.png","中指.png","尴尬.png","瞅你.png","想一想.png","中枪.png","得意.png","肿包.png","扇耳光.png","亲亲.png","惊喜.png","脸红.png","无所谓.png","便便.png","愤怒.png","蜡烛.png","献黄瓜.png","内伤.png","投降.png","观察.png","看不见.png","击掌.png","抠鼻.png","邪恶.png","看热闹.png","口水.png","抽烟.png","锁眉.png","装大款.png","吐舌.png","无奈.png","长草.png","赞一个.png","呲牙.png","无语.png","阴暗.png","不出所料.png","咽气.png","期待.png","高兴.png","吐血倒地.png","哭泣.png","欢呼.png","黑线.png","喜极而泣.png","喷水.png","深思.png","鼓掌.png","暗地观察.png"],
+        placeholder: '帅的人已经评论',
+  });
+
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

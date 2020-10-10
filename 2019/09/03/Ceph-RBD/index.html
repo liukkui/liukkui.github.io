@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
+<meta name="keywords" content="Ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph-RBD">
+<meta property="og:url" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/rbd两种使用方式.png">
+<meta property="og:updated_time" content="2020-10-10T12:48:56.471Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ceph-RBD">
+<meta name="twitter:description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/rbd两种使用方式.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2019/09/03/Ceph-RBD/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Ceph-RBD | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<!-- 音频播放 -->
+<script src="//lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159888076870" m="1"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">31</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">73</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/09/03/Ceph-RBD/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ceph-RBD
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-03 08:00:00" itemprop="dateCreated datePublished" datetime="2019-09-03T08:00:00+08:00">2019-09-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/ceph/" itemprop="url" rel="index"><span itemprop="name">ceph</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/03/Ceph-RBD/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/09/03/Ceph-RBD/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">21k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">19 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="5-RBD-Rados-Block-Device-的原理和使用"><a href="#5-RBD-Rados-Block-Device-的原理和使用" class="headerlink" title="5.RBD(Rados Block Device)的原理和使用"></a>5.RBD(Rados Block Device)的原理和使用</h4><p>更新于：2019.09<br><a id="more"></a></p>
+<pre><code>1.RBD全称(RADOS Block Devices)，是一种建构在RADOS存储集群之上为客户端，rbd向下是Rados-Cluster的客户端，rbd向上所提供的任何一个rbd接口都可以当成是一个独立而且完整的image磁盘设备使用，所以它提供块设备接口的存储服务中间层,这类的客户端包括虚拟化程序KVM（结合qemu）和云的计算操作系统OpenStack和CloudStack等，RBD的应用场景有：
+    1.被linux主机使用
+        由于linux主机是由户空间和内核空间组成，硬盘是被内核识别后才表现为dev下的一个个设备,然后借助用户空间的工具进行格式化使用,所以如果linux主机想使用rbd虚拟出的磁盘设备就需要内核中有一个模块能够识别ceph，好在在内核中就有rbd.ko模块能够把自己当成客户端连入rbd服务上检索出它关联使用的镜像文件.
+    2.被KVM虚拟机使用
+        当创建kvm虚拟机时需要指定使用何种磁盘设备，而kvm可以在指定磁盘时是使用libvirt通过rbd协议连入rbd检索出某个映像文件当做磁盘设备存储文件。
+    rbd协议：
+        不管是哪种使用场景，它们中间必须经过rbd协议衔接，rbd是CS架构，Server是Rados-Cluster上的库librbd,librbd不需要监听任何套接字确可以借助Rados-Cluster提供块数据服务，Client可以是rbd.ko模块或者KVM的libvirt。
+2.RBD基于RADOS存储集群中的多个OSD进行条带化(条带也叫对象Object)，支持存储空间的简配（thin-provisioning）和动态扩容等特性，并能够借助于RADOS集群实现快照、副本和一致性;通过将存储池提供的存储服务抽象为一到多个image（表现为块设备）向客户端提供块级别的存储接口:
+    1.在rbd存储池中创建image(块设备)
+        RBD支持两种格式的image，由于ceph分层特性COW克隆特性只支持v2格式的镜像，所以现在默认都是使用v2格式了。
+    2.客户端访问RBD设备的方式有两种
+        1.通过内核模块rbd.ko将image映射为节点本地的块设备，相关的设备文件一般为/dev/rdb#（#为设备编号，例如rdb0等）
+            ~]# find / -name rbd.ko*
+            /usr/lib/modules/3.10.0-957.21.3.el7.x86_64/kernel/drivers/block/rbd.ko.xz
+            #确认当前客户端有此模块才能映射到内核中
+        2.另一种则是librbd提供的API接口，它支持C、C++和Python等编程语言，qemu即是此类接口的客户端。
+3.rbd命令(image的增删改查等命令)
+    RBD相关的管理有如image的创建、删除、修改和列出等基础CRUD操作，也有分组、镜像、快照和回收站等相的管理需求，这些均能够通过rbd命令完成；而学习RBD的使用主要就是学习RBD设备中的image映像文件的增删改查和image映像文件快照的增删改查、回滚、合并等操作!!!
+    1.创建并初始化RBD存储池的三个步骤：
+        使用块设备客户端之前必须事先创建专用的存储池、启用rbd并完成其初始化:
+        1.创建存储池：ceph osd pool create {pool-name} {pg-num} {pgp-num}
+        2.启用rbd：ceph osd pool application enable {pool-name} rbd
+        3.rbd初始化：rbd pool init -p {pool-name}
+        示例：
+            ~]$ ceph osd pool create kube 64 64           #创建kube存储池
+            ~]$ ceph osd pool application enable kube rbd #启用rbd功能
+            ~]$ rbd pool init kube  #初始化存储池kube
+    2.创建并查看image
+        1.创建image的两种命令格式:rbd create ...
+            rbd create --size &lt;size&gt; --pool &lt;pool-name&gt; &lt;image-name&gt;
+            或者
+            rbd create --size &lt;size&gt; &lt;pool-name&gt;/&lt;image-name&gt;
+            示例:
+                ~]$ rbd create --pool kube --size 2G vol01
+                或者
+                ~]$ rbd create --size 2G kube/vol02
+                    在存储池kube中创建名为vol01的2G映像
+        2.查看image:rbd ls
+            rbd ls [-p &lt;pool-name&gt;] [--long] [--format json|xml] [--pretty-format] &lt;pool-name&gt;    
+            示例：
+            ~]# rbd ls -p kube -l  #查看
+                NAME    SIZE   PARENT  FMT  PORT  LOCK
+                vol01   2 GiB           2
+                vol02   2 GiB           2
+        3.rbd create创建image时的其他几个有用选项：
+            --object-size &lt;object-size&gt;:文件被切成对象的块大小，默认是4MiB
+            --image-feature &lt;image-feature&gt;:
+                镜像文件的特性，镜像文件支持N个特性，详见下文image特性
+       4.rbd info命令可以获取特定image的详细信息，每段代表意义如下：
+            ~]$ rbd info /kube/vol01
+            rbd image &apos;vol01&apos;:
+                size 2 GiB in 512 objects
+                order 22 (4 MiB objects)
+                id: 14ns8smsda8
+                block_name_prefix: rbd_data.14ns8smsda8
+                format：layering,exclusive-lock,object-map,fast-diff,deep-flatten
+                op_features:
+                flags:
+                create_timestamp: Wed Mar 6 10:38:20 2019
+            每段代表意义：
+                size M GiB in N objects：
+                    #image空间大小为M，共分割至N个对象（分割的数量由条带大小决定）；
+                order 22 (4 MiB objects)：
+                    #块大小（条带）的标识序号，有效范围为12-25，分别对应着4K-32M之间的大小；
+                id：#当前image的标识符；
+                block_name_prefix：这个image中的每一个对象object都是以此为前缀命名的。
+                format： image使用v2格式
+                features：
+                    当前image启用的功能特性，其值是一个以逗号分隔的字符串列表，例如layering、exclusive-lock等；
+                op_features：可选的功能特性；    
+4.image特性
+    ~]$ rbd create image --image-feature arg,默认启用的5个特性feature有：layering(+),exclusive-lock(+*),object-map(+*),fast-diff(+*),deep-flatten(+-),其他feature和代表意义是：
+        1.layering:支持分层镜像、是否支持克隆；
+        2.striping:是否支持数据对象间的数据条带化v2；
+        3.exclusive-lock:支持独占锁(也叫排他锁)
+            即是否支持分布式排他锁机制以限制同时仅能有一个客户端访问当前image；(和k8s-volume的单路只读逻辑是一样的)
+        4.object-map:支持对象映射（依赖exclusive-lock）
+            即是否支持object位图，主要用于加速导入、导出及已用容量（快速计算出已使用空间容量不是通过扫描整个空间，而是通过扫描object位图中的块数*块大小快速计算得来的）统计等操作，依赖于exclusive-lock特性；
+        5.fast-diff:快速计算差异（依赖object-map）
+            即是否支持快照间的快速比较操作，依赖于object-map特性；fast-diff特性有利于在deep-flatten展平操作时进行快速合并.
+        6.deep-flatten:支持快照扁平化操作
+            1.layering特性使得克隆image的时候：父子image之间采用COW，他们之间的对象文件存在依赖关系，而flatten操作的目的是解除父子image的依赖关系，但是子image的快照并没有解除依赖，deep-flatten特性使得快照的依赖也解除；
+            2.所以deep-flatten深层展平是一种真正做深层分离原卷与快照卷关系时，把原卷上的数据实现向对应快照卷上复制时的一种将多层合为一层或分离存在依赖关系的多层卷时的操作。
+        7.journaling:支持记录IO操作（依赖独占锁）
+            即是否支持日志IO，即用户在修改image上的数据时是否记录日志，日志能够在必要时确保数据一致性和实现快速恢复；它依赖于exclusive-lock特性；
+        8.data-pool:
+            是否支持将image的数据对象存储于纠删码存储池，主要用于将image的元数据与数据放置于不同的存储池；
+    备注：
+        从J版开始，创建的镜像image文件默认就支持前5个特性，而这5个特性被linux客户端作为磁盘被加载到内核中使用时这三个特性object-map,fast-diff,deep-flatten是不被支持的，所以需要禁用掉.
+5.客户端image映射及断开
+    在RBD客户端节点上以本地磁盘方式使用块设备之前，需要先将目标image映射至本地内核，需要安装ceph-common包才能使用rbd命令，而且如果Ceph存储集群端启用了CephX认证，客户端还需要指定用户名和keyring文件以及ceph.conf配置文件。
+    1.映射的命令：
+        ~]$ rbd map [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--id &lt;user-name&gt;] [--keyring &lt;/path/to/keyring&gt;]
+    2.查看已经映射的image
+        ~]$ rbd showmapped      #显示每一个rbd磁盘的map详情
+    3.断开映射
+        ~]$ umount /dev/***   #先umount再unmap
+        ~]$ rbd unmap [--pool &lt;pool&gt;] [--image &lt;image&gt;] &lt;image-or-device-spec&gt;
+    4.客户端开机映射rbd块设备
+        使用rbd命令手动映射在节点重启映射会丢失；而ceph-common软件包中包括一个rbdmap的shell脚本，该脚本可对一个或多个RBD进行自动化rbd map和rbd unmap操作，该方式主要优点是由Init系统触发了在启动时自动映射和装载RBD映像（以及在关机时卸载和取消映射）
+        ~]# yum install ceph-common -y
+        ~]# vim /etc/ceph/rbdmap
+            #poolname/imagename  id=client,keyring=/etc/ceph/ceph.client.keyring
+            #该shell脚本的配置配置参数文件为默认为/etc/ceph/rbdmap
+        如果想要开机挂载rbd块设备，可以配置如下：
+        ~]# vim /etc/ceph/rbdmap
+            kube/vol01 id=client.kube,keyring=/etc/ceph/ceph.client.kube.keyring
+            注意:即使是rbd的默认池，此处的poolname不能省,参数不是必须的，此处也可以省略，可以直接写kube/vol01
+        ~]# systemctl enable rbdmap.service
+        ~]# systemctl start rbdmap.service    #设置rbdmap服务启动
+    5.写入fstab中实现自动挂载
+        ~]# vim /etc/fstab
+            /dev/rbd0  /mnt/  xfs  noauto 0 0
+        注意：
+            1.指定&quot;noauto&quot;（或&quot;nofail&quot;）安装选项;这样可以防止Init系统尝试过在相关设备甚至还没有存在之前就映射设备，rbdmap.service通常是在启动顺序中很晚才触发的
+            2.设备名是/dev/rbd0,也可以写成/dev/rbd/kube/vol01（官方推荐）
+6.管理image
+    1.Image特性管理
+        1.J版本起，image默认支持的特性有layering、exclusive-lock、object-map、fast-diff和deep-flatten五个；
+        2.rbd create命令的--feature选项支持创建时自定义支持的特性；
+        3.现有image的特性可以使用rbd feature enable或rbd feature disable命令修改
+            ~]$ rbd feature disable kube/vol01 object-map fast-diff deep-flatten   #禁用即可
+    2.调整image的大小
+        命令：rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt; [--allow-shrink] [--no-progress] &lt;image-spec&gt;
+        增大：
+            rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt;
+        减少：
+            rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt; [--allow-shrink]
+    3.删除image的命令：remove和trash
+        1.彻底删除
+            rbd remove [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--no-progress] &lt;image-spec&gt;
+            注意：删除image会导致数据丢失，且不可恢复；建议使用trash命令先将其移入trash，确定不再需要时再从trash中删除；
+        2.先移到回收站，必要时可恢复
+            rbd trash {list|move|purge|remove|restore}
+            示例：
+                ~]$ rbd trash move kube/vol01      #移到回收站
+                ~]$ rbd trash list -p kube   #查看回收站中的image
+                    147sjnx9cnc vol01 
+                ~]$ rbd trash restore kube/vol01 --image-id 147sjnx9cnc
+                    #从回收站恢复时需要指定image-id
+7.image的快照基本操作
+    1.快照机制：
+        1.做快照是很快的，因为快照仅仅是创建了访问原卷数据的路径，没有任何数据修改之前快照是空的，当需要修改数据时，会通过COW写时复制机制把需要修改的数据复制到快照上修改后保存在快照上，所以原卷上始终是没修改之前的旧数据，修改后的数据都在快照上，所以快照是实现备份的效果；
+        2.快照有全量快照和增量快照两种，全量快照使用镜像分离技术实现，增量快照有写时复制COW（Copy-On-Write）和写时重定向ROW（Redirect-On-Write）两种实现方式。
+    3.rbd命令及许多高级接口（包括QEMU、libvirt、OpenStack等）都支持设备快照
+    创建快照：
+        ~]$ rbd snap create [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
+        或者
+        ~]$ rbd snap create [&lt;pool-name&gt;/]&lt;image-name&gt;@&lt;snapshot-name&gt;
+        注意：
+            在创建映像快照之前应停止image上的IO操作，且image上存在文件系统时，还要确保其处于一致状态；
+    列出快照：
+        ~]$ rbd snap ls [--pool &lt;pool&gt;] --image &lt;image&gt; [--format &lt;format&gt;] [--pretty-format] [--all]
+    回滚快照:
+        ~]$ rbd snap rollback [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt; [--no-progress]
+        注意：
+            将映像回滚到快照意味着会使用快照中的数据重写当前版本的image，而且执行回滚所需的时间将随映像大小的增加而延长    
+    设置image上的快照数量上限：
+        创建快照一定会影响性能，而且数量过多必然会导致image上的原有数据第一次修改时的IO压力增加。
+        ~]$ rbd snap limit set [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--limit &lt;limit&gt;]
+        解除快照数量限制：
+            ~]$ rbd snap limit clear [--pool &lt;pool&gt;] [--image &lt;image&gt;]
+    重命令快照：
+        ~]$  rbd rename [--pool &lt;pool&gt;] [--image &lt;image&gt;]
+    删除快照：
+        ~]$ rbd snap rm [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--snap &lt;snap&gt;] [--no-progress] [--force]
+        提示：
+            Ceph OSD会以异步方式删除数据，因此删除快照并不能立即释放磁盘空间;
+    清理快照：
+        删除一个image的所有快照，可以使用rbd snap purge命令
+        ~]$ rbd snap purge [--pool &lt;pool&gt;] --image &lt;image&gt; [--no-progress]
+    示例：
+        ~]$ rbd snap create kube/vol01@snap01      #创建
+        ~]$ rbd snap rollback kube/vol01@snap01    #回滚
+        ~]$ rbd snap rm kube/vol01@snap01          #删除
+        ~]$ rbd snap limit set kube/vol01 --limit 10 #设置快照数量
+        ~]$ rbd snap limit clear kube/vol01        #清除数量限制
+8.Ceph快照的分层克隆技术(基于镜像的快照再做镜像)
+    1.Ceph的一个非常好的特性在于支持在一个块设备image的快照基础上创建一到多个COW或COR（Copy-On-Read）类型的克隆，这种中间快照层（snapshot-layering）机制提了一种极速创建image的方式，快照分层技术使用场景：
+        1.应用于OpenStack等云平台时，使用快照形式保护ceph-RBD镜像，快照是只读的，但COW克隆是完全可以写 ，可以多次来孵化实例，对云平台来说是非常有用的。
+        2.还可以为Qemu虚拟机创建一个image并安装好基础操作系统环境作为模板，对其创建创建快照层后，便可按需创建任意多个克隆作为image提供给多个不同的VM（虚拟机）使用，或者每创建一个克隆后进行按需修改，而后对其再次创建下游的克隆
+    2.通过克隆生成的image在其功能上与直接创建的image几乎完全相同，它同样支持读、写、克隆、空间扩缩容等功能，惟一的不同之处是克隆引用了一个只读的上游快照，而且此快照必须要置于&quot;保护&quot;模式之下,支持COW和COR两种类型
+        1.COW是为默认的类型，仅在数据首次写入时才需要将它复制到克隆的image中
+        2.COR则是在数据首次被读取时复制到当前克隆中，随后的读写操作都将直接基于此克隆中的对象进行
+    3.在RBD上使用分层克隆的方法非常简单：创建一个image，对image创建一个快照并将其置入保护模式，而克隆此快照即可
+        创建克隆的image时，需要指定引用的存储池、镜像和镜像快照，以及克隆的目标image的存储池和镜像名称，因此，克隆镜像支持跨存储池进行；
+    创建被保护protect的原始快照（parent父快照）：
+        下游image需要引用上游快照中的数据，快照的意外删除必将导致数据服务的中止，因此在克隆操作之外，必须将上游的快照置于保护模式
+            rbd snap protect [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
+    克隆快照(基于快照生成镜像)：
+        rbd clone [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt; --dest-pool &lt;dest-pool&gt; [--dest &lt;dest&gt;
+        或者：
+        rbd clone [&lt;pool-name&gt;/]&lt;image-name&gt;@&lt;snapshot-name&gt; [&lt;pool-name&gt;/]&lt;image-name&gt;
+            #指明从存储池A中的镜像Aclone到存储池B的镜像B(可跨存储池克隆)
+    显示一个快照上的所有子镜像：
+        rbd children [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
+        如：rbd children kube/vol01@par-clone
+            基于vol01的快照par-clone克隆的所有镜像
+    展平克隆的image：
+        1.所谓的镜像展平是指：基于原始的父快照克隆的镜像都会自动保留对父快照的引用，当删除父快照上层的原始镜像时为了避免下层克隆出来的所有镜像文件丢失，必须对image做展平操作，以实现删除原始镜像时数据能够复制到所有下层克隆出来的镜像文件。
+        2.展平克隆所需的时间随着映像大小的增加而延长 
+        3.要删除某拥有克隆子项的快照，必须先平展其子image
+        命令：
+            rbd flatten [--pool &lt;pool&gt;] --image &lt;image&gt; --no-progress
+            #展平时只需要指定展平的image和所在的pool即可
+    取消快照保护：
+        必须先取消保护快照，然后才能删除它
+        用户无法删除克隆所引用的快照，需要先平展其每个克隆，然后才能删除快照
+        命令：
+        rbd snap unprotect [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
+    示例：
+        rbd snap create kube/vol01@par-clone      #创建被保护的快照par-clone 
+        rbd snap protect kube/vol01@par-clone #将par-clone至于保护模式
+        rbd clone kube/vol01@par-clone kube/vol03
+            #基于vol01的快照par-clone生成新的镜像vol03
+        rbd children kube/vol01@par-clone   #显示该镜像的所有克隆
+        rbd flatten kube/vol03              #先展平
+        rbd snap unprotect kube/vol01@par-clone #再取消保护父快照
+        rbd snap rm kube/vol01@par-clone #即使删除父快照，vol03还是正常使用
+</code></pre><h3 id="RBD使用示例"><a href="#RBD使用示例" class="headerlink" title="RBD使用示例"></a>RBD使用示例</h3><p><a href="https://mp.weixin.qq.com/s/yeZ-GedgssSzCaGEEI0JtQ" target="_blank" rel="noopener">参考</a><br>–rbd两种使用方式<br><img src="/2019/09/03/Ceph-RBD/rbd两种使用方式.png" alt="rbd两种使用方式"></p>
+<pre><code>rbd使用方式是Ceph三种方式中最成熟的组件，多数用在配合OpenStack中Cinder使用，作为其后端存储；RBD使用方式有内核rbd.ko模块和librbd两种方式，并且这两种方式都需要客户端支持，所以导致Windows系统无法使用RBD块设备，使用架构图如上；
+
+1.内核rbd.ko挂载方式(mount、map方式)
+    1.先在Ceph节点上创建存储池、用户、权限、复制keyring等操作
+        ~]$ ceph osd pool create kube 64 64           #创建kube存储池
+        ~]$ ceph osd pool application enable kube rbd #启用rbd功能
+        ~]$ rbd pool init kube  #初始化存储池kube
+        ~]$ rbd create --pool kube --size 2G vol01    #创建镜像image文件
+            注意：
+                如果centos7的内核比较旧，还需要把image默认启用的5个feature的后4个关闭客户端挂载才不会显示出错(只禁用后3个也可以)
+            ~]$ rbd feature disable kube/vol01 exclusive-lock object-map fast-diff deep-flatten
+        ~]$ ceph auth add get-or-create client.kube mon &apos;allow r&apos; osd &apos;allow * pool=kube&apos;  #创建用户及权限
+        ~]$ ceph auth get client.kube -o ceph.client.kube.keyring
+            #导出client.kube用户的keyring文件然后复制给客户端
+        ~]$ scp ceph.client.kube.keyring root@172.30.0.100:/etc/ceph/
+            #复制ceph.client.kube.keyring文件到客户端172.30.0.100的/etc/ceph/目录下
+        ~]$ scp ceph.conf root@172.30.0.100:/etc/ceph/
+            #客户端主机也需要ceph.conf配置文件；
+    2.客户端挂载rbd
+        ~]# find / -name rbd.ko*
+        /usr/lib/modules/3.10.0-957.21.3.el7.x86_64/kernel/drivers/block/rbd.ko.xz
+            #CentOS6系列版本的内核没有集成RBD驱动，CentOS7中的3.10内核中默认已经集成了RBD驱动
+        ~]# lsmod | grep rbd     
+            rbd                    83640  0 
+            libceph               306625  1 rbd
+            #确认客户端内核加载了rbd模块，如果每加载可使用modprobe rbd命令加载
+        ~]# yum install ceph-common     #安装客户端程序包，才有rbd命令
+        ~]# ceph --user kube -s 
+            #由于客户端主机上没有创建cephadm账户，所以需要使用--user指定kube用户
+        ~]# rbd --user kube map kube/vol01
+            /dev/rbd0
+            #将kube/vol01这个image映射为本地的/dev/rbd0磁盘
+        ~]# mkfs.xfs /dev/rbd0     #格式化磁盘
+        ~]# mount /dev/rbd0 /mnt   #挂载在/mnt目录下使用
+        ~]# rbd showmapped         #显示每一个rbd磁盘的map详情
+            id pool namespace image      snap device    
+            0  rbd            kube/vol01    /dev/rbd0
+        ~]# cd /mnt &amp;&amp; touch f1.txt #写入测试
+    3.开机映射rbd块设备
+        ~]# vim /etc/ceph/rbdmap
+            kube/vol01 id=client.kube,keyring=/etc/ceph/ceph.client.kube.keyring
+            注意:即使是rbd的默认池，此处的poolname不能省,参数不是必须的，此处也可以省略，可以直接写kube/vol01
+        ~]# systemctl enable rbdmap.service
+        ~]# systemctl start rbdmap.service
+    4.客户端取消挂载
+        ~]# umount /mnt 
+        ~]# rbd unmap /dev/rbd0
+            #不但要取消挂载还要取消映射
+        ~]$ rbd ls -p kube -l 
+            NAME    SIZE   PARENT  FMT  PORT  LOCK
+            vol01   2 GiB           2         excl
+            vol02   2 GiB           2
+            #客户端主机取消映射后，rbd存储池中该imageLOCK字段就会显示excl
+
+2.libvirt、RBD和librbd
+    第一种是内核rbd.ko模块挂载rbd块设备，其实使用最多还是通过librbd使用rbd块设备;比如：openstack的存储中使用RBD是最多的，openstack就是通过QEMU\KVM虚拟机连接到rbd块设备的，支持rbd驱动的QEMU/KVM会将对磁盘的请求转换为通过librbd访问Ceph中的rbd设备，访问的配置信息（连入ceph的用户名和密钥）是配置在libvirt配置文件中;
+    1.客户端主机安装
+        客⼾端主机是为KVM Hypervisor主机，它运⾏的虚拟机的磁盘通过rbd协议使⽤Ceph上的rbd存储池中的image；在一台配置比较大的主机上安装KVM虚拟化套件并启动相关服务，此处列出简略步骤；
+        ~]# yum install libvirt qemu-kvm -y
+        ~]# systemctl start libvirtd
+            #安装libvirt与qemu-kvm，并启动libvirtd守护进程；
+        ~]# yum install ceph-common 
+            #安装ceph-common，并配置好与ceph集群通信的配置⽂件等。
+        创建一个libvirt启动虚拟机的xml模板，在模板上指定data interface console和dievice
+    2.创建认证到存储池上的⽤⼾账号client.libvirt，并给予相应的访问权限，例如以rbdpool为例：
+        ~]$ ceph auth get-or-create client.libvirt mon &apos;allow r&apos; osd &apos;allow class-read object_prefix rbd_children, allow rwx pool=rbdpool&apos;
+            #osd上的授权需要额外有class-read、object_prefix（只读取对象前缀的权限）、rbd_children（读取镜像文件的克隆）
+        ~]# ceph auth get client.libvirt -o ceph.client.libvirt.keyring
+        ~]# scp ceph.client.libvirt.keyring root@172.30.0.80:/etc/ceph
+            #将keyring文件复制到安装KVM套件的主机上
+    3.将client.libvirt⽤⼾的认证信息导⼊为libvirtd上⼀个可⽤的secret
+        启动libvirtd后就可以使用virtsh命令创建虚拟机了，但不管是使用virsh还是virt-manger或virt-install创建虚拟机，底层还是使用libvirt连入ceph集群，而libvirtd守护进程连入认证到ceph集群需要使用账号和密钥，其中账号是创建xml文件中定义的，密钥是从ceph上获取并导入给secret的，相关命令是virsh secret-define和virsh secret-dumpxml等；
+        3.1.先创建包含登录到ceph集群用户的xml文件
+            ~]# vim ceph-client-libvirt-secret.xml  #复制下面内容到文件中修改
+                &lt;secret ephemeral=&apos;no&apos; private=&apos;no&apos;&gt;
+                    &lt;usage type=&apos;ceph&apos;&gt;
+                    &lt;name&gt;client.libvirt secret&lt;/name&gt;
+                    &lt;/usage&gt;
+                &lt;/secret&gt;
+            其中：
+                type是指这是登录到ceph集群用到的用户账号xml文件；
+                &lt;name&gt;是认证到ceph上的用户client.libvirt，已创建好的ceph用户
+                secret是通过此xml文件生成后再导入进来的
+        3.2.生成secret
+            ~]# virsh secret-define --file ceph-client-libvirt-secret.xml
+                Secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c created
+            将上面的xml使⽤virsh命令创建出secret，命令会返回创建的secret的UUID
+        3.3.将client.libvirt的密钥导⼊到刚生成的secret中
+            ~]# ceph auth print-key client.libvirt #获取用户密钥
+                AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W==   
+            ~]# virsh secret-set-vaule --secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c --base64 AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W== 
+                Secret avlue set
+                #将获取的用户密钥当做secret值导入到secret中
+            ~]# virsh secret-get-vaule --secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c
+                AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W==
+                #反之通过secret可以查看到它的值，也就是用户client.libvurt的密钥
+        这样libvirtd守护进程就可以通过此secret认证到ceph集群了；
+    4.创建空的image，或者导⼊已经的磁盘镜像内容，以运⾏基于image的KVM虚拟机；
+        4.1.导⼊命令格式：
+            qemu-img convert -f qcow2 -O raw /PATH/FROM/IMAGE_FILE rbd:&lt;rpd-pool-name&gt;/&lt;image-name&gt;
+            例如：
+               ~]# qemu-img convert -f qcow2 -O raw cirros-0.3.4-x86_64-disk.img rbd:rbdpool/cirros-0.3.4 
+            查看导⼊⽣成的镜像：
+                ~]# rbd info -p rbdpool cirros-0.3.4
+                rbd image &apos;cirros-0.3.4&apos;: size 39 MiB in 10 objects order 22 (4 MiB objects) id: 13896b8b4567
+                block_name_prefix: rbd_data.13896b8b4567 format: 2 features: layering, exclusive-lock, object-map, fast-
+                diff, deep-flatten op_features: flags: create_timestamp: Tue Mar 5 10:11:38 2019
+        4.2.或者创建新的空⽩image
+            ~]# rbd create --image centos-7.6-0001 --pool rbdpool
+    5.创建VM（两个vm模板）
+        1.创建VM配置⽂件，下面是一个接近最小化的vm模板；其中的disk配置段指明了要使⽤的rbd image，⽽auth配置段指明了认证到Ceph集群时使⽤的secret的UUID。
+            &lt;domain type=&apos;kvm&apos;&gt;
+              &lt;name&gt;testvm&lt;/name&gt;
+              &lt;memory&gt;131072&lt;/memory&gt;
+              &lt;vcpu&gt;1&lt;/vcpu&gt;
+              &lt;os&gt;
+                &lt;type arch=&apos;x86_64&apos;&gt;hvm&lt;/type&gt;
+              &lt;/os&gt;
+              &lt;clock sync=&quot;localtime&quot;/&gt;
+              &lt;devices&gt;
+                &lt;emulator&gt;/usr/libexec/qemu-kvm&lt;/emulator&gt;
+                &lt;disk type=&apos;network&apos; device=&apos;disk&apos;&gt;
+                   &lt;source protocol=&apos;rbd&apos; name=&apos;rbdpool/cirros-0.3.4&apos;&gt;
+                      &lt;host name=&apos;mon01&apos; port=&apos;6789&apos;/&gt;
+                   &lt;/source&gt;
+                   &lt;auth username=&apos;libvirt&apos;&gt;
+                      &lt;secret type=&apos;ceph&apos; uuid=&apos;7384444b-3d69-44e8-9999-1f821cd9ca8c&apos;/&gt;
+                   &lt;/auth&gt;
+                   &lt;target dev=&apos;vda&apos; bus=&apos;virtio&apos;/&gt;
+                &lt;/disk&gt;
+                &lt;interface type=&apos;network&apos;&gt;
+                  &lt;mac address=&apos;52:54:00:25:a1:80&apos;/&gt;
+                  &lt;source network=&apos;default&apos;/&gt;
+                  &lt;model type=&apos;virtio&apos;/&gt;
+                &lt;/interface&gt; 
+                &lt;graphics type=&apos;vnc&apos; port=&apos;-1&apos; keymap=&apos;de&apos;/&gt;
+              &lt;/devices&gt;
+            &lt;/domain&gt;
+            其中：
+                disk段：表示使用rbd的rbdpool/cirros-0.3.4镜像作为此虚拟机的设备以及连入ceph主机的主机名和端口
+                auth段:即上面第二步创建好的secret的UUID
+        2.创建虚拟机
+            将上面的vm模板保存为xml文件放在/etc/libvirt/qemu目录下命名为textvm.xml，并基于此xml启动为虚拟机
+            ~]# virsh define testvm.xml 
+            ~]# virsh start testvm
+            ~]# virsh list
+                1  testvm  running     #确认启动即可
+            ~]# virsh domblklist testvm
+                vda rbdpool/cirros-0.3.4
+                #查看虚拟机的磁盘设备状态，可以看到是基于rbd的磁盘文件cirros-0.3.4加载启动的
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ceph/" rel="tag"><i class="fa fa-tag"></i> Ceph</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/16/Kubernetes-部署Redis集群/" rel="next" title="Kubernetes-部署Redis集群">
+                <i class="fa fa-chevron-left"></i> Kubernetes-部署Redis集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/04/Ceph-cephfs/" rel="prev" title="Ceph-cephfs">
+                Ceph-cephfs <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+      
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">73</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-RBD-Rados-Block-Device-的原理和使用"><span class="nav-number">1.</span> <span class="nav-text">5.RBD(Rados Block Device)的原理和使用</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD使用示例"><span class="nav-number"></span> <span class="nav-text">RBD使用示例</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <div style="">
+  <canvas id="canvas" style="width:70%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.4m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">20:32</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="/js/src/Valine.min.js"></script>
+
+  <!-- https://deserts.io/diy-a-comment-system/ -->
+  <script type="text/javascript">
+    new Valine({
+        lang: 'zh-cn',
+        admin_email: '645150765@qq.com', //博主邮箱
+        el: '#comments' ,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        emoticon_url: 'https://cloud.panjunwen.com/alu',
+        emoticon_list: ["吐.png","喷血.png","狂汗.png","不说话.png","汗.png","坐等.png","献花.png","不高兴.png","中刀.png","害羞.png","皱眉.png","小眼睛.png","中指.png","尴尬.png","瞅你.png","想一想.png","中枪.png","得意.png","肿包.png","扇耳光.png","亲亲.png","惊喜.png","脸红.png","无所谓.png","便便.png","愤怒.png","蜡烛.png","献黄瓜.png","内伤.png","投降.png","观察.png","看不见.png","击掌.png","抠鼻.png","邪恶.png","看热闹.png","口水.png","抽烟.png","锁眉.png","装大款.png","吐舌.png","无奈.png","长草.png","赞一个.png","呲牙.png","无语.png","阴暗.png","不出所料.png","咽气.png","期待.png","高兴.png","吐血倒地.png","哭泣.png","欢呼.png","黑线.png","喜极而泣.png","喷水.png","深思.png","鼓掌.png","暗地观察.png"],
+        placeholder: '帅的人已经评论',
+  });
+
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
