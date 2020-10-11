@@ -136,23 +136,30 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="C&apos;est la vie">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Coool&#39;s Blog">
-<meta property="og:url" content="https://www.liukui.tech/archives/2018/05/index.html">
+  <meta name="description" content="浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系更新于：2019.09">
+<meta name="keywords" content="Ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph-crush算法和分布式存储数据分布理论">
+<meta property="og:url" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="C&apos;est la vie">
+<meta property="og:description" content="浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系更新于：2019.09">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/一致性hash.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/带虚拟节点的hash环.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/分片.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/crush算法.png">
+<meta property="og:updated_time" content="2020-10-11T13:32:21.404Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Coool&#39;s Blog">
-<meta name="twitter:description" content="C&apos;est la vie">
+<meta name="twitter:title" content="Ceph-crush算法和分布式存储数据分布理论">
+<meta name="twitter:description" content="浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系更新于：2019.09">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/一致性hash.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/archives/2018/05/">
+  <link rel="canonical" href="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/">
 
 
 
@@ -162,7 +169,7 @@
   };
 </script>
 
-  <title>归档 | Coool's Blog</title>
+  <title>Ceph-crush算法和分布式存储数据分布理论 | Coool's Blog</title>
   
 
 
@@ -213,7 +220,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -322,14 +329,14 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">39</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
 
   </li>
         
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
 
     
     
@@ -427,106 +434,412 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      
-      <span class="archive-page-counter">
-        
-        
-         
-          
-        不错! 目前共计 76 篇日志。 继续努力。
-      </span>
-      
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
+  
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/05/10/分布式存储系统数据分布方法/" itemprop="url">
-              
-                <span itemprop="name">分布式存储系统数据分布方法</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Ceph-crush算法和分布式存储数据分布理论
+              
+            
+          </h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-05-10T08:00:00+08:00" content="2018-05-10">
-          05-10
-        </time>
-      </div>
+        <div class="post-meta">
+                  
+          <span class="post-time">
 
-    </header>
-  </article>
+            
+            
+            
 
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
 
+              
+                
+              
+
+              <time title="创建时间：2019-09-04 08:00:00" itemprop="dateCreated datePublished" datetime="2019-09-04T08:00:00+08:00">2019-09-04</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/ceph/" itemprop="url" rel="index"><span itemprop="name">ceph</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">5.4k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">5 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <h3 id="浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系"><a href="#浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系" class="headerlink" title="浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系"></a>浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系</h3><p>更新于：2019.09<br><a id="more"></a></p>
+<pre><code>1.分布式存储系统中面临着的首要问题就是如何将大量的数据分布在不同的存储节点上，无论上层接口是KV存储、对象存储、块存储、亦或是列存储，在这个问题上大体是一致的。本文将介绍在分布式存储系统中做数据分布目标及可选的方案，并试着总结他们之间的关系及权衡;
+2.面对海量数据的时候，单个节点存放不下，自然需要将数据切成分片partitions，存放到多个节点上(这里的partition在MongoDB中被称为分片(shard)), 在HBase中称之为区域(Region)，Bigtable中则是表块(tablet)，Cassandra中是虚节点(vnode)，Ceph中则是(Pg).
+3.这里假设目标数据是以key标识的数据块或对象，在一个包含多个存储节点的集群中，数据分布算法需要为每一个给定的key指定一个或多个对应的存储节点负责，采用的数据分布算法都有两个基本目标：
+    1.均匀性(Uniformity):不同存储节点的负载应该均衡
+    2.稳定性(Consistency)：
+        每次一个key通过数据分布算法得到的分布结果应该保持基本稳定，即使再有存储节点发生变化的情况下. 
+    可以看出，这两个问题在一定程度上是相互矛盾的，当有存储节点增加或删除时，为了保持稳定应该尽量少的进行数据的移动和重新分配，而这样又势必会带来负载不均。同样追求极致均匀也会导致较多的数据迁移。所以我们希望在这两个极端之间找到一个点以获得合适的均匀性和稳定性。除了上述两个基本目标外，工程中还需要从以下几个方面考虑数据分布算法的优劣：
+        1.性能可扩展性：能否友好的应对增/删节点，以及日益增长的规模
+            这个主要考虑的是算法相对于存储节点规模的时间复杂度，为了整个系统的可扩展性，数据分布算法不应该在集群规模扩大后显著的增加运行时间；
+        2.考虑节点异构：
+            实际工程中，不同存储节点之间可能会有很大的性能或容量差异，好的数据分布算法应该能很好的应对这种异构，提供加权的数据均匀
+        3.隔离故障域：副本放置需要考虑故障域隔离，保证更好的可用性
+            为了数据的高可用，数据分布算法应该为每个key找到一组存储节点，这些节点可能提供的是数据的镜像副本，也可能是类似擦除码的副本方式。数据分布算法应该尽量隔离这些副本的故障域，如不同机房、不同机架、不同交换机、不同机器
+</code></pre><h3 id="数据分布的算法演进：hash–-gt-一致性hash–-gt-带虚拟节点的一致性Hash–-gt-分片–-gt-Crush"><a href="#数据分布的算法演进：hash–-gt-一致性hash–-gt-带虚拟节点的一致性Hash–-gt-分片–-gt-Crush" class="headerlink" title="数据分布的算法演进：hash–&gt;一致性hash–&gt;带虚拟节点的一致性Hash–&gt;分片–&gt;Crush"></a>数据分布的算法演进：hash–&gt;一致性hash–&gt;带虚拟节点的一致性Hash–&gt;分片–&gt;Crush</h3><pre><code>数据分布的算法从简单到复杂、从粗糙到演进分为：
+    hash--&gt;一致性hash--&gt;带虚拟节点的一致性Hash--&gt;分片--&gt;Crush
+下面假设key的值足够分散，然后看看所有算法是如何进行数据分布的就可以慢慢了解到Crush算法的数据分布的逻辑了.
+</code></pre><h4 id="1-最简单的hash"><a href="#1-最简单的hash" class="headerlink" title="1.最简单的hash"></a>1.最简单的hash</h4><pre><code>在数据分布算法中最简单的思想就是hash计算，可以把简单hash想象成将所有存储节点放在一条直线上，然后将数据分布在一条直线上：
+    即简单的以Key做哈希后对节点数取模，假设集群有N个节点，则location=hash(objId)%N，这种方式非常简单；
+缺点：
+    可以看出，在key足够分散的情况下，均匀性可以获得；但一旦增加或者减少节点，所有的原有节点之前的数据分布几乎全部需要重新调整，没有稳定性可言。
+所以简单hash不满足上面的基本要求：稳定性
+</code></pre><h4 id="2-一致性hash"><a href="#2-一致性hash" class="headerlink" title="2.一致性hash"></a>2.一致性hash</h4><p><img src="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/一致性hash.png" alt="一致性hash图解"></p>
+<pre><code>如上图示，与简单hash将数据分布在一条直线上不同，一致性Hash是将所有的存储节点（A、B、C、D、E、F、G）排列在首尾相接的Hash环上形成一个圆环，每个key在计算Hash后会顺时针找到先遇到的一组存储节点进行存放；
+    数据存储：
+        上图有4个节点，A、B、C、D根据，4个节点的id值，做hash(id)，然后映射到环上的位置如图，然后，将object的objId都计算一遍hash映射到环上面，每个object会被放置在其hahs(objId)顺时针遇到的节点上，上图中的objId1就会被放置在节点B上面。objId2和objId3会被放置在节点C上面；
+    增加节点：
+        增加了节点E，那么C上的数据需要重新的计算一遍，其中objId2会迁移到E上，objId3仍然放在C上面，但是A、B、C、D之间的数据并不需要迁移；
+    减少节点：
+        假设节点C down了，那么之前，C上面的数据将全部迁移到D上面，objId2和objId3都需要迁移到D上，但是A和B上面的数并不会产生任何迁移；
+    优点：
+        可扩展性更好，增、删节点的时候，仅影响该节点在Hash环上顺时针相邻的后续节点，将数据从该节点接收或者给予，不会导致整个集群的数据重新分布；
+    缺点：
+        负载均衡很差和数据的不均匀的问题：因为即使可以将存储节点等距排列，也会在存储节点个数变化时带来数据的不均匀，而这种可能成倍数的数据不均匀分布的情况在实际生产中是不可接受的；
+一致性hash不满足上面的基本要求：均匀性
+</code></pre><h4 id="3-带虚拟节点的一致性hash"><a href="#3-带虚拟节点的一致性hash" class="headerlink" title="3.带虚拟节点的一致性hash"></a>3.带虚拟节点的一致性hash</h4><p><img src="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/带虚拟节点的hash环.png" alt="带虚拟节点的hash环图解"></p>
+<pre><code>为了解决一致性hash的负载不均衡问题，可以在一致性Hash的基础上引入虚拟节点，即hash环上的每个节点并不是实际的存储节点，而是一个虚拟节点。实际的存储节点根据其不同的权重会被虚拟为一组虚拟节点（一组虚拟节点可以对应一个或多个虚拟节点），所有落到相应虚拟节点上的key都由该存储节点负责。如上图所示，存储节点A负责(1,3]，(4,8]，(10, 14]，存储节点B负责(14,1]，(8,10]；
+    如果了解nginx的一致性hash调度算法就可以知道这个逻辑和nginx中的hash key [consistent]是类似的，前者是为了数据更加均匀分布，后者是为了后端服务器能够更加均匀处理客户端请求.
+存在的问题：
+    1.带虚拟节点的一致性hash算法问题在于：一个实际存储节点的增加或删除会影响和自己相关的多个虚拟节点的那部分数据，就进而影响很多节点参与到数据迁移中来，比如：
+        新增节点，新的虚拟节点插入hash环中，那么受影响的虚拟节点上的数据需要全部遍历一遍，重新的计算hash值，然后决定是否需要迁移？
+    2.在实践中将一个虚拟节点重新分配给新的实际节点时需要将这部分数据遍历出来发送给新节点；所以带虚拟节点的一致性hash
+带虚拟节点的一致性hash不满足上面的基本要求：性能可扩展性
+</code></pre><h4 id="4-分片-也理解为带固化虚拟节点的一致性Hash"><a href="#4-分片-也理解为带固化虚拟节点的一致性Hash" class="headerlink" title="4.分片(也理解为带固化虚拟节点的一致性Hash)"></a>4.分片(也理解为带固化虚拟节点的一致性Hash)</h4><p><img src="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/分片.png" alt="分片的图解"></p>
+<pre><code>1.如上图分片的逻辑示，分片是指先将哈希环切割为数量固定、相同大小的分片（相当于圆环切成很多段），然后将这些分片交给不同的真实物理节点负责。但是注意这里跟上面提到的虚拟节点有着很本质的区别：
+    1.上面提到的虚拟节点hash环是先更加权重设置虚拟节点，key存储时是hash（虚拟节点总数）决定落到一组虚拟节点!!而当一个节点退出时，之前存在这个节点代表的虚拟节点的key就必然根据现有的虚拟节点数重新通过hash（虚拟节点总数）迁移到其他节点上！
+    2.而分片的逻辑是：&quot;分片的划分和分片的分配被解耦&quot;，这句话可以这么理解：
+        1.数量固定的分片就是hash环上的虚拟节点总数固定，那么key通过hash（虚拟节点总数）落到哪个分片也是固定不变的（每个key和虚拟节点的映射关系不会发生变化）；当一个节点退出时，之前的所有key在hash环的分片位置是不变，我们需要做的就是改变分片（虚拟节点）和物理节点之间的映射关系就可以了，即我们只需要更灵活的将这个退出节点之前负责的整个分片作为一个整体交给任意节点（任意节点可以理解为一个真实的物理存储节点）；那么就可以理解为&quot;一个分片&quot;是作为最小的数据迁移和备份单位了。
+            (仔细理解上面这句话认真发现它和带虚拟节点的hash环的区别！)
+        2.如果把分片直接理解为虚拟节点，那么分片就相当于是带固定数量虚拟节点的hash环!!所以其他文章中也叫这种逻辑是固化虚拟节点的hash环，只不过在算法中它是分片的逻辑罢了。
+    3.基于上面解释的分片的解耦逻辑，当key存储到物理节点的存储过程就拆分成了两步：
+        1.先根据集群规模设置合理的分片数量，然后第一步将key映射到这些分片上，第二步需要一个新的机制将这些分片映射到物理存储节点上。由于分片总数相对需要存储的亿级别数量的key来说已经很小并且数量确定，可以更精确地初始设置；
+        2.物理节点和分片之间的动态映射逻辑是可以通过引入中心目录服务实现根据节点存活修改分片的映射关系，同时将这个映射信息通知给所有的存储节点和客户端
+        3.而像上面说到的虚拟节点的hash环则只需要一步hash（虚拟节点总数）一步就可以将key存到物理节点上.
+2.上图2中是分布式KV存储Zeppelin中的分片存储方式，它也是分两步映射的：
+    Key Space先通过Hash到分片，分片及其副本又通过一层映射到最终的存储节点Node Server。
+</code></pre><h4 id="5-Crush"><a href="#5-Crush" class="headerlink" title="5.Crush"></a>5.Crush</h4><p><img src="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/crush算法.png" alt="crush算法"></p>
+<pre><code>Ceph是一个分布式对象存储的分布式存储系统，它的对象数据映射到存储节点用的就是是crush算法；而CRUSH算法本质上也是一种分片的数据分布方式，只不过crush算法是在一致性hash算法的基础上充分考虑了多副本，故障域隔离等约束集成的算法，其中：
+    1.分片映射信息量：
+        避免中心目录服务和存储节点及客户端之间需要交互大量的分片映射信息，而改由存储节点或客户端自己根据少量且稳定的集群节点拓扑和确定的规则自己计算分片映射
+    2.完善的故障域划分：
+        支持层级的故障域控制，将同一分片的不同副本按照配置划分到不同层级的故障域中，所谓故障域是指在将我们机房中的数据中心centre、机房room、机架rack、服务器等级别按照层级结构定义在crush算法的crush map中，然后就可以根据这种故障域机制选择不同位置的服务器硬盘保存数据以达到数据安全的最大化；
+1.如果你用过ceph，就可以很容易的把CRUSH算法中固定数量的分片理解为Ceph中的PG数量，分片总数就是PG事先设定好的合理数，而对象数据映射到OSD的过程需要分两步来完成：
+    1.确认object所在的pg（虚拟节点）
+        通过将对象标识进行一致性哈希运算得到的哈希值与PG位图掩码进行&quot;与&quot;运算得到目标PG，从而得出目标PG的ID（pg_id），完成由Object至PG的映射.CRUSH算法的第一步还是使用一致性hash确认pg位置
+    2.pg（分片）到物理节点：OSD的映射
+        CRUSH算法便将以此pg_id、CRUSH运行图和归置规则（Placement Rules）为输入参数再次进行计算，并输出一个确定且有序的目标存储向量列表（OSD列表），从而完成从PG至OSD的映射。
+2.示例：
+    1.如上图示，客户端或存储节点利用key、存储节点的拓扑结构和分配算法，独立进行分片位置的计算，得到一组负责对应分片及副本的存储位置disk（也就是OSD）。这次的定位过程，最终选择了一个row2（机排2）下的rack21，rack23，rack24三个机柜下的三个存储节点；
+        这里的机排row、机柜rack、存储节点disk就是crush算法中定义的最简单的故障域级别；
+    2.当节点变化时，由于节点拓扑的变化，会影响少量分片数据进行迁移，如下图新节点加入是引起的数据迁移，通过良好的分配算法，可以得到很好的负载均衡和稳定性，CRUSH提供了Uniform、List、Tree、Straw四种bucket桶算法；
+备注：
+    但是Crush算法还是伪随机算法因为crush算法本身就是建立在一致性hash算法的随机性之上的；
+</code></pre><h3 id="应用和参考"><a href="#应用和参考" class="headerlink" title="应用和参考"></a>应用和参考</h3><pre><code>应用：常见的存储系统大多采用类似于分片的数据分布和定位方式：
+    Dynamo及Cassandra采用分片的方式并通过Gossip在对等节点间同；
+    Redis Cluster将key space划分为slots，同样利用Gossip通信；
+    Zeppelin将数据分片为Partition，通过Meta集群提供中心目录服务；
+    Bigtable将数据切割为Tablet，类似于可变的分片，Tablet Server可以进行分片的切割，最终分片信息记录在Chubby中；
+    Ceph采用CRUSH方式，由中心集群Monitor维护并提供集群拓扑的变化
+</code></pre>
+      
     </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ceph/" rel="tag"><i class="fa fa-tag"></i> Ceph</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/04/Ceph-cephfs/" rel="next" title="Ceph-cephfs">
+                <i class="fa fa-chevron-left"></i> Ceph-cephfs
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
+                旧事-大好河山 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
 
         </div>
         
@@ -547,8 +860,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -652,11 +974,7 @@
                     
                       
                     
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -831,6 +1149,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系"><span class="nav-number">1.</span> <span class="nav-text">浅谈分布式存储系统数据分布方法和一致性Hash和Crush算法的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据分布的算法演进：hash–-gt-一致性hash–-gt-带虚拟节点的一致性Hash–-gt-分片–-gt-Crush"><span class="nav-number">2.</span> <span class="nav-text">数据分布的算法演进：hash–&gt;一致性hash–&gt;带虚拟节点的一致性Hash–&gt;分片–&gt;Crush</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-最简单的hash"><span class="nav-number">2.1.</span> <span class="nav-text">1.最简单的hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-一致性hash"><span class="nav-number">2.2.</span> <span class="nav-text">2.一致性hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-带虚拟节点的一致性hash"><span class="nav-number">2.3.</span> <span class="nav-text">3.带虚拟节点的一致性hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-分片-也理解为带固化虚拟节点的一致性Hash"><span class="nav-number">2.4.</span> <span class="nav-text">4.分片(也理解为带固化虚拟节点的一致性Hash)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Crush"><span class="nav-number">2.5.</span> <span class="nav-text">5.Crush</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用和参考"><span class="nav-number">3.</span> <span class="nav-text">应用和参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1124,7 +1458,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">1.4m</span>
+    <span title="站点总字数">1.8m</span>
   
 
   
@@ -1135,7 +1469,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">21:01</span>
+    <span title="站点阅读时长">27:17</span>
   
 </div>
 
@@ -1277,6 +1611,10 @@ if(canvas.getContext){
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
 
   
 

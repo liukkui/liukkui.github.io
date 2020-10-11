@@ -144,7 +144,7 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="linux中的文件查找命令locate和find详解">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-10T16:52:44.639Z">
+<meta property="og:updated_time" content="2020-10-11T06:27:35.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux中的压缩-解压缩命令-归档命令">
 <meta name="twitter:description" content="linux中的文件查找命令locate和find详解">
@@ -324,7 +324,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">39</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
 
   </li>
         
@@ -548,7 +548,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">4.9k</span>
+                <span title="本文字数">5.3k</span>
               
 
               
@@ -562,7 +562,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">4 分钟</span>
+                <span title="阅读时长">5 分钟</span>
               
             </div>
           
@@ -592,6 +592,14 @@
             gzip压缩速度最快；
             bzip2压缩生成的文件比gzip小，但使用不如gzip广；
             xz压缩工具相对较新，但是会提供最佳的压缩率
+    注意：
+        tar命令默认是采用相对路径来进行压缩打包的，如果要使用绝对路径一定要在选项f前加-P选项，否则会报错：Removing leading `/&apos; from member names;
+        示例：
+            ~]# tar zcf jenkins-`date +%F-%H-%M-%S`.tar.gz /data/jenkins
+                tar: Removing leading `/&apos; from member names
+                #由于使用的是绝对路径提示删除路径的/
+            ~]# tar zcPf jenkins-`date +%F-%H-%M-%S`.tar.gz /data/jenkins
+                #注意-P选项一定在选项f前，这样就不会报错了
 
 1.压缩&amp;解压缩
     1.compress/uncompress
@@ -1023,11 +1031,7 @@
                     
                       
                     
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -1511,7 +1515,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">1.4m</span>
+    <span title="站点总字数">1.8m</span>
   
 
   
@@ -1522,7 +1526,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">21:01</span>
+    <span title="站点阅读时长">27:17</span>
   
 </div>
 
