@@ -139,26 +139,26 @@
   <meta name="description" content="更新于：2020.02更新内容：Calico BGP RR配置说明">
 <meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes-Calico安装详解">
-<meta property="og:url" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/index.html">
+<meta property="og:title" content="Kubernetes-Calico部署">
+<meta property="og:url" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="更新于：2020.02更新内容：Calico BGP RR配置说明">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/BGP模式抓包结果.png">
-<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/IPIP模式抓包结果.png">
-<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/BGP路由反射器简单原理.png">
-<meta property="og:updated_time" content="2020-10-23T13:20:40.794Z">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/BGP模式抓包结果.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/IPIP模式抓包结果.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/BGP路由反射器简单原理.png">
+<meta property="og:updated_time" content="2020-10-23T15:54:37.519Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kubernetes-Calico安装详解">
+<meta name="twitter:title" content="Kubernetes-Calico部署">
 <meta name="twitter:description" content="更新于：2020.02更新内容：Calico BGP RR配置说明">
-<meta name="twitter:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/BGP模式抓包结果.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/BGP模式抓包结果.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/">
+  <link rel="canonical" href="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/">
 
 
 
@@ -168,7 +168,7 @@
   };
 </script>
 
-  <title>Kubernetes-Calico安装详解 | Coool's Blog</title>
+  <title>Kubernetes-Calico部署 | Coool's Blog</title>
   
 
 
@@ -347,7 +347,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">78</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">79</span></a>
 
   </li>
         
@@ -453,7 +453,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/08/03/Kubernetes-Calico部署/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -470,7 +470,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kubernetes-Calico安装详解
+          <h1 class="post-title" itemprop="name headline">Kubernetes-Calico部署
               
             
           </h1>
@@ -529,8 +529,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/08/03/Kubernetes-Calico安装详解/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/08/03/Kubernetes-Calico安装详解/" itemprop="commentCount"></span>
+                <a href="/2019/08/03/Kubernetes-Calico部署/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/08/03/Kubernetes-Calico部署/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -827,7 +827,7 @@
         1.在BGP网络模式下，数据报文是直接把两个宿主机Node1、Node2当成路由直接传输数据报文的，而且没有经过任何IP层封装；
         2.从详细的报文看到还是有mac地址的封装过程的：
             Pod1的IP是192.168.190.198，Pod2的IP是192.168.236.0；而源mac地址是Node1节点网卡的mac，目的mac是Node2节点的网卡的mac；这说明：在Node1节点的路由接收到数据，重新构建数据包时，使用arp请求将Node2节点的mac拿到，然后封装到数据链路层然后传输的
-</code></pre><p><img src="/2019/08/03/Kubernetes-Calico安装详解/BGP模式抓包结果.png" alt="BGP模式抓包结果"></p>
+</code></pre><p><img src="/2019/08/03/Kubernetes-Calico部署/BGP模式抓包结果.png" alt="BGP模式抓包结果"></p>
 <h3 id="3-验证IPIP工作模式-数据报文流向分析"><a href="#3-验证IPIP工作模式-数据报文流向分析" class="headerlink" title="3.验证IPIP工作模式(数据报文流向分析)"></a>3.验证IPIP工作模式(数据报文流向分析)</h3><pre><code>将CALICO_IPV4POOL_IPIP改成Always就开启了IPIP网络模式了；下面就通过创建Pod，并验证IPIP网络模式下PodIP-&gt;PodIP之间数据报文是如何传输的；
 1.创建一个包含2个Pod的deployment应用进行测试
     ~]# kubectl run test2 --image=alpine --replicas=2 sleep 360000
@@ -916,7 +916,7 @@
             285和286条记录是Pod1-&gt;Pod2之间的报文信息，如图打开285条可以看到： pod1-ping-pod2的数据包中一共5层，其中IP所在的网络层有两个，分别是pod之间的网络和主机之间的网络封装；因此如图示在Pod1-ping-Pod2的ICMP报文之外应该还有Node1-&gt;Node2的IP层和Node1-&gt;Node2的MAC层报文；
 IPIP网络模式总结：
     通过上面的实验验证IPIP模式就是通过tunl0这个隧道封装的
-</code></pre><p><img src="/2019/08/03/Kubernetes-Calico安装详解/IPIP模式抓包结果.png" alt="IPIP模式抓包结果"></p>
+</code></pre><p><img src="/2019/08/03/Kubernetes-Calico部署/IPIP模式抓包结果.png" alt="IPIP模式抓包结果"></p>
 <h3 id="4-BGP和IPIP模式的性能对比"><a href="#4-BGP和IPIP模式的性能对比" class="headerlink" title="4.BGP和IPIP模式的性能对比"></a>4.BGP和IPIP模式的性能对比</h3><pre><code>IPIP网络：
     流量：tunlo设备封装数据，形成隧道，承载流量。
     适用网络类型：适用于互相访问的pod不在同一个网段中，跨网段访问的场景，外层封装的ip能够解决跨网段的路由问题。
@@ -929,7 +929,7 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
     1.flannel host-gw = flannel  vxlan-directrouting = calico bgp&gt; calico ipip &gt; flannel vxlan-vxlan&gt;flannel-udp
     2.官方推荐所有节点在同一个网段推荐使用calico的BGP模式和flannel的host-gw模式
 </code></pre><h3 id="5-修改BGP-Node-to-Node-Mesh为BGP-RR"><a href="#5-修改BGP-Node-to-Node-Mesh为BGP-RR" class="headerlink" title="5.修改BGP Node-to-Node Mesh为BGP RR"></a>5.修改BGP Node-to-Node Mesh为BGP RR</h3><pre><code>前文说过BGP路由反射器RR可以简化集群BGPPeer的连接方式，它是解决BGP扩展性问题的有效方式；当k8s集群使用Calico网络，节点超过100最好将BGP默认的Node-to-Node-Mesh改成BGP RR模式，因为在RR模式下即使节点数量增加连接数只是线性增加，节省系统资源；配置RR之前，需要了解BGP路由反射器的基础原理才能明白下文配置时一些选项意义；
-</code></pre><h4 id="5-1-BGP路由反射器简单原理"><a href="#5-1-BGP路由反射器简单原理" class="headerlink" title="5.1.BGP路由反射器简单原理"></a>5.1.BGP路由反射器简单原理</h4><p><a href="https://blog.csdn.net/zhlhely/article/details/93297544" target="_blank" rel="noopener">BGP路由反射器基础</a><br><img src="/2019/08/03/Kubernetes-Calico安装详解/BGP路由反射器简单原理.png" alt="BGP路由反射器简单原理"></p>
+</code></pre><h4 id="5-1-BGP路由反射器简单原理"><a href="#5-1-BGP路由反射器简单原理" class="headerlink" title="5.1.BGP路由反射器简单原理"></a>5.1.BGP路由反射器简单原理</h4><p><a href="https://blog.csdn.net/zhlhely/article/details/93297544" target="_blank" rel="noopener">BGP路由反射器基础</a><br><img src="/2019/08/03/Kubernetes-Calico部署/BGP路由反射器简单原理.png" alt="BGP路由反射器简单原理"></p>
 <pre><code>1.路由反射器的基本概念是:
     指定一个或一组路由器（设备）作为IBGP会话的中心点；多个非中心点BGP路由器都与这个中心点建立IBGP邻居关系，依靠中心点的反射进行路由交换；而执行路由反射的一个或一组设备称为路由反射器；
 2.如上图是有两个AS自治系统：AS100、AS200组成的BGP网络，在AS200中R2充当RR节点，先介绍图中所有节点代表的意思是：
@@ -1334,7 +1334,7 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-count">79</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1918,7 +1918,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">24:46</span>
+    <span title="站点阅读时长">24:58</span>
   
 </div>
 

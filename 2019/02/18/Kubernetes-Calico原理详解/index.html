@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="更新于：2019.12">
+<meta name="keywords" content="Kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes-Calico原理详解">
+<meta property="og:url" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="更新于：2019.12">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/calico架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/理解BGP协议.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/calico的两种网络模型架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/BGP-mesh和rr的网络拓扑结构.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/BGP集群规模说明.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/IPIP报文封装示意图.png">
+<meta property="og:updated_time" content="2020-10-23T15:53:06.052Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes-Calico原理详解">
+<meta name="twitter:description" content="更新于：2019.12">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/calico架构.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Kubernetes-Calico原理详解 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<!-- 音频播放 -->
+<script src="//lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159888076870" m="1"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">32</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">38</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">79</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-书单&music">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/02/18/Kubernetes-Calico原理详解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes-Calico原理详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-18 08:00:00" itemprop="dateCreated datePublished" datetime="2019-02-18T08:00:00+08:00">2019-02-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/18/Kubernetes-Calico原理详解/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/02/18/Kubernetes-Calico原理详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">14k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">12 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>更新于：2019.12<br><a id="more"></a></p>
+<h3 id="k8s网络相关文章："><a href="#k8s网络相关文章：" class="headerlink" title="k8s网络相关文章："></a>k8s网络相关文章：</h3><p><a href="">Docker跨主机容器间通信和k8s网络解决方案分析</a><br><a href="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel%E7%BD%91%E7%BB%9C%E6%8F%92%E4%BB%B6%E8%AF%A6%E8%A7%A3/">Flannel网络插件详解</a><br><a href="">Calico网络插件详解</a></p>
+<h3 id="1-Calico简介和架构"><a href="#1-Calico简介和架构" class="headerlink" title="1.Calico简介和架构"></a>1.Calico简介和架构</h3><p><img src="/2019/02/18/Kubernetes-Calico原理详解/calico架构.png" alt="calico架构"></p>
+<pre><code>写在前面：
+    这里先说明一下，网络插件都是为pod提供网络的，前文中我们说过k8s中有三种网络，另外两个网络都是由k8s自己管理的，只有pod网络是需要网络插件实现的!
+
+1.Calico介绍
+    1.Calico和flannel一样都是解决跨主机节点容器（也可以是虚拟机）间通信和k8s的Pod网络的网络解决方案；Calico部署便捷，功能稳定，并且提供丰富的网络策略（Network-Policy）和IP地址管理功能，是很多企业在选择容器网络的第一选择；
+2.Calico原理
+    1.Calico是一个纯三层的数据中心网络解决方案；
+        1.之所以说它是纯三层的，是因为所有的数据包都是通过路由的形式找到对应的主机和容器的，然后通过BGP协议来将所有路由同步到所有的机器或数据中心，从而完成整个网络的互联；而我们之前提到的很多虚拟化平台通常都使用二层隔离技术来实现容器的网络，而在这些二层的技术中如VLAN、bridge、overlay隧道等技术都存在一些弊端，比如：bridge带来了复杂性、vlan隔离和tunnel隧道则消耗更多的资源并对物理环境有要求，而且随着集群网络规模的增大，整个结构会变大很复杂；
+        2.而Calico这种纯三层的虚拟网络没有复用docker的docker0网桥，而是自己实现；calico网络不对数据包进行额外封装、不需要NAT和端口映射、扩展性和性能都很好；Calico网络提供了DockerDNS服务，容器之间可以通过hostname访问；
+        3.如上结构图示，Calico是在每一个Host节点利用LinuxKernel实现了把&quot;物理机&quot;当做一个高效的虚拟路由器（vRouter）来负责数据转发并且会为每个容器分配一个ip，每个物理节点都是路由，把不同节点上的容器连接起来，从而实现跨主机间容器通信；而每个vRouter是通过使用BGP协议（边界网关协议）把自己节点的路由信息同步给整个calico网络内的其他workloads并且直接互联，这种模式在Calico中称为BGP Peer，而在大规模集群可通过BGP Router Reflectors（BGP路由反射器）来完成BGP Peer的扩展性问题;
+        4.Calico通过iptables实现了更加灵活的网络策略，网络策略通过各个节点上的ACLs来提供多租户隔离、安全组以及其他可达性限制等功能
+    2.Calico的设计优势：
+        Calico这种纯三层的实现，不使用隧道或NAT来实现转发而是巧妙的把所有二三层流量转换成三层流量；因此可以避免与二层方案相关的数据包封装的操作，中间没有任何的NAT、没有任何的overlay，所以它的转发效率可能是所有方案中最高的，因为它的包直接走原生TCPIP的协议栈，它的隔离也因为这个栈而变得好做，因为TCP/IP的协议栈提供了一整套的防火墙的规则，所以它可以通过IPTABLES的规则达到比较复杂的隔离逻辑；这种设计思想具有很多优势，比如：
+            1.更高的资源利用率
+                1.因为二层网络通讯需要依赖广播消息机制，广播消息的开销与hos的数量呈指数级增长，Calico使用的三层路由方法，则完全抑制了二层广播，减少了资源开销;
+                2.二层网络使用VLAN隔离技术，天生有4096个规格限制，虽然可以使用vxlan解决但vxlan又带来了隧道开销的新问题.而Calico不使用vlan或vxlan技术，使资源利用率更高;
+            2.可扩展性
+            3.更少的依赖：Calico仅依赖三层路由可达
+3.Calico架构组件说明            
+    如上图示是Calico的架构图，它的网络模型主要工作组件有：
+    1.Felix:
+        1.Felix是calico的核心组件通过DaemonSet方式部署运行在网络集群的每个节点上；主要负责网络接口管理和监听、路由规则、ARP管理、ACL规则管理和同步、状态上报等；
+        2.Felix的基本工作逻辑是：Felix会监听etcd存储并从中获取到事件，比如：
+            如果用户创建Pod后，Felix会负责接口管理将其网卡、IP、MAC都设置好以便内核能够正确处理主机endpoint的流以及主机之间的ARP请求和处理ip转发；然后将主机之间路由信息写到linux内核的FIB转发信息库保证数据包可以在主机之间相互转发；如果用户指定了隔离策略，Felix会将ACL策略写入到linux内核中保证主机endpoint的有效流量不能绕过calico的安全措施；而且Felix会提供关于网络健康状况的数据，特别是配置主机时出现的错误和问题，这些报告数据同样都会被写入etcd存储，而且对网络中的其他组件和管理员可见；
+            备注：
+                flannel中理由表信息写入主机的是flanneld守护进程，Calico中是Felix
+    2.etcd:
+        之前在说到k8s-Pod网络和跨主机容器间的通信方案时提到，为了保证网络元数据一致性，所有网络信息、路由信息都需要存储到第三方的高性能分布式键值存储中，这个高性能存储用的最多的就是etcd；而etcd集群需要至少有3个节点来保证数据的可靠和容错；
+        以前解决docker跨主机容器的解决方案时，flannel和calico都需要额外部署etcd集群保存网络信息，而在k8s中可以和k8s共用一套etcd集群；
+    3.BGP Client(BIRD):
+        1.BGP客户端简称Bird，Calico会为每个Host节点上都会部署一个BGP客户端，使用BIRD实现，而BIRD是一个单独的持续发展的项目，实现了众多动态路由协议比如：BGP、OSPF、RIP等；
+        2.BIRD在Calico的作用是：负责把Felix写入Kernel的路由信息分发到集群Calico网络中的其他Host，从而实现网络路由互通；
+    4.BGP Route Reflector:BGP RR
+        1.BGP有两种模式：mesh（全互联模式）和RR（路由反射模式）：
+            1.如果在大规模网络集群中只使用BGP client生成的mesh全互联模式的方案时，所有节点之间需要两两建立连接（IBGP全互联，因为BGP运行在k8s集群这一个自治系统内AS）这样一来BGP的连接总数就是n(n-1)/2个，比如100个节点就是1+2+...+(N-1)4950个连接，当节点数量增加将导致连接数剧增、资源占用剧增就会导致规模限制；
+            2.为了解决mesh全互联模式带来的规模限制问题，Calico提出引入BGP Router Reflector（路由反射模式）的方法后其他BGP路由器只需要与我们自己事先设定好的特定的RR节点建立连接并交换路由信息，这样即使节点数量增加时连接数也只是线性增加，从而大大减少连接数，节省系统资源；
+        2.BGP Route Reflector负责以下任务：
+            集中式的路由信息分发，当Calico BGP客户端将路由从其FIB通告到Route Reflector时，Route Reflector会将这些路由通告给部署集群中的其他节点；
+    5.Calicoctl： calico命令行管理工具
+        为了方便网络分析在部署calico的同时也会把这个命令行工具一并部署了；
+</code></pre><h3 id="2-Calico网络的两种模式：BGP和IPIP"><a href="#2-Calico网络的两种模式：BGP和IPIP" class="headerlink" title="2.Calico网络的两种模式：BGP和IPIP"></a>2.Calico网络的两种模式：BGP和IPIP</h3><p><a href="https://docs.projectcalico.org/master/networking/bgp" target="_blank" rel="noopener">官方设置calico两种网络模式的说明</a></p>
+<pre><code>Calico有两种网络模式：BGP和IPIP
+    1.简单来说，calico的bgp模式类似于flannel的host-gw都属于路由方案；而IPIP类似于flannel的VXLAN都属于overlay叠加网络的隧道方案；
+    2.Calico默认配置是IPIP隧道的IBGP模式!!!如果将Calico的网络模式更改为BGP，Calico则是使用BGP网络中默认的Node-to-Node-Mesh的iBGP全互联模式，但是在大规模集群中也可以通过BGP-RR解决BGP扩展性的问题；
+    3.实践经验：
+        阿里云不支持Calico的BGP模式，只能使用IPIP模式
+        AWS支持Calico的BGP模式，但是要把EC2的联网-更改源/目标，检查关闭
+1.IPIP
+    1.IPIP=IP in IP，是把一个IP数据包套在另一个IP包里，也就是把IP层封装到IP层的一个tunnel（隧道），它的作用其实基本上就相当于一个基于IP层的网桥；一般来说，普通的网桥是基于mac层的，根本不需要IP，而这个ipip则是通过两端的路由做一个tunnel（隧道），把两个本来不通的网络通过点对点连接起来；所以它还是一个overlay模式的网络；
+    2.启用IPIP模式时，Calico将在各Node上创建一个名为&quot;tunl0&quot;的虚拟网络接口，见下文；
+2.BGP
+    边界网关协议BGP（Border Gateway Protocol）是互联网上一个核心的去中心化自治路由协议；至于什么是BGP，下文会详细说明；而且BGP也有模式：mesh和RR
+    1.Node-to-Node Mesh：简称BGP Peer
+        Calico的BGP网络模式默认是（Node-to-NodeMesh）全互联模式，在Mesh模式下Calico集群中的所有节点之间都需要两两建立连接（IBGP全互联）用于路由交换，所以Calico集群内的BGP的连接总数就是1+2+...+(N-1)个，当节点数量增加时，mesh模式将形成一个巨大服务网格，连接数成倍增加必然会导致资源占用剧增就会造成规模上无法扩展的限制，所以就需要使用Route Reflector（路由器反射）模式解决这个问题；而且如果集群数量超过100台官方不建议使用此种模式；
+    2.Route Reflector模式：简称RR
+        calico从v3.3版本开始支持内建路由反射器，可以简化mesh那种复杂的连接方式解决BGP扩展性问题的有效方式，简单来说：
+            在引入RR后，其他BGP路由器只需要与我们自己事先设定好的特定的RR节点建立连接并交换路由信息，这样即使节点数量增加时连接数也只是线性增加，从而大大减少连接数，节省系统资源；
+    所以实际上讲，Calico提供的BGP网络解决方案与Flannel的host-gw模式几乎一样；因为Calico是使用BGP协议来自动维护整个集群的路由信息实现容器数据包转发，而Flannel则是由flanneld守护进程来维护路由信息；而BGP是一个在大型网络中采用的一个动态协议，所以calico使用这个BGP作为一个路由的交换，它也是性能和数据包、数据表和集群规模到达一定量时，也能保证好一个好的性能；
+3.启用BGP、IPIP的方式：
+    #Enable IPIP
+    - name: CALICO_IPV4POOL_IPIP
+      value: &quot;Always|off&quot;
+    1.当k8s的所有节点都在同一个网段中（没有跨路由器）时既可以使用BGP也可以使用IPIP，不过关闭IPIP模式只使用BGP模式来提高网络性能；将CALICO_IPV4POOL_IPIP的值设置为off即可；
+    2.当k8s的所有节点在不同一个网段中（跨路由器）时，只能使用IPIP模式，而且calico默认就是开启IPIP模式；将CALICO_IPV4POOL_IPIP值设置为Always
+    之间在公司搭建k8s时由于是在同一个网络中所以都是关闭IPIP使用BGP，而迁移到阿里云上时，由于阿里云不支持BGP，而且所有的ECS可能并不一定在同一个网络，所以在阿里云上都是使用IPIP模式；
+</code></pre><h4 id="2-1-BGP基础知识"><a href="#2-1-BGP基础知识" class="headerlink" title="2.1.BGP基础知识"></a>2.1.BGP基础知识</h4><p><a href="https://blog.csdn.net/qq_38265137/article/details/80439561" target="_blank" rel="noopener">BGP基础知识</a><br><img src="/2019/02/18/Kubernetes-Calico原理详解/理解BGP协议.png" alt="理解BGP协议"></p>
+<pre><code>1.BGP概述
+    1.边界网关协议（BorderGateway Protocol, BGP）是运行于TCP上的一种自治系统的路由协议，也是互联网上一个核心的去中心化的自治路由协议。它通过维护IP路由表或&apos;前缀&apos;表来实现自治系统（AS:Autonomous System）之间的可达性，属于矢量路由协议。BGP不使用传统的内部网关协议（IGP）的指标，而是基于路径、网络策略或规则集来决定路由。因此，它更适合被称为矢量性协议，而不是路由协议，通俗的说就是将接入到机房的多条线路（如电信、联通、移动等）融合为一体，实现多线单IP；
+2.要想理解Calico的工作模式，就必须理解BGP协议的工作逻辑：
+    1.动态路由协议：因为BGP属于动态的路由协议，首先我们需要知道路由是做什么的？
+        1.路由的定义是把一个数据包从一个设备发送到不同网络里的另一个设备上去，而路由的实现需要依靠路由器中的路由表来完成，路由器只关心网络的状态和决定网络中的最佳路径；说白了路由就是根据路由表的路由表选择&quot;合适&quot;的一个路径将数据报文转发到目的主机的&quot;最佳路径&quot;；
+        2.熟悉网络的都知道路由表可分为动态和静态：静态路由可以有管理员手动使用route等命令添加；动态路由基本上都会采用动态的路由协议，我们知道的BGP、OSPF、RIP都属于动态路由协议，这些动态路由协议可以在大型网络中使用路由设备中默认的动态路由协议动态的去感知整个网络的拓扑、自动学习将网络中的路由信息添加到路由表中；
+        3.路由表组成：
+            路由表记录的是目标主机网络ID，和离到达目标主机最近的下一跳设备和离自己最近的接口Iface（接口可以是设备接口或者IP地址）；
+            注：
+                很多人会弄不清楚路由表中的记录或者不明白添加静态路由时应该怎么写。
+    2.上面说BGP是实现自治系统AS之间的可达性的路由协议，为了更加清楚理解BGP，举例说明：
+        1.首先自治系统是指两个完全网络独立、没有交集的系统，在每个自治系统都有各自的交换机设备、路由设备；
+        2.在上图中，有两个自治系统AS：AS1和AS2；它们分属不同的网络，AS1网络是192.168.1.0/24，AS2网络是172.17.1.0/16；如果AS1中的主机:192.168.1.10要与AS2中的主机:172.17.1.20通信，数据报文的走向是：
+            1.192.168.1.10-&gt;172.17.1.20通信时，为了到达目标主机172.17.1.20，会先走AS1的交换机swtich1，而swtich1连接着路由器Router1的A口，数据报文会从AS1的路由器Router1的A口到达Router1，接下来就体现出路由表的作用了，Router1收到数据报文发现目标主机是AS2的172.17.1.20，它就会查找它所持有的路由表中的信息发现到达172.17.1.20需要从网关Gateway（Router2）的B口才可以，于是数据报文就会从AS1的路由器Router1的B口转发到AS2的路由器Router2的B口，而路由器Router2是知道自己系统内的172.17.1.20位置的，然后就通过Router2的A口到达交换机swtich2接着到达目标主机完成通信；
+            2.借助Router1的路由表信息解释一下路由应该怎么写：
+                1.192.168.1.10--&gt;172.17.1.20的主动通信在Router1上的如上图示，路由记录分为三部分：172.17.1.20  Router2  B；其中：
+                    第一段目标主机是172.17.1.20这是没错的；第二段Gateway是Router2而不是Router1，意思是说为了到达目标主机172.17.1.20将数据报文交给哪个设备或IP才能成功？很显然Router2是知道目标主机位置的，如果交给Router1显然是不对的；第三段说的B是指Router1的B口而不是Router2的B口，是因为这里需要填的是离源主机最近的出口并且到达网关Router2的接口是Router1的B口！
+                2.如果是172.17.1.20--&gt;192.168.1.10的主动通信，可以看到按照上面的分析逻辑：如上图，它的Gateway必然是Router1，Iface接口也必然是Router2的B口!
+            路由表是路由的基础知识，还可以参考之前做过的一个如上图示的路由实现图，对照这个可以很好的理解；
+        3.那么BGP协议在这个通信中起到了什么作用？
+            BGP协议的作用就是生成Router1和Router2中的路由表，虽然上面的很多路由可以根据上面的路由分析由管理员手动填添加进去，但上面的例子只是一个很简单的网络，如果是非常复杂的网络，肯定是需要借助动态路由协议BGP、OSPF等协议相互的去学习到相互的路由表信息的；
+3.Calico的BGP
+    1.如果把上面BGP是实现自治系统AS之间通信类比到k8s的Calico网络，我们可以把AS1、AS2比作k8s的两个Node节点Node1、Node2，BGP会把Node1、Node2做成一个虚拟路由器（Router1、Router2）后，Node节点上的Pod间通信和上面就非常相似了；
+    2.所以Calico的BGP这种动态路由协议和flannel中host-gw模式有点类似，都是把主机当做路由器然后共享路由信息，只不过Flannel是通过它的守护进程Flanneld维护路由信息，而calico采用的是BGP来实现路由信息交换并且通过felix把路由表信息写到每个节点主机上；
+4.IBGP和EBGP的区别
+    当BGP运行于同一自治系统内部时，被称为IBGP(Internal BGP);
+    当BGP运行于不同自治系统之间时，称为EBGP(External BGP);
+5.BGP机房的优点：
+    服务器只需要设置一个IP地址，最佳访问路由是由网络上的骨干路由器根据路由跳数与其它技术指标来确定的，不会占用服务器的任何系统
+</code></pre><h4 id="2-2-BGP的两种模式：mesh-全互联模式-和RR-路由反射模式"><a href="#2-2-BGP的两种模式：mesh-全互联模式-和RR-路由反射模式" class="headerlink" title="2.2.BGP的两种模式：mesh(全互联模式)和RR(路由反射模式)"></a>2.2.BGP的两种模式：mesh(全互联模式)和RR(路由反射模式)</h4><p><a href="https://docs.projectcalico.org/v3.3/usage/routereflector" target="_blank" rel="noopener">Calico Route Reflectors</a><br><a href="https://www.sohu.com/a/140033025_761420" target="_blank" rel="noopener">BGP路由反射器基础</a><br><img src="/2019/02/18/Kubernetes-Calico原理详解/calico的两种网络模型架构.png" alt="calico的两种网络模型架构"><br><img src="/2019/02/18/Kubernetes-Calico原理详解/BGP-mesh和rr的网络拓扑结构.png" alt="BGP-mesh和rr的网络拓扑结构"></p>
+<pre><code>1.虽然Calico默认是IPIP网络模型，但是当k8s的所有Node节点都在同一个网段中时可以关闭IPIP开启BGP网络模型提高网络性能；而Calico的BGP网络模型默认是Node-to-Node-Mesh的iBGP全互联模式，在了解了BGP的基础知识后可以看一下在k8s中Calico的BGP网络模式的工作逻辑：
+    1.如上图是calico的BGP和IPIP的两种网络模型；BGP网络相比较IPIP网络最大的不同之处就是没有了隧道设备&quot;tunl0&quot;；IPIP网络pod之间的流量是通过tunl0发送对端设备；而BGP网络中，pod之间的流量直接从网卡发送目的地，减少了tunl0这个环节；
+    2.图解BGP是怎么工作的？
+        前文说过calico的BGP和flannel的host-gw都属于路由方案，和之前flannel文章中的host-gw模对比来看，BGP模型完全就是通过路由来实现，即：因为前面也说过Pod的网卡设备是通过veth-pair（一对的虚拟设备接口）实现的，这对虚拟接口一半接入容器内，一半会命名成如图上这种calixxxx的格式成为宿主机上网卡设备；所以数据包是从pod1出来会到达veth-pair的另一端calixxxx上（也就代表到达了宿主机上的网络协议栈）；当创建一个pod时会帮你先起一个infra containers的容器，调用calico的二进制帮你去配置容器的网络，然后会根据路由表决定这个数据包到底发送到哪里去，可以从ip route看到路由表信息，这里显示是目的cni分配的子网络和目的宿主机的网络，当进行跨主机通信的时候之间转发到下一跳地址走宿主机的eth0网卡出去，也就是一个直接的静态路由，这个下一跳就跟host-gw的形式一样，和host-gw最大的区别是calico使用BGP路由交换，而host-gw是使用自己的路由交换，BGP这个方案比较成熟，在大型网络中用的也比较多，所以要比flannel的方式好，而这些路由信息都是由BGP client传输；    
+    3.Node1上的Pod1访问Node2上的Pod2报文流程如下：
+        1.数据包从Pod1出来到达veth-pair的另一端calixxxx上，因为calixxxx表现为宿主机上的网卡设备，所以数据报文也就到了宿主机内核的网络协议栈上；
+        2.由于BGP是把node主机当成虚拟路由，那么Pod1-&gt;Pod2在Node1宿主机这个&quot;虚拟路由&quot;的路由表中它的目标是Pod2，下一跳的网关就是Node2这个&quot;虚拟路由&quot;，接口Iface就是Node1的物理网卡地址，所以数据包会转发给下一跳（网关,也就是Node2）!
+            这里的路由信息和上面介绍BGP时举的例子是一样，明白之前所说的路由的目标网络、下一跳、Iface接口如何定义，这里类比过来就很明白了；
+        3.数据报文到达&quot;下一跳&quot;Node2后，然后根据路由规则会将数据包转发给Node2的calixxxxx设备，从而到达Pod2完成跨节点的两个容器间通信；
+        其中：
+            最关键的就是深刻理解路由规则，理解&quot;下一跳&quot;是谁、Iface是哪个，而且这些路由规则都是由Calico的Felix进程负责维护并且通过BGP Client中BIRD组件使用BGP协议来传输;
+        在下文部署calico后会实验说明Node节点生成的路由条目验证BGP模式下数据报文就是如何传递和转发的！
+
+2.BGP RR模式
+    1.如上图示是mesh和RR的网络拓扑结构
+        1.左侧是BGP node-to-node mesh全互联的模式，所有节点之间需要两两建立连接，是一种多对多的网状结构拓扑，如果集群中节点数量非常多也就意味着资源占用剧增；
+        2.而BGP RR模型中其他BGP路由器只需要与特定的RR节点建立连接并交换路由信息后，形成一对多的放射性拓扑，即使节点数量增加连接数也只是线性增加，节省系统资源；
+        所以RR是把mesh的网状网络拓扑结构改成星状，避免了Mesh超过100台网络会出现慢路由条目过多造成资源被占用的弊端，有利于集群扩容
+    2.BGP RR实现逻辑：
+        1.与BGP mesh模式中每个节点都需要与集群中的其他节点都建立连接不同，BGP RR是先设定一个或多个节点成为路由反射器节点，集群内的其他正常节点只需要与这些路由反射器节点建立连接即可；
+        2.路由反射器节点一般建议至少是2到3个，一个做备用，一个在维护的时候不影响其他的使用；
+    3.如何配置BGP RR，详见calico官方文档和下文部署calico的文章
+        官方启用BGP RR说明：https://docs.projectcalico.org/master/networking/bgp
+        RR反射器的实现方案目前知道的有三种：
+            1.由calico的节点服务承载
+            2.也可以是直接的物理路由器做RR
+            3.将k8s内部节点当路由反射器
+3.这里解释一下如果k8s节点不在一个网段时，能不能使用BGP模式？
+    肯定是可以使用的；很多Calico部署文档里说当所有Node节点都在同一网段时最好关闭IPIP模式使用BGP模式，这句话让很多人以为Node不在一个网段时就不能用BGP模式了，其实这是不对的：
+    1.首先BGP是边界路由协议，它的作用就是实现两个自治系统AS之间的路由互通；Node节点都在同一网段时使用BGP协议网络性能更高；Node节点不在同一网段，我们可以在这两个网段的交换机或者路由器设备上建立BGP连接实现互通，前提是这些设备支持BGP协议；
+    2.还有就是：如果只是Node节点网络开启BGP，IPPool禁用IPIP和VXLAN，而没有交换机的话，Node是不允许跨网段的，因为路由的next hop需要是邻居；
+    3.如果k8s集群是部署在公有云上，很多公有云（如阿里云）是不支持BGP的，当然就只能使用IPIP模式；如果我们的k8s集群搭建在自己的机房内，Node还在不同的网段中，那么就需要将k8s集群与交换机建立BGP连接，这样做的好处在于：
+        1.性能要求：
+            Calico IPIP模式虽然能够满足大部分应用对于容器网络的性能要求，有些对网络延迟敏感的业务是不能使用这种overlay网络的；
+        2.规模要求和网络：
+            在CalicoBGP模式下，如果不与网络设备建立BGP连接，Node只能在同一个局域网内
+        3.安全管理要求：
+            使用IPIP隧道会导致容器网络流量不能被传统的硬件防火墙管控，无法满足安全管理要求。使用硬件防火墙管理Pod-IP，集群的规模会受到硬件设备的限制，在Calico BGP模式下，路由条目会从Node级别成Pod级别，使用EBGP模式可以将路由全部由交换机设备处理，目前看来企业数据中心级别核心交换机和接入交换机三层组网在支持1000-2000Node时，路由规模、BGP邻居、路由收敛速度就接近瓶颈；如果启用双栈，路由规模的压力会进一步增加；
+    4.如下图是BGP集群规模的区别：
+        1.BGP小规模集群
+            Node节点与交换机建立BGP邻居关系，学习Pod路由；Node和容器网络交换机建立BGP连接，在现网核心交换机上添加一条到容器网络的静态路由。这种模式适合有性能要求和管理要求的小规模集群。集群规模过大，需要在原有网络网关上频繁添加静态路由，增加网络管理员的了维护工作；频繁变更网络设备的配置，也存在一定的业务风险
+        2.BGP大规模集群
+            Calico可以根据接入交换和核心交换机的性能参数，使用IBGP和EBGP容器组网。我们通常使用Calico的Downward Default模式来与交换机建立BGP连接，使用Node节点与接入交换机建立EBGP邻居关系，学习Pod路由；接入交换机将Pod路由汇聚后上报给核心交换机，将Pod路由分发到现网；采用Downward Default，Node网关是接入交换机，接入交换机网关是核心。这种模式减少了接入交换机和Node上的路由条目数量，但缺点是发送到无效IP的流量必须到达核心交换机以后，才能被确定为目的不可达；
+</code></pre><p><img src="/2019/02/18/Kubernetes-Calico原理详解/BGP集群规模说明.png" alt="BGP集群规模说明"></p>
+<h4 id="2-3-IPIP模式"><a href="#2-3-IPIP模式" class="headerlink" title="2.3.IPIP模式"></a>2.3.IPIP模式</h4><p><img src="/2019/02/18/Kubernetes-Calico原理详解/IPIP报文封装示意图.png" alt="IPIP报文封装示意图"></p>
+<pre><code>1.如上图是calico的BGP和IPIP的两种网络模型；和BGP网络模式最大不同在于多了隧道设备&quot;tunl0&quot;，IPIP网络pod之间的流量是通过tunl0发送对端设备；IPIP是linux内核的驱动程序，可以对数据包进行隧道，在上图IPIP的网络模型中可以看到两个不同的网络：vlan1和vlan2，基于现有的以太网将原始包中的原始IP进行一次封装，通过tunl0解包，这个tunl0类似于ipip模块，和Flannel-vxlan的veth很类似，所以它和flannel的VXLAN模式都属于overlay网络
+2.IPIP模式下，Node1上的Pod1访问Node2上的Pod2报文流程如下：
+    1.数据包从Pod1出来到达veth-pair的另一端calixxxx上，因为calixxxx表现为宿主机上的网卡设备，所以数据报文也就到了宿主机内核的网络协议栈上；
+    2.如上图示，然后报文从ali34设备进入IP隧道设备&quot;tunl0&quot;，然后Pod1IP-&gt;Pod2IP的数据报文外层会由Linux内核IPIP驱动再封装一层源是Node1，目标是Node2的IP层报文，在外层是源Node1、目标Node2的MAC层报文；这就相当于是Node1到Node2的数据包传输了；
+        这种隧道封装方式和前文flannel的VXLAN封装是一样的，只不过calico事先通过BGP协议共享了路由信息知道了传递路径后在外层封装了IP隧道报文，而Flannel通过flanneld守护进程维护的路由信息知道了传递路径封装了vxlan隧道报文；
+    3.经过封装后的数据包（Node1-&gt;Node2）再经过路由器三层转发到Node2；
+    4.Node2收到数据包后，网络协议栈会使用IPIP驱动进行解包，从中拿到原始IP包（Pod1-&gt;Pod2）
+    5.拿到解封装后的报文发现目标是Pod2时，会根据路由规则将数据包先转发给calixxxx设备，再到达Pod2完成跨主机的容器通信；
+    注：
+        后文会通过实验来验证这个流程的；
+3.启用IPIP模式
+    官方提供的calico.yaml清单中默认是通过CALICO_IPV4POOL_IPIP=Always直接启用了IPIP为默认模式；不过是否启用IPIP模式还需要根据生产环境的网络决定；
+</code></pre><h3 id="3-k8s网络-Pod网络-与外部网络-办公网-互通"><a href="#3-k8s网络-Pod网络-与外部网络-办公网-互通" class="headerlink" title="3.k8s网络(Pod网络)与外部网络(办公网)互通"></a>3.k8s网络(Pod网络)与外部网络(办公网)互通</h3><pre><code>1.有没有必要实现K8s网络(Pod网络)与外部网络(比如办公网)的双向互通？
+    现在很多公司使用微服务框架，由于在微服务框架中微服务是使用Pod去通信的，开发人员开发了一个微服务，他只是想测试一个模块功能，如果还要启动整套注册中心，服务发现等应用就很麻烦，如果在办公网能够直接连接访问到这个Pod就简单化了，很显然在默认情况下办公网是不能直接访问Pod的，所以在此需求下将网络互通就很合理了；
+2.互通的方案：
+    比如：办公网络是192.168.1.0/24，k8s测试集群上运行了很多的微服务，而pod的ip是10.244.0.0/16这个网段，service是10.0.0.10/24，宿主机是172.17.0.0/24，很显然办公网络去访问pod的IP肯定是不通的；如果在办公网访问Pod就像访问办公网内的虚拟机一样，这样的方案是可以实现的，分为两种情况：
+    1.如果k8s集群测试环境在办公网络的子网里面，那么这个实现就比较简单了，只需要在子网中上层的路由器添加一个规则就行了，比如:
+        ip route add 10.244.0.0/16 via &lt;k8s-node1&gt; dev A
+        目的IP为10.244.0.0/16，到达的下一跳via为其中的k8s节点，比如k8s-node1，设备接口A
+        添加这么一个规则，办公网络就能直接访问k8s的节点，直接就能访问podIP,也就是下一跳地址之后，就能直接访问都podIP了；
+    2.如果k8s集群与办公网络相隔很远，而且在不同机房、不同VLAN中，但是k8s集群与办公网络经过三层网络是互通的情况下方案也有两种：
+        1.在办公网路由器上添加路由表，10.244.0.0/16 &lt;k8s-node1&gt;
+        2.使用BGP协议
+            如果三层设备支持BGP协议，我们可以在三层设备上做BGP配置，让路由器BGP与路由反射器BGP建立连接，这样的话路由器上的BGP就能获取到了k8s上的路由表信息了，然后经过下一跳来转发到目的node的Pod上也是可以的；
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/28/Kubernetes-部署zookeeper集群/" rel="next" title="Kubernetes-部署zookeeper集群">
+                <i class="fa fa-chevron-left"></i> Kubernetes-部署zookeeper集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/10/存储基础和Ceph/" rel="prev" title="存储基础和Ceph">
+                存储基础和Ceph <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+      
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">79</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s网络相关文章："><span class="nav-number">1.</span> <span class="nav-text">k8s网络相关文章：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Calico简介和架构"><span class="nav-number">2.</span> <span class="nav-text">1.Calico简介和架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Calico网络的两种模式：BGP和IPIP"><span class="nav-number">3.</span> <span class="nav-text">2.Calico网络的两种模式：BGP和IPIP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-BGP基础知识"><span class="nav-number">3.1.</span> <span class="nav-text">2.1.BGP基础知识</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-BGP的两种模式：mesh-全互联模式-和RR-路由反射模式"><span class="nav-number">3.2.</span> <span class="nav-text">2.2.BGP的两种模式：mesh(全互联模式)和RR(路由反射模式)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-IPIP模式"><span class="nav-number">3.3.</span> <span class="nav-text">2.3.IPIP模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-k8s网络-Pod网络-与外部网络-办公网-互通"><span class="nav-number">4.</span> <span class="nav-text">3.k8s网络(Pod网络)与外部网络(办公网)互通</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <div style="">
+  <canvas id="canvas" style="width:70%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.6m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">24:58</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="/js/src/Valine.min.js"></script>
+
+  <!-- https://deserts.io/diy-a-comment-system/ -->
+  <script type="text/javascript">
+    new Valine({
+        lang: 'zh-cn',
+        admin_email: '645150765@qq.com', //博主邮箱
+        el: '#comments' ,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        emoticon_url: 'https://cloud.panjunwen.com/alu',
+        emoticon_list: ["吐.png","喷血.png","狂汗.png","不说话.png","汗.png","坐等.png","献花.png","不高兴.png","中刀.png","害羞.png","皱眉.png","小眼睛.png","中指.png","尴尬.png","瞅你.png","想一想.png","中枪.png","得意.png","肿包.png","扇耳光.png","亲亲.png","惊喜.png","脸红.png","无所谓.png","便便.png","愤怒.png","蜡烛.png","献黄瓜.png","内伤.png","投降.png","观察.png","看不见.png","击掌.png","抠鼻.png","邪恶.png","看热闹.png","口水.png","抽烟.png","锁眉.png","装大款.png","吐舌.png","无奈.png","长草.png","赞一个.png","呲牙.png","无语.png","阴暗.png","不出所料.png","咽气.png","期待.png","高兴.png","吐血倒地.png","哭泣.png","欢呼.png","黑线.png","喜极而泣.png","喷水.png","深思.png","鼓掌.png","暗地观察.png"],
+        placeholder: '帅的人已经评论',
+  });
+
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
