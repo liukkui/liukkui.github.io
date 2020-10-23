@@ -147,7 +147,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/BGP模式抓包结果.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/IPIP模式抓包结果.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Calico安装详解/BGP路由反射器简单原理.png">
-<meta property="og:updated_time" content="2020-10-23T13:12:24.283Z">
+<meta property="og:updated_time" content="2020-10-23T13:20:40.794Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-Calico安装详解">
 <meta name="twitter:description" content="更新于：2020.02更新内容：Calico BGP RR配置说明">
@@ -754,7 +754,7 @@
     ~]# ETCDCTL_API=3 etcdctl --endpoints=&quot;http://127.0.0.1:2379&quot; get --prefix /calico   #查看所有calico相关数据
     ~]# TCDCTL_API=3 etcdctl --endpoints=&quot;http://127.0.0.1:2379&quot; get --prefix /calico/ipam/v2/host   #查看calico网络为各节点分配的网段
 至此说明Calico安装基本没问题，下文会通过常见Pod，验证跨节点的Pod-IP之间能否正常通信并抓包分析IPIP和BGP两个网络模式下的数据报文流向；
-</code></pre><h4 id="2-1-验证BGP工作模式-数据报文流向分析"><a href="#2-1-验证BGP工作模式-数据报文流向分析" class="headerlink" title="2.1.验证BGP工作模式(数据报文流向分析)"></a>2.1.验证BGP工作模式(数据报文流向分析)</h4><pre><code>由于上文搭建k8s的4个节点都是同一网段的KVM虚拟机，虚机间没有网络ACL限制，因此将CALICO_IPV4POOL_IPIP改成off关闭了IPIP模式，改为BGP网络模式；BGP网络相比较IPIP网络，最大的不同之处就是没有了隧道设备tunl0；在IPIP网络pod之间的流量发送tunl0，然后tunl0发送对端设备；而在BGP网络中，pod之间的流量直接从网卡发送目的地，减少了tunl0封装的环节；下面就通过创建Pod，并验证BGP网络模式下PodIP-&gt;PodIP之间数据报文是如何传输的:
+</code></pre><h3 id="2-验证BGP工作模式-数据报文流向分析"><a href="#2-验证BGP工作模式-数据报文流向分析" class="headerlink" title="2.验证BGP工作模式(数据报文流向分析)"></a>2.验证BGP工作模式(数据报文流向分析)</h3><pre><code>由于上文搭建k8s的4个节点都是同一网段的KVM虚拟机，虚机间没有网络ACL限制，因此将CALICO_IPV4POOL_IPIP改成off关闭了IPIP模式，改为BGP网络模式；BGP网络相比较IPIP网络，最大的不同之处就是没有了隧道设备tunl0；在IPIP网络pod之间的流量发送tunl0，然后tunl0发送对端设备；而在BGP网络中，pod之间的流量直接从网卡发送目的地，减少了tunl0封装的环节；下面就通过创建Pod，并验证BGP网络模式下PodIP-&gt;PodIP之间数据报文是如何传输的:
 1.创建一个包含2个Pod的deployment应用进行测试
     ~]# kubectl run test1 --image=alpine --replicas=2 sleep 360000
         deployment.apps/test1 created
@@ -828,7 +828,7 @@
         2.从详细的报文看到还是有mac地址的封装过程的：
             Pod1的IP是192.168.190.198，Pod2的IP是192.168.236.0；而源mac地址是Node1节点网卡的mac，目的mac是Node2节点的网卡的mac；这说明：在Node1节点的路由接收到数据，重新构建数据包时，使用arp请求将Node2节点的mac拿到，然后封装到数据链路层然后传输的
 </code></pre><p><img src="/2019/08/03/Kubernetes-Calico安装详解/BGP模式抓包结果.png" alt="BGP模式抓包结果"></p>
-<h4 id="2-2-验证IPIP工作模式-数据报文流向分析"><a href="#2-2-验证IPIP工作模式-数据报文流向分析" class="headerlink" title="2.2.验证IPIP工作模式(数据报文流向分析)"></a>2.2.验证IPIP工作模式(数据报文流向分析)</h4><pre><code>将CALICO_IPV4POOL_IPIP改成Always就开启了IPIP网络模式了；下面就通过创建Pod，并验证IPIP网络模式下PodIP-&gt;PodIP之间数据报文是如何传输的；
+<h3 id="3-验证IPIP工作模式-数据报文流向分析"><a href="#3-验证IPIP工作模式-数据报文流向分析" class="headerlink" title="3.验证IPIP工作模式(数据报文流向分析)"></a>3.验证IPIP工作模式(数据报文流向分析)</h3><pre><code>将CALICO_IPV4POOL_IPIP改成Always就开启了IPIP网络模式了；下面就通过创建Pod，并验证IPIP网络模式下PodIP-&gt;PodIP之间数据报文是如何传输的；
 1.创建一个包含2个Pod的deployment应用进行测试
     ~]# kubectl run test2 --image=alpine --replicas=2 sleep 360000
         deployment.apps/test2 created
@@ -917,7 +917,7 @@
 IPIP网络模式总结：
     通过上面的实验验证IPIP模式就是通过tunl0这个隧道封装的
 </code></pre><p><img src="/2019/08/03/Kubernetes-Calico安装详解/IPIP模式抓包结果.png" alt="IPIP模式抓包结果"></p>
-<h4 id="2-3-BGP和IPIP模式的性能对比"><a href="#2-3-BGP和IPIP模式的性能对比" class="headerlink" title="2.3.BGP和IPIP模式的性能对比"></a>2.3.BGP和IPIP模式的性能对比</h4><pre><code>IPIP网络：
+<h3 id="4-BGP和IPIP模式的性能对比"><a href="#4-BGP和IPIP模式的性能对比" class="headerlink" title="4.BGP和IPIP模式的性能对比"></a>4.BGP和IPIP模式的性能对比</h3><pre><code>IPIP网络：
     流量：tunlo设备封装数据，形成隧道，承载流量。
     适用网络类型：适用于互相访问的pod不在同一个网段中，跨网段访问的场景，外层封装的ip能够解决跨网段的路由问题。
     效率：流量需要tunl0设备封装，效率略低
@@ -928,8 +928,8 @@ BGP网络：
 Flannel和calico各模式的性能对比和官方推荐使用的网络方案
     1.flannel host-gw = flannel  vxlan-directrouting = calico bgp&gt; calico ipip &gt; flannel vxlan-vxlan&gt;flannel-udp
     2.官方推荐所有节点在同一个网段推荐使用calico的BGP模式和flannel的host-gw模式
-</code></pre><h5 id="3-修改BGP-Node-to-Node-Mesh为BGP-RR"><a href="#3-修改BGP-Node-to-Node-Mesh为BGP-RR" class="headerlink" title="3.修改BGP Node-to-Node Mesh为BGP RR"></a>3.修改BGP Node-to-Node Mesh为BGP RR</h5><pre><code>前文说过BGP路由反射器RR可以简化集群BGPPeer的连接方式，它是解决BGP扩展性问题的有效方式；当k8s集群使用Calico网络，节点超过100最好将BGP默认的Node-to-Node-Mesh改成BGP RR模式，因为在RR模式下即使节点数量增加连接数只是线性增加，节省系统资源；配置RR之前，需要了解BGP路由反射器的基础原理才能明白下文配置时一些选项意义；
-</code></pre><h4 id="3-1-BGP路由反射器简单原理"><a href="#3-1-BGP路由反射器简单原理" class="headerlink" title="3.1.BGP路由反射器简单原理"></a>3.1.BGP路由反射器简单原理</h4><p><a href="https://blog.csdn.net/zhlhely/article/details/93297544" target="_blank" rel="noopener">BGP路由反射器基础</a><br><img src="/2019/08/03/Kubernetes-Calico安装详解/BGP路由反射器简单原理.png" alt="BGP路由反射器简单原理"></p>
+</code></pre><h3 id="5-修改BGP-Node-to-Node-Mesh为BGP-RR"><a href="#5-修改BGP-Node-to-Node-Mesh为BGP-RR" class="headerlink" title="5.修改BGP Node-to-Node Mesh为BGP RR"></a>5.修改BGP Node-to-Node Mesh为BGP RR</h3><pre><code>前文说过BGP路由反射器RR可以简化集群BGPPeer的连接方式，它是解决BGP扩展性问题的有效方式；当k8s集群使用Calico网络，节点超过100最好将BGP默认的Node-to-Node-Mesh改成BGP RR模式，因为在RR模式下即使节点数量增加连接数只是线性增加，节省系统资源；配置RR之前，需要了解BGP路由反射器的基础原理才能明白下文配置时一些选项意义；
+</code></pre><h4 id="5-1-BGP路由反射器简单原理"><a href="#5-1-BGP路由反射器简单原理" class="headerlink" title="5.1.BGP路由反射器简单原理"></a>5.1.BGP路由反射器简单原理</h4><p><a href="https://blog.csdn.net/zhlhely/article/details/93297544" target="_blank" rel="noopener">BGP路由反射器基础</a><br><img src="/2019/08/03/Kubernetes-Calico安装详解/BGP路由反射器简单原理.png" alt="BGP路由反射器简单原理"></p>
 <pre><code>1.路由反射器的基本概念是:
     指定一个或一组路由器（设备）作为IBGP会话的中心点；多个非中心点BGP路由器都与这个中心点建立IBGP邻居关系，依靠中心点的反射进行路由交换；而执行路由反射的一个或一组设备称为路由反射器；
 2.如上图是有两个AS自治系统：AS100、AS200组成的BGP网络，在AS200中R2充当RR节点，先介绍图中所有节点代表的意思是：
@@ -955,7 +955,7 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
     1.在大规模的网络集群中，我们会在&quot;同一个Cluster中&quot;选择多个节点作为RR节点，防止主RR节点发生故障时部分路由器无法获得路由导致网络瘫痪；
     2.由于同一个Cluster中有多个RR也可能出现路由环路，因此在配置多RR节点时要求所有的RR上必须配置相同的Cluster-ID；路由器在接收到路由时会查看Cluster-ID，若Cluster-ID与本地所配置的ID一致，则丢弃该路由避免路由环路的出现；
     3.Cluster-ID通常是所在网络中未使用的IPv4地址；比如：244.0.0.1
-</code></pre><h4 id="3-2-配置一个或多个RR节点"><a href="#3-2-配置一个或多个RR节点" class="headerlink" title="3.2.配置一个或多个RR节点"></a>3.2.配置一个或多个RR节点</h4><p><a href="https://docs.projectcalico.org/v3.3/usage/routereflector" target="_blank" rel="noopener">Calico Route Reflectors使用指南</a><br><a href="https://octetz.com/docs/2018/2018-12-10-route-reflectors-in-calico/" target="_blank" rel="noopener">BGP RR配置参考</a></p>
+</code></pre><h4 id="5-2-配置一个或多个RR节点"><a href="#5-2-配置一个或多个RR节点" class="headerlink" title="5.2.配置一个或多个RR节点"></a>5.2.配置一个或多个RR节点</h4><p><a href="https://docs.projectcalico.org/v3.3/usage/routereflector" target="_blank" rel="noopener">Calico Route Reflectors使用指南</a><br><a href="https://octetz.com/docs/2018/2018-12-10-route-reflectors-in-calico/" target="_blank" rel="noopener">BGP RR配置参考</a></p>
 <pre><code>由于calico从v3.3版本开始支持内建路由反射器，而本文是使用有4个k8s节点集群部署的v3.3.7版本；而配置BGP Route Reflectors的步骤是：
     先禁用BGP默认的node-to-node-mesh模式，再从集群中选择1个或多个节点配置成RR节点；然后将集群内的其他节点与一个或多个RR节点建立规则进行连接；
 1.先查看原集群内的node-to-node mesh连接状态
@@ -1246,8 +1246,8 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/16/Kubernetes-部署Redis集群/" rel="next" title="Kubernetes-部署Redis集群">
-                <i class="fa fa-chevron-left"></i> Kubernetes-部署Redis集群
+              <a href="/2019/08/03/Kubernetes-Flannel网络插件详解/" rel="next" title="Kubernetes-Flannel网络插件详解">
+                <i class="fa fa-chevron-left"></i> Kubernetes-Flannel网络插件详解
               </a>
             
           </div>
@@ -1256,8 +1256,8 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/03/Kubernetes-Flannel网络插件详解/" rel="prev" title="Kubernetes-Flannel网络插件详解">
-                Kubernetes-Flannel网络插件详解 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/03/Ceph-RBD/" rel="prev" title="Ceph-RBD">
+                Ceph-RBD <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1608,7 +1608,7 @@ Flannel和calico各模式的性能对比和官方推荐使用的网络方案
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-部署calico"><span class="nav-number">1.</span> <span class="nav-text">1.部署calico</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-验证BGP工作模式-数据报文流向分析"><span class="nav-number">1.1.</span> <span class="nav-text">2.1.验证BGP工作模式(数据报文流向分析)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-验证IPIP工作模式-数据报文流向分析"><span class="nav-number">1.2.</span> <span class="nav-text">2.2.验证IPIP工作模式(数据报文流向分析)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-BGP和IPIP模式的性能对比"><span class="nav-number">1.3.</span> <span class="nav-text">2.3.BGP和IPIP模式的性能对比</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-修改BGP-Node-to-Node-Mesh为BGP-RR"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.修改BGP Node-to-Node Mesh为BGP RR</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-BGP路由反射器简单原理"><span class="nav-number">1.4.</span> <span class="nav-text">3.1.BGP路由反射器简单原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-配置一个或多个RR节点"><span class="nav-number">1.5.</span> <span class="nav-text">3.2.配置一个或多个RR节点</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-部署calico"><span class="nav-number">1.</span> <span class="nav-text">1.部署calico</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-验证BGP工作模式-数据报文流向分析"><span class="nav-number">2.</span> <span class="nav-text">2.验证BGP工作模式(数据报文流向分析)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-验证IPIP工作模式-数据报文流向分析"><span class="nav-number">3.</span> <span class="nav-text">3.验证IPIP工作模式(数据报文流向分析)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-BGP和IPIP模式的性能对比"><span class="nav-number">4.</span> <span class="nav-text">4.BGP和IPIP模式的性能对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-修改BGP-Node-to-Node-Mesh为BGP-RR"><span class="nav-number">5.</span> <span class="nav-text">5.修改BGP Node-to-Node Mesh为BGP RR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-BGP路由反射器简单原理"><span class="nav-number">5.1.</span> <span class="nav-text">5.1.BGP路由反射器简单原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-配置一个或多个RR节点"><span class="nav-number">5.2.</span> <span class="nav-text">5.2.配置一个或多个RR节点</span></a></li></ol></li></ol></div>
             
 
           </div>
