@@ -145,11 +145,12 @@
 <meta property="og:description" content="更新于：2020.04 更新了之前对flanneld的错误理解">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/flannel工作逻辑.png">
-<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/VXLAN报文头部.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/VXLAN模式通信过程.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/host-gw模式图解和抓包分析.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/flannel-cni与基础CNI插件的交互.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/图解kube-flannel.yml清单内容.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/抓包结果.png">
-<meta property="og:updated_time" content="2020-10-21T14:02:08.757Z">
+<meta property="og:updated_time" content="2020-10-24T16:28:51.628Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-Flannel网络插件详解">
 <meta name="twitter:description" content="更新于：2020.04 更新了之前对flanneld的错误理解">
@@ -352,25 +353,6 @@
     <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">77</span></a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-书单&music">
-
-    
-    
-    
-      
-    
-
-    
-      
-    
-
-    <a href="/shudan/" rel="section"><i class="menu-item-icon fa fa-fw fa-gratipay"></i> <br>书单&music</a>
-
-  </li>
 
       
       
@@ -554,7 +536,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">14k</span>
+                <span title="本文字数">19k</span>
               
 
               
@@ -568,7 +550,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">13 分钟</span>
+                <span title="阅读时长">17 分钟</span>
               
             </div>
           
@@ -609,7 +591,120 @@
     后来慢慢的理解：
         如上图示，直到我看到Openshift默认也是使用Flannel网络插件的架构图后，我的理解是官方原图上画的实线（画的实线并不严谨）并不是说数据报文经过flanneld转发，而是说flanneld是flannel的守护进程程序，它负责从远端的ETCD集群同步本地和其它host上的subnet信息并为POD分配IP地址，但它并不直接处理数据流；又找了很多文章发现就是应该这样理解；
 
-3.Flannel的几个重要配置字段参数解释：
+3.k8s集群使用的flannel作为网络插件时网络带宽说明
+    Flannel最好部署在千兆网络下，不要部署在万兆或者百兆网络中；
+    flannel之前测试使用百兆网络时集群会出现各种莫名其妙的问题!
+    flannel在万兆网络下的性能太差，原因是：
+        1.CPU运算受制于网络中断处理单核运算能力等因素，flannel万兆能跑到2G就到顶了；除非买特定网卡搞定UDP Offload，那么flannel还是可以跑在万兆网络的，否则就有性能瓶颈；
+        2.这就是为何机器计算要买显卡而不是靠CPU一样的道理，而且UDP Offload最好是物理机，否则还要搞定VMware或Openstack的offload的穿透；
+</code></pre><h3 id="2-Flannel的三种Backend详解"><a href="#2-Flannel的三种Backend详解" class="headerlink" title="2.Flannel的三种Backend详解"></a>2.Flannel的三种Backend详解</h3><p><a href="https://sdn.feisky.xyz/rong-qi-wang-luo/index/index/index-1" target="_blank" rel="noopener">后端和各自协议参考文章</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/VXLAN模式通信过程.png" alt="VXLAN模式通信过程"><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/host-gw模式图解和抓包分析.png" alt="host-gw模式图解和抓包分析"></p>
+<pre><code>1.Flannel的backend
+    1.前面说过Flannel实质上是一种覆盖网络overlay（叠加网络）解决方案，也就是将TCP数据包装在另一种网络包里面进行路由转发和通信，它支持UDP、VxLAN、host-gw、AWS VPC、GCE和Ali Vpc路由等数据转发方式；
+    2.而由于flannel是一个应用程序，它的守护进程（flannled）可以管理、修改跨节点的flannel.1接口之间的报文是通过哪种协议进行封装转发的，这种封装方式称为flannel的Backend（后端）；而Flannel的Backend有下面几种类型，用的最多的是前三种；
+
+2.1.Vxlan：
+    1.VXLAN模式使用比较简单，可以理解为是一个二层协议隧道，它是flannel的默认模式；在Vxlan模式下，flannel会在各节点生成一个flannel.1的VXLAN网卡（VTEP设备）；而VXLAN模式下封包与解包的工作是由内核进行的.flannel不转发数据，仅动态设置ARP和FDB表项；如上图示VXLAN模式下k8s中跨主机的Pod的通信过程：
+        1.容器A中的数据包会先发到veth pair的另一端，也就是cni0上
+        2.cni0通过匹配主机A中的路由表信息,将数据包发送到flannel.1接口
+        3.flannel.1是一个VTEP设备,收到报文后按照VTEP的配置进行封包.根据flannel.1设备创建时设置的参数VNI、local IP、Port进行VXLAN封包；
+        4.主机A通过物理网卡eth0发送封包到 主机B的物理网卡eth0中
+        5.主机B的物理网卡eth0再通过VXLAN默认端口8472转发到VTEP设备flannel.1进行解包
+        6.解包以后根据IP头匹配路由规则, 内核将包发送到cni0
+        7.cni0发送到连接在veth pair另一端的容器B中完成通信；
+    2.VXLAN也有两种模式：
+        1.vxlan：
+            第一种是vxlan叠加网络模式，利用内核级别的VXLAN来封装host之间传送的包
+        2.Directrouting：
+            Directrouting是vxlan的一种特殊属性；虽然vxlan是一种隧道报文方式，但是它可以降级称为host-gw方式，也就是说vxlan可以直接像host-gw那样在二层物理直接通信，条件是：
+                如果所有宿主机节点都在同一个物理网络中（不跨路由器）就工作为host-gw模式，如果不在同一个物理网络中（不跨路由器）就工作为vxlan模式；
+        我们可以在部署flannel模式为vxlan时将Directrouting（直接路由）属性打开，有助于性能提升；
+    Vxlan的传输效率低的问题：
+        如上图Vxlan封装二层报文的格式，是虽然是flannel的默认、常用模式，但由于需要额外的封包和拆包，它的MTU是小于默认的1500；这也是很多人认为Flannel网络传输效率相对低的原因；
+2.2.UDP：
+    UDP是指四层UDP协议隧道，是所有模式中性能最差的；设计出UDP是有原因的：
+        因为在flannel设计最初时有些发行版的linux内核还比较老不支持VxALN，为了能够兼容这些较老系统，flannel设计出UDP这种代替Vxlan的方案；早期很多人认为flannel性能很差就是因为当时UDP的性能差决定的，而如今的VXLAN性能其实并不差，所以在生产环境中是不会使用UDP模式的.
+2.3.host-gw：
+    1.flannel不仅提供基于封装类型的技术vxlan，也提供基于路由技术的互联技术host-gw模式，host-gw是host-gateway的意思，是将主机作为网关，基于路由技术完成纯三层的ip转发；
+    2.host-gw直接路由的逻辑是：把node节点上的每个Pod容器通过物理网桥直接接入到物理网络中，把node节点的网络接口当做pod的网关使用，这样相当于是所有Pod在物理网络（同一个网段）中直接通信，这种不需要解封包的方式在三种模式中性能是最好的，但是有局限性：
+        1.原因一因为通过物理网桥直接接入到物理网络中相当于是在物理网络中直接通信，就意味着都是使用MAC地址通信，那么所有宿主机节点IP都必须在同一个物理网络中不能跨路由器!这样的话网络设备间的距离就受限了、相应的数量、范围也就受限了!所以host-gw模式仅适用于二层直接可达的网络；
+        2.原因二是因为在host-gw模式下随着集群中节点规模的增大，flannel维护主机上成千上万条路由表（n(n-1)/2条路由）的动态更新也是一个不小的压力，因此在路由方式下，路由表规则的数量是限制网络规模的一个重要因素；
+        3.host-gw模式下，负责维护、动态更新主机上路由表信息的是flanneld守护进程；
+    3.如上图示，可以解释为什么host-gw要求主机网络二层直接互联？
+        从上面的抓包结果可以看出host-gw在传输层走的是tcp，然后在网络层的源IP和目的IP均是容器的IP，也就是虚拟IP，这就决定了二层互联，因为只有交换机是不关注源IP和目的IP；假如两台主机在两个vlan中，二层不通，三层通，那么就需要路由器，而路由器是无法识别容器的这些ip，当然也可以配置路由规则，但是显然没有这么做的。
+2.4.aws-vpc：
+    使用 Amazon VPC route table 创建路由，适用于AWS上运行的容器
+2.5.gce：
+    使用Google Compute Engine Network创建路由，所有instance需要开启IP forwarding，适用于GCE上运行的容器
+2.6.ali-vpc：
+    使用阿里云VPC route table创建路由，适用于阿里云上运行的容器
+使用场景说明：
+    所有节点都在同一个网段，并且二层网络可能通信，可以考虑选择Host-gw模式。反之节点之间不能通过二层网络通信，可能在不同vlan中，可以考虑选择Vxlan模式，也可以考虑使用 Vxlan Directrouting 模式(默认是false)
+</code></pre><h3 id="3-3-Flannel为节点子网分配Pod-IP地址的逻辑"><a href="#3-3-Flannel为节点子网分配Pod-IP地址的逻辑" class="headerlink" title="3.### 3.Flannel为节点子网分配Pod IP地址的逻辑"></a>3.### 3.Flannel为节点子网分配Pod IP地址的逻辑</h3><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md" target="_blank" rel="noopener">flannel kubernetes 集成</a><br><a href="https://github.com/containernetworking/plugins/tree/master/plugins/meta/flannel" target="_blank" rel="noopener">flannel cni 插件</a><br><a href="https://github.com/containernetworking/plugins" target="_blank" rel="noopener">更多 cni 插件</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/flannel-cni与基础CNI插件的交互.png" alt="flannel-cni与基础CNI插件的交互"></p>
+<pre><code>1.CRI和CNI
+    1.CRI:
+        CRI（容器运行时接口）是一个插件接口，允许kubelet使用不同的containe rruntimes;各种container runtimes都实现了CRI API，这使用户可以在K8S安装中使用他们想要的container runtimes;
+    2.CNI:
+        CNI（容器网络接口）项目包含一个为Linux容器提供基于通用插件网络解决方案的规则。它由各种插件组成，这些插件在配置Pod网络时执行不同的功能;CNI插件是遵循CNI规范的可执行文件;
+2.Container Runtime与CNI插件的交互
+    1.每个网络插件都有一个CNI插件，container runtime会调用该插件，在Pod启动时配置网络。使用容器化作为container runtime，容器化CRI插件将调用CNI插件;每个网络插件都在每个k8s节点上安装了一个代理（如flannel的flanneld进程）用来配置Pod网络。安装网络插件代理程序后，它会随CNI一起配置或者在节点上创建，CRI插件会使用它来确定要调用哪个CNI插件；
+    2.以flannel为例，Flanneld是Flannel守护程序，在部署flannel.yaml的清单中有两个容器kube-flannel和install-cni；一个容器运行flannel本身，另一个install-cni容器部署cni配置文件,install-cni容器会在每个节点上创建CNI配置文件/etc/cni/net.d/10-flannel.conflist;Flanneld创建一个vxlan设备，从apiserver获取网络元数据，并监控Pod上的更新;创建Pod时，它将在整个集群中为所有Pod分配路由，这些路由允许Pod通过IP地址相互连接;
+    3.Containerd CRI插件和CNI插件之间的交互如上图所示，基本逻辑是：
+        kubelet调用Containered CRI插件创建容器，再调用CNI插件为容器配置网络。Flannel的CNI插件调用其他基础CNI插件来配置网络;
+3.而Flannel与其他基础CNI插件之间的交互逻辑如下：
+    我们之所以在部署flannel前需要先下载cni基础插件到k8s中就是因为flannel的CNI插件会借助这些基础cni插件一步步的生成网络配置文件为Pod配置IP地址；而Flannel用到基础插件plugins有：bridge、flannel、host-local、loopback、portmap,下面就说明flannel是如何借助这些基础cni插件帮助配置主机上容器之间的网络的,如上图示：
+    1.第一步：当使用Flannel作为网络插件时，Containered-CRI插件使用CNI配置文件调用Flannel-CNI插件/etc/cni/net.d/10-flannel.conflist:
+        ~]# vim /etc/cni/net.d/10-flannel.conflist
+            {
+              &quot;name&quot;: &quot;cni0&quot;,
+              &quot;plugins&quot;: [
+                {
+                  &quot;type&quot;: &quot;flannel&quot;,
+                  &quot;delegate&quot;: {
+                    &quot;hairpinMode&quot;: true,
+                    &quot;isDefaultGateway&quot;: true
+                  }
+                },
+              ]
+            }
+        FannelCNI插件与Flanneld结合使用，当Flanneld启动时，它将从apiserver中获取podCIDR和其他与网络相关的详细信息，并将它们存储在文件中/run/flannel/subnet.env:
+        ~]# vim /run/flannel/subnet.env
+            FLANNEL_NETWORK=10.244.0.0/16
+            FLANNEL_SUBNET=10.244.0.1/24
+            FLANNEL_MTU=1472
+            FLANNEL_IPMASQ=true
+        然后Flannel CNI插件使用/run/flannel/subnet.env的信息来配置和调用基础插件Bridge CNI插件;
+    2.第二步：flannel的CNI利用下面的文件信息去配置和调用bridge插件来生成容器网络:
+        {
+            &quot;name&quot;: &quot;mynet&quot;,
+            &quot;type&quot;: &quot;bridge&quot;,
+            &quot;mtu&quot;: 1472,
+            &quot;ipMasq&quot;: false,
+            &quot;isGateway&quot;: true,
+            &quot;ipam&quot;: {
+                &quot;type&quot;: &quot;host-local&quot;,
+                &quot;subnet&quot;: &quot;10.244.0.0/24&quot;
+            }
+        }
+        当Bridge CNI插件第一次调用时，它会创建一个Linux Bridge &quot;name&quot;: &quot;cni0&quot;在配置文件中，然后为每个Pod创建veth pair，其一端在容器的网络命名空间中，另一端连接到主机网络上的Linux Bridge;使用Bridge CNI插件，主机上的所有容器都连接到主机网络上的Linux Bridge;
+    3.第三步：当配置完veth-pair后，Bridge插件会使用下面的配置调用host-local插件来管理IP地址：
+        {
+            &quot;name&quot;: &quot;mynet&quot;,
+            &quot;ipMasq&quot;: false,
+            &quot;ipam&quot;: {
+                &quot;type&quot;: &quot;host-local&quot;,
+                &quot;subnet&quot;: &quot;10.244.0.0/24&quot;
+                &quot;dataDir&quot;: &quot;/var/lib/cni/networks&quot;
+            }
+        }
+        1.主机本地的IPAM（IP地址管理）插件从中返回容器的IP地址，subnet将分配的IP地址存储在主机下dataDir指定的目录中/var/lib/cni/networks/&lt;network-name=cni0&gt;/&lt;ip&gt;;而/var/lib/cni/networks/&lt;network-name=cni0&gt;/&lt;ip&gt;文件包含IP分配到的容器ID，而IP存储为如下这种格式：
+            {
+                &quot;ipv4&quot;: {
+                    &quot;ip&quot;: &quot;10.244.2.3&quot;,
+                    &quot;gateway&quot;: &quot;10.244.2.1&quot;
+                }
+            }
+
+4.Flannel的几个重要配置字段参数解释：
     在flannel的kube-flannel.yml中的configmap中有几个重要的网络相关的配置字段参数解释：
     ~]# vim kube-flannel.yml     #这里只列出官方清单中关于configmap的内容
         ...
@@ -640,7 +735,7 @@
               }
             }
     其中：
-        1.cni-conf.json部分是定义插件类型为flannel，从cbr0网卡的网络中为pod分片IP地址；
+        1.cni-conf.json部分是定义插件类型为flannel，从cbr0网卡的网络中为pod分配IP地址；
         2.重要的是net-conf.json中的内容；
             &quot;Network&quot;: &quot;10.244.0.0/16&quot;：
                 由于它是overlay叠加网络，在前文中说到要实现这种网络逻辑就必须有一个大网段，各个节点的网段都是这个大网段的子网，这里就是这个逻辑；而10.244.0.0/16就是flannel提供的CIDR格式的&quot;大网段&quot;网络地址，而各个节点的cni0（如上文中的10.244.1.0/255.255.255.0）的网段都是这个B类网的一个子网；而calico使用192.168.0.0/16作为&quot;大网段&quot;地址的;
@@ -661,7 +756,7 @@
               }
             }
     备注：
-        这里说明一下为什么flannel使用10.244.0.0/16作为Pod网络，因为按照子网掩码是24划分，如下集群就可以支持255节点，如果这里假设使用&quot;10.0.0.0/8&quot;作为Pod网络还是按照24位掩码划分就可以支持6w多节点，但这仅仅只是理论上的，毕竟当每个节点只有100个pod，网络带宽也会很拥堵的.
+        这里说明一下为什么flannel使用10.244.0.0/16作为Pod网络，因为按照子网掩码是24划分，如下集群就可以支持255节点，如果这里假设使用&quot;10.0.0.0/8&quot;作为Pod网络还是按照24位掩码划分就可以支持6w多节点，但这仅仅只是理论上的，毕竟当每个节点只运行100个pod时网络带宽也会很拥堵的；
             1.10.244.0.0/16---&gt;
                 master: 10.244.0.0./24
                 node01: 10.244.1.0/24
@@ -673,49 +768,9 @@
                 ...
                 10.255.255.0/24
                 可以支持6万多个节点
-
-4.k8s集群使用的flannel作为网络插件时网络带宽说明
-    Flannel最好部署在千兆网络下，不要部署在万兆或者百兆网络中；
-    flannel之前测试使用百兆网络时集群会出现各种莫名其妙的问题!
-    flannel在万兆网络下的性能太差，原因是：
-        1.CPU运算受制于网络中断处理单核运算能力等因素，flannel万兆能跑到2G就到顶了；除非买特定网卡搞定UDP Offload，那么flannel还是可以跑在万兆网络的，否则就有性能瓶颈；
-        2.这就是为何机器计算要买显卡而不是靠CPU一样的道理，而且UDP Offload最好是物理机，否则还要搞定VMware或Openstack的offload的穿透；
-</code></pre><h3 id="2-Flannel的三种Backend详解"><a href="#2-Flannel的三种Backend详解" class="headerlink" title="2.Flannel的三种Backend详解"></a>2.Flannel的三种Backend详解</h3><p><a href="https://sdn.feisky.xyz/rong-qi-wang-luo/index/index/index-1" target="_blank" rel="noopener">后端和各自协议参考文章</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/VXLAN报文头部.png" alt="VXLAN报文头部"><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/host-gw模式图解和抓包分析.png" alt="host-gw模式图解和抓包分析"></p>
-<pre><code>1.Flannel的backend
-    1.前面说过Flannel实质上是一种覆盖网络overlay（叠加网络）解决方案，也就是将TCP数据包装在另一种网络包里面进行路由转发和通信，它支持UDP、VxLAN、host-gw、AWS VPC、GCE和Ali Vpc路由等数据转发方式；
-    2.而由于flannel是一个应用程序，它的守护进程（flannled）可以管理、修改跨节点的flannel.1接口之间的报文是通过哪种协议进行封装转发的，这种封装方式称为flannel的Backend（后端）；而Flannel的Backend有下面几种类型，用的最多的是前三种；
-
-2.1.Vxlan：
-    Vxlan可以理解为是一个二层协议隧道，因为是flannel的默认模式，不过vxlan也有两种模式：
-    1.vxlan：
-        第一种是vxlan叠加网络模式，利用内核级别的VXLAN来封装host之间传送的包;
-    2.Directrouting：
-        Directrouting是vxlan的一种特殊属性；虽然vxlan是一种隧道报文方式，但是它可以降级称为host-gw方式，也就是说vxlan可以直接像host-gw那样在二层物理直接通信，条件是：
-            如果所有宿主机节点都在同一个物理网络中（不跨路由器）就工作为host-gw模式，如果不在同一个物理网络中（不跨路由器）就工作为vxlan模式；
-        我们可以在部署flannel模式为vxlan时将Directrouting（直接路由）属性打开，有助于性能提升；
-    Vxlan的传输效率低的问题：
-        如上图Vxlan封装二层报文的格式，是虽然是flannel的默认、常用模式，但由于需要额外的封包和拆包，它的MTU是小于默认的1500；这也是很多人认为Flannel网络传输效率相对低的原因；
-2.2.UDP：
-    UDP是指四层UDP协议隧道，是所有模式中性能最差的；设计出UDP是有原因的：
-        因为在flannel设计最初时有些发行版的linux内核还比较老不支持VxALN，为了能够兼容这些较老系统，flannel设计出UDP这种代替Vxlan的方案；早期很多人认为flannel性能很差就是因为当时UDP的性能差决定的，而如今的VXLAN性能其实并不差，所以在生产环境中是不会使用UDP模式的.
-2.3.host-gw：
-    1.flannel不仅提供基于封装类型的技术vxlan，也提供基于路由技术的互联技术host-gw模式，host-gw是host-gateway的意思，是将主机作为网关，基于路由技术完成纯三层的ip转发；
-    2.host-gw直接路由的逻辑是：把node节点上的每个Pod容器通过物理网桥直接接入到物理网络中，把node节点的网络接口当做pod的网关使用，这样相当于是所有Pod在物理网络（同一个网段）中直接通信，这种不需要解封包的方式在三种模式中性能是最好的，但是有局限性：
-        1.因为通过物理网桥直接接入到物理网络中相当于是在物理网络中直接通信，就意味着都是使用MAC地址通信，那么所有宿主机节点IP都必须在同一个物理网络中不能跨路由器!这样的话网络设备间的距离就受限了、相应的数量、范围也就受限了!所以host-gw模式仅适用于二层直接可达的网络；
-        2.host-gw模式虽然流量几乎无损耗，但是需要维护n(n-1)/2条路由
-    3.如上图示，可以解释为什么host-gw要求主机网络二层直接互联？
-        从上面的抓包结果可以看出host-gw在传输层走的是tcp，然后在网络层的源IP和目的IP均是容器的IP，也就是虚拟IP，这就决定了二层互联，因为只有交换机是不关注源IP和目的IP；假如两台主机在两个vlan中，二层不通，三层通，那么就需要路由器，而路由器是无法识别容器的这些ip，当然也可以配置路由规则，但是显然没有这么做的。
-2.4.aws-vpc：
-    使用 Amazon VPC route table 创建路由，适用于AWS上运行的容器
-2.5.gce：
-    使用Google Compute Engine Network创建路由，所有instance需要开启IP forwarding，适用于GCE上运行的容器
-2.6.ali-vpc：
-    使用阿里云VPC route table创建路由，适用于阿里云上运行的容器
-使用场景说明：
-    所有节点都在同一个网段，并且二层网络可能通信，可以考虑选择Host-gw模式。反之节点之间不能通过二层网络通信，可能在不同vlan中，可以考虑选择Vxlan模式，也可以考虑使用 Vxlan Directrouting 模式(默认是false)
-</code></pre><h3 id="3-部署flannel"><a href="#3-部署flannel" class="headerlink" title="3.部署flannel"></a>3.部署flannel</h3><h4 id="3-1-为Docker主机部署Flannel"><a href="#3-1-为Docker主机部署Flannel" class="headerlink" title="3.1.为Docker主机部署Flannel"></a>3.1.为Docker主机部署Flannel</h4><pre><code>之前我们说过由于docker官方并没有提供多主机的容器通信方案，在没k8s之间我们使用也是使用flannel或者calico来解决docker的跨主机间容器通信问题的，和在k8s上不同的是k8s有etcd集群，而docker集群需要额外部署etcd来保存集群中每个节点的网络信息；参考案例:
+</code></pre><h3 id="4-部署flannel"><a href="#4-部署flannel" class="headerlink" title="4.部署flannel"></a>4.部署flannel</h3><h4 id="4-1-为Docker主机部署Flannel"><a href="#4-1-为Docker主机部署Flannel" class="headerlink" title="4.1.为Docker主机部署Flannel"></a>4.1.为Docker主机部署Flannel</h4><pre><code>之前我们说过由于docker官方并没有提供多主机的容器通信方案，在没k8s之间我们使用也是使用flannel或者calico来解决docker的跨主机间容器通信问题的，和在k8s上不同的是k8s有etcd集群，而docker集群需要额外部署etcd来保存集群中每个节点的网络信息；参考案例:
     https://blog.csdn.net/mnasd/article/details/83059752
-</code></pre><h4 id="3-2-为二进制部署的k8s集群部署Flannel网络插件"><a href="#3-2-为二进制部署的k8s集群部署Flannel网络插件" class="headerlink" title="3.2.为二进制部署的k8s集群部署Flannel网络插件"></a>3.2.为二进制部署的k8s集群部署Flannel网络插件</h4><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md" target="_blank" rel="noopener">flannel-kubernetes集成</a><br><a href="https://github.com/containernetworking/plugins/tree/master/plugins/meta/flannel" target="_blank" rel="noopener">flannel-cni插件</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/图解kube-flannel.yml清单内容.png" alt="图解kube-flannel.yml清单内容"></p>
+</code></pre><h4 id="4-2-为二进制部署的k8s集群部署Flannel网络插件"><a href="#4-2-为二进制部署的k8s集群部署Flannel网络插件" class="headerlink" title="4.2.为二进制部署的k8s集群部署Flannel网络插件"></a>4.2.为二进制部署的k8s集群部署Flannel网络插件</h4><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md" target="_blank" rel="noopener">flannel-kubernetes集成</a><br><a href="https://github.com/containernetworking/plugins/tree/master/plugins/meta/flannel" target="_blank" rel="noopener">flannel-cni插件</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/图解kube-flannel.yml清单内容.png" alt="图解kube-flannel.yml清单内容"></p>
 <pre><code>因为部署部署k8s集群的方式有很多，比如kubeadm、kubease（ansible部署）、手动二进制部署，k8s集群部署方式不同flannel的部署也不相同，而主流的ansible和二进制部署实际上是一样的，这里就简单介绍kubeadm和详细说明二进制部署的k8s如何启用flannel插件；
 
 1.kubeadm部署flannel说明
@@ -840,7 +895,7 @@
             在第二步ping的同时，我们可以在这个pod所在节点的物理网卡和flannel.1上进行抓包分析，抓包结果如下图示，从抓包结果可以看出：
                 数据报文是OTV（Overlay Transport Virtualization）报文，所以它是overlay网络，而且数据报文的内存是Pod-IP（10.244.3.64和10.244.2.51）之间的通信，外层是物理节点的IP通信（10.10.0.29和10.10.0.16）；
 </code></pre><p><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/抓包结果.png" alt="抓包结果"></p>
-<h3 id="4-Flannel网络故障问题"><a href="#4-Flannel网络故障问题" class="headerlink" title="4.Flannel网络故障问题"></a>4.Flannel网络故障问题</h3><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/troubleshooting.md" target="_blank" rel="noopener">flanne网络问题可参考官方issues</a></p>
+<h3 id="5-Flannel网络故障问题"><a href="#5-Flannel网络故障问题" class="headerlink" title="5.Flannel网络故障问题"></a>5.Flannel网络故障问题</h3><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/troubleshooting.md" target="_blank" rel="noopener">flanne网络问题可参考官方issues</a></p>
 <pre><code>Flannel部署及使用时的排错帮助：
     https://github.com/coreos/flannel/blob/master/Documentation/troubleshooting.md
     官方列出了flannel常见的报错信息，可以参考此文章
@@ -977,8 +1032,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/03/Kubernetes-Calico部署/" rel="next" title="Kubernetes-Calico部署">
-                <i class="fa fa-chevron-left"></i> Kubernetes-Calico部署
+              <a href="/2019/05/16/Kubernetes-部署Redis集群/" rel="next" title="Kubernetes-部署Redis集群">
+                <i class="fa fa-chevron-left"></i> Kubernetes-部署Redis集群
               </a>
             
           </div>
@@ -987,8 +1042,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/03/Ceph-RBD/" rel="prev" title="Ceph-RBD">
-                Ceph-RBD <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/03/Kubernetes-Calico部署/" rel="prev" title="Kubernetes-Calico部署">
+                Kubernetes-Calico部署 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1335,7 +1390,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s网络相关文章："><span class="nav-number">1.</span> <span class="nav-text">k8s网络相关文章：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Flannel网络插件详解"><span class="nav-number">2.</span> <span class="nav-text">1.Flannel网络插件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Flannel的三种Backend详解"><span class="nav-number">3.</span> <span class="nav-text">2.Flannel的三种Backend详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-部署flannel"><span class="nav-number">4.</span> <span class="nav-text">3.部署flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-为Docker主机部署Flannel"><span class="nav-number">4.1.</span> <span class="nav-text">3.1.为Docker主机部署Flannel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-为二进制部署的k8s集群部署Flannel网络插件"><span class="nav-number">4.2.</span> <span class="nav-text">3.2.为二进制部署的k8s集群部署Flannel网络插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Flannel网络故障问题"><span class="nav-number">5.</span> <span class="nav-text">4.Flannel网络故障问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s网络相关文章："><span class="nav-number">1.</span> <span class="nav-text">k8s网络相关文章：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Flannel网络插件详解"><span class="nav-number">2.</span> <span class="nav-text">1.Flannel网络插件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Flannel的三种Backend详解"><span class="nav-number">3.</span> <span class="nav-text">2.Flannel的三种Backend详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Flannel为节点子网分配Pod-IP地址的逻辑"><span class="nav-number">4.</span> <span class="nav-text">3.### 3.Flannel为节点子网分配Pod IP地址的逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-部署flannel"><span class="nav-number">5.</span> <span class="nav-text">4.部署flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-为Docker主机部署Flannel"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.为Docker主机部署Flannel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-为二进制部署的k8s集群部署Flannel网络插件"><span class="nav-number">5.2.</span> <span class="nav-text">4.2.为二进制部署的k8s集群部署Flannel网络插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Flannel网络故障问题"><span class="nav-number">6.</span> <span class="nav-text">5.Flannel网络故障问题</span></a></li></ol></div>
             
 
           </div>
@@ -1645,7 +1700,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">28:13</span>
+    <span title="站点阅读时长">28:17</span>
   
 </div>
 
