@@ -150,7 +150,7 @@
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/flannel-cni与基础CNI插件的交互.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/图解kube-flannel.yml清单内容.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Flannel网络插件详解/抓包结果.png">
-<meta property="og:updated_time" content="2020-10-24T16:28:51.628Z">
+<meta property="og:updated_time" content="2020-10-25T04:19:24.530Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes-Flannel网络插件详解">
 <meta name="twitter:description" content="更新于：2020.04 更新了之前对flanneld的错误理解">
@@ -639,7 +639,7 @@
     使用阿里云VPC route table创建路由，适用于阿里云上运行的容器
 使用场景说明：
     所有节点都在同一个网段，并且二层网络可能通信，可以考虑选择Host-gw模式。反之节点之间不能通过二层网络通信，可能在不同vlan中，可以考虑选择Vxlan模式，也可以考虑使用 Vxlan Directrouting 模式(默认是false)
-</code></pre><h3 id="3-3-Flannel为节点子网分配Pod-IP地址的逻辑"><a href="#3-3-Flannel为节点子网分配Pod-IP地址的逻辑" class="headerlink" title="3.### 3.Flannel为节点子网分配Pod IP地址的逻辑"></a>3.### 3.Flannel为节点子网分配Pod IP地址的逻辑</h3><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md" target="_blank" rel="noopener">flannel kubernetes 集成</a><br><a href="https://github.com/containernetworking/plugins/tree/master/plugins/meta/flannel" target="_blank" rel="noopener">flannel cni 插件</a><br><a href="https://github.com/containernetworking/plugins" target="_blank" rel="noopener">更多 cni 插件</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/flannel-cni与基础CNI插件的交互.png" alt="flannel-cni与基础CNI插件的交互"></p>
+</code></pre><h3 id="3-Flannel为节点子网分配Pod-IP地址的逻辑"><a href="#3-Flannel为节点子网分配Pod-IP地址的逻辑" class="headerlink" title="3.Flannel为节点子网分配Pod IP地址的逻辑"></a>3.Flannel为节点子网分配Pod IP地址的逻辑</h3><p><a href="https://github.com/coreos/flannel/blob/master/Documentation/kubernetes.md" target="_blank" rel="noopener">flannel kubernetes 集成</a><br><a href="https://github.com/containernetworking/plugins/tree/master/plugins/meta/flannel" target="_blank" rel="noopener">flannel cni 插件</a><br><a href="https://github.com/containernetworking/plugins" target="_blank" rel="noopener">更多 cni 插件</a><br><img src="/2019/08/03/Kubernetes-Flannel网络插件详解/flannel-cni与基础CNI插件的交互.png" alt="flannel-cni与基础CNI插件的交互"></p>
 <pre><code>1.CRI和CNI
     1.CRI:
         CRI（容器运行时接口）是一个插件接口，允许kubelet使用不同的containe rruntimes;各种container runtimes都实现了CRI API，这使用户可以在K8S安装中使用他们想要的container runtimes;
@@ -806,16 +806,17 @@
                 }
 
 2.ansible或二进制部署的k8s集群启用flannel插件
-    1.先在k8s中启用CNI网络插件接口
-        1.在前一章说过k8s启用CNI网络插件接口是需要两个目录的，一个是网络插件的配置文件路径，一个是网络插件的二进制程序文件路径，这一步就是将所有的网络插件二进制程序文件放到k8s指定的目录中去，它们对应的配置文件路径这里不需要创建，因为在下文的kube-flannel.yml清单中的init容器中指定好了；
-        2.CNI插件下载地址：https://github.com/containernetworking/plugins/releases
-            ~]# 上传CNI插件到k8s的所有node节点上；
-            ~]# mkdir -p /opt/cni/bin   #创建CNI默认加载插件的程序文件的路径
+    1.下载基础cni插件
+        1.如上面所说的由于Flannel会用到bridge、flannel、host-local、loopback、portmap等基础cni插件plugins来配置Pod-IP网络和IP地址；因此我们需要提前将这些cni插件程序复制到CNI的二进制程序文件目录/opt/cni/bin/中去，方便flannel去调用；
+        2.去CNI项目下载最新的CNI插件即可：
+            https://github.com/containernetworking/plugins/releases
+            ~]# 上传CNI插件到k8s的所有node节点上
+            ~]# mkdir -p /opt/cni/bin #创建CNI默认的cni插件的二进制程序文件路径
             ~]# tar xf cni-plugins-amd64-v0.7.4.tgz -C /opt/cni/bin/
-                #将flannel的二进制程序文件放到此默认路径
+                #展开到次路径下
             ~]# ls /opt/cni/bin/
                 bridge  dhcp  flannel  host-device  host-local  ipvlan  loopback  macvlan  portmap  ptp  sample  tuning  vlan
-                #确保这些二进制程序文件都生成了，后面安装flannel或者caclio时，会自动在此目录下查找对应网络插件的可执行文件，用于容器IP地址的分配；
+                注：如果只是使用flannel网络插件，也可以只把flannel用到的基础插件bridge、flannel、host-local、loopback、portmap复制到次路径中;
     2.安装flannel
         ~]# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
         清单说明：
@@ -1390,7 +1391,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s网络相关文章："><span class="nav-number">1.</span> <span class="nav-text">k8s网络相关文章：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Flannel网络插件详解"><span class="nav-number">2.</span> <span class="nav-text">1.Flannel网络插件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Flannel的三种Backend详解"><span class="nav-number">3.</span> <span class="nav-text">2.Flannel的三种Backend详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Flannel为节点子网分配Pod-IP地址的逻辑"><span class="nav-number">4.</span> <span class="nav-text">3.### 3.Flannel为节点子网分配Pod IP地址的逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-部署flannel"><span class="nav-number">5.</span> <span class="nav-text">4.部署flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-为Docker主机部署Flannel"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.为Docker主机部署Flannel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-为二进制部署的k8s集群部署Flannel网络插件"><span class="nav-number">5.2.</span> <span class="nav-text">4.2.为二进制部署的k8s集群部署Flannel网络插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Flannel网络故障问题"><span class="nav-number">6.</span> <span class="nav-text">5.Flannel网络故障问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s网络相关文章："><span class="nav-number">1.</span> <span class="nav-text">k8s网络相关文章：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Flannel网络插件详解"><span class="nav-number">2.</span> <span class="nav-text">1.Flannel网络插件详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Flannel的三种Backend详解"><span class="nav-number">3.</span> <span class="nav-text">2.Flannel的三种Backend详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Flannel为节点子网分配Pod-IP地址的逻辑"><span class="nav-number">4.</span> <span class="nav-text">3.Flannel为节点子网分配Pod IP地址的逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-部署flannel"><span class="nav-number">5.</span> <span class="nav-text">4.部署flannel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-为Docker主机部署Flannel"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.为Docker主机部署Flannel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-为二进制部署的k8s集群部署Flannel网络插件"><span class="nav-number">5.2.</span> <span class="nav-text">4.2.为二进制部署的k8s集群部署Flannel网络插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Flannel网络故障问题"><span class="nav-number">6.</span> <span class="nav-text">5.Flannel网络故障问题</span></a></li></ol></div>
             
 
           </div>
