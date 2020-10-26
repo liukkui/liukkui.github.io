@@ -136,25 +136,28 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="私密文章，需要输入密码.">
-<meta name="keywords" content="MySql">
+  <meta name="description" content="K8S存储卷参考 在说明k8s的存储卷之前，需要说明的是虽然k8s上的volumes和docker中的volumes都是为了保存数据，但还是有些区别的：     1.docker上因为是在单机上运行容器的，删除容器只要加载本地之前挂载的卷就可以了。     2.在k8s集群上，如果删除一个Pod,则这个pod的卷数据会保存在之前的这个node节点上了，而scheduler的调度是随机的，有可能不会">
+<meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浅谈mysql优化">
-<meta property="og:url" content="https://www.liukui.tech/2018/03/22/浅谈mysql优化/index.html">
+<meta property="og:title" content="Kubernetes-Volumes存储卷">
+<meta property="og:url" content="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="私密文章，需要输入密码.">
+<meta property="og:description" content="K8S存储卷参考 在说明k8s的存储卷之前，需要说明的是虽然k8s上的volumes和docker中的volumes都是为了保存数据，但还是有些区别的：     1.docker上因为是在单机上运行容器的，删除容器只要加载本地之前挂载的卷就可以了。     2.在k8s集群上，如果删除一个Pod,则这个pod的卷数据会保存在之前的这个node节点上了，而scheduler的调度是随机的，有可能不会">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-11T07:45:03.485Z">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/k8s支持的存储卷类型.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/SC.png">
+<meta property="og:updated_time" content="2020-10-26T15:38:08.827Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="浅谈mysql优化">
-<meta name="twitter:description" content="私密文章，需要输入密码.">
+<meta name="twitter:title" content="Kubernetes-Volumes存储卷">
+<meta name="twitter:description" content="K8S存储卷参考 在说明k8s的存储卷之前，需要说明的是虽然k8s上的volumes和docker中的volumes都是为了保存数据，但还是有些区别的：     1.docker上因为是在单机上运行容器的，删除容器只要加载本地之前挂载的卷就可以了。     2.在k8s集群上，如果删除一个Pod,则这个pod的卷数据会保存在之前的这个node节点上了，而scheduler的调度是随机的，有可能不会">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/k8s支持的存储卷类型.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/03/22/浅谈mysql优化/">
+  <link rel="canonical" href="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/">
 
 
 
@@ -164,7 +167,7 @@
   };
 </script>
 
-  <title>浅谈mysql优化 | Coool's Blog</title>
+  <title>Kubernetes-Volumes存储卷 | Coool's Blog</title>
   
 
 
@@ -305,7 +308,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">31</span></a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
 
   </li>
         
@@ -324,7 +327,7 @@
       
     
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">37</span></a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">36</span></a>
 
   </li>
         
@@ -343,7 +346,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">77</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">75</span></a>
 
   </li>
 
@@ -430,7 +433,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/03/22/浅谈mysql优化/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/08/03/Kubernetes-Volumes存储卷/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -447,7 +450,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">浅谈mysql优化
+          <h1 class="post-title" itemprop="name headline">Kubernetes-Volumes存储卷
               
             
           </h1>
@@ -455,10 +458,6 @@
 
         <div class="post-meta">
                   
-            <i class="fa fa-thumb-tack"></i>
-            <font color="808080">置顶</font>
-            <span class="post-meta-divider">|</span>
-          
           <span class="post-time">
 
             
@@ -477,7 +476,7 @@
                 
               
 
-              <time title="创建时间：2018-03-22 08:00:00" itemprop="dateCreated datePublished" datetime="2018-03-22T08:00:00+08:00">2018-03-22</time>
+              <time title="创建时间：2019-08-03 08:00:00" itemprop="dateCreated datePublished" datetime="2019-08-03T08:00:00+08:00">2019-08-03</time>
             
 
             
@@ -495,14 +494,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/k8s/" itemprop="url" rel="index"><span itemprop="name">k8s</span></a></span>
 
                 
                 
@@ -517,8 +509,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/03/22/浅谈mysql优化/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/03/22/浅谈mysql优化/" itemprop="commentCount"></span>
+                <a href="/2019/08/03/Kubernetes-Volumes存储卷/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/08/03/Kubernetes-Volumes存储卷/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -540,7 +532,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">32k</span>
+                <span title="本文字数">23k</span>
               
 
               
@@ -554,7 +546,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">29 分钟</span>
+                <span title="阅读时长">21 分钟</span>
               
             </div>
           
@@ -574,7 +566,546 @@
       
 
       
-        <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script> <div id="hbe-security"> <div class="input-container"> <input type="password" class="form-control" id="pass" placeholder=" 输入密码,PC:Enter查看,Phone:输入法换行查看. "> <label for="pass"> 输入密码,PC:Enter查看,Phone:输入法换行查看. </label> <div class="bottom-line"></div> </div> </div> <div id="encrypt-blog" style="display:none"> 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 </div><script src="/lib/crypto-js.js"></script><script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">
+        <h3 id="K8S存储卷"><a href="#K8S存储卷" class="headerlink" title="K8S存储卷"></a>K8S存储卷</h3><p><a href="https://mp.weixin.qq.com/s/7rGrXhlc4-9jgSoVHqcs4A" target="_blank" rel="noopener">参考</a><br><img src="/2019/08/03/Kubernetes-Volumes存储卷/k8s支持的存储卷类型.png" alt="k8s支持的存储卷类型"></p>
+<pre><code>在说明k8s的存储卷之前，需要说明的是虽然k8s上的volumes和docker中的volumes都是为了保存数据，但还是有些区别的：
+    1.docker上因为是在单机上运行容器的，删除容器只要加载本地之前挂载的卷就可以了。
+    2.在k8s集群上，如果删除一个Pod,则这个pod的卷数据会保存在之前的这个node节点上了，而scheduler的调度是随机的，有可能不会运行在之前的node上，那么之前保存的数据是无意义，不能利用的.
+    3.k8s是分布式集群，如果所有节点都挂载网络文件系统，那么数据就可以跨节点使用了;
+    4.通常作为数据卷的存储提供方数据冗余实现方式有：
+        1.存储设备做镜像，主备模式
+        2.分布式存储
+            分布式存储数据冗余方式不会是对存储节点设备做备份实现，而是在软件数据管理级别上对存入的每个数据对象做多个副本实现数据冗余,然后根据调度规则和冗余级别在存储集群的多个节点上将一份原始数据存储多份,而且分布式存储是有状态应用、支持向外扩展;
+1.CSI和存储卷挂载到Pod中的逻辑
+    1.CSI：Container Storage interface,容器存储接口;
+    2.存储卷挂载到Pod中的逻辑：
+        1.首先节点挂载多种外部存储系统是靠内核中的文件驱动实现的;而节点上的Pod是共享节点内核的;
+        2.其次每个Pod中都有基础容器pause,同一个pod中共享pause容器的UTS(主机名),Network(网络名称空间),IPC(进程间通信，网络协议栈);
+        3.所以Pod如果想使用外部存储卷是需要先通过volumes定义pause中定义卷,然后Pod再通过volumeMounts复制并挂载pause定义的卷;
+    3.
+2.定义存储卷和挂载存储卷
+    1.定义存储卷可以使用命令kubectl explain pod.spec.volumes查看
+        也就是要用存储卷需要现在pod.spec字段定义挂载卷类型和目录等信息
+    2.挂载存储卷可以使用命令kubectl explain pod.spec.containers.volumeMounts
+        也就是需要在pod.spec.containers中挂载上去才能用
+3.K8S Volumes的种类:如上图示
+    K8S内置的存储卷类型可以使用kubectl explain pod.spec.volumes命令查看：
+    1.临时存储：emptyDir
+    2.本地存储：hostPath和local
+    3.网络存储：nfs(NAS类型)、iscsi fc(SAN类型)
+    4.持久卷申请存储：PV和PVC
+    5.特殊存储：ConfigMap和Secret
+    6.分布式存储(也属于网络存储的一种)：Ceph(RBD、cephfs)和glusterfs
+    7.云存储
+</code></pre><h3 id="1-临时存储：emptyDir"><a href="#1-临时存储：emptyDir" class="headerlink" title="1.临时存储：emptyDir"></a>1.临时存储：emptyDir</h3><pre><code>1.临时存储：
+    emptyDir是最基础的Volume类型,它是节点主机上创建的临时目录,特点是：
+        1.为容器提供缓存存储空间(支持在节点的内存中切分一部分空间作为缓存来用)
+        2.为没有持久存储必要的同一Pod中的两个容器共享数据
+        3.临时存储随着Pod的删除自动删除
+    Pod删除时emptyDir也就没有了;根据这个特性，emptyDir特别适合Pod中的容器需要临时共享存储空间的场景;
+2.详细用法说明：
+    kubectl explain pod.spec.volumes.emptyDir
+        medium      #默认是disk磁盘，还可以是Memory内存
+        sizeLimit   #当medium是memory时，则必须进行限制
+3.简单示例：
+    volumes:
+    - name: test
+    #  emptyDir: {}  #如果medium和sizelimit两个字段都不定义，则为磁盘的任意空间
+      emptyDir:
+        medium: Memeory  #使用内存当空间
+        sizeLimit: 200Mi #限制使用的内存空间为200M
+</code></pre><h3 id="2-本地存储：hostPath和local-更适合关系型数据库"><a href="#2-本地存储：hostPath和local-更适合关系型数据库" class="headerlink" title="2.本地存储：hostPath和local(更适合关系型数据库)"></a>2.本地存储：hostPath和local(更适合关系型数据库)</h3><pre><code>hostPath、local、emptyDir都属于本地存储,它们的特点是:数据保存在集群的特定节点上，并且不能随着应用飘逸，节点宕机时数据即不再可用;但是如果将数据库,特别是关系型数据库mysql部署到K8S上时,出于性能考虑我们会使用物理节点的local本地卷作为mysql的存储卷使用,其他的如网络分布式存储中的Ceph的RBD性能用在是数据库上也只是勉强可以;
+1.hostPath类型  #节点级的目录
+    ~]# vim myapp-hostpath-volumes.yaml 
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: myapp
+          namespace: volumes-test
+        spec:
+          containers:
+          - name: myapp
+            image: ikubernetes/myapp:v1
+            volumeMounts:
+            - name: website
+              mountPath: /usr/share/nginx/html  #2.然后挂载到Pod中
+              readOnly: true
+          volumes:
+          - name: website
+            hostPath:
+              path: /volumes/myapp         #1.先定义本地存储卷
+              type: DirectoryOrCreate      
+2：local类型
+    loca是k8s1.10版本之后的类型，且是节点级的设备或者节点级目录;
+</code></pre><h3 id="3-网络存储：NFS"><a href="#3-网络存储：NFS" class="headerlink" title="3.网络存储：NFS"></a>3.网络存储：NFS</h3><pre><code>1.详细用法说明：
+    ~]# kubectl explain pods.spec.volumes.nfs
+        path：                #nfs的共享目录：如/vols/v1
+        readOnly：true|false  #是否只读，默认读写
+        server:               #nfs服务IP或者主机名
+    缺点：
+        1.需要事先知道nfs服务器的地址
+        2.nfs导出的存储空间目录
+2.NFS挂载示例：
+    先准备nfs的共享目录:在10.10.0.29上测试
+        ~]# vim /etc/exports
+            /vols/v1 10.10.0.0/8(rw,no_root_squash)
+    ~]# vim redis-nfs-volumes.yaml 
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: redis
+          namespace: volumes-test
+        spec:
+          nodeName: node03
+          containers:
+          - name: redis
+            image: redis:alpine
+            ports:
+            - name: redis
+              containerPort: 6379
+            volumeMounts:
+            - name: redisdata
+              mountPath: /data   #将NFS的/vols/v1目录挂载到/data
+              readOnly: false
+          volumes:
+          - name: redisdata
+            nfs:
+              path: /vols/v1     #nfs导出的共享目录
+              server: 10.10.0.29 #nfs服务器的地址
+</code></pre><h3 id="4-持久卷申请存储：PV、PVC以及StorageClass-重点存储卷"><a href="#4-持久卷申请存储：PV、PVC以及StorageClass-重点存储卷" class="headerlink" title="4.持久卷申请存储：PV、PVC以及StorageClass(重点存储卷)"></a>4.持久卷申请存储：PV、PVC以及StorageClass(重点存储卷)</h3><pre><code>1.K8S为什么要设计出PV和PVC?
+    1.比如如果我们想把外部的NFS或者Ceph的RBD当做存储卷使用，我们直接先创建好nfs的共享目录或者RBD镜像然后再挂载也很简单,那为什么还要使用PV和PVC呢？其实K8S设计PV和PVC的原因在于:
+        1.第一个原因是：Pod通常是由应用的开发人员维护，而Volume则通常是由存储系统的管理员维护,开发或运维要想获得这些外部存储提供的共享目录，镜像文件名等信息就必须去问管理员,这样会将应用开发人员和系统管理员的职责耦合在一起,在小公司还可以接受,大公司中出于效率和安全性的考虑,就必须解决这个问题;
+        2.第二个原因在于：从生产者消费者消费者模型中站在消费者的角度来看,应用层用户在消费存储服务的时候往往不希望、也不需要对底层存储细节知道的太多,它们只需要在使用存储时由K8S提供就行,自己没必要去考虑底层是以何种方式提供存储服务的;
+2.而K8S的解决方案就是PV(PersistentVolume)和PVC(PersistentVolumeClaim)：
+    1.PV:
+        K8S把外部存储系统的所提供的存储能力抽象成K8S上的标准资源PV,PersistentVolume持久化存储卷;在PV中定义了存储服务所有相关的信息,也就是具体使用的存储类型和卷参数;
+    2.PVC:
+        PVC译为存储声明,是在K8s中一种抽象的存储卷类型,代表了某个具体类型存储的数据卷表达;其设计意图是：存储与应用编排分离，将存储细节抽象出来并实现存储的编排（存储卷）;这样K8s中存储卷对象独立于应用编排而单独存在，在编排层面使应用和存储解耦;
+    3.那么PV和PVC是如何解决上面所说的生产者消费者模型的？
+        简单来说PV是生产者关注的,PVC是消费者关注的;因为：
+        1.首先由于PV中定义的是具体存储类型、存储挂载使用的详细参数;这就是上面所说的底层存储细节,PV是由管理员提供的,相当于生产者,消费者不需要关心PV是如何产生的;
+        2.PVC关注的对象是消费者用户,作为消费者只需要在PVC中写明自己需要几个存储空间、每个存储空间的大小、使用哪种类型的存储等信息后,PVC就会自动关联到K8S集群中符合消费者需求定义的PV资源;
+    所以对于消费者来说,它不需要关系PV与底层存储间的细节,只需要知道如何使用PVC定义自己所需要的存储资源就行了,这就是PV和PVC存在的意义;
+3.PV和PVC的一些属性：
+    1.PV是集群级别资源,不属于任何名称空间,由专门的存储运维人员负责管理;而PVC会关联到Pod上所以属于某个名称空间;
+    2.PV和PVC总是成对出现的、是一一绑定关系,不存在一个PV被多个PVC绑定或者一个PVC绑定多个PV的情况;而且PVC必须与PV绑定后才能被Pod消费;所以在生产者消费者模型中,Pod消费PVC,PVC消费PV，而PV定义了与底层存储的细节属于生产者;
+    3.PV和存储系统之间不是一一对应关系,而是与存储系统中可被单独访问的逻辑单元建立一一对应关系;存储系统中的逻辑单元是指如nfs共享的一个目录、RBD提供的一个image、云存储的一个云盘等;
+4.PV的其他说明
+    1.PV的回收策略
+        PV的回收策略是指:由于Pod产生的数据是存在PV中的,当Pod删除时,PVC也可以删除,为了数据安全与PVC绑定的PV是否也跟着删除？而PV删除有二种策略：
+            1.Delete:
+                是指PVC删除时PV也跟着一起删除,为了数据安全这种策略肯定是不合适的;
+            2.Retain：
+                是指PVC删除时,但PV不删除,那么这个PV上的数据会被保存,但是不能再被其他PVC绑定了;如果想彻底删除数据,安全的操作方式是手动删除PV,然后在手动删除外部存储上逻辑单元中的数据;
+    2.PV的供给方式：
+        PV定义与底层存储系统间的信息,可想而知在大量需要PV的集群中手动创建一个个存储空间不同、访问接口、不同标签的PV对于管理员来说是相当麻烦的,所以PV有静态供给和动态供给两种方式：
+        1.静态供给：
+            先在存储系统上创建好一个个逻辑单元,然后手动创建PV与之建立对应关系;
+        2.动态供给：
+            PV动态供给需要K8S上的另一种资源SC:StorageClass实现,当：
+            1.如果存储系统上需要事先有逻辑存储单元,就可以根据PVC的需求在底层存储上选择符合条件的逻辑存储单元动态的生成PV;
+            2.如果底层存储的逻辑单元不存在,只有存储空间,PVC向SC请求调用存储系统的API存储接口,临时创建需求空间大小的逻辑存储单元,然后在SC内部把此存储单元创建为PV,并与PVC进行binding;
+        两种供给方式比较：
+            1.动态存储卷和静态存储卷最终的效果都是：Pod-&gt;PVC-&gt;PV的使用链路,且对象的具体模板定义都是一致的;动态存储卷和静态存储卷区别是：动态卷是插件自动创建PV，而静态卷是集群管理员手动创建PV
+            2.提供动态存储卷的优势：
+                1.动态卷让K8S实现了PV的自动化生命周期管理,PV的创建、删除都通过Provisioner完成;
+                2.自动化创建PV对象，减少了配置复杂度和系统管理员的工作量;
+                3.动态卷可以实现PVC对存储的需求容量和Provision出来的PV容量一致,实现存储容量规划最优;
+    3.PV的lifecycle状态：
+        provisioning: #PV的动态供给
+        avaiable      #PV未被任何PVC关联
+        bingding      #PV被绑定
+        using         #PV被使用
+        reclaiming    #PV被回收
+5.PVC的其他说明：
+    1.存储系统的多路访问模型：
+        不管是任何存储它的被访问方式有如下几种,在PVC申请时可以根据需求的访问方式选择合适的后端存储：
+        1.单路读写: RW0:ReadWriteOnce      iscsi
+        2.多路读写: RWX:ReadWriteMany
+        3.多路只读: ROX:ReadOnlyMany
+        需要说明的是：PV是与后端存储的逻辑单元做映射的，存储系统是否支持多路读写是需要现在PV中定义,然后PVC中再定义需要的访问方式匹配合适的PV进行绑定,避免出现存储故障;
+    2.PV和PVC的删除保护机制:
+        当PVC和PV被Pod使用时,在K8S的1.10版本之后即使PVC和PV被删除也不会真的被删除;而是只有Pod被删除时PVC和PV才会被允许删除,这就是PVC和PV的删除保护机制;
+6.PV和PVC的详细字段定义说明：
+    ~]# kubectl explain persistentVolume.spec
+        spec:
+          accessModes:[RW0|RWZ|ROX]#定义存储系统的访问模型的字符串列表
+          capacity:                 #定义存储容量
+            storage                 #单位是Ki Mi Gi等等
+          volumeMode: [Fileystem|block]  #使用文件系统或块设备接口的存储
+          persistentVolumeReclaimPolicy:[Delete|Retain]   #定义PV的回收策略
+          storageClassName:         #定义使用哪种存储类
+          mountOptions:             #自定义挂载选项,下面这两项是默认的
+    ~]# kubectl explain pvc.spec
+        accessModes:[RW0|RWZ|ROX]  #访问权限必须要要绑定的PV权限的子集
+        volumeMode:[Fileystem|block] #使用文件系统或块设备接口的存储
+        resources                   #资源请求
+            requests:               #资源需求
+                storage:            #具体的需求存储空间大小
+            limit                   #资源上限
+        storageClassName     #存储类(PVC和PV必须在同一存储类中)
+        selector   #通过特定的标签去选PV,如果不定义则从所有PV中选择合适的PV     
+示例：
+    ~]# vim pv-test.yaml   #定义PV
+        apiVersion: v1
+        kind: PersistentVolume
+        metadata:
+          name: pv-nfs-v1
+          labels:
+            storagefs: nfs   #该PV的标签
+        spec:
+        # accessModes: [&quot;ReadWriteOnce&quot;,&quot;ReadWriteMany&quot;,&quot;ReadOnlyMany&quot;]
+          accessModes:
+          - ReadWriteMany
+          - ReadWriteOnce
+          - ReadOnlyMany
+          capacity:
+            storage: 1Gi                #定义PV能提供多大存储空间
+          volumeMode: Filesystem
+          persistentVolumeReclaimPolicy: Retain #一定要定义PV回收策略为Retain
+          nfs:
+            path: /vols/v2
+            server: 10.10.0.29
+    ~]# vim PVC-test.yaml  #定义PVC
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: redis-pvc            #定义PVC的名称，以便Pod中引用
+          namespace: test-ns
+        spec:
+            selector: #定义关联到哪个PV，不指定则根据需求空间找相近空间大小的PV
+              matchLabels:
+                storagefs: nfs2
+          accessModes:
+          - ReadWriteMany
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 500Mi          #根据PV的存储空间定义PVC有多少空间
+    ~]# vim pod-test-pvc.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: redis
+          namespace: test-ns
+        spec:
+          containers:
+          - name: redis
+            image: redis:alpine
+            ports:
+            - name: redis
+              containerPort: 6379
+            volumeMounts:          #将PVC关联的PV提供的空间给/data目录使用
+            - name: redisdata
+              mountPath: /data
+              readOnly: false
+          volumes:
+          - name: redisdata
+            persistentVolumeClaim:
+              claimName: redis-pvc        #挂载PVC
+</code></pre><h4 id="4-1-存储类SC：StorageClass"><a href="#4-1-存储类SC：StorageClass" class="headerlink" title="4.1.存储类SC：StorageClass"></a>4.1.存储类SC：StorageClass</h4><p><img src="/2019/08/03/Kubernetes-Volumes存储卷/SC.png" alt="SC"></p>
+<pre><code>SC:Storageclass是K8S上的标准资源,它是实现PVC动态创建存储单元PV的基础,SC中定义了如何连接外部存储API管理接口的方式;在使用SC时,PVC只能向同一个SC中的PV请求绑定,不能跨SC;
+1.定义SC的详细字段定义说明
+    ~]# kubectl explain sc
+        apiVersion
+        kind
+        metadata
+        parameters              #对接外部存储时的参数
+        reclaimPolicy           #在此SC中的PV回收策略
+        provisioner             #指明后端存储设备-----必须项
+        volumeBindingMode       #后端存储支持的访问模型(RWX,ROX,RWO)
+        allowVolumeExpansion    #后端存储系统是否支持空间拉伸
+glusterfs类型的SC示例：
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: slow
+    provisioner: kubernetes.io/glusterfs
+    parameters:
+      resturl: &quot;http://127.0.0.1:8081&quot;
+      clusterid: &quot;630372ccdc720a92c681fb928f27b53f&quot;
+      restauthenabled: &quot;true&quot;
+      restuser: &quot;admin&quot;
+      secretNamespace: &quot;default&quot;
+      secretName: &quot;heketi-secret&quot;
+      gidMin: &quot;40000&quot;
+      gidMax: &quot;50000&quot;
+      volumetype: &quot;replicate:3&quot;
+Ceph RBD类型的SC示例：
+    ~]# vim SC-rbd.yaml
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: rbd-dynamic
+          annotations:
+            storageclass.beta.kubernetes.io/is-default-class: &quot;true&quot;
+        provisioner: kubernetes.io/rbd
+        parameters:
+          monitors: 172.30.0.16:6789,172.30.0.17:6789,172.30.0.18:6789
+          adminId: admin        #管理员接入ceph集群使用的账户
+          adminSecretName: ceph-admin-secret
+          adminSecretNamespace: kube-system
+          pool: rbddata         #表示从此存储池中动态创建image
+          userId: k8s           #Pod接入ceph集群使用的账户
+          userSecretName: ceph-k8s-secret
+          userSecretNamespace: default
+          imageFormat: &quot;2&quot;      #指定rbd镜像的版本，默认也为2
+        reclaimPolicy: Retain   #SC的删除策略一定要为retain
+    其中：
+        SC中的注解annotations:is-default-class: &quot;true&quot;是指将此SC设为默认存储类，所有PV都从此SC中创建
+        reclaimPolicy：Retain 
+            默认情况下pvc的回收策略为&quot;Delete&quot;，也就是删除pvc后pv也会删除，pv删除那么也会触发ceph集群中对应的镜像删除，所以在定义存储类的的时候一定要指定创建的pv回收策略为&quot;Retain&quot;;
+</code></pre><h3 id="5-特殊存储：ConfigMap和Secret"><a href="#5-特殊存储：ConfigMap和Secret" class="headerlink" title="5.特殊存储：ConfigMap和Secret"></a>5.特殊存储：ConfigMap和Secret</h3><pre><code>1.ConfigMap和Secret在K8S中的作用？
+    1.我们知道在Docker中应用程序测试环境、生产环境需要使用不同的配置文件时,可以采用两种方式来配置：
+        1.传递环境变量的方式
+            可以在启动docker容器时通过-e或者enterpoint脚本传递不同的环境变量将容器部署在不同的环境下;
+        2.配置文件挂载方式
+            提前准备好不同环境下使用的配置文件,然后通过挂载卷方式将配置文件传递到容器中;也就是在启动docker容器时通过-v|HOSTDIR:VOLUMEDIR将配置文件映射到容器中;但是这种方式的缺点是修改本地路径下的原配置文件后,容器不会自动加载新的配置文件;
+    2.K8S同样遇到这种问题,为了解决修改配置文件或参数值能够使Pod自动重载配置信息,就将配置文件做成了K8S上的标准资源ConfigMap和Secret;它们都是为Pod中的容器提供配置变更,可以理解为是K8S系统上一组控制器控制的Pod配置中心;
+2.ConfigMap和Secret
+    1.ConfigMap和Secret都是为Pod容器提供配置信息;这两种存储卷类型其数据是集群的一些对象信息,并不属于某个节点,使用时将对象数据以卷的形式挂载到节点上供应用使用;它两的区别在于：
+        ConfigMap用来保存非敏感数据，Secret用来保存敏感数据,如密码、证书私钥等
+    2.ConfigMap和Secret是如何将配置传递至Pod中的并且实现自动更新配置信息的？
+        1.首先configMap和secret资源是使用KV键值对存储信息的,而我们可以向Pod传递简单的环境变量或者传递配置文件：
+            1.如果只是向Pod传递简单的环境变量,在定义configMap时指定Key：环境变量名称和Value：该环境变量的值;
+            2.如果是向Pod中传递配置文件,则Key是配置文件名、Value是具体的配置文件中的内容；
+        2.创建好上面两种格式的Configmap后,在创建Pod时,传递给Pod的逻辑是：
+            1.如果configmap中只定义了简单的环境变量,在Pod是通过将configmap中的key映射给Pod内部对应的环境变量,那么key的值Value也就传递给Pod内部对应的环境变量的值完成传递;
+            2.如果configmap定义的是配置文件,在Pod是通过将configmap中的配置文件映射给Pod内的配置文件,那么configmap中的配置文件中的内容也就传递给了Pod内的配置文件;
+        如果想变更配置,只需要修改Configmap中的value值对应的环境变量值或文件内容后,Pod会在一段时间内自动传递新的value值,完成配置更新;
+</code></pre><h4 id="5-1-ConfigMap"><a href="#5-1-ConfigMap" class="headerlink" title="5.1.ConfigMap"></a>5.1.ConfigMap</h4><pre><code>K8S的configMap最适用的场景是非敏感数配置信息;ConfigMap有基于命令和使用yaml清单两种创建方式,虽然命令行更简单,但是在生产环境中一般用来为Pod引入配置文件,所以会通过yaml清单格式保存在我们的资源配置中心,然后基于配置中心组件实现Pod的滚动更新或者金丝雀更新;
+1.两种创建ConfigMap的两种方式
+    1.基于命令行
+        ~]# kubectl create configmap -h  #基于命令也有两种方式
+        --from-literal=key1=value1
+            literal是指K/V键值对,可以使用多个键值对定义多个KV,key不能省略不写
+        --from-file=[key=]source    
+            从文件中读取创建时key可以省略,即文件名当key;
+    2.配置清单(比命令行麻烦，但是更易维护)
+        ~]# kubectl explain configmap
+            data:       #只有data字段，而没有spec字段
+2.Pod加载ConfigMap资源配置信息的方式有env和存储卷两种：
+    1.env:只是简单的从cm中映射变量给Pod
+        ~]# kubectl explain pod.spec.containers.env
+            env             #直接手动给变量
+            - name          #镜像中所能接收的变量名
+              value         #手动给值(一般用valuefrom)
+              valuefrom     #从其他位置引用值
+                configMapKeyRef     #引用一个configMap的键key方式
+                    name            #引用的configmap资源名称
+                    key             #引用的configMap资源中的key名称
+                    optional  #被引用的configMap资源存在就可以,不存在则报错
+                        true|false  #默认是必须存在
+                secretKeyRef  #引用一个Secret资源的键key,用于敏感数据传输
+            envfrom   #从其他地方加载环境变量
+        缺点：
+            如果修改configmap中的环境变量的值，pod是不会更新环境变量的，除非删除重建pod，新的环境变量才会生效.
+    2.存储卷：相当于是把configmap当存储卷挂载到Pod
+        ~]# kubectl explain pod.spec.volumes.confgiMap
+            volumes:
+            - name           #定义存储卷名称以便挂载时使用
+              configMap:
+                name         #configMap资源的名称
+                items        #要引用configmap中的那些键映射为本地的文件
+                - key        #configmap中的键名
+                  mode #映射的文件权限时多少，没定义则使用外部的defaultMode
+                  path  #映射到pod中叫什么文件名(可以和key一样，也可以随意更改)
+                        必须是相对路径，而且是相对于挂载点而言
+                defaultMode  #映射到本地的文件权限(默认是0644读写权限)
+                optional     #引用的configMap资源或者引用的键不存在是否报错
+3.示例：基于命令行创建configmap并通过env方式加载cm的变量给Pod
+    ~]# kubectl create configmap filebeat-cfg -n config-ns --from-literal=redis_host=&quot;filebeat.defalut.svc.cluster.local&quot; --from-literal=log_level=&quot;Info&quot;
+        #先创建名为filebeat-cfg的cm,并设定两个变量key和他的值,我们要把redis_host和log_level这两个key的值赋予下面的filebeat中的两个变量;
+    ~]# vim filebeat-test.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: filebeat
+          namespace: config-ns   #Pod需要和调用的configmap在同一名称空间中
+        spec:
+          containers:
+          - name: filebeat
+            image: ikubernetes/filebeat:5.6.5-alpine
+            env:
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: filebeat-cfg 
+                  key: redis_host   #将cm中第一个key映射给REDIS_HOST
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: filebeat-cfg  
+                  key: log_level       #将cm中第二个key映射给LOG_LEVEL
+        其中：
+            cm中的第一个key:redis_host映射给filebeat中的变量REDIS_HOST;
+            cm中的第二个key:log_level映射给filebeat中的变量LOG_LEVEL;
+4.示例：基于命令行创建configmap并通过挂载存储卷的方式引入cm资源给Pod
+    ~]# kubectl create cm nginx-cfg --from-file=nginx-server1.conf=./server1.conf --from-file=server-zhihui.conf=./server2.conf -n config-ns
+        #从事先准备好的两个nginx配置文件中读取转为configmap资源,然后传递给Pod;
+    ~]# vim nginx.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx
+          namespace: config-ns  #Pod需要和调用的configmap在同一名称空间中
+        spec:
+          containers:
+          - name: nginx
+            image: ikubernetes/myapp:v1
+            volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d     #挂载的目录
+          volumes:
+          - name: config
+            configMap:
+              name: nginx-cfg            
+              items:
+              - key: nginx-server1.conf          #本地文件名
+                path: server1.conf      #映射到pod中的文件名
+              - key: server-zhihui.conf          #本地文件名
+                path: server2.conf      #映射到pod中的文件名
+    既然是把configmap当存储卷使用,那么containers中也会有volumeMounts来实现挂载,volumes中则是将两个配置文件server1.conf和server2.conf传递给Pod,并放在/etc/nginx/conf.d路径下;而且通过手动修改configmap的值,Pod内的文件内容也会自动更新;
+</code></pre><h4 id="5-2-Secret"><a href="#5-2-Secret" class="headerlink" title="5.2.Secret"></a>5.2.Secret</h4><pre><code>1.ConfigMap最适用的场景是非敏感数配置信息;而Secret资源最适用于存储和管理一些敏感数据比如密码、token、密钥等敏感信息;比如：
+    当我们把mysql运行在Pod中时,我们会把root的密码转为Secret资源然后传递给Pod,而不是使用configmap保存root密码的原因是：只要用户有cm所在名称空间的权限就可以查看cm中的详细内容,这是非常不安全的;
+2.Secret的使用逻辑和Configmap没有区别,唯一不同的地方在于Secret的数据是被base64编码后存放的,不过base64并不是真正意义上的加密,可以通过base64进行解码得到原始内容;而在K8S上Secret有存在三种类型：
+    ~]# kubectl create secret -h
+        docker-registry
+        generic
+        tls
+    1.tls
+        tls类型时专用于把ssl的tls中的x509格式的证书和私钥打包到一个secret中,由于这个证书和私钥本身就是base64编码的,在打包到secret中会使用特殊的逻辑进行&quot;打包&quot;;而且它不管原来的证书和私钥文件名是什么,都会通通被在打包成secret时都叫tls.key和tls.crt;
+    2.generic：(Opaque、通用类型)
+        generic类型是非上面说到的tls类型但也属于敏感信息,如redis密码、mysql密码,这种普通的密钥信息;任何非tls类型的敏感信息都归类为generic类型;
+    3.docker-registry
+        在众多的generic类型的信息当中有特殊作用的信息是docker-registry;因为拉取私有镜像仓库的镜像时是需要账号密码认证的,而在K8S中拉取镜像是由kubelet完成的,所以需要kubelet认证到私有镜像仓库上实现自动拉取,所以docker-registry类型的secret就是专用于让kubelet拉取镜像时能够自动加载secret认证到私有仓库上;docker-registry类型的secret可以被Pod通过下面两种方式去调用:
+            1.~]# kubectl explain pod.spec.imagePullSecrets
+                imagePullSecrets &lt;[]Object&gt;
+                1.可以看到imagePullSecrets是一个secret对象列表,一个secret就是一组账号密码,如果有多个secret时,会按照列表中自上而下的顺序使用secret依次进行检索认证登录;
+                2.但是这种调用是在具体的Pod模板中定义的,其他Pod模板也需要拉取镜像时还需要再定义一次,显然是不合理的,所以我们会使用第二种serviceAccountName的方式进行secret的调用;
+            2.~]# kubectl explain pod.spec.serviceAccountName
+                serviceAccountName &lt;string&gt;
+                1.serviceAccount是指K8S的标准资源服务账号,因为由于K8S中的每个Pod都需要某个用户的身份运行其内部的应用程序（uid和gid决定）,同时每个Pod作为客户端都需要认证到外部私有服务时有一个用户名,所以才存在serviceAccount这类资源;
+                2.此处只需要填上我们创建好的包含认证到私有镜像仓库的账号密码的SA的Name即可,它会自动根据serviceAccount内部的secrets字段去调用secret;
+                3.这种调用方式的好处在于每个Pod模板都只需要写上serviceAccount的Name,即使需要修改认证的账号密码信息也只需要修改serviceAccount调用的我们可以使用serviceAccountName的serviceAccount内部调用资源即可;
+            这两种调用方式无论是哪一种都需要用到docker-registry类型的secret,需要管理员先定义出来;
+3.Pod加载Scret资源配置信息的方式通用也有env和存储卷两种：
+    1.通过env环境变量引用
+        ~]# kubectl explain pod.spec.containers.env
+            env:
+            - name                  #Pod镜像中的存在的变量名
+              valueFrom:    #valueFrom有4种引用方式
+                configMapKeyRef   #上面调用configmap资源的方式
+                filedRef
+                resourceFieldRef
+                secretKeyRef:       #表示从secret类型资源引用键,此处用到的
+                  name:             #引用的Secret资源的名称
+                  key               #引用的secret资源中的哪个key
+                  optional:         #secret资源或者引用的key不存在时报错
+                    true|false
+    2.通过存储卷引用Secret资源
+        ~]# kubectl explain pod.spec.volumes.secret
+        volumes:
+        - name:                 #定义存储卷名称以便挂载时使用
+          secret:
+            secretName          #引用的secret资源名称
+              items:            #引用的多个键对象
+              - key             #引用的secret资源中的键名
+                mode:    #文件权限，私密数据建议600权限，不指定则使用外部默认的
+                path:    #映射到pod中叫什么文件名(可以和key一样，也可以随意更改)
+          defaultMode           #引用资源的默认权限，0644
+          optional
+    注意：
+        tls类型的证书和私钥一般要用存储卷方式进行引用，不然value的值太长的;
+4.三种类型创建的基本语法：
+    ~]# kubectl create generic -h      #generic创建语法
+        kubectl create generic NAME [--type=string] [--from-file=[key=]source] [--from-literal=key1-value1] [--dry-run] [options]
+    ~]# kubectl create tls -h           #tls类型语法
+        kubectl create tls NAME --cert=path/to/cert/file --key=path/to/file [--dry-run] [options]
+    ~]# kubectl create docker-registry -h    #docker-registry类型语法
+        kubectl create docker-registry NAME --docker-username=user --docker-password=password --docker-email=email [--docker-server=string] [--from-literal-key1-value1] [--dry-run] [options]
+5.1.generic类型使用env环境变量方式引用secret示例：mysql密码加密传输
+    ~]# kubectl create generic mysql-root-passwd -n test-ns --from-literal=password=root123
+        secret/mysql-root-passwd created
+    ~]# kubectl get secret -n test-ns
+        NAME                TYPE      DATA   AGE
+        mysql-root-passwd   Opaque     1      30s
+        注：Opaque是不透明的、模糊之意,所以generic类型也称为是通用类型的
+    ~]# kubectl get mysql-root-passwd -n test-ns -o yaml #详细信息
+        apiVersion: v1
+        data:
+          password: cm9vdDEyMwo=  #root123被base64编码后的结果
+        kind: Secret
+        metadata:
+          creationTimestamp: &quot;2019-03-02T21:10:30Z&quot;
+          name: mysql-root-passwd
+          namespace: test-ns
+          ...
+        type: Opaque
+        注：通过echo cm9vdDEyMwo=|base64 -d解码就是root123,所以它不是严格的加密
+    ~]# vim mysql-test.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: mysql
+          namespace: test-ns
+        spec:
+          containers:
+          - name: mysql
+            image: mysql:5.6
+            env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom: 
+                secretKeyRef:      #引用的secret的信息
+                  name: mysql-root-passwd    #调用的secret名称
+                  key: password    #引用的secret中的键,上面创建的
+    ~]# kubectl apply -f mysql-test.yaml
+    ~]# kubectl exec -it mysql-test -n test-ns /bin/sh
+        # 
+        # mysql -proot123
+        # printenv
+        我们通过连接到此Pod中看到需要使用之前设置的密码才能够连接到mysql;使用printenv也可以看到我们传递进去的环境变量;
+5.2.tls类型使用存储卷方式调用secret示例:给nginx配置tls证书
+    ~]# kubectl create secret tls nginx-cert --cert=./nginx-server.cert --key=./nginx-server.key -n test-n
+        secret/nginx-cert created
+    ~]# kubectl get secrets -n test-ns
+        NAME                TYPE            DATA   AGE
+        mysql-root-passwd   Opaque          1      10m
+        nginx-cert         kubernets.io/tls 2      30s
+    ~]# kubectl get secret nginx-cert -n test-n -o yaml
+        apiVersion: v1
+        data:
+          tls.crt: *************  #经过base64编码后的信息
+          tls.key: *************  #经过base64编码后的信息
+        kind: Secret
+        metadata:
+          creationTimestamp: &quot;2019-03-02T21:20:30Z&quot;
+          name: nginx-cert
+          namespace: test-ns
+          ...
+    ~]# vim nginx.yaml
+        apiVersion: v1
+            kind: Pod
+            metadata:
+              name: nginx
+              namespace: test-ns
+            spec:
+              containers:
+              - name: nginx
+                image: nginx:1.14-alpine    
+            volumeMounts:
+            - name: tls
+              mountPath: /etc/nginx/ssl
+          volumes:
+          - name: tls
+            secret:
+            - secretName: nginx-cert
+              items:
+              - key: nginx.crt              #原来的证书名
+                path: nginx-server.crt #映射到pod中的证书名
+              - key: nginx.key              #原来的私钥名
+                path: nginx-server.key  #映射到pod中的私钥名    
+                mode: 0600
+</code></pre>
       
     </div>
 
@@ -640,7 +1171,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MySql/" rel="tag"><i class="fa fa-tag"></i> MySql</a>
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
           
         </div>
       
@@ -707,8 +1238,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/22/ELK和搜索引擎/" rel="next" title="ELK和搜索引擎">
-                <i class="fa fa-chevron-left"></i> ELK和搜索引擎
+              <a href="/2019/08/03/Kubernetes-Flannel网络插件详解/" rel="next" title="Kubernetes-Flannel网络插件详解">
+                <i class="fa fa-chevron-left"></i> Kubernetes-Flannel网络插件详解
               </a>
             
           </div>
@@ -717,8 +1248,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/22/进程管理与计划任务/" rel="prev" title="进程管理与计划任务">
-                进程管理与计划任务 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/09/03/Ceph-RBD/" rel="prev" title="Ceph-RBD">
+                Ceph-RBD <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -768,8 +1299,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -786,7 +1326,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-count">75</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -871,9 +1411,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -946,9 +1484,7 @@
                     
                       
                     
-                      
-                    
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1046,6 +1582,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#K8S存储卷"><span class="nav-number">1.</span> <span class="nav-text">K8S存储卷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-临时存储：emptyDir"><span class="nav-number">2.</span> <span class="nav-text">1.临时存储：emptyDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-本地存储：hostPath和local-更适合关系型数据库"><span class="nav-number">3.</span> <span class="nav-text">2.本地存储：hostPath和local(更适合关系型数据库)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-网络存储：NFS"><span class="nav-number">4.</span> <span class="nav-text">3.网络存储：NFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-持久卷申请存储：PV、PVC以及StorageClass-重点存储卷"><span class="nav-number">5.</span> <span class="nav-text">4.持久卷申请存储：PV、PVC以及StorageClass(重点存储卷)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-存储类SC：StorageClass"><span class="nav-number">5.1.</span> <span class="nav-text">4.1.存储类SC：StorageClass</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-特殊存储：ConfigMap和Secret"><span class="nav-number">6.</span> <span class="nav-text">5.特殊存储：ConfigMap和Secret</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-ConfigMap"><span class="nav-number">6.1.</span> <span class="nav-text">5.1.ConfigMap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-Secret"><span class="nav-number">6.2.</span> <span class="nav-text">5.2.Secret</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1339,7 +1891,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">1.9m</span>
+    <span title="站点总字数">1.8m</span>
   
 
   
@@ -1350,7 +1902,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">28:17</span>
+    <span title="站点阅读时长">26:55</span>
   
 </div>
 
