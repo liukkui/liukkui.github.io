@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="使用Prometheus监控Ceph集群">
+<meta name="keywords" content="Ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph-Promethues监控ceph实现钉钉报警">
+<meta property="og:url" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="使用Prometheus监控Ceph集群">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/ceph-dashboard01.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/prometheus监控ceph的架构.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/promethues-targets.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/promethues-rules.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/钉钉报警示例.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/grafana对接prometheus.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/grafana的ceph-cluster面板.png">
+<meta property="og:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/dashboard调用grafana展示.png">
+<meta property="og:updated_time" content="2020-10-27T18:49:59.010Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ceph-Promethues监控ceph实现钉钉报警">
+<meta name="twitter:description" content="使用Prometheus监控Ceph集群">
+<meta name="twitter:image" content="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/ceph-dashboard01.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Ceph-Promethues监控ceph实现钉钉报警 | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<!-- 音频播放 -->
+<script src="//lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159888076870" m="1"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">30</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">36</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">77</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ceph-Promethues监控ceph实现钉钉报警
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-01 08:00:00" itemprop="dateCreated datePublished" datetime="2020-03-01T08:00:00+08:00">2020-03-01</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/ceph/" itemprop="url" rel="index"><span itemprop="name">ceph</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">23k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">20 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="使用Prometheus监控Ceph集群"><a href="#使用Prometheus监控Ceph集群" class="headerlink" title="使用Prometheus监控Ceph集群"></a>使用Prometheus监控Ceph集群</h3><a id="more"></a>
+<h3 id="1-Ceph启用Dashboard：mimic版本安装Dashboard-V2"><a href="#1-Ceph启用Dashboard：mimic版本安装Dashboard-V2" class="headerlink" title="1.Ceph启用Dashboard：mimic版本安装Dashboard:V2"></a>1.Ceph启用Dashboard：mimic版本安装Dashboard:V2</h3><p><a href="https://docs.ceph.com/en/latest/mgr/dashboard/#" target="_blank" rel="noopener">官方配置Dashboard完整说明</a></p>
+<pre><code>1.Ceph早期（luminous版）为了了解ceph内部的集群状态开发了Dashboard面板，使用ceph-deploy命令看到的calamari就是相关程序，当suse收购的的商业Ceph后又开发了功能更为强大的Dashboard，后端代码使用CherryPy框架和自定义RESTAPI实现，WebUI基于Angular实现；而且Dashboard被当做一个模块整合到Manager中，由于该模块默认没被启用，需要安装mgr并并启用相关插件即可；
+2.Dashboard的功能模块很多需要按需启动才能正常使用，初始安装好只有最基本的Ceph集群以及RBD管理等功能，像文件存储、对象存储、iSCSI网关、NFS网关、监控都是没有集成的，都需要单独集成.
+3.启用Dashboard
+    ceph mgr module相关命令:
+        ~]$ ceph mgr module disable &lt;module&gt;    #禁用相关模块
+        ~]$ ceph mgr module enable &lt;module&gt;     #启用相关模块
+        ~]$ ceph mgr module ls  #列出所有模块
+            显示所有支持的模块，can_run表示是否支持启用
+    1.启⽤相关的Dashboard模块：
+        ~]$ ceph mgr module enable dashboard
+    2.禁用Dashboard的SSL功能
+        因为启用的dashboard模块默认拥有整个ceph所有信息（包括敏感信息），可以使用自签证书也可以关闭SSL功能。
+        ~]$ ceph config set mgr mgr/dashboard/ssl false
+        备注：
+            如果需要启用ssl功能,可以参考本文链接的官方文档中启用SSL部分的配置;
+    3.配置监听的地址和端⼝：
+        ~]$ ceph config set mgr mgr/dashboard/server_addr 0.0.0.0
+        ~]$ ceph config set mgr mgr/dashboard/server_port 8080
+        注意：
+            此处必须设置监控地址为0.0.0.0,而不能是直接IP地址，因为其监控的是所有本地地址包括IPV4和IPV6，同时也不能禁用IPV6地址
+    4.设置登录dashboard的管理员用户及密码，命令格式：
+        ceph dashboard set-login-credentials &lt;username&gt; &lt;password&gt;
+        或者
+        ceph dashboard ac-user-create &lt;username&gt; &lt;password&gt; administrator
+            #administrator是指创建的用户为管理员角色。
+        ~]$ ceph dashboard set-login-credentials admin admin123
+            #创建admin用户
+    5.确认并登录
+        ~]$ ceph mgr services
+            {
+                &quot;dashboard&quot;: &quot;http://stor02.cre.io:8080/&quot;
+            }
+        登录：
+            http://stor02.cre.io:8080      #使用用户密码登录
+4.Ceph Dashboard中的其他重要功能模块
+    1.如上图1示：是mimic版的dashboard面板（刚发布的N版功能比此图上更多），如果安装并启动了三种接口的守护进程，就可以在面板看到块设备Block、FileSystems文件系统、ObjectGateway对象存储的各自详细信息了。
+    2.Dashboard还可以启用更多功能，如：iscis、RBD-mirror、NFS、Prometheus
+        1.iscis
+            1.Ceph从Luminous版本块存储开始支持iSCSI，Ceph中实现iscsi方式有两种:    一种是通过Linux target framework(tgt)实现，
+                一种是通过Linux-IO Target（lio）用软件实现各种SCIS Target
+                不过LIO现在也是官方推荐的方式。
+            2.Ceph-iscsi原理及部署详见：
+                https://blog.csdn.net/wylfengyujiancheng/article/details/105348766
+        2.RBD-mirror
+            Ceph-Dashboard中界面中默认启用了rbd-mirror的配置界面，需要手工安装rbd mirror服务，配置使用rbd-mirror详见相关文章
+        3.NFS
+            1.N版的Dashboard还把NFS页签放到状态栏中方便监控，Ceph从Jewel版开始，nfs-ganesha开始支持ceph，ganesha通过两种方式支持将ceph导出为nfs，分别是:一种通过rgw，一种通过cephfs，FSAL_RGW调用librgw2将NFS协议转义为S3协议再通过RGW存入到Ceph中，FSAL_CEPH调用libcephfs2将NFS转义为Cephfs协议再存入到Ceph中,但之前都是命令行方式的支持，在CephNautilus中Ceph Dashboard现在也支持配置这两种方式的NFS
+            2.NFS的两种实现详见：
+                https://mp.weixin.qq.com/s/1TMfqxxE5I2eIhtXPPoRpQ
+        4.Prometheus  见下文
+</code></pre><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/ceph-dashboard01.png" alt="ceph-dashboard01"></p>
+<h3 id="2-使用Prometheus监控Ceph"><a href="#2-使用Prometheus监控Ceph" class="headerlink" title="2.使用Prometheus监控Ceph"></a>2.使用Prometheus监控Ceph</h3><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/prometheus监控ceph的架构.png" alt="prometheus监控ceph的架构"></p>
+<pre><code>1.Ceph的Dashboard只适合查看集群状态，生产环境中最好还是把监控ceph纳入到已有的zabbix或Prometheus监控系统中;由于Prometheus是一个restful风格的api,它是通过http或https接口进行数据指标采集的，但是很多被监控的应用并没有http接口，因此需要借助各自应用的exporter进行间接采集;
+2.mgr的prometheus_exporter和node_exporter
+    1.由于Ceph底层是rados协议没有http接口,所以也需要有单独的exporter进行采集,只需要在ceph的一个节点上安装prometheus_exporter,获得cephX授权后通过mon或mgr查询ceph集群信息后,把采集到的数据转为与prometheus兼容的格式并通过http协议响应prometheus的拉取请求;好在这个prometheus_exporter是直接内置在Ceph的mgr模块中的,只需要启用该模块即可;
+    2.由于mgr内嵌的prometheus_exporter只是监控Ceph系统本身的数据,而每个ceph节点主机的cpu、内存信息还是需要部署node_exporter进行数据采集监控的;
+3.1.创建运⾏Prometheus Server进程的系统⽤⼾,并为其创建家⽬录/var/lib/prometheus作为数据存储⽬录；如果公司内部中已有prometheus,可省略下面部分的安装过程,直接进行监控ceph的配置部分即可;
+    ~]# useradd -r -m -d /var/lib/prometheus prometheus  #创建数据目录
+    ~]# tar xf prometheus-2.7.2.linux-amd64.tar.gz -C /usr/local/
+        #官方下载二进制包解压
+    ~]# ln /usr/local/prometheus-2.7.2.linux-amd64 /usr/local/prometheus
+        #创建软链接
+    ~]# prometheus --version    #查看prometheus版本
+    创建Prometheus专⽤的Unit File文件放在/usr/lib/systemd/system/目录下
+        ~]# vim /usr/lib/systemd/system/prometheus.service
+            [Unit]
+            Documentation=https://prometheus.io
+            After=network.target
+            [Service]
+            EnvironmentFile=-/etc/sysconfig/prometheus
+            User=prometheus
+            ExecStart=/usr/local/prometheus/prometheus \
+                    --storage.tsdb.path=/var/lib/prometheus \
+                    --config.file=/usr/local/prometheus/prometheus.yml \
+                    --web.listen-address=0.0.0.0:9090 \
+                    --web.external-url=
+            Restart=on-failure
+            StartLimitInterval=1
+            RestartSec=3
+            [Install]
+            WantedBy=multi-user.target
+3.2.每个Ceph节点安装node_exporter采集ceph节点主机的数据
+    ~]# tar xf node_exporter-0.17.0.linux-amd64.tar.gz -C /usr/local/ 
+    ~]# ln -sv /usr/local/node_exporter-0.17.0.linux-amd64 /usr/local/node_exporte
+    ~]# useradd -r -m -d /var/lib/prometheus prometheus
+        创建运⾏Prometheus Server进程的系统⽤⼾，并为其创建家⽬录/var/lib/prometheus作为数据存储⽬录
+    ~]# vim /usr/lib/systemd/system/node_exporter.service
+        [Unit]
+        Documentation=https://github.com/prometheus/node_exporter
+        After=network.target
+        [Service]
+        EnvironmentFile=-/etc/sysconfig/node_exporter
+        User=prometheus
+        ExecStart=/usr/local/node_exporter/node_exporter \
+            $NODE_EXPORTER_OPTS
+        Restart=on-failure
+        StartLimitInterval=1
+        RestartSec=3
+        [Install]
+        WantedBy=multi-user.target
+    ~]# systemctl daemon-reload &amp;&amp; systemctl start node_exporter.service
+    ~]# s -tunpl |grep 9100      #查看监控端口
+        tcp    LISTEN     0      128      :::9100     :::*   users:((&quot;node_exporter&quot;,pid=6776,fd=3))
+    ~]# curl localhost:9100/metrics  #测试会否采集到指标数据
+3.3.启用Ceph-mgr中的promethues模块
+    ~]# ceph mgr module enable prometheus
+        #Prometheus模块默认监听于TCP协议的9283端⼝
+    ~]# ceph mgr services
+        {
+            &quot;dashboard&quot;: &quot;http://stor02.cre.io:8080/&quot;,
+            &quot;prometheus&quot;: &quot;http://stor02.cre.io:9283/&quot;
+        }
+    ~]# ss -tunpl |grep 9283
+        tcp    LISTEN     0      5        :::9283      :::*    users:((&quot;ceph-mgr&quot;,pid=1071,fd=22))
+        #会在Mgr所在的存储节点上开启9283端口
+3.4.Prometheus的主配置⽂件为prometheus.yml字段和格式解释
+    prometheus.yml文件主要由global、rule_files、scrape_configs、alerting、remote_write和remote_read⼏个配置段组成，其中：
+    1.global：全局配置段；
+    2.scrape_configs：配置要监控的目标对象
+        scrape配置集合，⽤于定义监控的⽬标对象（target）的集合，以及描述如何抓取（scrape）相关指标数据的配置参数；通常，每个scrape配置对应于⼀个单独的作业（job），⽽每个targets可通过静态配置（static_configs）直接给出定义，也可基于Prometheus⽀持的服务发现机制进⾏⾃动配置；
+    3.alertmanager_configs：指定配置监控的报警规则
+        可由Prometheus使⽤的Alertmanager实例的集合，以及如何同这些Alertmanager交互的配置参数；每个Alertmanager可通过静态配置（static_configs）直接给出定义，也可基于Prometheus⽀持的服务发现机制进⾏⾃动配置；
+    4.remote_write：
+        配置&quot;远程写&quot;机制，Prometheus需要将数据保存于外部的存储系统（例如InfluxDB）时定义此配置段，随后Prometheus将样本数据通过HTTP协议发送给由URL指定适配器(Adaptor)；
+    5.remote_read：
+        配置&quot;远程读&quot;机制，Prometheus将接收到的查询请求交给由URL指定适配器（Adpater）执⾏，Adapter将请求条件转换为远程存储服务中的查询请求，并将获取的响应数据转换为Prometheus可⽤的格式
+    2.1.scrape配置段
+        1.使⽤static_configs静态配置Job的语法格式：
+            # The targets specified by the static config.
+            targets:
+              [ - &apos;&lt;host&gt;&apos; ]
+            # Labels assigned to all metrics scraped from the targets.
+            labels:
+              [ &lt;labelname&gt;: &lt;labelvalue&gt; ... ]
+        2.使⽤file_sd_configs基于文件发现机制配置Job的语法格式
+            [
+                {
+                    &quot;targets&quot;: [ &quot;&lt;host&gt;&quot;, ... ],
+                    &quot;labels&quot;: {
+                      &quot;&lt;labelname&gt;&quot;: &quot;&lt;labelvalue&gt;&quot;, ...
+                    }
+                },
+                ...
+            ]
+3.5.配置prometheus监控ceph集群和ceph存储节点主机
+    ~]# vim /etc/prometheus/prometheus.yml
+        scrape_configs:
+          - job_name: &apos;prometheus&apos;
+            static_configs:
+            - targets: [&apos;111.231.143.40:9090&apos;]
+          - job_name: &apos;node_exporter&apos;
+            static_configs:
+            - targets: [&apos;stor01.cre.io:9100&apos;]
+            - targets: [&apos;stor02.cre.io:9100&apos;]
+            - targets: [&apos;stor03.cre.io:9100&apos;]
+          - job_name: &apos;ceph&apos;
+        #   honor_labels: true
+            static_configs:
+            - targets: [&apos;stor02.cre.io:9283&apos;]
+    注意事项：
+        1.job_name=node_exporter设置ceph集群的3个主机节点,job_name=ceph设置manager所在节点的主机名和Prometheus模块的端口;
+        2.注意prometheus中的targets中要写主机的FQDN格式的主机名,否者ceph dashboard中host details中不能正常显示监控数据,因为ceph dashboard是使用FQDN格式的主机名查询监控信息,如果prometheus中写的是IP会导致查询不到;而grafana使用IP查询,所以在grafana中不会有这种错误;
+        3.honor_labels=true必须有且设置为true，否者会导致CephDashbaord中显示grafana某些面板没有数据出现(这个待验证,个人认为可以设置此参数);
+        4.如果ceph集群中部署了多个manager,需要在job_name=ceph中添加多个targets将所有magr的地址都写上;(本ceph集群只部署了一个mgr)
+~]# systemctl daemon-reload
+~]# systemctl start prometheus &amp;&amp; systemctl enable prometheus  #设置开启自启
+验证配置是否抓取到数据：
+    登录prometheus地址：http://111.231.143.40:9090,查看Targets页面上的prometheus、3个node、ceph mgr是否都是UP的即可：
+</code></pre><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/promethues-targets.png" alt="promethues-targets"></p>
+<h3 id="3-安装Alertmanager并配置钉钉报警"><a href="#3-安装Alertmanager并配置钉钉报警" class="headerlink" title="3.安装Alertmanager并配置钉钉报警"></a>3.安装Alertmanager并配置钉钉报警</h3><pre><code>1.安装Alertmanager
+    ~]# mkdir /etc/alertmanager/
+    ~]# tar -zxvf alertmanager-0.21.0.linux-amd64.tar.gz /etc/alertmanager/
+    ~]# vim /etc/systemd/system/alertmanager.service
+        [Unit]
+        Description=Alertmanager
+        After=network-online.target
+        [Service]
+        Restart=on-failure
+        ExecStart=/etc/alertmanager/alertmanager --config.file=/etc/alertmanager/alertmanager.yml
+        [Install]
+        WantedBy=multi-user.target
+    ~]# systemctl daemon-reload
+    ~]# systemctl start alertmanager &amp;&amp; systemctl enable alertmanager
+        #设置开机运行
+    ~]# ss -tunpl |grep 9093   #查看是否有监听端口
+        tcp    LISTEN     0      128      :::9093   :::*   users:((&quot;alertmanager&quot;,pid=1737,fd=8))
+2.修改prometheus主配置文件,添加报警规则rule_files和alerting段落,并重启prometheus服务:
+    ~]# vim /etc/prometheus/prometheus.yml
+        global:
+          scrape_interval: 5s
+          evaluation_interval: 15s
+        rule_files:
+          - &apos;/etc/prometheus/alerting/ceph_rules.yml&apos; #Ceph的报警规则文件
+        alerting:
+          alertmanagers:
+          - scheme: http
+            static_configs:
+            - targets: [&apos;111.231.143.40:9093&apos;]  #alertmanager的地址和端口
+        scrape_configs:
+          - job_name: &apos;prometheus&apos;
+            static_configs:
+            - targets: [&apos;111.231.143.40:9090&apos;]
+          - job_name: &apos;node_exporter&apos;
+            static_configs:
+            - targets: [&apos;stor01.cre.io:9100&apos;]
+            - targets: [&apos;stor02.cre.io:9100&apos;]
+            - targets: [&apos;stor03.cre.io:9100&apos;]
+          - job_name: &apos;ceph&apos;
+        #   honor_labels: true
+            static_configs:
+            - targets: [&apos;stor02.cre.io:9283&apos;]
+3.准备报警规则目录和监控ceph的报警规则
+    为了使得ceph集群出现故障时能够自动通过邮件等报警,我们需要定义一些Ceph集群正常运行的很多监控指标,比如下面这个报警规则中就包括了很多数据指标：
+        有：集群有waring事件时报警、集群处于error时报警、集群的OSD使用率大于85%时报警、OSD处于Down状态时报警、OSD所在的主机Down时报警、PG故障时报警、OSD写入延迟1s时报警、网络在5个时间间隔内丢包数超过10个时报警、Pool存储池使用率大于85%时报警、Mon故障时报警、ceph集群的中OSD总容量使用率大于85%时报警、每个OSD上的PG数大于275时报警;
+    上面这些报警规则都是ceph集群正常运行的基础,都是来源于使用经验总结;
+    ~]# mkdir /etc/prometheus/alerting/    #报警规则文件路径
+    ~]# cd /etc/prometheus/alerting/
+    ~]# vim ceph_rules.yml       #ceph集群的报警规则
+        groups:
+        - name: dashboard
+          rules:
+          - alert: Ceph Health Warning
+            expr: ceph_health_status == 1
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Ceph Health Warning&quot;
+              description: &quot;Overall Ceph Health&quot;
+          - alert: Ceph Health Error
+            expr: ceph_health_status &gt; 1
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Ceph Health Error&quot;
+              description: &quot;The Ceph cluster health is in an error state&quot;
+          - alert: Disk(s) Near Full
+            expr: (ceph_osd_stat_bytes_used / ceph_osd_stat_bytes) * 100 &gt; 85
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Disk(s) Near Full&quot;
+              description: &quot;This shows how many disks are at or above 85% full. Performance may degrade beyond this threshold on filestore (XFS) backed OSD&apos;s.&quot;
+          - alert: OSD(s) Down
+            expr: ceph_osd_up &lt; 0.5
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;OSD(s) Down&quot;
+              description: &quot;This indicates that one or more OSDs is currently marked down in the cluster.&quot;
+          - alert: OSD Host(s) Down
+            expr: count by(instance) (ceph_disk_occupation * on(ceph_daemon) group_right(instance) ceph_osd_up == 0) - count by(instance) (ceph_disk_occupation) == 0
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;OSD Host(s) Down&quot;
+              description: &quot;This indicates that one or more OSD hosts is currently down in the cluster.&quot;
+          - alert: PG(s) Stuck
+            expr: max(ceph_osd_numpg) &gt; scalar(ceph_pg_active)
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;PG(s) Stuck&quot;
+              description: &quot;This indicates there are pg&apos;s in a stuck state, manual intervention needed to resolve.&quot;
+          - alert: OSD Host Loss Check
+            expr: max(sum(ceph_osd_stat_bytes - ceph_osd_stat_bytes_used)) * 0.9 &lt; scalar(max(sum by (instance) (ceph_osd_stat_bytes + on (ceph_daemon) group_left (instance) (ceph_disk_occupation*0))))
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;OSD Host Loss Check&quot;
+              description: &quot;This indicates that the cluster @ 90% full is not enough to support the loss of the largest OSD host.&quot;
+          - alert: Slow OSD Responses
+            expr: ((irate(node_disk_read_time_seconds_total[5m]) / clamp_min(irate(node_disk_reads_completed_total[5m]), 1) + irate(node_disk_write_time_seconds_total[5m]) / clamp_min(irate(node_disk_writes_completed_total[5m]), 1)) and on (instance, device) ceph_disk_occupation) &gt; 1
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Slow OSD Responses&quot;
+              description: &quot;This indicates that some OSD Latencies are above 1s.&quot;
+          - alert: Network Errors
+            expr: sum by (instance, device) (irate(node_network_receive_drop_total{device=~&quot;(eth|en|bond|ib|mlx|p).*&quot;}[5m]) + irate(node_network_receive_errs_total{device=~&quot;(eth|en|bond|ib|mlx|p).*&quot;}[5m]) + irate(node_network_transmit_drop_total{device=~&quot;(eth|en|bond|ib|mlx|p).*&quot;}[5m]) + irate(node_network_transmit_errs_total{device=~&quot;(eth|en|bond|ib|mlx|p).*&quot;}[5m])) &gt; 10
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Network Errors&quot;
+              description: &quot;This indicates that more than 10 dropped/error packets are seen in a 5m interval&quot;
+          - alert: Pool Capacity Low
+            expr: (ceph_pool_bytes_used / (ceph_pool_bytes_used + ceph_pool_max_avail) * 100 + on (pool_id) group_left (name) (ceph_pool_metadata*0)) &gt; 85
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Pool Capacity Low&quot;
+              description: &quot;This indicates a low capacity in a pool.&quot;
+          - alert: MON(s) Down
+            expr: ceph_mon_quorum_status != 1
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;MON(s) down&quot;
+              description: &quot;This indicates that one or more MON(s) is down.&quot;
+          - alert: Cluster Capacity Low
+            expr: sum(ceph_osd_stat_bytes_used) / sum(ceph_osd_stat_bytes) &gt; 0.85
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;Cluster Capacity Low&quot;
+              description: &quot;This indicates raw used space crosses the 85% capacity threshold of the ceph cluster.&quot;
+          - alert: OSD(s) with High PG Count
+            expr: ceph_osd_numpg &gt; 275
+            for: 1m
+            labels:
+              severity: page
+            annotations:
+              summary: &quot;OSD(s) with High PG Count&quot;
+              description: &quot;This indicates there are some OSDs with high PG count (275+).&quot;
+    ~]# systemctl restart prometheus  #重新启动prometheus
+4.验证报警规则
+    重新登录到prometheus地址：http://111.231.143.40:9090,如下图在Rules中可以看到我们添加到这些报警规则；
+</code></pre><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/promethues-rules.png" alt="promethues-rules"></p>
+<h4 id="3-1-Alertmanager配置钉钉报警"><a href="#3-1-Alertmanager配置钉钉报警" class="headerlink" title="3.1.Alertmanager配置钉钉报警"></a>3.1.Alertmanager配置钉钉报警</h4><p><a href="https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq" target="_blank" rel="noopener">参考钉钉官方文档</a><br><a href="https://github.com/timonwong/prometheus-webhook-dingtalk" target="_blank" rel="noopener">钉钉项目地址</a></p>
+<pre><code>Alertmanager的报警方式有钉钉、微信、邮件等，这里使用钉钉报警方式;prometheus-webhook-dingtalk默认监听在8060端口（可配置其他端口）上，提供了以下路由供AlertManager的webhook_configs使用：
+    /dingtalk/&lt;profile&gt;/send
+    注意：
+        这里的&lt;profile&gt;需要在-ding.profile中指定相应的名称（&lt;profile&gt;）以及钉钉的自定义机器人WebHook URL（&lt;dingtalk-webhook-url&gt;）
+1.配置钉钉(配置多个钉钉机器人)
+    ~]# mkdir -p /usr/lib/golang/src/github.com/timonwong/
+    ~]# cd /usr/lib/golang/src/github.com/timonwong/
+    ~]# git clone https://github.com/timonwong/prometheus-webhook-dingtalk.git  #克隆钉钉项目到本地
+    ~]# cd prometheus-webhook-dingtalk
+    ~]# make      #make过程出错也不需要管
+    ~]# prometheus-webhook-dingtalk -h     #钉钉命令用法说明
+        usage: prometheus-webhook-dingtalk --ding.profile=DING.PROFILE [&lt;flags&gt;]
+        --web.listen-address=&quot;:8060&quot;      #钉钉报警端口
+        --ding.profile=DING.PROFILE ...   
+            #ding.profile是钉钉机器人的webhook，可以使用--ding.profile选项定义多个钉钉机器人
+        --ding.timeout=5s 
+        --log.level=info                  #日志级别默认info
+    ~]# nohup ./prometheus-webhook-dingtalk \
+        --ding.profile=&quot;webhook=https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxx&quot; \
+        --ding.profile=&quot;webhook=https://oapi.dingtalk.com/robot/send?access_token=yyyyyyyyy&quot; \
+        &amp;&gt; /var/log/dingding.log      #启动钉钉报警
+        注意：
+            1.--ding.profile中填的是钉钉机器人的webhook地址,如何添加钉钉机器人可以参考上面的钉钉官方文档;
+            2.此处使用--ding.profile选项填了两个钉钉机器人,用来向不同的钉钉群组发送报警消息;并将日志记录到/var/log/dingding.log中;
+2.在AlertManager的配置文件中加入相应的receiver（注意下面的 url）即可
+    ~]# vim /usr/local/prometheus/alertmanager.yml
+        global:
+          resolve_timeout: 5m
+        route:
+          group_by: [&apos;alertname&apos;]
+          group_wait: 10s
+          group_interval: 10s
+          repeat_interval: 1h
+          receiver: &apos;web.hook&apos;
+        receivers:
+        - name: &apos;send_to_dingding_webhook1&apos;
+          webhook_configs:
+          - url: &apos;http://111.231.143.40:8060/dingtalk/webhook/send&apos;
+        - name: &apos;send_to_dingding_webhook2&apos;
+          webhook_configs:
+            url: &apos;http://111.231.143.40:8060/dingtalk/webhook2/send&apos;
+        inhibit_rules:
+          - source_match:
+              severity: &apos;critical&apos;
+            target_match:
+              severity: &apos;warning&apos;
+            equal: [&apos;alertname&apos;, &apos;dev&apos;, &apos;instance&apos;]
+        注：
+            在receivers中添加两个url实现向不同的钉钉群组发送报警消息;
+    ~]# systemctl restart alertmanager
+    ~]# systemctl restart prometheus.service
+        重启alertmanager和prometheus进行报警测试
+3.钉钉报警验证
+    通过关闭一个OSD后,钉钉会收到如下警告;OSD恢复后又会收到恢复正常通知;
+</code></pre><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/钉钉报警示例.png" alt="钉钉报警示例"></p>
+<h3 id="4-安装grafana并配置"><a href="#4-安装grafana并配置" class="headerlink" title="4.安装grafana并配置"></a>4.安装grafana并配置</h3><pre><code>安装grafana有两个作用,因为由于cephDashboard的Cluster页签中也集成了grafana仪表盘,所以当我们需要查看Ceph集群的监控数据信息时,可以通过两种方式查看：
+    1.登录到grafana地址查看我们导入的和ceph相关的dashboard
+    2.也可以登录到Ceph的Dashboard上,在Dahboard的Cluster页签中也有调用grafana展示监控数据的仪表盘;
+    说明：
+        通过上面哪种方式查看Ceph集群监控状态都可以,不过在我们公司习惯在直接在Grafana地址上去查看;下文会介绍如何让CephDashboard接入grafana的地址展示数据的;
+1.yum方式安装grafana(111.231.143.41节点)
+    ~]# vim /etc/yum.repos.d/grafana.repo      #配置grafana的yum源
+        [grafana]
+        name=grafana
+        baseurl=https://mirrors.cloud.tencent.com/grafana/yum/el7/
+        enabled=1
+        gpgcheck=0
+    ~]# yum -y install grafana -y
+    1.安装两个grafana展示的图形插件：折线图和饼图的插件
+        ~]# grafana-cli plugins install vonage-status-panel
+        ~]# grafana-cli plugins install grafana-piechart-panel
+    2.按照ceph官方文档说明,我们需要修改grafana的配置启用匿名模式,并将grafana默认的暗黑风格修改成明亮风格,这样与ceph dashboard中更搭配(风格可改可不改);
+        ~]# /etc/grafana/grafana.ini
+            default_theme = light       #修改为明亮风格
+            [auth.anonymous]
+            enabled = true
+            org_name = Main Org.        #注意后面的.不要忘记
+            org_role = Viewer
+        注意：
+            如果使用的grafana是6.2.0-beta1之后的版本,在该版本中grafana关闭了CephDashboard调用grafana的功能,需要将默认allow_embedding=flase的参数改成allow_embedding=true才能集成到Ceph的Dashboard中;添加下面选项到grafana.ini中即可：
+                [security]
+                allow_embedding = true
+    ~]# systemctl start grafana-server.service &amp;&amp; systemctl enable grafana-server.service
+        #启动并设置开机自启
+2.设置Ceph Dashboard调用Grafana在Dashboard内部展示grafana监控图
+    1.禁用grafana的SSL功能
+        ~]# ceph dashboard set-grafana-api-ssl-verify False
+    2.配置Dashboard调用的grafana地址
+        ~]# ceph dashboard set-grafana-api-url http://111.231.143.41:3000
+        指定上文安装的grafana地址,而且此处的grafana地址不能为域名,必须为IP
+3.配置Grafana从prometheus中获取Ceph的监控采集数据,步骤如下：
+    1.使用默认账户密码admin/admin登录grafana地址：http://111.231.143.41:3000
+    2.配置增加数据源--&gt;选择Pormetheus--&gt;填写prometheus的地址:http://111.231.143.40:9090
+    3.在grafana上添加Ceph集群相关的数据监控模板
+        Ceph官方在github上提供很多ceph相关的监控模板,如下图示有:ceph-cluster集群监控、osd的详细信息监控、pool存储池监控、rbd监控等;项目地址如下,根据生产环境需求将项目中的版本下载到本地然后所需要的模板导入到grafana中即可;
+            https://github.com/ceph/ceph/tree/master/monitoring/grafana/dashboards
+        ~]# ls /data/ceph/grafana/dashboards  #将模板下载到本地
+            ceph-cluster.json           #ceph集群的监控模板
+            cephfs-overview.json
+            host-details.json           #host主机监控模板
+            hosts-overview.json
+            osd-device-details.json     #OSD的监控模板
+            osds-overview.json
+            pool-detail.json            #存储池的监控模板
+            pool-overview.json
+            radosgw-detail.json         #radosgw监控模板
+            radosgw-overview.json
+            radosgw-sync-overview.json   
+            rbd-details.json            #rbd监控模板
+            rbd-overview.json
+        这里我只把ceph集群、host、osd、pool、rbd这几类模板导入到grafana中
+4.查看grafana和Dashboard中grafana中的监控数据
+    1.如下图2是grafana使用ceph-cluster.json模板的监控面板
+    2.如下图3,在Dashboard中不但可以看到调用grafana展示的监控面板还可以看到我们之前定义的一些监控报警规则
+</code></pre><p><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/grafana对接prometheus.png" alt="grafana对接prometheus"><br><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/grafana的ceph-cluster面板.png" alt="grafana的ceph-cluster面板"><br><img src="/2020/03/01/Ceph-Promethues监控ceph实现钉钉报警/dashboard调用grafana展示.png" alt="dashboard调用grafana展示"></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ceph/" rel="tag"><i class="fa fa-tag"></i> Ceph</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/10/Rook部署Ceph集群/" rel="next" title="Rook部署Ceph集群">
+                <i class="fa fa-chevron-left"></i> Rook部署Ceph集群
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/01/Ceph日常运维/" rel="prev" title="Ceph日常运维">
+                Ceph日常运维 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+      
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">如果你也喜欢杰伦那我们就是好朋友 C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">77</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Prometheus监控Ceph集群"><span class="nav-number">1.</span> <span class="nav-text">使用Prometheus监控Ceph集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Ceph启用Dashboard：mimic版本安装Dashboard-V2"><span class="nav-number">2.</span> <span class="nav-text">1.Ceph启用Dashboard：mimic版本安装Dashboard:V2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用Prometheus监控Ceph"><span class="nav-number">3.</span> <span class="nav-text">2.使用Prometheus监控Ceph</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-安装Alertmanager并配置钉钉报警"><span class="nav-number">4.</span> <span class="nav-text">3.安装Alertmanager并配置钉钉报警</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Alertmanager配置钉钉报警"><span class="nav-number">4.1.</span> <span class="nav-text">3.1.Alertmanager配置钉钉报警</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-安装grafana并配置"><span class="nav-number">5.</span> <span class="nav-text">4.安装grafana并配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <div style="">
+  <canvas id="canvas" style="width:70%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.8m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">27:17</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="/js/src/Valine.min.js"></script>
+
+  <!-- https://deserts.io/diy-a-comment-system/ -->
+  <script type="text/javascript">
+    new Valine({
+        lang: 'zh-cn',
+        admin_email: '645150765@qq.com', //博主邮箱
+        el: '#comments' ,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        emoticon_url: 'https://cloud.panjunwen.com/alu',
+        emoticon_list: ["吐.png","喷血.png","狂汗.png","不说话.png","汗.png","坐等.png","献花.png","不高兴.png","中刀.png","害羞.png","皱眉.png","小眼睛.png","中指.png","尴尬.png","瞅你.png","想一想.png","中枪.png","得意.png","肿包.png","扇耳光.png","亲亲.png","惊喜.png","脸红.png","无所谓.png","便便.png","愤怒.png","蜡烛.png","献黄瓜.png","内伤.png","投降.png","观察.png","看不见.png","击掌.png","抠鼻.png","邪恶.png","看热闹.png","口水.png","抽烟.png","锁眉.png","装大款.png","吐舌.png","无奈.png","长草.png","赞一个.png","呲牙.png","无语.png","阴暗.png","不出所料.png","咽气.png","期待.png","高兴.png","吐血倒地.png","哭泣.png","欢呼.png","黑线.png","喜极而泣.png","喷水.png","深思.png","鼓掌.png","暗地观察.png"],
+        placeholder: '帅的人已经评论',
+  });
+
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
