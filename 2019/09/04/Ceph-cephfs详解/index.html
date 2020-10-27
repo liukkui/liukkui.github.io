@@ -136,27 +136,29 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
+  <meta name="description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
 <meta name="keywords" content="Ceph">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ceph-RBD">
-<meta property="og:url" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/index.html">
+<meta property="og:title" content="Ceph-cephfs详解">
+<meta property="og:url" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
+<meta property="og:description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/rbd两种使用方式.png">
-<meta property="og:updated_time" content="2020-10-10T12:48:56.471Z">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/CephFS的存储逻辑.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/CephFS-MDS动态子树分区逻辑.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/多活MDS架构.png">
+<meta property="og:updated_time" content="2020-10-27T11:53:56.488Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ceph-RBD">
-<meta name="twitter:description" content="5.RBD(Rados Block Device)的原理和使用更新于：2019.09">
-<meta name="twitter:image" content="https://www.liukui.tech/2019/09/03/Ceph-RBD/rbd两种使用方式.png">
+<meta name="twitter:title" content="Ceph-cephfs详解">
+<meta name="twitter:description" content="6.CephFS(Ceph File System)文件系统接口的原理和使用详解更新于：2019.09">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/CephFS的存储逻辑.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2019/09/03/Ceph-RBD/">
+  <link rel="canonical" href="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/">
 
 
 
@@ -166,7 +168,7 @@
   };
 </script>
 
-  <title>Ceph-RBD | Coool's Blog</title>
+  <title>Ceph-cephfs详解 | Coool's Blog</title>
   
 
 
@@ -432,7 +434,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/09/03/Ceph-RBD/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/09/04/Ceph-cephfs详解/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -449,7 +451,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Ceph-RBD
+          <h1 class="post-title" itemprop="name headline">Ceph-cephfs详解
               
             
           </h1>
@@ -475,7 +477,7 @@
                 
               
 
-              <time title="创建时间：2019-09-03 08:00:00" itemprop="dateCreated datePublished" datetime="2019-09-03T08:00:00+08:00">2019-09-03</time>
+              <time title="创建时间：2019-09-04 08:00:00" itemprop="dateCreated datePublished" datetime="2019-09-04T08:00:00+08:00">2019-09-04</time>
             
 
             
@@ -508,8 +510,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/09/03/Ceph-RBD/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/09/03/Ceph-RBD/" itemprop="commentCount"></span>
+                <a href="/2019/09/04/Ceph-cephfs详解/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/09/04/Ceph-cephfs详解/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -531,7 +533,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">21k</span>
+                <span title="本文字数">18k</span>
               
 
               
@@ -545,7 +547,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">19 分钟</span>
+                <span title="阅读时长">17 分钟</span>
               
             </div>
           
@@ -565,377 +567,313 @@
       
 
       
-        <h4 id="5-RBD-Rados-Block-Device-的原理和使用"><a href="#5-RBD-Rados-Block-Device-的原理和使用" class="headerlink" title="5.RBD(Rados Block Device)的原理和使用"></a>5.RBD(Rados Block Device)的原理和使用</h4><p>更新于：2019.09<br><a id="more"></a></p>
-<pre><code>1.RBD全称(RADOS Block Devices)，是一种建构在RADOS存储集群之上为客户端，rbd向下是Rados-Cluster的客户端，rbd向上所提供的任何一个rbd接口都可以当成是一个独立而且完整的image磁盘设备使用，所以它提供块设备接口的存储服务中间层,这类的客户端包括虚拟化程序KVM（结合qemu）和云的计算操作系统OpenStack和CloudStack等，RBD的应用场景有：
-    1.被linux主机使用
-        由于linux主机是由户空间和内核空间组成，硬盘是被内核识别后才表现为dev下的一个个设备,然后借助用户空间的工具进行格式化使用,所以如果linux主机想使用rbd虚拟出的磁盘设备就需要内核中有一个模块能够识别ceph，好在在内核中就有rbd.ko模块能够把自己当成客户端连入rbd服务上检索出它关联使用的镜像文件.
-    2.被KVM虚拟机使用
-        当创建kvm虚拟机时需要指定使用何种磁盘设备，而kvm可以在指定磁盘时是使用libvirt通过rbd协议连入rbd检索出某个映像文件当做磁盘设备存储文件。
-    rbd协议：
-        不管是哪种使用场景，它们中间必须经过rbd协议衔接，rbd是CS架构，Server是Rados-Cluster上的库librbd,librbd不需要监听任何套接字确可以借助Rados-Cluster提供块数据服务，Client可以是rbd.ko模块或者KVM的libvirt。
-2.RBD基于RADOS存储集群中的多个OSD进行条带化(条带也叫对象Object)，支持存储空间的简配（thin-provisioning）和动态扩容等特性，并能够借助于RADOS集群实现快照、副本和一致性;通过将存储池提供的存储服务抽象为一到多个image（表现为块设备）向客户端提供块级别的存储接口:
-    1.在rbd存储池中创建image(块设备)
-        RBD支持两种格式的image，由于ceph分层特性COW克隆特性只支持v2格式的镜像，所以现在默认都是使用v2格式了。
-    2.客户端访问RBD设备的方式有两种
-        1.通过内核模块rbd.ko将image映射为节点本地的块设备，相关的设备文件一般为/dev/rdb#（#为设备编号，例如rdb0等）
-            ~]# find / -name rbd.ko*
-            /usr/lib/modules/3.10.0-957.21.3.el7.x86_64/kernel/drivers/block/rbd.ko.xz
-            #确认当前客户端有此模块才能映射到内核中
-        2.另一种则是librbd提供的API接口，它支持C、C++和Python等编程语言，qemu即是此类接口的客户端。
-3.rbd命令(image的增删改查等命令)
-    RBD相关的管理有如image的创建、删除、修改和列出等基础CRUD操作，也有分组、镜像、快照和回收站等相的管理需求，这些均能够通过rbd命令完成；而学习RBD的使用主要就是学习RBD设备中的image映像文件的增删改查和image映像文件快照的增删改查、回滚、合并等操作!!!
-    1.创建并初始化RBD存储池的三个步骤：
-        使用块设备客户端之前必须事先创建专用的存储池、启用rbd并完成其初始化:
-        1.创建存储池：ceph osd pool create {pool-name} {pg-num} {pgp-num}
-        2.启用rbd：ceph osd pool application enable {pool-name} rbd
-        3.rbd初始化：rbd pool init -p {pool-name}
-        示例：
-            ~]$ ceph osd pool create kube 64 64           #创建kube存储池
-            ~]$ ceph osd pool application enable kube rbd #启用rbd功能
-            ~]$ rbd pool init kube  #初始化存储池kube
-    2.创建并查看image
-        1.创建image的两种命令格式:rbd create ...
-            rbd create --size &lt;size&gt; --pool &lt;pool-name&gt; &lt;image-name&gt;
-            或者
-            rbd create --size &lt;size&gt; &lt;pool-name&gt;/&lt;image-name&gt;
-            示例:
-                ~]$ rbd create --pool kube --size 2G vol01
-                或者
-                ~]$ rbd create --size 2G kube/vol02
-                    在存储池kube中创建名为vol01的2G映像
-        2.查看image:rbd ls
-            rbd ls [-p &lt;pool-name&gt;] [--long] [--format json|xml] [--pretty-format] &lt;pool-name&gt;    
-            示例：
-            ~]# rbd ls -p kube -l  #查看
-                NAME    SIZE   PARENT  FMT  PORT  LOCK
-                vol01   2 GiB           2
-                vol02   2 GiB           2
-        3.rbd create创建image时的其他几个有用选项：
-            --object-size &lt;object-size&gt;:文件被切成对象的块大小，默认是4MiB
-            --image-feature &lt;image-feature&gt;:
-                镜像文件的特性，镜像文件支持N个特性，详见下文image特性
-       4.rbd info命令可以获取特定image的详细信息，每段代表意义如下：
-            ~]$ rbd info /kube/vol01
-            rbd image &apos;vol01&apos;:
-                size 2 GiB in 512 objects
-                order 22 (4 MiB objects)
-                id: 14ns8smsda8
-                block_name_prefix: rbd_data.14ns8smsda8
-                format：layering,exclusive-lock,object-map,fast-diff,deep-flatten
-                op_features:
-                flags:
-                create_timestamp: Wed Mar 6 10:38:20 2019
-            每段代表意义：
-                size M GiB in N objects：
-                    #image空间大小为M，共分割至N个对象（分割的数量由条带大小决定）；
-                order 22 (4 MiB objects)：
-                    #块大小（条带）的标识序号，有效范围为12-25，分别对应着4K-32M之间的大小；
-                id：#当前image的标识符；
-                block_name_prefix：这个image中的每一个对象object都是以此为前缀命名的。
-                format： image使用v2格式
-                features：
-                    当前image启用的功能特性，其值是一个以逗号分隔的字符串列表，例如layering、exclusive-lock等；
-                op_features：可选的功能特性；    
-4.image特性
-    ~]$ rbd create image --image-feature arg,默认启用的5个特性feature有：layering(+),exclusive-lock(+*),object-map(+*),fast-diff(+*),deep-flatten(+-),其他feature和代表意义是：
-        1.layering:支持分层镜像、是否支持克隆；
-        2.striping:是否支持数据对象间的数据条带化v2；
-        3.exclusive-lock:支持独占锁(也叫排他锁)
-            即是否支持分布式排他锁机制以限制同时仅能有一个客户端访问当前image；(和k8s-volume的单路只读逻辑是一样的)
-        4.object-map:支持对象映射（依赖exclusive-lock）
-            即是否支持object位图，主要用于加速导入、导出及已用容量（快速计算出已使用空间容量不是通过扫描整个空间，而是通过扫描object位图中的块数*块大小快速计算得来的）统计等操作，依赖于exclusive-lock特性；
-        5.fast-diff:快速计算差异（依赖object-map）
-            即是否支持快照间的快速比较操作，依赖于object-map特性；fast-diff特性有利于在deep-flatten展平操作时进行快速合并.
-        6.deep-flatten:支持快照扁平化操作
-            1.layering特性使得克隆image的时候：父子image之间采用COW，他们之间的对象文件存在依赖关系，而flatten操作的目的是解除父子image的依赖关系，但是子image的快照并没有解除依赖，deep-flatten特性使得快照的依赖也解除；
-            2.所以deep-flatten深层展平是一种真正做深层分离原卷与快照卷关系时，把原卷上的数据实现向对应快照卷上复制时的一种将多层合为一层或分离存在依赖关系的多层卷时的操作。
-        7.journaling:支持记录IO操作（依赖独占锁）
-            即是否支持日志IO，即用户在修改image上的数据时是否记录日志，日志能够在必要时确保数据一致性和实现快速恢复；它依赖于exclusive-lock特性；
-        8.data-pool:
-            是否支持将image的数据对象存储于纠删码存储池，主要用于将image的元数据与数据放置于不同的存储池；
-    备注：
-        从J版开始，创建的镜像image文件默认就支持前5个特性，而这5个特性被linux客户端作为磁盘被加载到内核中使用时这三个特性object-map,fast-diff,deep-flatten是不被支持的，所以需要禁用掉.
-5.客户端image映射及断开
-    在RBD客户端节点上以本地磁盘方式使用块设备之前，需要先将目标image映射至本地内核，需要安装ceph-common包才能使用rbd命令，而且如果Ceph存储集群端启用了CephX认证，客户端还需要指定用户名和keyring文件以及ceph.conf配置文件。
-    1.映射的命令：
-        ~]$ rbd map [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--id &lt;user-name&gt;] [--keyring &lt;/path/to/keyring&gt;]
-    2.查看已经映射的image
-        ~]$ rbd showmapped      #显示每一个rbd磁盘的map详情
-    3.断开映射
-        ~]$ umount /dev/***   #先umount再unmap
-        ~]$ rbd unmap [--pool &lt;pool&gt;] [--image &lt;image&gt;] &lt;image-or-device-spec&gt;
-    4.客户端开机映射rbd块设备
-        使用rbd命令手动映射在节点重启映射会丢失；而ceph-common软件包中包括一个rbdmap的shell脚本，该脚本可对一个或多个RBD进行自动化rbd map和rbd unmap操作，该方式主要优点是由Init系统触发了在启动时自动映射和装载RBD映像（以及在关机时卸载和取消映射）
-        ~]# yum install ceph-common -y
-        ~]# vim /etc/ceph/rbdmap
-            #poolname/imagename  id=client,keyring=/etc/ceph/ceph.client.keyring
-            #该shell脚本的配置配置参数文件为默认为/etc/ceph/rbdmap
-        如果想要开机挂载rbd块设备，可以配置如下：
-        ~]# vim /etc/ceph/rbdmap
-            kube/vol01 id=client.kube,keyring=/etc/ceph/ceph.client.kube.keyring
-            注意:即使是rbd的默认池，此处的poolname不能省,参数不是必须的，此处也可以省略，可以直接写kube/vol01
-        ~]# systemctl enable rbdmap.service
-        ~]# systemctl start rbdmap.service    #设置rbdmap服务启动
-    5.写入fstab中实现自动挂载
-        ~]# vim /etc/fstab
-            /dev/rbd0  /mnt/  xfs  noauto 0 0
-        注意：
-            1.指定&quot;noauto&quot;（或&quot;nofail&quot;）安装选项;这样可以防止Init系统尝试过在相关设备甚至还没有存在之前就映射设备，rbdmap.service通常是在启动顺序中很晚才触发的
-            2.设备名是/dev/rbd0,也可以写成/dev/rbd/kube/vol01（官方推荐）
-6.管理image
-    1.Image特性管理
-        1.J版本起，image默认支持的特性有layering、exclusive-lock、object-map、fast-diff和deep-flatten五个；
-        2.rbd create命令的--feature选项支持创建时自定义支持的特性；
-        3.现有image的特性可以使用rbd feature enable或rbd feature disable命令修改
-            ~]$ rbd feature disable kube/vol01 object-map fast-diff deep-flatten   #禁用即可
-    2.调整image的大小
-        命令：rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt; [--allow-shrink] [--no-progress] &lt;image-spec&gt;
-        增大：
-            rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt;
-        减少：
-            rbd resize [--pool &lt;pool&gt;] [--image &lt;image&gt;] --size &lt;size&gt; [--allow-shrink]
-    3.删除image的命令：remove和trash
-        1.彻底删除
-            rbd remove [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--no-progress] &lt;image-spec&gt;
-            注意：删除image会导致数据丢失，且不可恢复；建议使用trash命令先将其移入trash，确定不再需要时再从trash中删除；
-        2.先移到回收站，必要时可恢复
-            rbd trash {list|move|purge|remove|restore}
-            示例：
-                ~]$ rbd trash move kube/vol01      #移到回收站
-                ~]$ rbd trash list -p kube   #查看回收站中的image
-                    147sjnx9cnc vol01 
-                ~]$ rbd trash restore kube/vol01 --image-id 147sjnx9cnc
-                    #从回收站恢复时需要指定image-id
-7.image的快照基本操作
-    1.快照机制：
-        1.做快照是很快的，因为快照仅仅是创建了访问原卷数据的路径，没有任何数据修改之前快照是空的，当需要修改数据时，会通过COW写时复制机制把需要修改的数据复制到快照上修改后保存在快照上，所以原卷上始终是没修改之前的旧数据，修改后的数据都在快照上，所以快照是实现备份的效果；
-        2.快照有全量快照和增量快照两种，全量快照使用镜像分离技术实现，增量快照有写时复制COW（Copy-On-Write）和写时重定向ROW（Redirect-On-Write）两种实现方式。
-    3.rbd命令及许多高级接口（包括QEMU、libvirt、OpenStack等）都支持设备快照
-    创建快照：
-        ~]$ rbd snap create [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
-        或者
-        ~]$ rbd snap create [&lt;pool-name&gt;/]&lt;image-name&gt;@&lt;snapshot-name&gt;
-        注意：
-            在创建映像快照之前应停止image上的IO操作，且image上存在文件系统时，还要确保其处于一致状态；
-    列出快照：
-        ~]$ rbd snap ls [--pool &lt;pool&gt;] --image &lt;image&gt; [--format &lt;format&gt;] [--pretty-format] [--all]
-    回滚快照:
-        ~]$ rbd snap rollback [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt; [--no-progress]
-        注意：
-            将映像回滚到快照意味着会使用快照中的数据重写当前版本的image，而且执行回滚所需的时间将随映像大小的增加而延长    
-    设置image上的快照数量上限：
-        创建快照一定会影响性能，而且数量过多必然会导致image上的原有数据第一次修改时的IO压力增加。
-        ~]$ rbd snap limit set [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--limit &lt;limit&gt;]
-        解除快照数量限制：
-            ~]$ rbd snap limit clear [--pool &lt;pool&gt;] [--image &lt;image&gt;]
-    重命令快照：
-        ~]$  rbd rename [--pool &lt;pool&gt;] [--image &lt;image&gt;]
-    删除快照：
-        ~]$ rbd snap rm [--pool &lt;pool&gt;] [--image &lt;image&gt;] [--snap &lt;snap&gt;] [--no-progress] [--force]
-        提示：
-            Ceph OSD会以异步方式删除数据，因此删除快照并不能立即释放磁盘空间;
-    清理快照：
-        删除一个image的所有快照，可以使用rbd snap purge命令
-        ~]$ rbd snap purge [--pool &lt;pool&gt;] --image &lt;image&gt; [--no-progress]
-    示例：
-        ~]$ rbd snap create kube/vol01@snap01      #创建
-        ~]$ rbd snap rollback kube/vol01@snap01    #回滚
-        ~]$ rbd snap rm kube/vol01@snap01          #删除
-        ~]$ rbd snap limit set kube/vol01 --limit 10 #设置快照数量
-        ~]$ rbd snap limit clear kube/vol01        #清除数量限制
-8.Ceph快照的分层克隆技术(基于镜像的快照再做镜像)
-    1.Ceph的一个非常好的特性在于支持在一个块设备image的快照基础上创建一到多个COW或COR（Copy-On-Read）类型的克隆，这种中间快照层（snapshot-layering）机制提了一种极速创建image的方式，快照分层技术使用场景：
-        1.应用于OpenStack等云平台时，使用快照形式保护ceph-RBD镜像，快照是只读的，但COW克隆是完全可以写 ，可以多次来孵化实例，对云平台来说是非常有用的。
-        2.还可以为Qemu虚拟机创建一个image并安装好基础操作系统环境作为模板，对其创建创建快照层后，便可按需创建任意多个克隆作为image提供给多个不同的VM（虚拟机）使用，或者每创建一个克隆后进行按需修改，而后对其再次创建下游的克隆
-    2.通过克隆生成的image在其功能上与直接创建的image几乎完全相同，它同样支持读、写、克隆、空间扩缩容等功能，惟一的不同之处是克隆引用了一个只读的上游快照，而且此快照必须要置于&quot;保护&quot;模式之下,支持COW和COR两种类型
-        1.COW是为默认的类型，仅在数据首次写入时才需要将它复制到克隆的image中
-        2.COR则是在数据首次被读取时复制到当前克隆中，随后的读写操作都将直接基于此克隆中的对象进行
-    3.在RBD上使用分层克隆的方法非常简单：创建一个image，对image创建一个快照并将其置入保护模式，而克隆此快照即可
-        创建克隆的image时，需要指定引用的存储池、镜像和镜像快照，以及克隆的目标image的存储池和镜像名称，因此，克隆镜像支持跨存储池进行；
-    创建被保护protect的原始快照（parent父快照）：
-        下游image需要引用上游快照中的数据，快照的意外删除必将导致数据服务的中止，因此在克隆操作之外，必须将上游的快照置于保护模式
-            rbd snap protect [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
-    克隆快照(基于快照生成镜像)：
-        rbd clone [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt; --dest-pool &lt;dest-pool&gt; [--dest &lt;dest&gt;
-        或者：
-        rbd clone [&lt;pool-name&gt;/]&lt;image-name&gt;@&lt;snapshot-name&gt; [&lt;pool-name&gt;/]&lt;image-name&gt;
-            #指明从存储池A中的镜像Aclone到存储池B的镜像B(可跨存储池克隆)
-    显示一个快照上的所有子镜像：
-        rbd children [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
-        如：rbd children kube/vol01@par-clone
-            基于vol01的快照par-clone克隆的所有镜像
-    展平克隆的image：
-        1.所谓的镜像展平是指：基于原始的父快照克隆的镜像都会自动保留对父快照的引用，当删除父快照上层的原始镜像时为了避免下层克隆出来的所有镜像文件丢失，必须对image做展平操作，以实现删除原始镜像时数据能够复制到所有下层克隆出来的镜像文件。
-        2.展平克隆所需的时间随着映像大小的增加而延长 
-        3.要删除某拥有克隆子项的快照，必须先平展其子image
-        命令：
-            rbd flatten [--pool &lt;pool&gt;] --image &lt;image&gt; --no-progress
-            #展平时只需要指定展平的image和所在的pool即可
-    取消快照保护：
-        必须先取消保护快照，然后才能删除它
-        用户无法删除克隆所引用的快照，需要先平展其每个克隆，然后才能删除快照
-        命令：
-        rbd snap unprotect [--pool &lt;pool&gt;] --image &lt;image&gt; --snap &lt;snap&gt;
-    示例：
-        rbd snap create kube/vol01@par-clone      #创建被保护的快照par-clone 
-        rbd snap protect kube/vol01@par-clone #将par-clone至于保护模式
-        rbd clone kube/vol01@par-clone kube/vol03
-            #基于vol01的快照par-clone生成新的镜像vol03
-        rbd children kube/vol01@par-clone   #显示该镜像的所有克隆
-        rbd flatten kube/vol03              #先展平
-        rbd snap unprotect kube/vol01@par-clone #再取消保护父快照
-        rbd snap rm kube/vol01@par-clone #即使删除父快照，vol03还是正常使用
-</code></pre><h3 id="RBD使用示例"><a href="#RBD使用示例" class="headerlink" title="RBD使用示例"></a>RBD使用示例</h3><p><a href="https://mp.weixin.qq.com/s/yeZ-GedgssSzCaGEEI0JtQ" target="_blank" rel="noopener">参考</a><br>–rbd两种使用方式<br><img src="/2019/09/03/Ceph-RBD/rbd两种使用方式.png" alt="rbd两种使用方式"></p>
-<pre><code>rbd使用方式是Ceph三种方式中最成熟的组件，多数用在配合OpenStack中Cinder使用，作为其后端存储；RBD使用方式有内核rbd.ko模块和librbd两种方式，并且这两种方式都需要客户端支持，所以导致Windows系统无法使用RBD块设备，使用架构图如上；
+        <h3 id="6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解"><a href="#6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解" class="headerlink" title="6.CephFS(Ceph File System)文件系统接口的原理和使用详解"></a>6.CephFS(Ceph File System)文件系统接口的原理和使用详解</h3><p>更新于：2019.09<br><a id="more"></a></p>
+<h4 id="6-1-CephFS的原理和使用"><a href="#6-1-CephFS的原理和使用" class="headerlink" title="6.1.CephFS的原理和使用"></a>6.1.CephFS的原理和使用</h4><p>–CephFS的存储逻辑<br><img src="/2019/09/04/Ceph-cephfs详解/CephFS的存储逻辑.png" alt="CephFS的存储逻辑"></p>
+<pre><code>文件系统接口是计算机技术领域用到的存储访问中最通用的、最普遍的接口，即便有些厂商或者软件存储直接提供了块设备（如ceph-RBD、SAN），当客户端使用时仍然还需要将这个块设备映射到内核中，分区、格式化创建文件系统、挂载才能使用它，所以能够直接使用裸设备作为存储的应用程序并不多；因此ceph直接还提供了CephFS这种文件系统接口给用户直接存储数据，避免上面的一系列（映射、分区、格式化、挂载等）操作。
 
-1.内核rbd.ko挂载方式(mount、map方式)
-    1.先在Ceph节点上创建存储池、用户、权限、复制keyring等操作
-        ~]$ ceph osd pool create kube 64 64           #创建kube存储池
-        ~]$ ceph osd pool application enable kube rbd #启用rbd功能
-        ~]$ rbd pool init kube  #初始化存储池kube
-        ~]$ rbd create --pool kube --size 2G vol01    #创建镜像image文件
+1.经典(传统)文件系统概述(用于在原理上区别下面的CephFS)：
+    1.1.索引式文件系统将底层存储数据的磁盘空间切分为&quot;块&quot;），并为每个文件对象所占用所有块建立一个索引表进行统一存放在一个称为&quot;元数据区&quot;的空间中：
+        1.索引表就是块地址数组，每个数组元素就是块的地址，于是，一个文件对象的块可以分散存储到离散块空间中.
+        2.索引表的索引结构称为inode，用于索引、跟踪一个文件对象的权限、隶属关系、时间戳和占据的所有的块等属性信息，不过却不包括文件名和文件内容本身
+    1.2.文件名及其隶属的目录层级关系通过Dentry(目录项)进行描述：
+        1.每个Dentry就像一个映射表，它保存了本级目录或者文件名以及紧邻的下一级目录或者文件的名称与各自inode的映射关系.
+        2.而Dentry自身也需要由专用的inode对象承载，它也拥有自己的inode，于是这种映射便可组织出多级别层次来，这个多级别的层次起始于一个惟一的称之为“根”的起始点，从而形成一个树状组织结构.
+2.CephFS的存储逻辑：如上图示
+    1.CephFS为什么需要部署MDS以及MDS的作用：
+        1.1.启用CephFS接口需要在基础的Rados-Cluster存储集群之上需要额外运行一个MDS（Metadata-Server元数据服务器）的守护进程，由于Rados-Cluster本身就是一个对象存储服务，Rados-Cluster是没办法分开管理上面所说的传统文件系统中的数据和元数据的功能；
+        1.2.因此MDS是专用于模拟传统文件系统所应该具有的将数据和元数据分离存储的方式而专门提供的一个守护进程服务。而且MDS只用来管理元数据；CephFS依赖于专用的MDS（MetaData-Server）组件管理元数据信息并向客户端输出一个倒置的树状层级结构：
+            1.将元数据先缓存于MDS的内存中然后再同步到Metadatapool,可以加快元数据的访问
+            2.将cephfs的元数据的更新日志journal流式化后存储在RADOS集群上，journal日志是用来恢复mds里的元数据缓存。
+            3.重启mds的时候会通过replay的方式从osd上加载之前缓存的元数据
+            4.保存了文件系统的元数据(对象里保存了子目录和子文件的名称和inode编号)
+        1.3.客户端(ceph.ko)--&gt;MDS--&gt;Rados-Cluster
+            客户端要想使用ceph文件系统接口，内核级必须有对应的文件系统模块与之支持也就是ceph.ko模块，ceph.ko作为客户端每一次访问文件时必须基于套接字先连入到MDS来获取、返回文件的inode元数据信息，然后ceph.ko再到Rados-Cluster上以对象的方式把对象模拟成传统文件系统的&quot;块&quot;来加载文件的数据完成文件存取操作。
+    2.CephFS需要元数据存储池(metadatapool)和数据存储池(datapool)
+        1.不管是RBD、CephFS、RadosGW，在Ceph（Rados-Cluster）上所有数据都应该先放在存储池pool中再映射到OSD上，而CephFS文件系统管理其数据和元数据时是分别放置在不同的存储池中进行的；
+        2.Metadata Pool
+            1.所有的元数据都是由MDS守护进程管理的，可以理解为：MDS作为客户端连入Rados-Cluster的CephFS的metadata-pool存储池存储元数据；
+            2.而元数据是一类很密集的IO访问，需要占用的空间不大，但是对于性能的要求比较高，所以Metadata-Server会在本地使用内存当做高速缓存，所有操作都先在内存中完成，一段时间后再同步到MetadataPool当中实现元数据存储的.
+        3.datapool
+            数据直接写入datapool存储池
+        4.需要注意的是：CephFS的Matadatapool一定只能被MDS访问（客户端是不能直接访问的），客户端对元数据的访问必须经由MDS来实现：
+            当客户端打开一个数据时，它首先会向MDS请求此数据的inode,inode信息会告诉客户端此数据所有对象存放datapool中的位置和编号，然后客户端基于编号就可以加载到所有对象并访问到数据了。
+    3.客户端挂载CephFS访问Ceph集群的方法有2种：
+        1.基于内核文件系统：
+            即基于内核中的模块完成挂载，主要依赖ceph.ko模块和libcephfs库文件.
+        2.用户空间文件系统：(FUSE客户端，需要内核):
+            FUSE是指Filesystem-in-Userspace，主要用于非特权用户能够无需操作内核而创建文件系统，借助于libcephfs与Ceph集群交互.
+3.部署、启用CephFS、客户端挂载的步骤：
+    1.至少有一个节点运行ceph-mds守护进程
+        可以通过部署Ceph集群时在管理节点使用ceph-deploy命令部署，部署完后默认处于standby状态，只有真正创建完CephFS的元数据存储池和数据存储池后才会转为Active模式；
+    2.创建存储池：Metadatapool和datapool
+        ceph osd pool create metadata-pool-name #创建元数据池
+        ceph osd pool create data-pool-name     #创建数据池
+    3.激活文件系统(也就是将MDS关联到两个存储池并使用)
+        创建文件系统的命令格式：ceph fs new
+            ceph fs new &lt;fs-name&gt; metadata-pool-name data-pool-name
+        查看文件系统状态：
+            ceph fs status &lt;fsname&gt;
+            ceph mds stat
+    4.创建CephFS客户端账号和secret文件    
+        由于Ceph启用了CephX认证，所以CephFS的客户端完成授权认证后方可挂载访问文件系统，关于创建账号和授权见前文章，这里只列步骤：
+        1.创建专用客户端账号，命令如下：
+            ceph auth get-or-create &lt;username&gt; mon &apos;allow r&apos; mds &apos;allow rw&apos; osd &apos;allow rwx pool=&lt;data-pool-name&gt;&apos; 
             注意：
-                如果centos7的内核比较旧，还需要把image默认启用的5个feature的后4个关闭客户端挂载才不会显示出错(只禁用后3个也可以)
-            ~]$ rbd feature disable kube/vol01 exclusive-lock object-map fast-diff deep-flatten
-        ~]$ ceph auth add get-or-create client.kube mon &apos;allow r&apos; osd &apos;allow * pool=kube&apos;  #创建用户及权限
-        ~]$ ceph auth get client.kube -o ceph.client.kube.keyring
-            #导出client.kube用户的keyring文件然后复制给客户端
-        ~]$ scp ceph.client.kube.keyring root@172.30.0.100:/etc/ceph/
-            #复制ceph.client.kube.keyring文件到客户端172.30.0.100的/etc/ceph/目录下
-        ~]$ scp ceph.conf root@172.30.0.100:/etc/ceph/
-            #客户端主机也需要ceph.conf配置文件；
-    2.客户端挂载rbd
-        ~]# find / -name rbd.ko*
-        /usr/lib/modules/3.10.0-957.21.3.el7.x86_64/kernel/drivers/block/rbd.ko.xz
-            #CentOS6系列版本的内核没有集成RBD驱动，CentOS7中的3.10内核中默认已经集成了RBD驱动
-        ~]# lsmod | grep rbd     
-            rbd                    83640  0 
-            libceph               306625  1 rbd
-            #确认客户端内核加载了rbd模块，如果每加载可使用modprobe rbd命令加载
-        ~]# yum install ceph-common     #安装客户端程序包，才有rbd命令
-        ~]# ceph --user kube -s 
-            #由于客户端主机上没有创建cephadm账户，所以需要使用--user指定kube用户
-        ~]# rbd --user kube map kube/vol01
-            /dev/rbd0
-            #将kube/vol01这个image映射为本地的/dev/rbd0磁盘
-        ~]# mkfs.xfs /dev/rbd0     #格式化磁盘
-        ~]# mount /dev/rbd0 /mnt   #挂载在/mnt目录下使用
-        ~]# rbd showmapped         #显示每一个rbd磁盘的map详情
-            id pool namespace image      snap device    
-            0  rbd            kube/vol01    /dev/rbd0
-        ~]# cd /mnt &amp;&amp; touch f1.txt #写入测试
-    3.开机映射rbd块设备
-        ~]# vim /etc/ceph/rbdmap
-            kube/vol01 id=client.kube,keyring=/etc/ceph/ceph.client.kube.keyring
-            注意:即使是rbd的默认池，此处的poolname不能省,参数不是必须的，此处也可以省略，可以直接写kube/vol01
-        ~]# systemctl enable rbdmap.service
-        ~]# systemctl start rbdmap.service
-    4.客户端取消挂载
-        ~]# umount /mnt 
-        ~]# rbd unmap /dev/rbd0
-            #不但要取消挂载还要取消映射
-        ~]$ rbd ls -p kube -l 
-            NAME    SIZE   PARENT  FMT  PORT  LOCK
-            vol01   2 GiB           2         excl
-            vol02   2 GiB           2
-            #客户端主机取消映射后，rbd存储池中该imageLOCK字段就会显示excl
+                由于元数据池仅可由MDS访问，无须授权给客户端账号，所以在OSD部分只需要授权客户端访问数据池data-pool-name即可，而且数据池上的权限指定应根据实际需要进行。
+        2.保存用户账号的密钥key信息于secret文件，用于客户端挂载操作认证之用
+            由于CephFS客户端挂载时需要分开指定username和key信息，所以还需要将此用户的key信息单独导出放到secret文件中；
+            1.先导出keyring密钥,通过keyring文件获取key
+                ceph auth get &lt;username&gt; -o cluster-name.user-name.keyring
+                #到出用户账号到指定名称的keyring中
+            2.再将key保存到secret文件
+                ceph authtool -p -n &lt;username&gt; cluster-name.user-name.keyring &gt; &lt;username&gt;.key
+                #保存到指定名称的secret中
+            或者一步到位也行：
+                ceph auth print-key &lt;username&gt; &gt; &lt;username&gt;.key
+        3.拷贝密钥文件到需要挂载CephFS的客户端主机上
+            scp &lt;username&gt;.key root@server01:/etc/ceph/
+            #拷贝到客户端主机
+    5.1.基于内核的客户端挂载(需要key文件)
+        1.客户端主机环境准备
+            • 确保内核装载了ceph.ko模块  ~]$ modinfo ceph #装载ceph模块
+            • 安装ceph-common程序包
+            • 提供ceph.conf配置文件
+            • 获取到用于认证的密钥文件
+        2.挂载CephFS命令：
+            mount -t ceph &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;] mount_point -o name=USERNAME,secretfile=/PATH/TO/USER-SECRET-KEY
+            或者：
+                mount -t &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;] mount_point -o name=USERNAME,secret=xxxx
+            其中：
+                1.挂载时使用逗号指定一个或多个monitorIP+Port，mount_point是指cephfs模拟出的根文件系统和客户端的挂载点，指明连接的用户和secret密钥文件路径。
+                2.其实也可以secret也可以直接指定秘钥，而不是使用secretfile方式
+        3.查看挂载状态
+            stat -f mount_point
+        4.写入/etc/fstab文件，实现自动挂载
+            ~]$ vim /etc/fstab
+                &lt;MON1:Port&gt;[,&lt;MON2:Port&gt;,&lt;MON3:Port&gt;]:/ /data cephname=fsclient,secretfile=/etc/ceph/fsclient.key,_netdev,noatime 0 0
+            其中：
+                _netdev选项是指挂载时间超时跳过否则主机无法正常启动，noatime是指为了提升文件系统性能建议不要实时更新访问的时间戳。
+    5.2.基于FUSE客户端挂载(需要keyring文件)
+        1.客户端主机环境准备
+            • 安装ceph-fuse程序包
+            • 获取到客户端账号的keyring文件和ceph.conf配置文件
+        2.挂载CephFS
+            ceph-fuse [-n client.username] [-m mon-ip-addr:mon-port] &lt;mount-point&gt; [OPTIONS] [--client_mountpoint/ -r &lt;sub_directory&gt;]
+            其中：
+                1.指定用户名、monIP+Port,mount-point和内核挂载时不同，这里只需要指定客户端的挂载点即可，ceph-fuse会默认使用keyring文件；
+                2.-r root_directory把文件系统内的root_directory作为根挂载，而不是整个Ceph文件系统树。
+        3.写入/etc/fstab，实现自动挂载
+            #DEVICE PATH TYPE OPTIONS
+            none &lt;mount-point&gt; fuse.ceph ceph.id=&lt;user-id&gt; [,ceph.conf=&lt;path&gt;],_netdev,defaults 0 0
+            注意：
+                使用fuse挂载时是没有设备的，所以是none,挂载类型时fuse.ceph,选项有用户名、ceph.conf配置文件，不要指明keyring文件因为它会自动在/etc/ceph目录下查找，_netdev同上原理。
+        4.卸载：
+            fusemount -u &lt;mount_point&gt;
+    6.总结：相对于NFS来说
+        1.用于底层Rados功能，使用副本池拥有冗余能力，不存在单点
+        2.底层Rados由N个节点主组成，可以分散IO和增加节点增加IO扩展性更高
+        CephFS还可以在前端虚拟成NFS使用，但一般不这么做，可以参考：
+            https://mp.weixin.qq.com/s/1TMfqxxE5I2eIhtXPPoRpQ
 
-2.libvirt、RBD和librbd
-    第一种是内核rbd.ko模块挂载rbd块设备，其实使用最多还是通过librbd使用rbd块设备;比如：openstack的存储中使用RBD是最多的，openstack就是通过QEMU\KVM虚拟机连接到rbd块设备的，支持rbd驱动的QEMU/KVM会将对磁盘的请求转换为通过librbd访问Ceph中的rbd设备，访问的配置信息（连入ceph的用户名和密钥）是配置在libvirt配置文件中;
-    1.客户端主机安装
-        客⼾端主机是为KVM Hypervisor主机，它运⾏的虚拟机的磁盘通过rbd协议使⽤Ceph上的rbd存储池中的image；在一台配置比较大的主机上安装KVM虚拟化套件并启动相关服务，此处列出简略步骤；
-        ~]# yum install libvirt qemu-kvm -y
-        ~]# systemctl start libvirtd
-            #安装libvirt与qemu-kvm，并启动libvirtd守护进程；
-        ~]# yum install ceph-common 
-            #安装ceph-common，并配置好与ceph集群通信的配置⽂件等。
-        创建一个libvirt启动虚拟机的xml模板，在模板上指定data interface console和dievice
-    2.创建认证到存储池上的⽤⼾账号client.libvirt，并给予相应的访问权限，例如以rbdpool为例：
-        ~]$ ceph auth get-or-create client.libvirt mon &apos;allow r&apos; osd &apos;allow class-read object_prefix rbd_children, allow rwx pool=rbdpool&apos;
-            #osd上的授权需要额外有class-read、object_prefix（只读取对象前缀的权限）、rbd_children（读取镜像文件的克隆）
-        ~]# ceph auth get client.libvirt -o ceph.client.libvirt.keyring
-        ~]# scp ceph.client.libvirt.keyring root@172.30.0.80:/etc/ceph
-            #将keyring文件复制到安装KVM套件的主机上
-    3.将client.libvirt⽤⼾的认证信息导⼊为libvirtd上⼀个可⽤的secret
-        启动libvirtd后就可以使用virtsh命令创建虚拟机了，但不管是使用virsh还是virt-manger或virt-install创建虚拟机，底层还是使用libvirt连入ceph集群，而libvirtd守护进程连入认证到ceph集群需要使用账号和密钥，其中账号是创建xml文件中定义的，密钥是从ceph上获取并导入给secret的，相关命令是virsh secret-define和virsh secret-dumpxml等；
-        3.1.先创建包含登录到ceph集群用户的xml文件
-            ~]# vim ceph-client-libvirt-secret.xml  #复制下面内容到文件中修改
-                &lt;secret ephemeral=&apos;no&apos; private=&apos;no&apos;&gt;
-                    &lt;usage type=&apos;ceph&apos;&gt;
-                    &lt;name&gt;client.libvirt secret&lt;/name&gt;
-                    &lt;/usage&gt;
-                &lt;/secret&gt;
-            其中：
-                type是指这是登录到ceph集群用到的用户账号xml文件；
-                &lt;name&gt;是认证到ceph上的用户client.libvirt，已创建好的ceph用户
-                secret是通过此xml文件生成后再导入进来的
-        3.2.生成secret
-            ~]# virsh secret-define --file ceph-client-libvirt-secret.xml
-                Secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c created
-            将上面的xml使⽤virsh命令创建出secret，命令会返回创建的secret的UUID
-        3.3.将client.libvirt的密钥导⼊到刚生成的secret中
-            ~]# ceph auth print-key client.libvirt #获取用户密钥
-                AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W==   
-            ~]# virsh secret-set-vaule --secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c --base64 AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W== 
-                Secret avlue set
-                #将获取的用户密钥当做secret值导入到secret中
-            ~]# virsh secret-get-vaule --secret d1477e08-1d29-33e8-9999-k8s6axd9ca8c
-                AQCwkz9cSDLhNSAjx+JS+sK8SN2DS5W==
-                #反之通过secret可以查看到它的值，也就是用户client.libvurt的密钥
-        这样libvirtd守护进程就可以通过此secret认证到ceph集群了；
-    4.创建空的image，或者导⼊已经的磁盘镜像内容，以运⾏基于image的KVM虚拟机；
-        4.1.导⼊命令格式：
-            qemu-img convert -f qcow2 -O raw /PATH/FROM/IMAGE_FILE rbd:&lt;rpd-pool-name&gt;/&lt;image-name&gt;
-            例如：
-               ~]# qemu-img convert -f qcow2 -O raw cirros-0.3.4-x86_64-disk.img rbd:rbdpool/cirros-0.3.4 
-            查看导⼊⽣成的镜像：
-                ~]# rbd info -p rbdpool cirros-0.3.4
-                rbd image &apos;cirros-0.3.4&apos;: size 39 MiB in 10 objects order 22 (4 MiB objects) id: 13896b8b4567
-                block_name_prefix: rbd_data.13896b8b4567 format: 2 features: layering, exclusive-lock, object-map, fast-
-                diff, deep-flatten op_features: flags: create_timestamp: Tue Mar 5 10:11:38 2019
-        4.2.或者创建新的空⽩image
-            ~]# rbd create --image centos-7.6-0001 --pool rbdpool
-    5.创建VM（两个vm模板）
-        1.创建VM配置⽂件，下面是一个接近最小化的vm模板；其中的disk配置段指明了要使⽤的rbd image，⽽auth配置段指明了认证到Ceph集群时使⽤的secret的UUID。
-            &lt;domain type=&apos;kvm&apos;&gt;
-              &lt;name&gt;testvm&lt;/name&gt;
-              &lt;memory&gt;131072&lt;/memory&gt;
-              &lt;vcpu&gt;1&lt;/vcpu&gt;
-              &lt;os&gt;
-                &lt;type arch=&apos;x86_64&apos;&gt;hvm&lt;/type&gt;
-              &lt;/os&gt;
-              &lt;clock sync=&quot;localtime&quot;/&gt;
-              &lt;devices&gt;
-                &lt;emulator&gt;/usr/libexec/qemu-kvm&lt;/emulator&gt;
-                &lt;disk type=&apos;network&apos; device=&apos;disk&apos;&gt;
-                   &lt;source protocol=&apos;rbd&apos; name=&apos;rbdpool/cirros-0.3.4&apos;&gt;
-                      &lt;host name=&apos;mon01&apos; port=&apos;6789&apos;/&gt;
-                   &lt;/source&gt;
-                   &lt;auth username=&apos;libvirt&apos;&gt;
-                      &lt;secret type=&apos;ceph&apos; uuid=&apos;7384444b-3d69-44e8-9999-1f821cd9ca8c&apos;/&gt;
-                   &lt;/auth&gt;
-                   &lt;target dev=&apos;vda&apos; bus=&apos;virtio&apos;/&gt;
-                &lt;/disk&gt;
-                &lt;interface type=&apos;network&apos;&gt;
-                  &lt;mac address=&apos;52:54:00:25:a1:80&apos;/&gt;
-                  &lt;source network=&apos;default&apos;/&gt;
-                  &lt;model type=&apos;virtio&apos;/&gt;
-                &lt;/interface&gt; 
-                &lt;graphics type=&apos;vnc&apos; port=&apos;-1&apos; keymap=&apos;de&apos;/&gt;
-              &lt;/devices&gt;
-            &lt;/domain&gt;
-            其中：
-                disk段：表示使用rbd的rbdpool/cirros-0.3.4镜像作为此虚拟机的设备以及连入ceph主机的主机名和端口
-                auth段:即上面第二步创建好的secret的UUID
-        2.创建虚拟机
-            将上面的vm模板保存为xml文件放在/etc/libvirt/qemu目录下命名为textvm.xml，并基于此xml启动为虚拟机
-            ~]# virsh define testvm.xml 
-            ~]# virsh start testvm
-            ~]# virsh list
-                1  testvm  running     #确认启动即可
-            ~]# virsh domblklist testvm
-                vda rbdpool/cirros-0.3.4
-                #查看虚拟机的磁盘设备状态，可以看到是基于rbd的磁盘文件cirros-0.3.4加载启动的
+    完整挂载示例：
+        ~]$ ceph osd pool create cephfs-metadata 32 #元数据池
+        ~]$ ceph osd pool create cephfs-data 64     #数据池
+        ~]$ ceph fs new cephfs cephfs-metadatacephfs-data #激活
+        ~]$ ceph mds stat #查看文件系统状态
+            cephfs-1/1/1 up {0=stor01=up:active}
+        ~]$ ceph fs status cephfs #查看名为cephfs文件系统的详细信息
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | stor01 | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +----------------+-----------+--------+---------+
+            |  Pool          |    type   |  used  |  avail  |
+            +----------------+-----------+--------+---------+
+            |cephfs-metadata |  metadata |   2286 |    258G | 
+            | cephfs-data    |    data   |    0   |    258G |
+            +----------------+-----------+--------+---------+
+            +--------------+
+            | Standby MDS  |
+            +--------------+    
+            MDS version: ceph version 13.2.4 (....)mimic(stable)
+        ~]$ ceph auth get-or-create client.fsclient mon &apos;allow r&apos; mds &apos;allow rw&apos; osd &apos;allow rw pool=cephfs-data&apos;
+            创建、授权，其中osd权限只授权数据池cephfs-data
+        ~]$ ceph auth get client.fsclient -o /etc/ceph/ceph.client.fsclient.keyring
+            #导出client.fsclient用户的key信息
+        ~]$ ceph authtool -p -n client.fsclient /etc/ceph/ceph.client.fsclient.keyring &gt; fsclient.key
+            #将client.fsclient的keyring保存到secret中
+        上面两步命令也可合并成：
+            ceph auth print-key client.fsclient &gt; fsclient.key
+        ~]$ scp ceph.client.fsclient.keyring fsclient.key root@server01:/etc/ceph/ 
+            #拷贝
+        1.1.基于内核的客户端挂载
+            ~]$ mkdir /data   #客户端的挂载点
+            ~]$ mmount -t ceph mon01:6789:/ /data -o name=fsclient secretfile=/etc/ceph/fsclient.key
+                #完成挂载
+            ~]$ mount 
+                172.30.0.16:6789:/ on /data type ceph (rw,relatime,name=fsclient,secret=&lt;hidden&gt;,acl,wsize=166777216)
+            ~]$ stat -f /data
+                File:&quot;/data&quot;
+                ID: e68dsand8eh9de41 Namelen: 255 Type:ceph
+                ...
+            ~]$ vim /etc/fstab  #开机自动挂载
+                mon01:6789,mon02:6789:/ /data ceph name=fsclient secretfile=/etc/ceph/fsclient.key,_netdev 0 0
+        1.2.基于FUSE客户端挂载
+            ~]$ yum install ceph-fuse ceph-common
+            ~]$ ceph-fuse -n client.fsclient -m mon01:6789 /data
+                starting fuse     #开始挂载
+            ~]$ mount 
+                ceph-fuse on /data type fuse.ceph-fuse (rw,noatime,use_id=0,group_id=0,allow_other)
+            ~]$ vim /etc/fstab
+                none /data fuse.ceph ceph.id=fsclient,ceph.conf/etc/ceph/ceph.conf,_netdev,default 0 0
+</code></pre><h3 id="6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现"><a href="#6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现" class="headerlink" title="6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现"></a>6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现</h3><p><a href="https://blog.csdn.net/skdkjzz/article/details/41307491" target="_blank" rel="noopener">Ceph论文译文参考</a></p>
+<p>–CephFS-MDS动态子树分区逻辑<br><img src="/2019/09/04/Ceph-cephfs详解/CephFS-MDS动态子树分区逻辑.png" alt="CephFS-MDS动态子树分区逻辑"><br>–多活MDS架构<br><img src="/2019/09/04/Ceph-cephfs详解/多活MDS架构.png" alt="多活MDS架构"></p>
+<pre><code>MDS是CephFS的瓶颈？
+    CephFS文件系统是将数据分为元数据Metadata和数据Data分开存放的，Datapool可以随着底层Rados-Cluster的OSD增加完成I/O的自动扩展，Metadatapool也可以扩展，但是从客户端--&gt;MDS--&gt;Metadatapool流程可以知道MDS是Metadatapool的唯一访问入口，当有大量的CephFS客户端同时访问MDS时，Metadatapool可能不会成为瓶颈而MDS服务确有很大可能成为CephFS的瓶颈!
+单纯增加MDS节点无法分担写操作从而达到扩展瓶颈的效果!
+    CephFS的扩展实际上还是对MDS守护进程的扩展，MDS保存的是文件系统的元数据，而文件系统的元数据其实就是一个树状结构（如上图）；比如当有2个MDS时，当客户端通过MDS01写操作和在MDS02上读操作是同一个文件时，就必须保证这两个MDS是互相同步保持一致（相当于是主从复制的副本池），这样一来不管写到哪个MDS都需要同步给其他MDS，写操作没有任何分散负载效果，所以单纯的增加MDS节点没有意义。
+1.元数据分区的解决方案：
+    如上说的单纯增加元数据节点的数量是无意义的，所以为了实现文件系统数据和元数据的负载均衡，分布式文件系统业界提供了将名称空间分割治理的解决方案，方案基本思想是：通过将文件系统根树及其热点子树分别部署于不同的元数据服务器进行负载均衡，从而赋予了元数据存储线性扩展的可能，一般有几种分区方法：
+        1.静态子树分区
+            1.1.静态子树分区的思想是指：通过手工分区方式，把A主机上的根文件系统的一个或多个子目录树如：d1挂载到另外B主机的文件系统上（如NFS），那么所有写在A-d1子树目录下的都会写到了B主机的文件系统目录下，即把一个子目录关联到另外一个分区上去从而减轻了当前文件系统的负载；&quot;静态&quot;子树是指只能减轻被挂载的那个子目录（A-d1）的负载，无法减轻A主机上的其他子目录的负载。
+            1.2.静态子树分区方案在经过长时间数据存取后肯定会出现元数据负载不均衡的情况，可以由管理员手动重新进行分配来解决，所以静态子树分区方式适应于数据位置固定的场景，不适合动态扩展、或者有可能出现异常的场景。
+        2.静态hash分区
+            2.1.静态hash分区是指对A文件系统的目录或者文件名进行路径hash计算来分配数据存储的位置。
+            2.2.这种方式适合数据分布均衡、且需要应用各种异常的情况，但不太适合需要数据分布固定、环境变化频率很高的场景。
+        3.惰性混编分区
+            惰性混编分区是指将静态hash分区和传统的文件系统结合使用，不做详细说明
+        4.动态子树分区
+            通过实时监控集群节点的负载，动态调整子树分布于不同的节点。
+            这种方式适合各种异常场景，能根据负载的情况，动态的调整数据分布，不过如果大量数据的迁移肯定会导致业务抖动，影响性能。
+2.Ceph动态子树分区
+    1.动态是相对于静态而言，静态是将文件系统的某个子目录上的元数据指定由固定的某一个MDS来管理，而&quot;静态&quot;的缺点是肯定会带来元数据分布不均的情况，所以为了避免这种情况，使用&quot;动态子树方式&quot;按照当前每个子目录的实际负载来动态迁移分配当前子树的元数据到其他MDS。
+    2.Ceph就是使用动态子树分区方式，支持多个MDS同时工作，如上图1示：
+        1.其中一个（MDS1）负责根，根上的某个子树动态的分配给第二个MDS服务器，以此类推...
+        2.Rank级别：
+            MDS是有等级划分的，负载根文件系统管理的MDS的Rank为0级别，Rank1、rank2...它们都属于Rank0的子树。
+        3.MDS的冗余实现，如上图1示
+            多个MDS此时只是分担元数据负载而不具有数据冗余能力，虽然元数据是存到Metadata-pool中的，即使管理它的MDS宕了其他MDS可以加载但速度非常慢（元数据是小而密集的IO请求），所以冗余方案有：
+            1.公共冗余MDS(备用MDS、standby)：
+                公共备用MDS会代替任何一个可能出现故障的主MDS
+            2.每个MDS配置一个单独的冷备MDS：
+                冷备MDS的逻辑和存在的问题：主MDS宕机了，冷备MDS需要从Metadatapool中加载数据重新提供服务，中间肯定会出现卡和切换耗时比较高的问题。
+            3.每个MDS配置一个在线备用MDS(热备MDS)：
+                在线备用MDS(热备MDS)的逻辑是：主MDS的元数据操作不但要同步到内存中，同时也要同步给在线备用的MDS，在线备用MDS虽然不提供服务但实时更新数据，这样主从切换减少了数据加载的步骤就会大大减少切换耗时.
+    3.Ceph的MDS集群是基于动态子树分区策略,自适应地分配缓存元数据，分层分布在一组节点上, 如上图2所示：
+        1.通过使用计数器统计每个MDS中元数据的访问量。任何操作使得受影响inode及其上层节点直到根目录的计数都增加,从而提供每个MDS一个权值，来描述最近的载荷分布。定期比较MDS权值, 通过迁移以保证元数据工作负载均匀分布。共享的永久存储和及其名空间锁的结合保证这样的迁移是可行的，转移一些内存缓存的内容到新的节点, 对相干锁或客户端功能影响最小。新导入元数据将写入新MDS的日志中,同时，还有日志分录新旧MDS以确保迁移是安全的（类似于两阶段提交）。子树分区保持以最小化前缀复制开销同时也要保护本地性。
+        2.跨多个MDS节点复制元数据时,inode内容分为三组,每个都有不同的语义一致性:安全（owner,mode）、文件（size,mtime）、不可变性质（inode-number,ctime,layout), 当不可变性质不变，安全和文件锁被独立的状态机管理，都拥有不同状态集，并且根据不同的访问和更新在不同状态之间转换。例如：
+            onwer和mode用于路径访问的安全检查，很少改变，只需要很少几个状态，但是客户端多种访问模式的集合，因为它反应在MDS中，可以控制客户端的访问能力。
+3.单活MDS及其高可用和多活MDS(multi-MDS)
+    综上，MDS作为CephFS的唯一入口，所以：1.MDS进程必须要做冗余；2.如果只有一个MDS进程那么它会成为一个较重文件系统的瓶颈，为了避免其成为瓶颈我们使用元数据分区的动态子树分区方式实现多个MDS同时工作（多活MDS，multi-mds），避免每个MDS成为单点还需要对每个MDS实现高可用；所以MDS的部署方案就有3种方式：
+    1.单活MDS
+        只有一个MDS，不安全且易成为CephFS文件系统的瓶颈，不推荐
+    2.单活MDS高可用
+        对外提供服务只有一个active-mds,多个standby-mds，当active-mds挂掉，standby-mds会立马接替，保证集群高可用性；而standby-mds有2种备用方案：
+        1.冷备MDS
+            冷备MDS其实只是准备了一个备用的mds进程，与主进程保持心跳关系，并不备份lru元数据，一旦主的mds挂了，备份mds会从Metadatapool中replay()元数据到缓存，replay肯定会消耗一定的时间，主从切换一定会有延迟。
+        2.热备MDS
+            热备除了准备了备用的mds进程，元数据缓存先写入主MDS，然后由主mds时时刻刻同步给热备MDS，当主的mds挂了，热备的mds直接变成主mds，并且没有replay()的操作，所以主从切换消耗的时间非常少。
+    3.多活MDS(multi-MDS)
+        使用元数据分区的动态子树分区方式实现，多个MDS同时工作分担前端的读写操作，避免MDS称为CephFS的性能瓶颈，这也是CephFS在Luminous版本中多元数据服务器（Multi-MDS）的功能和目录分片（dirfragment）的功能特性。
+
+4.多活MDS(multi-MDS、active-activr MDSs)--&gt;重要
+    1.多主MDS模式是指CephFS将整个文件系统的名称空间切分为多个子树并配置到多个MDS之上，不过，读写操作的负载均衡策略分别是子树切分和目录副本，意思是：
+        1.将写操作负载较重的目录切分成多个子目录到其他active-MDS以分散负载.
+        2.为读操作负载较重的目录创建多个副本到多个MDS以均衡负载.
+    2.子树分区和迁移的决策是一个同步过程，各MDS每10秒钟做一次独立的迁移决策，每个MDS并不存在一个一致的名称空间视图，且MDS集群也不存在一个全局调度器负责统一的调度决策;
+    3.各MDS彼此间通过交换心跳信息（HeartBeat，简称HB）及负载状态来确定是否要进行迁移、如何分区名称空间，以及是否需要目录切分为子树等
+        管理员也可以配置CephFS负载的计算方式从而影响MDS的负载决策，目前，CephFS支持基于CPU负载、文件系统负载及混合此两种的决策机制
+    4.动态子树分区依赖于共享存储完成热点负载在MDS间的迁移，于是Ceph把MDS的元数据存储于后面的RADOS集群上的专用存储池中，此存储池可由多个MDS共享
+        MDS对元数据的访问并不直接基于RADOS进行，而是为其提供了一个基于内存的缓存区以缓存热点元数据，并且在元数据相关日志条目过期之前将一直存储于内存中
+    5.为了确保多个MDS之间能够共享数据，CephFS使用元数据日志来解决容错问题：
+        1.即每个活跃的MDS都是通过日志保存在底层的Metadatapool中实现的，这个Metadatapool类似于LFS（Log-Structured File System）和WAFL（ Write Anywhere File Layout）的工作机制
+        2.CephFS元数据日志文件的体积可以无限增长以确保日志信息能顺序写入RADOS，并额外赋予守护进程修剪冗余或不相关日志条目的能力
+    6.每个Ceph上可以创建多个CephFS文件系统（但建议只创建一个），而且每个CephFS都会有一个易读的文件系统名称和一个称为FSCID标识符ID，并且每个CephFS都应该配置至少一个Active MDS守护进程对外提供服务。
+    7.一个MDS集群中可处于Active状态的MDS数量的上限由ceph.conf中max_mds参数配置，它控制着可用的rank数量，默认值为1；
+        1.rank是指CephFS上可同时处于Active状态的MDS守护进程的可用编号，其范围从0到max_mds-1；
+        2.一个rank编号意味着一个可承载CephFS层级文件系统目录子树元数据管理功能的Active状态的ceph-mds守护进程编制，max_mds的值为1时意味着仅有一个0号rank可用；
+        3.刚启动的ceph-mds守护进程没有接管任何rank，它随后由MON按需进行分配
+        4.一个ceph-mds一次仅可占据一个rank，并且在守护进程终止时将其释放
+        5. 一个rank可以处于下列三种状态中的某一种：
+            1.Up：rank已经由某个ceph-mds守护进程接管
+            2.Failed：rank未被任何ceph-mds守护进程接管
+            3.Damaged：rank被占用且占用的ceph-mds守护进程处于故障状态，其元数据处于崩溃或丢失状态
+                在管理员修复问题并对其运行&quot;ceph mds repaired&quot;命令之前，处于Damaged状态的rank不能分配给其它任何MDS守护进程.
+    8.增加rank值以配置active-MDS数量
+        要想实现在Ceph集群中配置多个active-MDSs，需要更改系统默认的rank=1的值；
+        1.增加Active MDS的数量的命令：
+            ceph fs set &lt;fsname&gt; max_mds &lt;number&gt;
+            注意：
+                1.仅当存在某个备用守护进程可供新的级别使用时，文件系统中的实际级别数才会增加；
+                2.多活MDS的场景依然要求存在备用的冗余主机以实现服务HA，因此max_mds的值总是应该比实际可用的MDS数量至少小1；
+        2.降低Acitve MDS的数量的命令：
+            ceph mds deactivate {System:rank|FSID:rank|rank}
+            注意：减小max_mds的值仅会限制新的rank的创建，对于已经存在的Active MDS及持有的rank不造成真正的影响，因此降低max_mds的值后，管理员需要手动关闭不再被需要的rank；
+        3.变动max_mds的值后查看其状态
+            ceph status &lt;fsname&gt;
+    9.手动设置MDS的管理故障转移机制
+        出于冗余高可用的目的配置一定数量Standby状态的ceph-mds守护进程如何接管、怎么接管失效的MDS，称为MDS管理故障转移机制，而且CephFS提供了四个选项参数可以手动控制Standby状态的MDS守护进程如何工作：
+        1.mds_standby_replay：也就是上面说的热备MDS高可用模式
+            1.其值为布尔型值，true表示当前MDS守护进程将持续读取某个特定的Up状态的rank的元数据日志，从而持有相关rank的元数据缓存，并在此rank失效时加速故障切换；
+            2.一个up状态的rank仅能拥有一个replay守护进程，多出的会被自动降级为正常的非replay型MDS
+        2.mds_standby_for_name：设置备用的MDS进程仅备用于指定名称的MDS(rank)；
+        3.mds_standby_for_rank：两种用法
+            1.此选项不但可以设置此备用MDS进程仅备用于指定的rank，它不会接替任何其它失效的rank；
+                即有rank0和1时，只设置为rank0的备用MDS，rank1即使故障它也不会接替
+            2.此选项还可以在当一个Ceph集群上创建了多个CephFS文件系统时，他还可以为跨多个文件系统为多个rank进行冗余，但需要联合使用下面的参数来指定；
+                即只设置为指定fscid的文件系统中的rank0的备用MDS。
+        4.mds_standby_for_fscid：联合mds_standby_for_rank参数的值协同生效;
+            同时设置了mds_standby_for_rank：备用于指定fscid的指定rank；
+            未设置mds_standby_for_rank时：备用于指定fscid的任意rank；
+
+5.部署单活MDS高可用和多活MDS高可用
+    此前部署Ceph时只有一个active-mds，在此基础上实现单活高可用和多活MDS高可用
+    ~]$ ceph mds stat
+        cephfs-1/1/1 up {0=mon01=up:active} #当前集群只有一个active-mds=mon01
+    1.单活MDS高可用
+        ~]$ ceph-deploy mds create mon02 mon03 #将mon02和mon03也部署为mds节点
+        ~]$ ceph fs status cephfs 
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | stor01 | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +--------------+
+            | Standby MDS  |
+            |     mon02    |
+            |     mon03    | 此时就是一个单活的MDS高可用，mon2和mon3会在
+            +--------------+  mon01故障时接替mon01
+    2.多活MDS高可用
+        ~]$ ceph fs set cephfs max_mds=2    #设置活动的MDS数量为2
+        ~]$ ceph fs status cephfs 
+            +-------+--------+--------+-----------+-----+------+
+            |  Rank | State  |   MDS  | Activity  | dns | inos |
+            +-------+--------+--------+-----------+------+-----+
+            |   0   | active | mon01  | Reqs: 0/s | 10  |  13  |
+            |   1   | active | mon02  | Reqs: 0/s | 10  |  13  |
+            +-------+--------+--------+-----------+-----+------+
+            +--------------+
+            | Standby MDS  |
+            |  mon03       | 
+            +--------------+ 
+            此时只有一个备用MDS：mon03,可以通过管理故障转移机制设置备用模式
+        ~]$ vim /etc/ceph/ceph.conf
+            ...
+            [mds.mon03]
+            mds_standby_for_fscid=cephfs
+            意思是指明mon03为名为cephfs文件系统的备用mds，由于cephfs有两个活动mds,所以不管是mon01还是mon02故障，mon03都会以冷备mds的方式接管，但切换时间会较长；
+        ~]$ vim /etc/ceph/ceph.conf
+            ...
+            [mds.mon03]
+            mds_standby_for_name=mon01
+            mds_standby_replay=true
+            [mds.mon04]
+            mds_standby_for_name=mon02
+            mds_standby_replay=true
+            #如果有2个activemds,2个standbymds，可以通过上面两个选项来指定各自的备用mds和其模式为热备，以实现故障切换时加速切换速度.
+</code></pre><h3 id="CephFS-nfs-ganesha实现高可用的NFS"><a href="#CephFS-nfs-ganesha实现高可用的NFS" class="headerlink" title="CephFS+nfs-ganesha实现高可用的NFS"></a>CephFS+nfs-ganesha实现高可用的NFS</h3><p><a href="https://mp.weixin.qq.com/s/1TMfqxxE5I2eIhtXPPoRpQ" target="_blank" rel="noopener">参考</a></p>
+<pre><code>Cephfs需要客户端支持kernel挂载、fuse挂载，这种些方式都限制了一个使用场景，相比传统的NFS协议使用广度上还有一定的差距，所以Ceph中集成了开源软件ganesha实现cephfs和rwg的转换输出到NFS，本文介绍了如何使用Dashboard中NFS模块（ganesha）如何导出NFS
 </code></pre>
       
     </div>
@@ -1069,8 +1007,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/03/Kubernetes-Volumes存储卷/" rel="next" title="Kubernetes-Volumes存储卷">
-                <i class="fa fa-chevron-left"></i> Kubernetes-Volumes存储卷
+              <a href="/2019/09/04/Ceph-crush算法和分布式存储数据分布理论/" rel="next" title="Ceph-crush算法和分布式存储数据分布理论">
+                <i class="fa fa-chevron-left"></i> Ceph-crush算法和分布式存储数据分布理论
               </a>
             
           </div>
@@ -1079,8 +1017,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/04/Ceph-cephfs/" rel="prev" title="Ceph-cephfs">
-                Ceph-cephfs <i class="fa fa-chevron-right"></i>
+              <a href="/2019/10/01/旧事-大好河山/" rel="prev" title="旧事-大好河山">
+                旧事-大好河山 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1423,7 +1361,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-RBD-Rados-Block-Device-的原理和使用"><span class="nav-number">1.</span> <span class="nav-text">5.RBD(Rados Block Device)的原理和使用</span></a></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#RBD使用示例"><span class="nav-number"></span> <span class="nav-text">RBD使用示例</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-CephFS-Ceph-File-System-文件系统接口的原理和使用详解"><span class="nav-number">1.</span> <span class="nav-text">6.CephFS(Ceph File System)文件系统接口的原理和使用详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-CephFS的原理和使用"><span class="nav-number">1.1.</span> <span class="nav-text">6.1.CephFS的原理和使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-CephFS动态子树分区概念和多活MDS高可用原理-amp-实现"><span class="nav-number">2.</span> <span class="nav-text">6.2.CephFS动态子树分区概念和多活MDS高可用原理&amp;实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CephFS-nfs-ganesha实现高可用的NFS"><span class="nav-number">3.</span> <span class="nav-text">CephFS+nfs-ganesha实现高可用的NFS</span></a></li></ol></div>
             
 
           </div>
@@ -1733,7 +1671,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">26:55</span>
+    <span title="站点阅读时长">26:56</span>
   
 </div>
 
