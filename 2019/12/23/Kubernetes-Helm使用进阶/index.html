@@ -136,28 +136,27 @@
   daovoice('update');
   </script>
 
-  <meta name="description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
+  <meta name="description" content="Helm使用进阶[Helm基础参照此文]">
 <meta name="keywords" content="Kubernetes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kubernetes-ELK收集日志">
-<meta property="og:url" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/index.html">
+<meta property="og:title" content="Kubernetes-Helm使用进阶">
+<meta property="og:url" content="https://www.liukui.tech/2019/12/23/Kubernetes-Helm使用进阶/index.html">
 <meta property="og:site_name" content="Coool&#39;s Blog">
-<meta property="og:description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
+<meta property="og:description" content="Helm使用进阶[Helm基础参照此文]">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png">
-<meta property="og:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/收集的日志.png">
-<meta property="og:updated_time" content="2019-07-21T07:24:24.258Z">
+<meta property="og:image" content="https://www.liukui.tech/2019/12/23/Kubernetes-Helm使用进阶/Helm结合CICD.png">
+<meta property="og:updated_time" content="2020-11-07T10:05:44.323Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kubernetes-ELK收集日志">
-<meta name="twitter:description" content="使用EL/FK收集k8s容器日志更新于：19.01.19">
-<meta name="twitter:image" content="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png">
+<meta name="twitter:title" content="Kubernetes-Helm使用进阶">
+<meta name="twitter:description" content="Helm使用进阶[Helm基础参照此文]">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/12/23/Kubernetes-Helm使用进阶/Helm结合CICD.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/">
+  <link rel="canonical" href="https://www.liukui.tech/2019/12/23/Kubernetes-Helm使用进阶/">
 
 
 
@@ -167,7 +166,7 @@
   };
 </script>
 
-  <title>Kubernetes-ELK收集日志 | Coool's Blog</title>
+  <title>Kubernetes-Helm使用进阶 | Coool's Blog</title>
   
 
 
@@ -433,7 +432,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2018/11/03/Kubernetes-ELK收集日志/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/12/23/Kubernetes-Helm使用进阶/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -450,7 +449,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kubernetes-ELK收集日志
+          <h1 class="post-title" itemprop="name headline">Kubernetes-Helm使用进阶
               
             
           </h1>
@@ -476,7 +475,7 @@
                 
               
 
-              <time title="创建时间：2018-11-03 08:00:00" itemprop="dateCreated datePublished" datetime="2018-11-03T08:00:00+08:00">2018-11-03</time>
+              <time title="创建时间：2019-12-23 08:00:00" itemprop="dateCreated datePublished" datetime="2019-12-23T08:00:00+08:00">2019-12-23</time>
             
 
             
@@ -509,8 +508,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/11/03/Kubernetes-ELK收集日志/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/11/03/Kubernetes-ELK收集日志/" itemprop="commentCount"></span>
+                <a href="/2019/12/23/Kubernetes-Helm使用进阶/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/12/23/Kubernetes-Helm使用进阶/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -532,7 +531,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">9.3k</span>
+                <span title="本文字数">13k</span>
               
 
               
@@ -546,7 +545,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">8 分钟</span>
+                <span title="阅读时长">11 分钟</span>
               
             </div>
           
@@ -566,220 +565,336 @@
       
 
       
-        <h3 id="使用EL-FK收集k8s容器日志"><a href="#使用EL-FK收集k8s容器日志" class="headerlink" title="使用EL/FK收集k8s容器日志"></a>使用EL/FK收集k8s容器日志</h3><p>更新于：19.01.19<br><a id="more"></a></p>
-<h3 id="1-日志收集方式及其架构"><a href="#1-日志收集方式及其架构" class="headerlink" title="1.日志收集方式及其架构"></a>1.日志收集方式及其架构</h3><p><img src="/2018/11/03/Kubernetes-ELK收集日志/filebeat-log-collector.png" alt="filebeat-log-collector.png"></p>
-<pre><code>前言：
-    1.由于运行在k8s中业务pod的IP不固定、业务A的pod不只一个来回切换查看日志太麻烦，而且生产中制作的业务镜像是不安装SSH
-    服务的，所以需要将一类pod中的日志收集到一起放到es中通过kibana去查看更方便；
-    2.kubernetes官方插件使用EFK来处理容器日志,其中F指代Fluentd（Fluentd属于CNCF项目）,用于收集容器的日志。但是由于
-    Fluentd用起来的确不怎么舒服（Ruby风格配置文件）,而Logstash又过于重量级(光启动就需要消耗大约500M内存),
-    而Elatic家族的Beats系列中的Filebeat既轻量又无依赖，因此filebeat是无二选择；
-1.官方日志方案
-    Kubernetes官方提供了EFK的日志收集解决方案，但是这种方案并不适合所有的业务场景，它本身就有一些局限性，例如：
-        1.所有日志都必须是out前台输出，真实业务场景中无法保证所有日志都在前台输出
-        2.只能有一个日志输出文件，而真实业务场景中往往有多个日志输出文件
-        3.Fluentd并不是常用的日志收集工具，我们更习惯用logstash，现使用filebeat替代；
-        4.我们已经有自己的ELK集群且有专人维护，没有必要再在kubernetes上做一个日志收集服务
-2.Kubernetes集群中的日志收集解决方案
-    1.每个app的镜像中都集成日志收集组件：
-        优点：
-            部署方便，kubernetes的yaml文件无须特别配置，可以为每个app自定义日志收集配置
-        缺点：
-            强耦合，不方便应用和日志收集组件升级和维护且会导致镜像过大
-    2.单独创建一个日志收集组件跟app的容器一起运行在同一个pod中：
-        优点：
-            低耦合，扩展性强，方便维护和升级
-        缺点：
-            需要对kubernetes的yaml文件进行单独配置，略显繁琐
-    3：将所有的Pod的日志都挂载到宿主机上，每台主机上单独起一个日志收集Pod：
-        优点：
-            完全解耦，性能最高，管理起来最方便
-        缺点：
-            需要统一日志收集规则，目录和输出方式
-3.方案选择
-    1.综合以上方案，由于filebeat不大放在每个容器中镜像也不会很大，虽然后期filebeat版本升级有点繁琐，但这样不需要在
-    yaml清单中对日志收集进行定义，所以选择了第一种方式；
-        虽然在进行日志收集的过程中,我们首先想到的是使用Logstash,它用于日志的原始数据的分析和转换(grok)；但是在k8s容器
-        时代，更为轻量级的方案中首选Beats系列,上面就是基于ELK改造过后的基于Filebeat的容器日志处理方案；
-    2.filebeat部署：
-        1.Filebeat可以使用DaemonSet的方式部署在每个k8s节点上，它会将Docker容器的日志
-        目录(/var/lib/docker/containers)挂载进去开启一个prospector来进行处理；
-        2.将filebeat构建在每个业务镜像中，作为业务容器中的一个进程对外发送日志；
-4.最终日志收集流程
-    由于第二种方式更简单所以选择第二种方式收集日志，收集流程：
-    业务A-filebeat将pod日志--&gt;redis--&gt;logstach--&gt;elasticsearch--&gt;kibana展示
-        #当然也可以使用zookeeper+kafka代替redis集群
-</code></pre><h3 id="2-使用filebeat收集kubernetes容器日志"><a href="#2-使用filebeat收集kubernetes容器日志" class="headerlink" title="2.使用filebeat收集kubernetes容器日志"></a>2.使用filebeat收集kubernetes容器日志</h3><pre><code>部署方式：
-    1.elasticsaerch、logstash、redis、kibana都部署在k8s集群外
-    2.docker镜像中都安装filebeat客户端
+        <h3 id="Helm使用进阶"><a href="#Helm使用进阶" class="headerlink" title="Helm使用进阶"></a>Helm使用进阶</h3><p>[Helm基础参照此文]<br><a id="more"></a></p>
+<h3 id="Helm使用进阶—3-Helm-Chart结构"><a href="#Helm使用进阶—3-Helm-Chart结构" class="headerlink" title="Helm使用进阶—3.Helm Chart结构"></a>Helm使用进阶—3.Helm Chart结构</h3><pre><code>一.Helm Chart结构              #Chart内部最重要的就是配置清单模板了
+    1.Chart目录结构
+        Chart/
+            Chart.yaml
+            LICENSE
+            README.md
+            requirements.yaml
+            values.yaml
+            charts/
+            templates/
+            tamplates/NOTES.txt
+    2.Chart.yaml文件
+        name:       
+            [必须] Chart的名称
+        version:    
+            [必须] Chart的版本号，版本号必须符合SemVer2：http://semver.org/
+        description: 
+            [可选] Chart的简要描述
+        engine: gotpl 
+            # [可选] 模版引擎，默认值是gotpl
+        home: 
+            [可选] 项目地址
+        icon: 
+            [可选] 一个SVG或PNG格式的图片地址URL链接
+        keywords:
+          -  [可选] 关键字列表,K/V格式列表
+            来说明这个chart是做什么的，search可以通过这个关键词搜索到这个chart
+        sources:
+          - [可选] 当前Chart的下载地址列表，代表这个chart是哪个仓库的哪个位置
+        maintainers: # [可选]
+          - name: [必须] 名字
+            email: [可选] 邮箱    #数组列表，-可以写多个
+        version： [可选]     当前chart的版本，不应用程序的版本
 
-1.安装elasticsearch集群
-    对ES添加添加一些我们需要的插件：
-        ~]# cd /usr/share/elasticsearch
-        ~]# bin/elasticsearch-plugin install ingest-geoip
-        ~]# bin/elasticsearch-plugin install x-pack
-        ~]# systemctl restart elasticsearch
-        #ES的地图需要使用GEOIP来解索IP的经纬度, 所以ES还需要安装一个GEOIP的插件
-2.安装logstach
-3.安装zk+kafka或者redis
-    此处使用redis，安装redis,设置密码等；redis服务器地址是192.168.1.118
-    zk+kafka部署参考：k8s中的文章
-4.安装kibana
-    #以上步骤全部省略
+    3.requirements.yaml和charts目录
+        requirements.yaml 文件内容：
+            dependencies:
+              - name: example
+                version: 1.2.3
+                repository: http://example.com/charts
+              - name: Chart名称
+                version: Chart版本
+                repository: 该Chart所在的仓库地址
+        Chart支持两种方式表示依赖关系:
+            1.可以使用requirements.yaml定义每一个其他chart的名称、版本、别名等；
+                #此方法可能被废弃了
+            2.直接使用charts/目录直接把被依赖的chart打包在当前的chart内部使用；
+        或者直接将依赖的Chart放置到charts目录中
 
-5.制作包含filebeat的tomcat8基础镜像
-    生产环境下我们会将filebeat程序制作成系统基础镜像，然后业务镜像再基于这个镜像构建成业务镜像，就能够收集日志了；
-    ~]# tree tomcat8/       #以centos为基础镜像     
-        tomcat8/
-        ├── build-command.sh            #build脚本
-        └── Dockerfile                  #centos的Dockerfile文件
-        └── filebeat-6.4.2-x86_64.rpm   #准备日志服务filebeat
-        ├── apache-tomcat-8.0.38.tar.gz #tomcat8
-        ├── jdk-8u162-linux-x64.tar.gz  #jdk8
-        └── profile                     #jdk的profile文件
-    ~]# vim Dockerfile 
-        #Centos Base Image
-        FROM 192.168.1.101/baseimage/centos:7.6    #基于官方镜像构建
-        MAINTAINER lk &quot;645150765@qq.com&quot;           #author
-        ADD filebeat-6.4.2-x86_64.rpm /tmp/
-        RUN yum install -y epel-release  vim wget tree  pcre pcre-devel gcc gcc-c++  zlib zlib-devel openssl openssl-devel net-tools iotop unzip zip iproute ntpdate nfs-utils tcpdump telnet traceroute /tmp/filebeat-6.4.2-x86_64.rpm &amp;&amp; rm -rf /tmp/
-        RUN rm -rf /etc/localtime &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-            #安装了常用的基础命令、上传安装filebeat、修改镜像默认时区
-        ADD jdk-8u162-linux-x64.tar.gz /usr/local/src/
-        RUN ln -sv /usr/local/src/jdk1.8.0_162 /usr/local/jdk
-        ADD profile /etc/profile
-        RUN mkdir /data/tomcat/webapps -pv
+    4.templates目录：
+        1.各类Kubernetes资源的配置模板都放置在这里。Helm会将values.yaml中的参数值注入到模板中生成标准的YAML配置文件。
+        2.模板是chart最重要的部分，也是Helm最强大的地方。模板增加了应用部署的灵活性，能够适用不同的环境，生成不同配置信息的chart-release;
+            templates/
+            ├── deployment.yaml
+            ├── _helpers.tpl
+            ├── ingress.yaml
+            ├── NOTES.txt
+            ├── service.yaml
+            └── tests
+                └── test-connection.yaml
+        3.模版语法扩展了golang/text/template的语法：               
+            #这种方式定义的模版，会去除test模版尾部所有的空行
+            {{- define "test"}}
+            模版内容
+            {{- end}}
 
-        ENV JAVA_HOME /usr/local/jdk
-        ENV JRE_HOME $JAVA_HOME/jre
-        ENV CLASSPATH $JAVA_HOME/lib/:$JRE_HOME/lib/
-        ENV PATH $PATH:$JAVA_HOME/bin
+            # 去除test模版头部的第一个空行
+            {{- template "test" }}
+        4.用于yaml文件前置空格的语法：
+            # 这种方式定义的模版，会去除test模版头部和尾部所有的空行
+            {{- define "test" -}}
+            模版内容
+            {{- end -}}
 
-        ADD  apache-tomcat-8.0.38.tar.gz /apps
-        RUN ln -sv /apps/apache-tomcat-8.0.38 /apps/tomcat
-        RUN useradd tomcat -u 2001
+            # 可以在test模版每一行的头部增加4个空格，用于yaml文件的对齐
+            {{ include "test" | indent 4}}
+    5.templates/NOTES.txt 
+        NOTES.txt是chart的简易使用文档，chart安装成功后会显示此文档内容
+        就是当使用命令：
+            help install chart部署完应用最后那个notes提示信息，可以根据需要自己修改
+    6.values.yaml
+        1.values.yaml就是config文件，vaule.yaml中记录的是K/V格式的参数数据；
+        2.当helm create chart时，这个V就会传递给templates目录下的deployment.yaml、ingress.yaml、service.yaml，然后程序才能正常运行；
+</code></pre><h3 id="Helm使用进阶—4-创建自己的chart"><a href="#Helm使用进阶—4-创建自己的chart" class="headerlink" title="Helm使用进阶—4.创建自己的chart"></a>Helm使用进阶—4.创建自己的chart</h3><p>通过创建自己的chart，可以对chart目录，values.yaml是如何发挥config文件的作用了解的更清楚；</p>
+<pre><code>二.创建自己的chart
+    模板
+    检查配置和模板是否有效
+    部署到kubernetes
+    打包分享
+    将应用发布到 Repository
+    依赖
 
-    ~]# bash build-command.sh   #构建镜像
-        #!/bin/bash
-        docker build -t 192.168.1.101/serverbase/tomcat-base:v1 .
-        sleep 1
-        docker push  192.168.1.101/serverbase/tomcat-base:v1   
-6.构建业务镜像
-    ~]# tree cre-app1/
-        cre-app1/
-        ├── cre-app1.tar.gz
-        ├── build-command.sh
-        ├── catalina.sh
-        ├── Dockerfile
-        ├── filebeat.yml
-        ├── cre-app1
-        │   └── index.html
-        ├── run_tomcat.sh
-        └── server.xml
-    ~]# vim filebeat.yml         #修改filebeat文件
-        filebeat.prospectors:
-        - type: log
-          enabled: true
-          paths:
-            - /apps/tomcat/logs/catalina.out
-          fields:
-            log_type: web-test-creapp1-catalina-outlog
-        filebeat.config.modules:
-          path: ${path.config}/modules.d/*.yml
-          reload.enabled: false
-        setup.template.settings:
-          index.number_of_shards: 3
-        output.redis:
-          hosts: [&quot;192.168.1.118:6379&quot;]
-          key: &quot;web-test&quot;
-          db: 1
-          timeout: 5
-          password: &quot;123456&quot;
+示例：创建一个名为myapp的chart，看一看chart的文件结构
+1.创建目录
+    ~]# helm create myapp     #通过helm create创建一个chart
+    ~]# tree myapp/             #chart目录结构是由create时自动生成的
+    myapp/
+    ├── charts               #被依赖到的其他chart文件下载到此目录
+    ├── Chart.yaml           #Chart本身的版本和配置信息
+    ├── templates            #当前chart的配置模板目录
+    │   ├── deployment.yaml  #deployment文件用于部署应用程序模板
+    │   ├── _helpers.tpl     #用于修改kubernetes objcet配置的模板
+    │   ├── ingress.yaml     #可能需要用到的ingress模板
+    │   ├── NOTES.txt        #helm提示信息
+    │   ├── service.yaml     #部署所需的service文件模板
+    │   └── tests
+    │       └── test-connection.yaml
+    └── values.yaml          #config文件，记录需要传递的K/V值参数
+
+2.templates模板目录
+    Templates目录下是yaml文件的模板，遵循Go-template语法。使用过Hugo的静态网站生成工具的人应该对此很熟悉；
+    ]# tree templates/
+    templates/
+    ├── deployment.yaml
+    ├── _helpers.tpl
+    ├── ingress.yaml
+    ├── NOTES.txt
+    ├── service.yaml
+    └── tests
+        └── test-connection.yaml
     备注：
-        1.paths：指定要收集当前pod的哪个日志文件；
-        2.fields：
-            log_type:在logstach中做if判断它是哪个业务的哪个日志
-        3.output.redis:  先输出到redis,logstach再从redis取数据
-            hosts：redis的地址，这里使用单机redis
-            key：
-                一个业务只有一个key即可，无论这个业务里有多少nginx或tomcat都写到这个key中即可，如果key太多的话，那么logstach的input就需要写很多个；
-    ~]# vim Dockerfile 
-        #tomcat cre-app1
-        FROM 192.168.1.101/serverbase/tomcat-base:v1
-        ADD catalina.sh /apps/tomcat/bin/catalina.sh
-        ADD server.xml /apps/tomcat/conf/server.xml
-        ADD cre-app1.tar.gz /data/tomcat/webapps/myapp/
-        ADD run_tomcat.sh /apps/tomcat/bin/run_tomcat.sh
-        ADD filebeat.yml /etc/filebeat/filebeat.yml
-        RUN chown  -R tomcat.tomcat /data/ /apps/ &amp;&amp; chmod a+x /apps/tomcat/bin/*.sh
-        EXPOSE 8080 8443
-        CMD [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]
-    ~]# vim run_tomcat.sh 
-        #!/bin/bash
-        echo &quot;192.168.1.248 k8s-vip.example.com&quot; &gt;&gt; /etc/hosts
-        /usr/share/filebeat/bin/filebeat -c /etc/filebeat/filebeat.yml -path.home /usr/share/filebeat -path.config /etc/filebeat -path.data /var/lib/filebeat -path.logs /var/log/filebeat &amp;
-        su - tomcat -c &quot;/apps/tomcat/bin/catalina.sh start&quot;
-        tail -f /etc/hosts
-        备注：
-            filebeat在容器启动方式如上，这种方式是在物理机上安装启动后按照实际路径修改的,让filebeat在容器中以进程的方式运行，&amp;表示放到run_tomcat.sh这个shell的后台去；
-    ~]# bash build-command.sh 2018-10-20
-        192.168.1.101/cre/cre-app1:2018-10-20
-    测试镜像：
-        ~]# docker run --name app1 -d 192.168.1.101/cre/cre-app1:2018-10-20
-        ~]# docker exec -it app1 /bin/bash
-        [root@488da447ab60 /]# ps aux
-        USER    PID %CPU %MEM   VSZ   RSS TTY  STAT START   TIME COMMAND
-        root    1    0.0  0.0  11684  1400 ?    Ss   14:01   0:00 /bin/bash /apps/tomcat/bin/run_tomcat.sh
-        root    6  0.1  0.7 288584 13304 ?      Sl   14:01   0:00 /usr/share/filebeat/bin/filebeat...
-        tomcat  32  6.2  6.9 3049932 129176 ?   Sl   14:01   0:02 /usr/local/jdk/bin/java
-            确保tomcat、filebeat都是运行的即可
+        deployment.yaml、ingress.yaml、service.yaml都是部署一个chart应用程序必须或者可能需要用到的清单文件，
+        清单模板内容由helm自动生成，下面简单看一下里面内容；
+    2.1.deployment.yaml        #这里只列出deployment内容，其他yaml文件类似
+        ]# vim deployment.yaml 
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: {{ include "myapp.fullname" . }}
+          labels:
+        {{ include "myapp.labels" . | indent 4 }}
+            spec:
+              {{- with .Values.imagePullSecrets }}
+                 imagePullSecrets:
+                    {{- toYaml . | nindent 8 }}
+              {{- end }}
+                containers:
+                  - name: {{ .Chart.Name }}
+                    image: &quot;{{ .Values.image.repository }}:{{ .Values.image.tag }}&quot;
+                    imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ...下文省略粘贴
+    解释：
+        1.可以看出deployment模板中Value都是以变量方式传递进去的，这些变量都放在/myapp/values.yaml这个文件中；
+        2.比如：container的image镜像的值是{{ .Values.image.repository }}，代表将values.yaml.image.repository的值传递进去，详见values.yaml文件；
+    2.2.values.yaml文件
+        ]# vim values.yaml 
+            replicaCount: 1
+            image:
+              repository: nginx          #生成时默认是nginx,可以改成myapp
+              tag: stable                #myapp镜像的版本，比如：v2
+              pullPolicy: IfNotPresent   #拉取进行策略
+            imagePullSecrets: []
+            nameOverride: &quot;&quot;
+            fullnameOverride: &quot;&quot;
+            service:
+              type: ClusterIP          #给service.yaml文件中传递的service类型
+              port: 80
+            ...下文省略
+        比如：
+            1.在Deployment.yaml中定义的容器镜像image: &quot;{{ .Values.image.repository }}:{{ .Values.image.tag }}&quot;其中的：
+                .Values.image.repository就是myapp
+                .Values.image.tag就是stable
+        以上两个变量值是在create chart的时候由values.yaml传递进去；
 
-7.部署cre-app1项目并收集其日志
-    1.部署cre-app1项目
-        ~]# tree cre-app1/
-            cre-app1/
-            └── cre-app1.yaml
-        ~]# kubectl apply -f cre-app1.yaml
-        ~]# kubectl get pods -n cre
-            #1.确保cre-app1的svc、pod等正常运行
-            #2.启动cre-app1-pod时，filebeat会先运行起来然后检测tomcat的运行日志；
-    2.确认redis中有数据
-        ~]# redis-cli -h192.168.1.118 -p123456
-            192.168.1.118&gt; SELECT 1
-            192.168.1.118&gt; KEYS * 
-            1) &quot;web-test&quot;    #确认filebeat中指定的key传进来了
-            192.168.1.118&gt; LPOP web-test
-            &quot;{\&quot;@timestamp\&quot;:\&quot;2018-1020T04:16:02.103z\&quot;,\&quot;@metadata\&quot;:{\&quot;beat&quot;}...,\&quot;fileds\&quot;:{\&quot;log_type\&quot;:\&quot;web-test-creapp1-catalina-outlog\&quot;}...:&quot;/apps/tomcat/logs/catalina.out\&quot;}&quot;
-        #确保key中filebeat定义的fields.log_type:web-test-creapp1-catalina-outlog是否存在，logstach会过滤这个log_type；
-    3.logstash从redis取数据传给elasticsearch
-        ~]# cd /etc/logstash/conf.d/
-        ~]# vim redis-logstash-es.conf
-            input {
-                redis {
-                    host =&gt; &quot;192.168.1.118&quot;
-                    port =&gt; &quot;6379&quot;
-                    db =&gt; &quot;1&quot;
-                    key =&gt; &quot;web-test&quot;
-                    data_type =&gt; &quot;list&quot;
-                    password =&gt; &quot;123456&quot;
-                }
-            }
-            output {
-                if [filed][log_type] == &quot;web-test-creapp1-catalina-outlog&quot; {
-                elasticsearch {
-                    hosts =&gt; [&quot;192.168.1.116:9200&quot;]
-                    index =&gt; &quot;web-test-container-creapp1-catalina-outlog-%{+YYYY.MM.dd}&quot;
-                }}
-            }
-        ~]# /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/redis-logstash-es.conf
-    4.像catalina.out追加信息
-        ~]# kubectl exec -it web-test-cre-deployment-sa9nsha-m7mga bash -n cre
-        #
-        # echo &quot;tomcat log test&quot; &gt;&gt; /apps/tomcat/logs/catalina.out
-    5.在kibana上验证
-</code></pre><p>–收集的日志<br><img src="/2018/11/03/Kubernetes-ELK收集日志/收集的日志.png" alt="收集的日志"></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_17016649/article/details/79297823" target="_blank" rel="noopener">使用filebeat收集kubernetes容器日志</a><br><a href="https://www.elastic.co/guide/en/beats/libbeat/6.1/getting-started.html" target="_blank" rel="noopener">Getting Started With Beats and the Elatic Stack</a><br><a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.1/installing-xpack-es.html" target="_blank" rel="noopener">Elasticsearch 安装X-Pack</a><br><a href="">Deploy filebeat as daemonset in kubernetes cluste</a><br><a href="https://www.elastic.co/guide/en/beats/filebeat/6.1/filebeat-modules.html" target="_blank" rel="noopener">Filebeat 模块列表</a><br><a href="https://jimmysong.io/kubernetes-handbook/practice/app-log-collection.html" target="_blank" rel="noopener">应用日志收集</a></p>
+3.lint:检查配置和模板是否规范
+    准备好各种yaml清单后就可以将此chart打包部署了，但是在打包之前可以使用link命令检查我们自己创建的chart是否规范；
+        ~]# helm lint myapp
+        ==&gt; Linting myapp
+        [INFO] Chart.yaml: icon is recommended
+        1 chart(s) linted, no failures
+            #没有ERROR信息代表成功，如果有错误要么是模板语法错误，要么是一些必选项没有值，按照提示检查即可；
 
+4.基础myapp这个chart部署
+    ~]# helm install -n myapp ./myapp/ --dry-run
+     NAME:    myapp
+        1.先使用--dry-run选项测试部署一个名为myapp的项目，没有问题再正式部署
+        2../myapp表示安装本地chart，helm就会找本地路径的chart安装
+    ~]# helm install -n myapp ./myapp/    #正式部署
+    ~]# kubectl get pods
+    NAME                 READY    STATUS    RESTARTS   AGE
+    myapp-72121931-sasjn  1/1      Running    0        20s
+
+5.package:打包分享
+    我们可以把已经做好了一个chart打包分享出去供别人使用，实现开源精神；
+    package可以把一个chart目录打包成chart归档文件，而不使用tar或者其他工具；
+    ~]# helm package ./myapp/
+        Successfully packaged chart and saved it to: /root/myapp-0.1.0.tgz
+            #这样就将做好的chart打包好了
+
+6.serve命令：将chart应用发布到Repository
+    helm的server命令表示启动一个本地的web服务器当做本地仓库来使用，并将其加入到 Helm Repo列表中；
+        ~]# helm help serve
+        --address string    #默认监听在本地127.0.0.1:8879,可自定义
+        --repo-path string  
+                        #repo路径，默认$HOME/.helm/repository/local，可自定义
+        --url string        #对外输出的url
+    ~]# mkdir /data/repo
+    ~]# mv myapp-0.1.0.tgz /data/repo/
+    ~]# helm serve --address 192.168.34.118:8879 --repo-path /data/repo --url /chart
+        #运行后这个自定义repo就会对外提供服务
+    ~]# helm search local
+        local/myapp      0.1.0      1.0        myapp web servers
+        #此时就可以搜索出这个chart了
+    ~]# helm install -n myapp-v2 local/myapp
+        #此时就可以基础这个chart再部署一个release了
+
+7.通过values.yaml部署不同release
+    ~]# cp myapp/values.yaml /data  #复制一个新的vaules.yaml文件到data目录
+    ~]# vim values.yaml
+        #修改values.yaml内容比如，replicas数量、镜像版本等等
+    ~]# helm install -n myapp-v3 local/myapp -f /data/values.yaml
+        #这样就可以部署一个不同配置的release了
+</code></pre><h3 id="Helm使用进阶—5-Chart升级、回滚过程"><a href="#Helm使用进阶—5-Chart升级、回滚过程" class="headerlink" title="Helm使用进阶—5.Chart升级、回滚过程"></a>Helm使用进阶—5.Chart升级、回滚过程</h3><pre><code>升级和回滚的原理：
+    helm list输出的结果中我们可以看到有一个Revision（更改历史）字段，该字段用于表示某一个Release被更新的次数，我们可以用该特性对已部署的Release进行回滚；
+准备多个版本：
+    1.修改Chart.yaml文件
+        将版本号从0.1.0修改为0.2.0, 然后使用helm package命令打包并发布到本地仓库
+        ~]# cat myapp/Chart.yaml
+            apiVersion: v1
+            appVersion: &quot;1.0&quot;
+            description: A Helm chart for Kubernetes
+            name: myapp
+            version: 0.2.0
+        ~]# helm package ./myapp
+            Successfully packaged chart and saved it to: /home/k8s/myapp-0.2.0.tgz
+    2.查询本地仓库中的Chart信息
+        ~]# helm search ./myapp -l
+        NAME          CHART VERSION APP VERSION DESCRIPTION
+        myapp  0.2.0         1.0         A Helm chart for Kubernetes
+        myapp  0.1.0         1.0         A Helm chart for Kubernetes
+
+1.升级一个应用
+    先用helm upgrade命令将已部署的myapp升级到新版本。你可以通过--version参数指定需要升级的版本号，如果没有指定版本号，则缺省使用最新版本；
+        ~]# helm upgrade myapp ./myapp
+            Release &quot;myapp&quot; has been upgraded. Happy Helming!
+        ~]# helm list
+            NAME    REVISION      UPDATED      STATUS    CHART  NAMESPACE
+            myapp    2  10:50:25   DEPLOYED   myapp-0.2.0        myapp
+                #可以看到已部署的myapp被升级到0.2.0版本
+2.回滚一个应用
+    1.如果更新后的程序由于某些原因运行有问题，需要回退到旧版本的应用。首先我们可以使用helm history命令查看一个Release的所有变更记录；
+    ~]# helm history myapp
+        REVISION  UPDATED            STATUS      CHART         DESCRIPTION
+        1 Mon Jul 23 10:41:20    SUPERSEDED  myapp-0.1.0 Installcomplete
+        2 Mon Jul 23 10:50:25    DEPLOYED    myapp-0.2.0 Upgrade complete
+    2.其次，我们可以使用下面的命令对指定的应用进行回退
+        ~]# helm rollback myapp 1
+        Rollback was a success! Happy Helming!
+            #其中的参数1是helm history查看到Release的历史记录中REVISION对应的值
+3.删除一个应用
+    3.1.如果需要删除一个已部署的Release，可以利用helm-delete命令来完成删除:
+        ~]# helm delete myapp 
+        release &quot;myapp&quot; deleted
+    3.2.确认应用是否删除，该应用已被标记为 DELETED 状态
+        ~]# helm ls -a myapp
+        NAME    REVISION  UPDATED     STATUS     CHART    NAMESPACE
+        myapp 3       10:53:42   DELETED    myapp-0.1.0    myapp
+    3.3.也可以使用--deleted 参数来列出已经删除的Release
+        ~]# helm ls --deleted
+        NAME    REVISION  UPDATED     STATUS     CHART    NAMESPACE
+        myapp 3      10:53:42    DELETED    myapp-0.1.0    myapp
+    3.4.从上面的结果也可以看出，默认情况下已经删除的 Release 只是将状态标识为 DELETED了 ，但该Release的历史信息还是继续被保存的;
+        ~]# helm hist mike-test
+        REVISION  UPDATED       STATUS      CHART         DESCRIPTION
+        1  Mon Jul 23 10:41:20  SUPERSEDED  myapp-0.1.0 Install complete
+        2  Mon Jul 23 10:50:25  SUPERSEDED  myapp-0.2.0 Upgrade complete
+        3  Mon Jul 23 10:53:42  DELETED     myapp-0.1.0 Deletion complete
+    3.5.如果要移除指定Release所有相关的Kubernetes-资源和Release的历史记录，可以用如下命令：
+        ~]# helm delete --purge myapp
+        release &quot;myapp&quot; deleted
+    3.6.再次查看已删除的 Release，已经无法找到相关信息
+        ~]# helm hist myapp
+            Error: release: &quot;myapp&quot; not found
+        ~]# helm ls --deleted
+        ~]# helm ls -a myapp
+            #helm ls 命令也已均无查询记录。
+</code></pre><h3 id="6-Helm其它使用技巧"><a href="#6-Helm其它使用技巧" class="headerlink" title="6.Helm其它使用技巧"></a>6.Helm其它使用技巧</h3><pre><code>1.如何设置helm命令自动补全？
+    helm有很多子命令和参数，为了提高使用命令行的效率，通常建议安装helm的bash命令补全脚本，方法如下：
+    ~]# helm completion bash &gt; .helmrc
+    ~]# echo &quot;source .helmrc&quot; &gt;&gt; .bashrc
+    ~]# source .bashrc
+    或者
+        ~]# source &lt;(helm completion bash)
+2.如何使用第三方的Chart存储库？
+    随着Helm越来越普及，除了使用预置官方存储库，三方仓库也越来越多了（前提是网络是可达的）。你可以使用如下命令格式添加三方Chart存储库；
+    ~]# helm repo add 存储库名 存储库URL
+        #到helm官方地址https://hub.helm.sh去搜索stable版的仓库，在网页上有helm repo add的项目链接执行即可；
+    ~]# helm repo update
+    一些三方存储库资源:
+        # Prometheus Operator
+        https://github.com/coreos/prometheus-operator/tree/master/helm
+        # Bitnami Library for Kubernetes
+        https://github.com/bitnami/charts
+        # Openstack-Helm
+        https://github.com/att-comdev/openstack-helm
+        https://github.com/sapcc/openstack-helm
+        # Tick-Charts
+        https://github.com/jackzampolin/tick-charts
+3.Helm如何结合CI/CD？
+    采用Helm可以把零散的Kubernetes应用配置文件作为一个Chart管理，Chart源码可以和源代码一起放到Git库中管理。
+    通过把Chart参数化，可以在测试环境和生产环境采用不同的Chart参数配置；
+</code></pre><p>–Helm结合CICD<br><img src="/2019/12/23/Kubernetes-Helm使用进阶/Helm结合CICD.png" alt="Helm结合CICD"></p>
+<pre><code>4.Helm如何管理多环境下 (Test、Staging、Production) 的业务配置？
+    Chart是支持参数替换的，可以把业务配置相关的参数设置为模板变量。使用helm install命令部署的时候指定一个参数值文件，这样就可以把业务参数从Chart中剥离了。
+    例如： helm install --values=values-production.yaml wordpress
+5.Helm如何解决服务依赖？
+    在Chart里可以通过requirements.yaml声明对其它Chart的依赖关系。如下面声明表明 Chart依赖Apache和MySQL这两个第三方Chart。
+    dependencies:
+    - name: mariadb
+    version: 2.1.1
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: mariadb.enabled
+    tags:
+    - wordpress-database
+    - name: apache
+    version: 1.4.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+6.如何让Helm连接到指定Kubernetes集群？
+    Helm默认使用和kubectl命令相同的配置访问Kubernetes集群，其配置默认在 ~/.kube/config中。
+7.如何在部署时指定命名空间？
+    helm install默认情况下是部署在default这个命名空间的。如果想部署到指定的命令空间，可以加上--namespace 参数，比如：
+    ~]# helm install ./myapp --name myapp --namespace mynamespace
+8.如何查看已部署应用的详细信息？
+    ~]# helm get myapp
+    默认情况下会显示最新的版本的相关信息，如果想要查看指定发布版本的信息可加上 --revision参数。
+    ~]# helm get --revision 1 myapp
+9.如何查看已经部署的对应release状态？
+    ~]# helm status myapp
+</code></pre>
       
     </div>
 
@@ -912,8 +1027,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/18/docker存储卷/" rel="next" title="docker存储卷">
-                <i class="fa fa-chevron-left"></i> docker存储卷
+              <a href="/2019/12/03/大二层网络基础/" rel="next" title="大二层网络基础">
+                <i class="fa fa-chevron-left"></i> 大二层网络基础
               </a>
             
           </div>
@@ -922,8 +1037,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/23/Kubernetes-Helm使用进阶/" rel="prev" title="Kubernetes-Helm使用进阶">
-                Kubernetes-Helm使用进阶 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/02/10/Rook部署Ceph集群/" rel="prev" title="Rook部署Ceph集群">
+                Rook部署Ceph集群 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -1222,7 +1337,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用EL-FK收集k8s容器日志"><span class="nav-number">1.</span> <span class="nav-text">使用EL/FK收集k8s容器日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-日志收集方式及其架构"><span class="nav-number">2.</span> <span class="nav-text">1.日志收集方式及其架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用filebeat收集kubernetes容器日志"><span class="nav-number">3.</span> <span class="nav-text">2.使用filebeat收集kubernetes容器日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm使用进阶"><span class="nav-number">1.</span> <span class="nav-text">Helm使用进阶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm使用进阶—3-Helm-Chart结构"><span class="nav-number">2.</span> <span class="nav-text">Helm使用进阶—3.Helm Chart结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm使用进阶—4-创建自己的chart"><span class="nav-number">3.</span> <span class="nav-text">Helm使用进阶—4.创建自己的chart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm使用进阶—5-Chart升级、回滚过程"><span class="nav-number">4.</span> <span class="nav-text">Helm使用进阶—5.Chart升级、回滚过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Helm其它使用技巧"><span class="nav-number">5.</span> <span class="nav-text">6.Helm其它使用技巧</span></a></li></ol></div>
             
 
           </div>
@@ -1532,7 +1647,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">20:43</span>
+    <span title="站点阅读时长">20:47</span>
   
 </div>
 

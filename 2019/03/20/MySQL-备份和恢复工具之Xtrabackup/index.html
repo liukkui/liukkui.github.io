@@ -144,14 +144,15 @@
 <meta property="og:site_name" content="Coool&#39;s Blog">
 <meta property="og:description" content="更新于：2020.01更新内容：xtrabackup旧版命令进行全量备份和增量备份的合并不生效问题">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup备份过程.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/innodb存储结构.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup增量备份逻辑示意图.png">
 <meta property="og:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup全量备份过程分析.png">
-<meta property="og:updated_time" content="2020-11-06T19:54:50.747Z">
+<meta property="og:updated_time" content="2020-11-07T10:02:52.138Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL-备份和恢复工具之Xtrabackup">
 <meta name="twitter:description" content="更新于：2020.01更新内容：xtrabackup旧版命令进行全量备份和增量备份的合并不生效问题">
-<meta name="twitter:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/innodb存储结构.png">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup备份过程.png">
 
 
 
@@ -533,7 +534,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">19k</span>
+                <span title="本文字数">24k</span>
               
 
               
@@ -547,7 +548,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">17 分钟</span>
+                <span title="阅读时长">22 分钟</span>
               
             </div>
           
@@ -569,9 +570,18 @@
       
         <p>更新于：2020.01<br>更新内容：xtrabackup旧版命令进行全量备份和增量备份的合并不生效问题<br><a id="more"></a></p>
 <h3 id="Xtrabackup"><a href="#Xtrabackup" class="headerlink" title="Xtrabackup"></a>Xtrabackup</h3><p><a href="www.percona.com">Percona官网</a></p>
-<h3 id="1-xtrabackup基础"><a href="#1-xtrabackup基础" class="headerlink" title="1.xtrabackup基础"></a>1.xtrabackup基础</h3><p><img src="/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/innodb存储结构.png" alt="innodb存储结构"><br><img src="/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup增量备份逻辑示意图.png" alt="xtrabackup增量备份逻辑示意图"></p>
+<h3 id="1-xtrabackup基础"><a href="#1-xtrabackup基础" class="headerlink" title="1.xtrabackup基础"></a>1.xtrabackup基础</h3><p><img src="/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup备份过程.png" alt="xtrabackup备份过程"><br><img src="/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/innodb存储结构.png" alt="innodb存储结构"><br><img src="/2019/03/20/MySQL-备份和恢复工具之Xtrabackup/xtrabackup增量备份逻辑示意图.png" alt="xtrabackup增量备份逻辑示意图"></p>
 <pre><code>MySQL数据库自带的mysqldump逻辑备份工具适合于数据量小且业务受短时间影响没有太关系的业务,而且对于mysqldump来说：它能实现对MyISAM存储引擎做温备,对InnoDB存储引擎温备和其中一个单个事务基础之上完成热备;如果数据量大、业务的连续性要求较高的要求且真正期望在线上做真正意义上的热备而且还是物理备份，那么xtrabackup是一个很好的备份工具;
-1.关于xtrabackup的2.3版本的重要说明
+1.xtrabackup备份过程,如上图示：
+    1.innobackupex启动后，会先fork一个进程，用于启动xtrabackup，然后等待xtrabackup备份ibd数据文件；
+    2.xtrabackup在备份innoDB数据有2种线程：redo拷贝线程和ibd数据拷贝线程。xtrabackup进程开始执行后，会启动一个redo拷贝的线程，用于从最新的checkpoint点开始顺序拷贝redo.log；再启动ibd数据拷贝线程，进行拷贝ibd数据。这里是先启动redo拷贝线程的。在此阶段，innobackupex进行处于等待状态（等待文件被创建）
+    3.xtrabackup拷贝完成ibd数据文件后，会通知innobackupex（通过创建文件），同时xtrabackup进入等待状态（redo线程依旧在拷贝redo.log）;
+    4.innobackupex收到xtrabackup通知后哦，执行FLUSH TABLES WITH READ LOCK（FTWRL），取得一致性位点，然后开始备份非InnoDB文件（如frm、MYD、MYI、CSV、opt、par等格式的文件），在拷贝非InnoDB文件的过程当中，数据库处于全局只读状态;
+    5.当innobackup拷贝完所有的非InnoDB文件后，会通知xtrabackup，通知完成后，进入等待状态;
+    6.xtrabackup收到innobackupex备份完成的通知后，会停止redo拷贝线程，然后通知innobackupex，redo.log文件拷贝完成;
+    7.innobackupex收到redo.log备份完成后，就进行解锁操作，执行：UNLOCK TABLES;
+    8.最后innbackupex和xtrabackup进程各自释放资源，写备份元数据信息等，innobackupex等xtrabackup子进程结束后退出;
+2.关于xtrabackup的2.3版本的重要说明
     1.在Xtrabackup2.3版之前包括4个可执行文件： 
         1.innobackupex:   #Perl脚本
         2.xtrabackup:     #C/C++编译的二进制 
@@ -583,15 +593,15 @@
     2.在Xtrabackup2.3版之后都统一使用xtrabackup
         在2.3版本之后innobackupex功能全部集成到xtrabackup里面，只有一个binary程序，另外为了兼容考虑,innobackupex作为xtrabackup的软链接，即xtrabackup现在支持非Innodb表备份，并且在以后的版本中，将会删除innobackupex，只保留xtrabackup；
     不管是哪个版本,只要学会使用innobackupex，再使用xtrabackup时也不会有什么问题;
-2.xtrabackup的一些概念
+3.xtrabackup的一些概念
     1.xtrabackup支持对innodb进行热备、增量备份、差量备份
     2.xtrabackup支持对myisam进行温备，因为在备份myisam表时，会对myisam表添加读锁，而且不能对myisam表进行增量备份，每次备份myisam数据都是全量，即使名义上是增量，但是实际上仍然是全量；
     3.与mysqldump不同，xtrabackup是一种物理备份工具，但是它是需要通过协议连接到mysql服务端（这一点与mysqldump相同，它们都是客户端工具，都需要连接到服务端）,然后读取并复制innodb底层的&quot;数据块&quot;，完成所谓的&quot;物理备份&quot;;
-3.xtrabackup怎样实现物理备份的？
+4.xtrabackup怎样实现物理备份的？
     xtrabackup是怎样对innodb存储引擎实现所谓的物理备份的呢？这和innodb的存储结构有关：
         1.如上图是innodb存储引擎的逻辑结构,逻辑单元从大到小分别为:表空间（tablesapce）、段（segment）、区（extent）、页（page）、行（row），如上图所示每个大的逻辑单元中都包含了N个小的逻辑单元；
         2.而我们只要关心上图中的extent逻辑单元和page逻辑单元即可，我们可以把上图中Extent区域中的每个&quot;小方块(page)&quot;当做xtrabackup需要备份的&quot;数据块&quot;，因为数据存放于行中，行存在于page中，所以我们备份对应page，即可备份出对应的数据，当我们使用xtrabackup连接到mysql服务端的时候，xtrabackup会读取innodb中的page，进行备份
-4.xtrabackup怎样实现增量备份的？
+5.xtrabackup怎样实现增量备份的？
     1.每个Page都有自己的LSN号码，LSN是一个全局递增的号码，每次对page中的记录进行修改时，都会有对应的LSN号码，因为LSN是全局递增的，所以，LSN只会越来越大，之后的修改产生的LSN肯定比之前的操作产生的LSN大，每个page中的数据被更改时，都会在这个page中记录下本次的LSN号码，所以，如果这个page中记录的LSN越大，就证明这个Page中的数据越新（最近被修改）；
     2.而xtrabackup就是通过LSN，实现对innodb表的增量备份的，每次备份开始时，xtrabackup会记录下当前备份到的LSN号码，当下次进行增量备份时，xtrabackup就只会拷贝出LSN大于上次记录的page，那些LSN号码小于上次记录的page则会被跳过，如果page中的LSN小于上次备份时记录的LSN号码，则证明这个page自从上次备份以来并没有被修改过，同理，如果page中的LSN大于上次备份时记录的LSN号，则证明这个page在上次备份以后，已经被修改了，所以，备份出这些page，即可实现增量备份的目的；
     3.下面通过简易的示意图理解xtrabackup的增量备份逻辑：
@@ -599,7 +609,7 @@
         1.假设我们第一次备份的数据如下，所有数据由如下6个page组成，上图中的黄色方块代表page，黄色方块右上角的号码代表当前page的LSN，从上图可以看出，目前最大的LSN号码为5；
         2.假设备份完成后，我们修改了数据，而这次修改的数据存在于上图中的page C与page E中，所以上图中的pageC与pageE的LSN就变成了6，因为刚才最大的LSN是5，而LSN是全局递增的，所以，如果page中的LSN越大，证明此page越新，被修改的时间越近，如上图所示
         3.如果此时要做增量备份，那么我们只需要备份出自上次备份以后变化的数据即可，所以，我们只要从上图中找到LSN大于5的Page，即上图中的pageC与pageE，即可得出变化的增量数据，得出上图中的增量page后，再将增量page覆盖到上次的备份中，即可得到最新的数据；
-5.xtrabackup的prepare操作--非常重要的逻辑
+6.xtrabackup的prepare操作--&gt;非常重要的逻辑
     1.当我们开始备份innodb数据时，我们还需要同时备份对应的事务日志，因为在开始备份时，有些事务已经存在于事务日志中，这些事务可能已经提交了，但是还没有同步到datafile中，所以我们要重放这些已经提交的事务，有些事务可能还未提交，所以我们要回滚这些没有提交的事务；
     2.xtrabackup就是这样做的，在备份开始时，同时运作两个线程：一个线程负责备份innodb中的page，另一个线程负责备份innodb的事务日志（redo log），事务日志都会被xtrabackup记录到自己的日志文件中，那么备份结束后，我们会得到两份文件，一份是不可用的备份文件，一份是备份时的事务日志，备份文件之所以不可用，是因为有一部分不确定的数据可能在事务日志中，而且热备过程中数据也可能会发生改变，所以我们要通过这两份文件，制作出一份可用的备份文件，没错，就是通过应用事务日志的方式，让最终的备份成为一个可用的备份，事务日志会被应用，事务日志文件中已经提交的事务需要replayed，未提交的事务需要roolback，整个过程类似于mysql崩溃后恢复的过程，但是这个过程在xtrabackup中被称为&quot;prepare&quot;，&quot;prepare&quot;操作保证了备份出的数据的一致性，没有经过prepare的备份数据是不可用的，我们可以理解为如果想要得到一个可用的备份，则需要进行这些所谓的&quot;准备&quot;工作或者所谓的&quot;数据恢复&quot;的工作；
     3.说到这里，就必须考虑另外一个问题：
@@ -634,9 +644,11 @@
         &gt; GRANT RELOAD,LOCK TABLES,RELICATION CLIENT ON *.* TO &apos;xtrauser&apos;@&apos;localhost&apos;;　　#授权刷新、锁定表、用户查看服务器状态
         &gt; FLUSH PRIVILEGES;　　#刷新授权表
 2.innobackupex备份、prepare、还原的语法和相关常用参数
+    注意：
+        这里只列出innobackupex命令的语法和相关备份参数,需要注意的是新版xtrabackup中移除了innobackupex命令,本文会在最后新增新版xtrabackup和旧版xtrabackup间备份和还原命令的区别;
     ~]# innobackupex --help      #所有参数选项说明参考上文官方链接
     Usage: [xtrabackup [--defaults-file=#] --backup | xtrabackup [--defaults-file=#] --prepare] [OPTIONS]
-    1.备份操作的相关选项：
+    1.全量备份和增量备份操作的相关选项：
         --user      #表示备份数据库使用的账号
         --password  #使用的账号密码
         --host      #表示备份数据库的主机地址 
@@ -657,7 +669,7 @@
         相关选项：
         --apply-log         #对备份进行&quot;Prepare&quot;预处理操作
             也就是上文所解释的xtrabackup的&quot;Prepare&quot;操作,因为一般情况下，在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据文件仍处理不一致状态;&quot;Prepare&quot;的主要作用正是通过回滚未提交的事务及同步已经提交的事务至数据文件也使得数据文件处于一致性状态。
-        --redo-only         #不回滚未提交事务
+        --redo-only         #不回滚未提交事务(重要参数)
         --copy-back         #恢复备份目录
         --use-memory        #非必须项
             #在&quot;prepare&quot;过程中和--apply-log选项一起使用,指定使用的内存的大小,默认是100M,推荐分配1G内存给&quot;prepare&quot;过程来提高其完成备份的速度； 
@@ -873,6 +885,72 @@
     8.恢复数据导mysql数据目录中
     9.修改属主属组信息
     10.重新启动mysql实例并验证数据完整性
+</code></pre><h3 id="3-xtrabackup单表导出和导入功能"><a href="#3-xtrabackup单表导出和导入功能" class="headerlink" title="3.xtrabackup单表导出和导入功能"></a>3.xtrabackup单表导出和导入功能</h3><pre><code>默认情况下，InnoDB表不能通过直接复制表文件的方式在mysql服务器之间进行移植，即便使用了innodb_file_per_table选项，而使用Xtrabackup工具可以实现此种功能，不过，此时需要&quot;导出&quot;表的mysql服务器启用了innodb_file_per_table选项(严格来说，是要导出的表在其创建之前，mysql服务器就启用了innodb_file_per_table选项)，并且&quot;导入&quot;表的服务器职期间同时启用了innodb_file_per_table和innodb_expand_import选项；
+1.导出表
+    1.导出表是在备份的prepare阶段进行的，这就意味着需要先做一次完全备份
+    2.因此一旦完全备份完成，就可以在prepar过程中通过--export选项将某表导出了；
+    ~]# innobackupex /root/backups/
+    ~]# cd 2019-05-12_19-27-26/
+    ~]# innobackupex --apply-log --export /root/backups/2019-05-12_19-27-26/
+        #将多有表都导出单个可用的表
+        此命令回味每个innoDB表的表空间创建一个以.exp结尾的文件，这些以.exp结尾的文件就可以用于导入其他服务器；
+2.导入表
+    1.要在mysql服务器上导入来自其他服务器的某innoDB表，需要现在当前服务器上创建一个根原表表结构一致的表，而后才能实现将表导入；
+        mysql&gt; use mydatabase;
+        mysql&gt; create table mytable (...) ENGINE=InnoDB;
+        #通过show create mydatabase.mytable;查看之前的这个表创建时语句，然后再其他mysql上再创建一个即可；
+    2.然后将此表的表空间删除
+        mysql&gt; ALTER table mydatabase.mytable DISCARD TABLESPACE
+        ~]# cd /data/mysql/mydatabase  #进入mydatabase库
+            #可以看到mytable的frm文件还有，ibd文件被删除了
+    3.接下来，将来自于&quot;导出&quot;表的服务器的mytable表的mytable.ibd和mytable.exp文件复制到当前服务器的数据目录，然后使用如下命令将其&quot;导入&quot;；
+        ~]# cd /data/mysql/mydatabase
+        ~]# cp /root/backups/2019-05-12_19-27-26/mytable.exp mytable.ibd /data/mysql/mydatabase
+        #将这两个文件复制到目录下即可
+    mysql&gt; ALTER table mydatabase.mytable IMPORT TABLESPACE;
+</code></pre><h3 id="新增内容：4-新版xtrabackup和旧版xtrabackup备份和还原的区别"><a href="#新增内容：4-新版xtrabackup和旧版xtrabackup备份和还原的区别" class="headerlink" title="新增内容：4.新版xtrabackup和旧版xtrabackup备份和还原的区别"></a>新增内容：4.新版xtrabackup和旧版xtrabackup备份和还原的区别</h3><pre><code>由于新版的xtrabackup中删除了innobackupex命令,所以只能使用xtrabackup命令;上文增量备份的示例中增量备份使用innobackupex命令,而还原过程只能使用xtrabackup命令,因为使用innobackupex命令合并不生效;下面列出新版xtrabackup和旧版xtrabackup全量备份和增量备份以及还原的命令：
+1.旧版xtrabackup全量备份和增量备份使用innobackupex命令
+    1.全量备份：
+        ~]# innobackupex --user=DBUSER --password=DBUSERPASS --host=HOSTIP --defaults-file=/etc/my.cnf /path/to/BACKUP-DIR/
+        #直接指定备份使用的用户密码使用的配置文件和备份文件存放的目录即可；
+    2.增量备份：
+        ~]# innobackupex --user=DBUSER --password=DBUSERPASS --host=HOSTIP --defaults-file=/etc/my.cnf --incremental /path2/ --incremental-basedir=/path1/to/BACKUP-DIR/
+        #增量备份使用--incremental和--incremental-basedir指定增量备份目录和上一次的增量或全量备份目录
+    3.全量备份的&quot;prepare&quot;过程
+        ~]# innobackupex --apply-log /path/to/BACKUP-DIR/
+        #旧版的xtrabackup是使用innobackupex和--apply-log选择指定备份文件目录实现&quot;prepare&quot;过程
+    4.增量备份的&quot;prepare&quot;准备过程
+        1.增量备份中的全量备份&quot;prepare&quot;过程
+            ~]# innobackupex --apply-log --redo-only /path/to/BACKUP-DIR/
+        2.增量备份合并到全量备份：
+            ~]# innobackupex  --apply-log --redo-only /path1/to/BACKUP-DIR/ --incremental-dir=/path2/to/BACKUP-DIR/
+        #旧版的是使用innobackupex和--redo-only进行&quot;prepare&quot;过程,需要注意的是最后一个增量备份合并到全量备份时是不需要再加--redo-only选项的
+    5.还原：
+        ~]# innobackupex --copy-back --defaults-file=/etc/my.cnf /path/to/BACKUP-DIR/
+        #还原是使用innobackupex和--copy-back选项进行还原
+2.新版xtrabackup全量备份和增量备份只有xtrabackup命令
+    1.全量备份
+        ~]# xtrabackup --backup --target-dir=/backup1/
+            #新版xtrabackup使用--backup和--target-dir指定备份目录
+    2.增量备份
+        ~]# xtrabackup --backup --target-dir=/backup2/ --incrementalbasedir=/backup1/dir1
+            #新版xtrabackup使用--target-dir指定增量备份的目录和--incrementalbasedir指定全量备份或增量备份的目录
+    3.全量备份的&quot;prepare&quot;过程
+        ~]# xtrabackup --prepare --target-dir=/backups/ 
+            #新版xtrabackup使用--prepare和--target-dir进行&quot;prepare&quot;过程
+    4.增量备份的&quot;prepare&quot;准备过程
+        1.增量备份中的全量备份&quot;prepare&quot;过程
+            ~]# xtrabackup --prepare --apply-log-only --target-dir=/backup1/dir1
+            #新版xtrabackup的增量备份中的全量备份是使用--apply-log-only选项代替innobackupex中的--redo-only确保数据一致，提交完成的事务，回滚未完成的事务的;
+        2.增量备份合并到全量备份：
+            ~]# xtrabackup --prepare --apply-log-only --target-dir=/backup2/dir2 --incremental-dir=/backup1/dir1
+            #要注意的是最后一个增量备份合并到全量备份时是不需要再加--apply-log-only选项的;
+    5.还原：
+        ~]# xtrabackup --copy-back --target-dir=/backup1/dir1
+            #新版和旧版都是使用--copy-back选项只是使用命令的不同而已;
+注意：
+    1.跨完全备份和增量备份的事务，除了最后一个增量，其他的事务都不能回滚，最后一个才能回滚；
+    2.如果最后一个增量备份也做redo-only或--apply-log-only可能会有问题，因为有些未提交的事务会没有回滚，但是这也没关系，因为msyql或mariadb启动时自己会将未提交的事务进行回滚的；
 </code></pre>
       
     </div>
@@ -1006,8 +1084,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/18/Kubernetes-Calico原理详解/" rel="next" title="Kubernetes-Calico原理详解">
-                <i class="fa fa-chevron-left"></i> Kubernetes-Calico原理详解
+              <a href="/2019/02/18/Kubernetes-容器跨主机和k8s的网络实现方案/" rel="next" title="Kubernetes-容器跨主机和k8s的网络实现方案">
+                <i class="fa fa-chevron-left"></i> Kubernetes-容器跨主机和k8s的网络实现方案
               </a>
             
           </div>
@@ -1316,7 +1394,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Xtrabackup"><span class="nav-number">1.</span> <span class="nav-text">Xtrabackup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-xtrabackup基础"><span class="nav-number">2.</span> <span class="nav-text">1.xtrabackup基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-xtrabackup安装和常用备份参数选项"><span class="nav-number">3.</span> <span class="nav-text">2.xtrabackup安装和常用备份参数选项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-xtrabackup全量备份及恢复"><span class="nav-number">3.1.</span> <span class="nav-text">2.1.xtrabackup全量备份及恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-xtrabackup增量备份及恢复"><span class="nav-number">3.2.</span> <span class="nav-text">2.2.xtrabackup增量备份及恢复</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Xtrabackup"><span class="nav-number">1.</span> <span class="nav-text">Xtrabackup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-xtrabackup基础"><span class="nav-number">2.</span> <span class="nav-text">1.xtrabackup基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-xtrabackup安装和常用备份参数选项"><span class="nav-number">3.</span> <span class="nav-text">2.xtrabackup安装和常用备份参数选项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-xtrabackup全量备份及恢复"><span class="nav-number">3.1.</span> <span class="nav-text">2.1.xtrabackup全量备份及恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-xtrabackup增量备份及恢复"><span class="nav-number">3.2.</span> <span class="nav-text">2.2.xtrabackup增量备份及恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-xtrabackup单表导出和导入功能"><span class="nav-number">4.</span> <span class="nav-text">3.xtrabackup单表导出和导入功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新增内容：4-新版xtrabackup和旧版xtrabackup备份和还原的区别"><span class="nav-number">5.</span> <span class="nav-text">新增内容：4.新版xtrabackup和旧版xtrabackup备份和还原的区别</span></a></li></ol></div>
             
 
           </div>
@@ -1626,7 +1704,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">20:43</span>
+    <span title="站点阅读时长">20:47</span>
   
 </div>
 
