@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next pisces" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "ca4015c6"
+    });
+  daovoice('update');
+  </script>
+
+  <meta name="description" content="1.InnoDB体系架构 1.InnoDB存储引擎     1.如上图示,InnoDB存储引擎属于Mysql体系架构中存储引擎接口中的一种存储引擎;InnoDB是Mysql默认的存储引擎,也是真正执行SQL语句的部件：     2.InnoDB存储引擎是第一个完整支持ACID事务的Mysql存储引擎,其特点是:行锁设计、支持MVCC、支持外键、提供一致性非锁定读（也就是默认读操作不会产生锁）、同">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql-InnoDB体系架构(一)">
+<meta property="og:url" content="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/index.html">
+<meta property="og:site_name" content="Coool&#39;s Blog">
+<meta property="og:description" content="1.InnoDB体系架构 1.InnoDB存储引擎     1.如上图示,InnoDB存储引擎属于Mysql体系架构中存储引擎接口中的一种存储引擎;InnoDB是Mysql默认的存储引擎,也是真正执行SQL语句的部件：     2.InnoDB存储引擎是第一个完整支持ACID事务的Mysql存储引擎,其特点是:行锁设计、支持MVCC、支持外键、提供一致性非锁定读（也就是默认读操作不会产生锁）、同">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/mysql-innodb存储引擎架构体系.png">
+<meta property="og:image" content="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/AsyncSync-Flush-Checkpoint图解.png">
+<meta property="og:updated_time" content="2020-11-12T17:32:03.720Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql-InnoDB体系架构(一)">
+<meta name="twitter:description" content="1.InnoDB体系架构 1.InnoDB存储引擎     1.如上图示,InnoDB存储引擎属于Mysql体系架构中存储引擎接口中的一种存储引擎;InnoDB是Mysql默认的存储引擎,也是真正执行SQL语句的部件：     2.InnoDB存储引擎是第一个完整支持ACID事务的Mysql存储引擎,其特点是:行锁设计、支持MVCC、支持外键、提供一致性非锁定读（也就是默认读操作不会产生锁）、同">
+<meta name="twitter:image" content="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/mysql-innodb存储引擎架构体系.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Mysql-InnoDB体系架构(一) | Coool's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<!-- 音频播放 -->
+<script src="//lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159888076870" m="1"></script>
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coool's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">As we watch our love grow.</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-address-card"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">20</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">24</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">60</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+</div>
+    </header>
+
+    <a href="https://github.com/liukkui" class="github-corner" target="_blank" title="Follow me on GitHub" aria-label="Follow me on GitHub">
+      <svg width="80" height="80" viewbox="0 0 250 250" style="fill:#222; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+      </svg>
+      </a>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql-InnoDB体系架构(一)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-06 08:00:00" itemprop="dateCreated datePublished" datetime="2019-05-06T08:00:00+08:00">2019-05-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/06/Mysql-InnoDB体系架构-一/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/06/Mysql-InnoDB体系架构-一/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h3 id="1-InnoDB体系架构"><a href="#1-InnoDB体系架构" class="headerlink" title="1.InnoDB体系架构"></a>1.InnoDB体系架构</h3><p><img src="/2019/05/06/Mysql-InnoDB体系架构-一/mysql-innodb存储引擎架构体系.png" alt="mysql-innodb存储引擎架构体系"></p>
+<pre><code>1.InnoDB存储引擎
+    1.如上图示,InnoDB存储引擎属于Mysql体系架构中存储引擎接口中的一种存储引擎;InnoDB是Mysql默认的存储引擎,也是真正执行SQL语句的部件：
+    2.InnoDB存储引擎是第一个完整支持ACID事务的Mysql存储引擎,其特点是:行锁设计、支持MVCC、支持外键、提供一致性非锁定读（也就是默认读操作不会产生锁）、同时被设计用来最有效的利用内存和CPU;
+    3.InnoDB存储数据是基于磁盘存储的,且其记录是按照页的方式进行管理;
+    4.InnoDB体系架构
+        从上图可以看出,InnoDB存储引擎由内存池、一些重要的后台线程和存储文件三部分组成的;下面分别对这三部分内部结构和作用进行说明;
+    下面分别对这三部分进行说明;
+</code></pre><h3 id="2-1-InnoDB存储引擎内存池"><a href="#2-1-InnoDB存储引擎内存池" class="headerlink" title="2.1.InnoDB存储引擎内存池"></a>2.1.InnoDB存储引擎内存池</h3><pre><code>InnoDB存储引擎内存池
+    内存池是由多个内存块组成的,根据分工以及存储文件的不同分为缓冲池（Buffer_Pool）、重做日志缓冲（redo_log_buffer）、额外内存池（additional_pool）;内存池的主要作用是：
+        1.维护所有进程/线程需要访问的多个内部数据结构
+        2.缓存磁盘上的数据,方便快速读取,同时在对磁盘文件修改之前进行缓存
+        3.缓存重做日志（redo log）
+1.缓冲池(Buffer_Pool)
+    1.缓冲池的作用：
+        1.首先InnoDB作为MySQL的存储引擎,数据是基于在磁盘的,并将其中的记录按照页（page）的方式进行管理,如果数据库读取和写入操作每次都要从磁盘上读取经过磁盘IO效率（众所周知的慢）是非常低的,因此InnoDB提供了缓冲池（Buffer_Pool）通过内存的速度来弥补磁盘速度慢对数据库性能造成的影响;借助于缓冲池后它的工作逻辑是：
+            1.首先将数据库文件按页（每页16K）读取到缓冲池,然后按最近最少使用（LRU）的算法来保留在缓冲池中的缓存数据;
+            2.当Mysql进行读取操作时,首先将从磁盘读到的页存放在缓冲池中,下一次读取相同的页时,首先判定是否存在缓冲池中,如果有就是被命中直接读取,没有的话就从磁盘中读取;
+            3.当Mysql进行修改/写入操作时,首先修改缓冲池中的页（修改后,该页即为脏页）,然后在以一定的频率刷写到磁盘上,需要说明的是这里的刷写机制不是每页在发生变更时触发的,而是通过checkpoint机制刷写到磁盘,在InnoDB中checkpoint有两种,后文会详细说明;
+        2.可以看出缓冲池的大小直接影响着数据库的整体性能,可以通过配置参数innodb_buffer_pool_size来设置;而且在Mysql优化中,Buffer_Pool缓冲池的大小是必须优化项,一般建议设置innodb-buffer-pool-size的值为服务器总可用内存的80%;
+        3.而且从InnoDB1.0.x版本开始,允许有多个缓冲池实例;每个页根据哈希值平均分配到不同缓冲池实例中,这样做的好处是减少数据库内部的资源竞争,增加系统的并发处理能力;
+    2.缓冲池的组成：
+        缓冲池中缓存的数据页类型还包括：数据页和索引页、undo页、插入缓冲、自适应哈希索引、InnoDB的锁信息、数据字典信息、 两次写等;
+        1.数据页和索引页:data page和index page
+            页（Page）是Innodb存储的最基本结构,也是Innodb磁盘管理的最小单位,与数据库相关的所有内容都存储在Page结构里;Page分为几种类型,而数据页和索引页就是其中最为重要的两种类型;
+        2.插入缓冲:insert buffer 
+            1.什么是插入缓冲？
+                1.由于每张表不可能只有一个聚集索引,更多情况下一张表有多个非聚集（且不唯一）的辅助索引;这种情况下,在进行插入操作时,数据页的存放还是按照主键进行顺序存放,但是由于B+树的特性决定了非聚集索引插入的离散性,那么对于非聚集的索引叶子节点的插入就不再是顺序的,而是需要离散的访问辅助索引页,那么这种离散型的随机读取操作必然会导致了插入操作的性能下降;
+                2.于是InnoDB设计了insert_buffer来优化对于非聚簇索引的插入或者更新操作;insert_buffer是一种特殊的数据结构（B+ tree）,而且它并不是缓存的一部分,而是和数据页一样都是物理页的组成部分;
+                3.使用insert_buffer后,对于非聚集索引的插入或更新操作,不是每一次直接插入到索引页中,而是先判断插入的非聚集索引页是否在缓冲池中,如果在,则直接插入,如果不再,则先放入一个insert_buffer对象中;这样会给数据库一个假象：
+                    数据库会认为这个非聚集的索引已经插入到叶子节点,而实际上是放在另一个位置了,然后再以一定的频率和情况进行insert_buffer和非聚簇索引叶子节点的合并merge操作,这时通常能将多个插入合并到一个操作中（因为在同一个索引页中）,于是就可以大大提高了对于非聚集索引插入的性能;
+            2.insert buffer需要同时满足两个条件
+                1.索引必须是非聚簇索引
+                2.索引不是唯一的：
+                    因为在插入缓冲时,数据库并不去查找索引页来判断插入记录的唯一性。如果去查找的话,又会涉及到离散读的情况,insert_buffer失去意义
+        3.两次写:double write buffer
+            1.insert_buffer带给InnoDB存储引擎的是性能上的提升,doublewrite（两次写）带给InnoDB存储引擎的是数据页的可靠性;
+            2.部分失效
+                当数据库正在从内存向磁盘写一个数据页时,数据库宕机,从而导致这个页只写了部分数据,这就是部分写失效,它会导致数据丢失;这时是无法通过重做日志恢复的,因为重做日志记录的是对页的物理修改,如果页本身已经损坏,重做日志也是无法恢复的;
+            3.InnoDB double write双写体系架构
+                从第二步解释可知道,在部分写失效的情况下,我们在应用重做日志之前,需要原始页的一个副本,而两次写就是为了解决这个问题的,如上图是其原理架构图：
+                1.两次写需要额外添加两个部分：
+                    1.内存中的两次写缓冲（doublewrite buffer）,大小为2MB
+                    2.磁盘上共享表空间中连续的128页,大小也为2MB
+                2.原理是这样的：
+                    1.当刷新缓冲池脏页时,并不直接写到数据文件中,而是先拷贝至内存中的两次写缓冲区;
+                    2.接着从两次写缓冲区分两次写入磁盘共享表空间中,每次写入1MB
+                    3.待第2步完成后,再将两次写缓冲区写入数据文件
+                这样就可以解决第二步提到的部分写失效的问题,因为在磁盘共享表空间中已有数据页副本拷贝,如果数据库在页写入数据文件的过程中宕机,在实例恢复时,可以从共享表空间中找到该页副本,将其拷贝覆盖原有的数据页,再应用重做日志就可以了;
+        4.自适应哈希索引:adaptive hash index
+            1.哈希（hash）是一种非常快的查找方法,在一般情况下这种查找的时间复杂度为O(1),即一般仅需要一次查找就能定位数据;而B+树的查找次数,取决于B+树的高度,在生产环境中,B+树的高度一般为3~4层,所以需要3~4次的查询;
+            2.InnoDB存储引擎会根据访问的频率和模式监控对表上各索引页的查询,通过对热点页建立哈希索引来提高查询效率;自适应hash索引是指：
+                如果观察到建立哈希索引可以带来速度提升,则建立哈希索引,称之为自适应哈希索引(Adaptive Hash Index, AHI)
+            3.自适应哈希索引AHI是通过缓冲池的B+树页构造而来,因此建立的速度很快,而且不需要对整张表构建哈希索引;但是AHI有一个要求:对这个页的连续访问模式必须是一样的,也就是说其查询的条件（where）必须完全一样,而且必须是连续的;比如：
+                对于(a,b)这样的联合索引页,其访问模式可以是下面情况：
+                    where a=xxx
+                    where a =xxx and b=xxx
+                    访问模式一样是指查询的条件是一样的,如果使用上面这两种查询语句的查询方式则InnoDB存储引擎不会对该页构造AHI;
+        5.InnoDB锁信息:lock info
+            InnoDB存储引擎会在行级别上对表数据进行上锁;不过InnoDB也会在数据库内部其他很多地方使用锁,从而允许对多种不同资源提供并发访问;数据库系统使用锁是为了支持对共享资源进行并发访问,提供数据的完整性和一致性;(关于锁详见其他锁的相关文章)
+        6.数据字典信息:data dictionary
+            1.InnoDB有自己的表缓存,可以称为表定义缓存或者数据字典;当InnoDB打开一张表,就增加一个对应的对象到数据字典;
+            2.数据字典是对数据库中的数据、库对象、表对象等的元信息的集合;在Mysql中数据字典信息内容就包括表结构、数据库名或表名、字段的数据类型、视图、索引、表字段信息、存储过程、触发器等内容;MySQL INFORMATION_SCHEMA库提供了对数据局元数据、统计信息、以及有关MySQLserver的访问信息（如数据库名或表名、字段的数据类型和访问权限等）;该库中保存的信息也可以称为Mysql的数据字典;
+    3.InnoDB管理缓冲池(Buffer_Pool)的方式:LRU List、Free List和Flush List
+        1.InnoDB是通过LRU算法管理存放了各种类型页的缓冲池的;它是把最频繁最近使用的页在LRU_list的前端,最少使用的页在LRU_list的尾端;当缓冲池中不能存放新读取到的页时,将释放LRU_list尾端的页;
+        2.free list
+            LRU_list用于管理已经读取的页;但数据库刚刚启动时,LRU列表是空的,这时页（page）都在Free_list中的,当需要从缓冲池中分页时,先从Free_List中查找是否有可用的空闲页,如果有则将该页从Free_List中删除,放入LRU_list中;否则根据LRU淘汰LRU末尾的页,将该内存空间分配给新的页;
+        3.flush list
+            LRU_list中被修改后的页称为脏页,也就是缓冲池中的页和磁盘的页数据产生了不一致：这时数据库会通过Checkpoint机制将脏页刷新回磁盘,而Flush_list中的页即为脏页列表;需要注意的是:脏页既存在于LRU_list中,也存在于Flush_list中;LRU_list用来管理缓冲池中页的可用性,Flush用来管理将页刷新回磁盘,二者不影响;
+2.重做日志缓冲(redo_logz的redo_log_buffer)
+    1.buffer pool无法保证事务的持久性和redo_log的作用
+        1.首先我们知道InnoDB是支持事务的,buffer_pool的存在虽然达到了提高数据库读写性能的目的,但也带来了数据丢失的很大风险,风险的详细说明：
+            1.对InnoDB的任何修改操作都会首先在buffer_pool的page上进行,然后这样的页面将被标记为dirty并被放到专门的flush_list上,后续将由master thread或专门的刷脏线程阶段性的将这些页面写入磁盘上;这样的好处是避免每次写操作都操作磁盘导致大量的随机IO,阶段性的刷脏可以将多次对页面的修改merge成一次IO操作,同时异步写入也降低了访问的时延;
+            2.但是如果在dirty page还未刷写到磁盘时,Mysql因故障非正常关闭,这些放在buffer_pool中的修改操作将会丢失,如果写入操作正在进行,甚至会由于损坏数据文件导致数据库不可用,无法保证InnoDB事务的持久性;
+        2.redo_log的作用
+            1.因此为了避免上述问题的发生,Innodb将所有对页面的修改操作会先写入redo_log中,再写入buffer_pool中;这样即使Mysql因故障非正常关闭,在重新启动时也会根据redo_log进行恢复操作;
+            2.所以redo_log存在的目的就是保证Mysql数据安全性,也就是实现了InnoDB事务的持久性;
+    2.重做日志缓冲:redo_log_buffer
+        1.redo日志是由redo_log_buffer和redo_log_file两部分组成的,redo_log_buffer重做日志缓冲就是放在InnoDB内存池中的,redo_log_file是放在磁盘上的;
+        2.innodb是支持事务的存储引擎;因此在事务进行时,会先将修改操作记录在redo_log_buffer中,然后再事务commit时,会调用内核中的fsync将redo_log_buffer刷写到磁盘的redo_log_file中;所以磁盘的性能在一定程度上也决定了事务提交的性能;
+        3.redo_log_buffer一般不需要很大,默认大小为8MB,默认会按照一定的频率将其刷写到磁盘上的redo_log_file,但在以下三种情况下也会对重做日志缓冲进行刷写操作：
+            1.后台线程Master Thread每一秒将重做日志缓冲刷新到重做日志文件
+            2.每个事物提交时,会将重做日志缓冲刷新到重做日志文件
+            3.当重做日志缓冲剩余空间小于1/2时,重做日志缓冲刷新到重做日志文件
+3.额外内存池(additional_pool)
+    在InnoDB存储引擎中,对内存的管理是通过一种称为内存堆的方式进行的;在对一些数据结构本身的内存进行分配时,需要从额外的内存池中进行申请;比如：
+        分配了缓冲池,但是每个缓冲池中的帧缓冲还有对应的缓冲控制对象,这些对象记录以
+        一些诸如LRU、锁、等待等信息,而这个对象的内存需要从额外的内存池中申请;
+
+4.InnoDB的关键特性
+    Mysql InnoDB是通过下面这些关键特性实现了更好的新能和更高的特性：
+        1.插入缓冲（insert buffer）
+        2.两次写（Double write）
+        3.自适应哈希索引（adaptive hash index）
+        4.异步io（Async IO）
+        5.刷新领接页（Flush Neighbor Page）
+        前3个特性上面已经说明,其余两个是：
+    1.异步IO：Async IO
+        1.同步IO(sync IO) :
+            是指每进行一次IO操作,此次操作结束才能继续接下来的操作;但是如果用户发需要等待出一条索引扫描的查询,那么这条SQL查询语句可能需要扫描多个索引页,也就是需要进行多次的IO操作;在每扫描一个页并等待期完成再进行下一次的扫描是没有必要的;
+        2.异步IO(Async IO)
+            是指用户可以在发出一个IO请求后立即再发出另一个IO请求,当全部IO请求发送完毕后,等待所有IO操作的完成,这就是AIO;
+    2.刷新领接页
+        当刷新一个脏页时,innodb会检测该页所在区（extent）的所有页,如果是脏页,那么一起进行刷新;这样通过AIO将多个IO写入操作合并为一个IO操作,在传统机械磁盘下有着显著优势;
+</code></pre><h3 id="2-2-Checkpoint技术"><a href="#2-2-Checkpoint技术" class="headerlink" title="2.2.Checkpoint技术"></a>2.2.Checkpoint技术</h3><pre><code>1.为了避免发生数据丢失的问题,当前事务数据库普遍采用了WAL（Write-ahead logging,预写式日志）策略,即当事务提交时,先写重做日志redo_log,再修改Buffer_Pool中的数据页;当由于宕机导致数据丢失时,通过重做日志完成数据的恢复实现事务ACID中持久性;
+2.而CheckPoint技术是用来解决如下几个问题：
+    1.缩短数据库恢复时间
+        当数据库发生宕机时,数据库不需要重做所有的日志,因为checkpoint之前的数据页都已经刷写到磁盘上了,只需要对checkpoint之后的页进行恢复就可以大大缩短了恢复时间;
+    2.缓冲池不够用时,将脏页刷新到磁盘
+        当缓冲池不够用时,根据LRU算法会移除最近最少使用的页,若此页是脏页,那么需要强制执行checkpoint将脏页刷回磁盘;
+    3.重做日志不可用时,刷新脏页
+        1.由于事务数据库对重做日志的设计都是循环使用的,在Mysql中redo_log则是对ib_logfile0和ib_logfile1两个重做日志文件进行循环覆盖使用;
+        2.而重做日志不可用时是指做日志的这部分不可以被覆盖,因为这部分日志还需要使用（可能用于恢复）,此时就必须强制执行checkpoint,将缓冲池中的数据页少刷新到当前重做日志的位置;
+3.checkpoint的目的是将缓冲池中的脏页刷回到磁盘,不同之处在于刷新多少到磁盘？每次从哪里读取脏页？什么时间触发checkpoint？
+    在InnoDB存储引擎内部有两种checkpoint,分别为:
+    1.Sharp Checkpoint
+        1.Sharp_Checkpoint发生在数据库关闭时将所有的脏页刷写到磁盘,这是默认的工作方式;相关参数是：innodb_fast_shutdown=1
+        2.Sharp Checkpoint不适用于数据库运行时
+            如果数据库运行时使用Sharp_Checkpoint,那么数据库的可用性会受到很大影响;而Fuzzy Checkpoint则可以在数据库运行进行刷写;
+    2.Fuzzy Checkpoint
+        Fuzzy_Checkpoint进行页的刷写,只刷新一部分脏页,而不是刷新所有的脏页回磁盘;InnoDB发生Fuzzy_Checkpoint的情况分为以下几种：
+        1.Master Thread Checkpoint
+            异步刷新,每秒或每10秒从缓冲池脏页列表刷新一定比例的页回磁盘;异步刷新时InnoDB存储引擎可以进行其他操作,用户查询线程不会受阻
+        2.FLUSH_LRU_LIST Checkpoint
+            1.InnoDB存储引擎需要保证LRU列表中差不多有100个空闲页可供使用;在InnoDB 1.1.x版本之前,用户查询线程会检查LRU列表是否有足够的空间操作;如果没有,则根据LRU算法溢出LRU列表尾端的页,如果这些页中有脏页,需要进行checkpoint,因此称为flush_lru_list checkpoint;
+            2.InnoDB 1.2.x开始,这个检查放在了单独的进程（Page Cleaner）中进行,好处在于：
+                1.减少master Thread的压力 2.减轻用户线程阻塞。
+                相关设置参数：
+                innodb_lru_scan_dept：控制LRU列表中可用页的数量,该值默认1024
+        3.Async/Sync Flush Checkpoint
+            1.指的是重做日志不可用的情况,而此时脏页是从脏页列表中选取的;额外补充说明的是：InnoDB存储引擎是通过LSN（Log Sequence Number）来标记版本,LSN是8字节的数字;内存池中的每个页有LSN,重做日志中会记录LSN,checkpoint有LSN;
+            2.如下图所示,若将已经写入到重做日志redo_log中的LSN记为redo_lsn,将已经刷写到磁盘最新页的lsn记为Checkpoint_lsn,则：
+                Checkpoint_age=redo_lsn-checkpoint_lsn
+                async_water_mark = 75% * total_redo_file_size
+                sync_water_mark = 90% * total_redo_file_size
+        4.Dirty Page too much Checkpoint
+            脏页太多导致InnoDB存储引擎强制Checkpoint来保证缓冲池有足够可用的页,默认为75%;相关参数：
+                innodb_max_dirty_pages_pct = 75 
+                #表示缓冲池中脏页的数量占75%时,强制checkpoint
+</code></pre><p><img src="/2019/05/06/Mysql-InnoDB体系架构-一/AsyncSync-Flush-Checkpoint图解.png" alt="AsyncSync-Flush-Checkpoint图解"></p>
+<h3 id="2-3-InnoDB存储引擎内部的主要后台线程"><a href="#2-3-InnoDB存储引擎内部的主要后台线程" class="headerlink" title="2.3.InnoDB存储引擎内部的主要后台线程"></a>2.3.InnoDB存储引擎内部的主要后台线程</h3><pre><code>InnoDB是多线程的模型,不同线程负责不同的任务;后台线程的主要作用是负责刷新内存池中的数据,保证缓冲池中的内存缓存的是最新的数据,此外将已修改的数据文件刷新到磁盘文件;同时,保证在数据库发生异常的情况下,InnoDB能恢复到正常状态;后台线程根据功能不同分为master Thread、IO Thread、Purge Thread、Page Cleaner Thread;
+1.Master Thread
+    1.Master_Thread是InnoDB中最核心的后台线程,主要负责将缓冲池中的数据异步刷写到磁盘上保证数据一致性,数据包括：脏页、合并插入缓存、undo页的回收等;
+    2.Master thread在主循环中,分两大部分操作:每秒钟的操作和每10秒钟的操作
+        1.每秒一次的操作
+            1.日志缓冲刷新到磁盘：
+                即使这个事务还没有提交（总是）,这就可以解释为什么再大的事务commit时都很快;
+            2.合并插入缓冲
+                合并插入并不是每秒都发生,InnoDB会判断当前一秒内发生的IO次数是否小于5,如果是,则系统认为当前的IO压力很小,可以执行合并插入缓冲的操作
+            3.至多刷新100个InnoDB的缓冲池的脏页到磁盘(可能): 
+                这个刷新100个脏页也不是每秒都在做,InnoDB引擎通过判断当前缓冲池中脏页的比例（buf_get_modified_ratio_pct）是否超过了配置文件中innodb_max_drity_pages_pct参数（默认是90,即90%）,如果超过了这个阈值,InnoDB引擎认为需要做磁盘同步操作,将100个脏页写入磁盘;
+        2.每10秒一次的操作
+            1.刷新100个脏页到磁盘(可能)： 
+                InnoDB引擎先判断过去10秒内磁盘的IO操作是否小于200次,如果是,认为当前磁盘有足够的IO操作能力,即将100个脏页刷新到磁盘;
+            2.合并至多5个插入缓冲(总是)： 
+                此次的合并插入缓冲操作总会执行,不同于每秒操作时可能发生的合并操作;
+            3.将日志缓冲刷新到磁盘(总是)： 
+                InnoDB引擎会再次执行日志缓冲刷新到磁盘的操作,与每秒发生的操作一样
+            4.删除无用的undo页(总是)： 
+                当对表执行update、delete操作时,原先的行会被标记为删除,但是为了一致性读的关系,需保留这些行版本的信息,在进行10S一次的删除操作时,InnoDB引擎会判断当前事务系统中已被删除的行是否可以删除,如果可以,InnoDB会立即将其删除;InnoDB每次最多删除20个Undo页;
+            5.产生一个检查点（checkpoint）
+2.IO threads
+    1.在InnoDB存储引擎中大量使用了异步IO来处理写IO请求以提高数据库的性能,IO_Thread的工作主要是负责这些IO请求的回调;IO Thread有4类,分别为:
+        write、read、insert buffer和log IO thread
+    2.线程数量可以通过参数进行调整;
+        5.6以后的版本可以通过innodb_write_io_threads和innodb_read_io_threads来限制读写线程,而在5.6版本以前,只有一个参数innodb_file_io_threads来控制读写总线程数;
+3.Purge threads
+    1.由于InnoDB存储引擎对undo的管理采用回滚段（rollback-segment，简称Rseg）的方式来维护undo_log的并发写入和持久化;而且undo_log中记录的undo操作数量是有限的,所以undo_log需要定时清理的;
+    2.purge threads的作用就是负责回收不再需要的undo页;旧版本Mysql中是在master_thread主线程中完成purge操作的,后来为了减轻master_thread的工作提高cpu使用率以及提升存储引擎的性能,于是使用专门的purge_threads线程进行purge操作;而且从innodb1.2版本开始,可以通过innodb_purge_threads选项指定多个purge线程并发回收提高undo回收速度; 
+        innodb_purge_threads=N  #purge操作每10s进行一次
+4.Page Cleaner Thread
+    Page Cleaner Thread是InnoDB1.2.X版本中新引入的;它是用来是帮助Master_Thread刷新脏页到磁盘上的线程,以减轻Master_Thread的工作以及对于用户查询线程的阻塞,进一步提高InnoDB存储引擎的性能
+</code></pre><h3 id="2-4-InnoDB存储文件"><a href="#2-4-InnoDB存储文件" class="headerlink" title="2.4.InnoDB存储文件"></a>2.4.InnoDB存储文件</h3><pre><code>InnoDB存储引擎中的文件包括重做日志文件、表空间文件;
+1.表空间文件
+    1.在InnoDB中存储数据都是按表空间进行存放的,默认为共享表空间,存储的文件即为共享表空间文件（ibdata1）,该文件初始大小为10M,并且按照参数innodb_autoextend_increment=8M的步进自动增长;设置innodb_data_file_path参数后,所有基于innoDB存储引擎的表的数据都会记录到该共享表空间;
+    2.在生产环境使用Mysql时,很可能会遇到ibdata1文件很大的问题;那是因为ibdata1中存放的是数据库的表数据,如缓存、索引等,所以随着数据库越来越大,该文件会由参数innodb_autoextend_increment=8M的步进自动增长,时间长了该文件会变得很大,清理的办法只能是：
+        先使用mysqldump做一个逻辑全量备份,然后停止Mysql并删除所有数据库、ib_logfile*、ibdata1*文件,当重新启动Mysql后将会创建一个新的共享表空间,然后再把全量备份恢复即可;
+    3.如果开启了InnoDB的参数innodb_file_per_table=ON,则每个基于INnoDB的表使用单独的表空间,独立表空间的命名规则为：表名.ibd,也就是：
+        数据和索引：放在tb_name.ibd中
+        格式定义：放在tb_name.frm
+        这些单独的表空间文件仅存储该表的数据、索引和插入缓冲bitmap等信息,其余信息还是存放在默认的表空间(ibdata1)中;
+2.重做日志文件
+    详见Mysql事务总结一文章;
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+      <div>
+    
+        <div style="text-align:center;color: #FF0000;font-size:16px;">-------------------码字不易<i class="fa fa-heart"></i>尊重原创<i class="fa fa-heart"></i>转载标注<i class="fa fa-heart"></i>不胜感激-------------------</div>
+    
+</div>
+  
+</div>
+<div>
+      
+        
+      
+</div>
+    
+
+    
+       
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea？</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="空腹吃早餐 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="空腹吃早餐 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql/" rel="tag"><i class="fa fa-tag"></i> mysql</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+               <div>
+                 
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+               </div>
+            
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/23/MySQL-备份和恢复工具之Mysqldump/" rel="next" title="MySQL-备份和恢复工具之Mysqldump">
+                <i class="fa fa-chevron-left"></i> MySQL-备份和恢复工具之Mysqldump
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/10/存储基础和Ceph/" rel="prev" title="存储基础和Ceph">
+                存储基础和Ceph <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+      
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/haha.gif" alt="空腹吃早餐">
+            
+              <p class="site-author-name" itemprop="name">空腹吃早餐</p>
+              <p class="site-description motion-element" itemprop="description">如果你也喜欢杰伦那我们就是好朋友 C'est la vie</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">60</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liukui_work@163.com" title="E-Mail &rarr; mailto:liukui_work@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://www.jianshu.com/u/a723bf5483d7" title="简书 &rarr; https://www.jianshu.com/u/a723bf5483d7" rel="noopener" target="_blank"><i class="fa fa-fw fa-heartbeat"></i>简书</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" title="Weibo &rarr; https://weibo.com/2879352237/profile?rightmod=1&wvr=6&mod=personinfo" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://music.163.com/#/user/home?id=321895687" title="CloudMusic &rarr; https://music.163.com/#/user/home?id=321895687" rel="noopener" target="_blank"><i class="fa fa-fw fa-music"></i>CloudMusic</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://jysperm.me/" title="https://jysperm.me/" rel="noopener" target="_blank">Mr wang</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ephen.me/" title="https://ephen.me/" rel="noopener" target="_blank">Ephen</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-InnoDB体系架构"><span class="nav-number">1.</span> <span class="nav-text">1.InnoDB体系架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-InnoDB存储引擎内存池"><span class="nav-number">2.</span> <span class="nav-text">2.1.InnoDB存储引擎内存池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Checkpoint技术"><span class="nav-number">3.</span> <span class="nav-text">2.2.Checkpoint技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-InnoDB存储引擎内部的主要后台线程"><span class="nav-number">4.</span> <span class="nav-text">2.3.InnoDB存储引擎内部的主要后台线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-InnoDB存储文件"><span class="nav-number">5.</span> <span class="nav-text">2.4.InnoDB存储文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <div style="">
+  <canvas id="canvas" style="width:70%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+</div>
+<script>
+(function(){
+
+   var digit=
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,0,0,0]
+        ]//:
+    ];
+
+var canvas = document.getElementById('canvas');
+
+if(canvas.getContext){
+    var cxt = canvas.getContext('2d');
+    //声明canvas的宽高
+    var H = 100,W = 700;
+    canvas.height = H;
+    canvas.width = W;
+    cxt.fillStyle = '#f00';
+    cxt.fillRect(10,10,50,50);
+
+    //存储时间数据
+    var data = [];
+    //存储运动的小球
+    var balls = [];
+    //设置粒子半径
+    var R = canvas.height/20-1;
+    (function(){
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        //存储时间数字，由十位小时、个位小时、冒号、十位分钟、个位分钟、冒号、十位秒钟、个位秒钟这7个数字组成
+        data.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+    })();
+
+    /*生成点阵数字*/
+    function renderDigit(index,num){
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    cxt.beginPath();
+                    cxt.arc(14*(R+2)*index + j*2*(R+1)+(R+1),i*2*(R+1)+(R+1),R,0,2*Math.PI);
+                    cxt.closePath();
+                    cxt.fill();
+                }
+            }
+        }
+    }
+
+    /*更新时钟*/
+    function updateDigitTime(){
+        var changeNumArray = [];
+        var temp = /(\d)(\d):(\d)(\d):(\d)(\d)/.exec(new Date());
+        var NewData = [];
+        NewData.push(temp[1],temp[2],10,temp[3],temp[4],10,temp[5],temp[6]);
+        for(var i = data.length-1; i >=0 ; i--){
+            //时间发生变化
+            if(NewData[i] !== data[i]){
+                //将变化的数字值和在data数组中的索引存储在changeNumArray数组中
+                changeNumArray.push(i+'_'+(Number(data[i])+1)%10);
+            }
+        }
+        //增加小球
+        for(var i = 0; i< changeNumArray.length; i++){
+            addBalls.apply(this,changeNumArray[i].split('_'));
+        }
+        data = NewData.concat();
+    }
+
+    /*更新小球状态*/
+    function updateBalls(){
+        for(var i = 0; i < balls.length; i++){
+            balls[i].stepY += balls[i].disY;
+            balls[i].x += balls[i].stepX;
+            balls[i].y += balls[i].stepY;
+            if(balls[i].x > W + R || balls[i].y > H + R){
+                balls.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    /*增加要运动的小球*/
+    function addBalls(index,num){
+        var numArray = [1,2,3];
+        var colorArray =  ["#3BE","#09C","#A6C","#93C","#9C0","#690","#FB3","#F80","#F44","#C00"];
+        for(var i = 0; i < digit[num].length; i++){
+            for(var j = 0; j < digit[num][i].length; j++){
+                if(digit[num][i][j] == 1){
+                    var ball = {
+                        x:14*(R+2)*index + j*2*(R+1)+(R+1),
+                        y:i*2*(R+1)+(R+1),
+                        stepX:Math.floor(Math.random() * 4 -2),
+                        stepY:-2*numArray[Math.floor(Math.random()*numArray.length)],
+                        color:colorArray[Math.floor(Math.random()*colorArray.length)],
+                        disY:1
+                    };
+                    balls.push(ball);
+                }
+            }
+        }
+    }
+
+    /*渲染*/
+    function render(){
+        //重置画布宽度，达到清空画布的效果
+        canvas.height = 100;
+        //渲染时钟
+        for(var i = 0; i < data.length; i++){
+            renderDigit(i,data[i]);
+        }
+        //渲染小球
+        for(var i = 0; i < balls.length; i++){
+            cxt.beginPath();
+            cxt.arc(balls[i].x,balls[i].y,R,0,2*Math.PI);
+            cxt.fillStyle = balls[i].color;
+            cxt.closePath();
+            cxt.fill();
+        }
+    }
+
+    clearInterval(oTimer);
+    var oTimer = setInterval(function(){
+        //更新时钟
+        updateDigitTime();
+        //更新小球状态
+        updateBalls();
+        //渲染
+        render();
+    },50);
+}
+
+})();
+</script>
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">空腹吃早餐</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">1.4m</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">21:37</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 网站运行时间的设置 -->
+<center>
+    <font size="3" color="#FF0000">Coool's Blog已运行:<span id="run_time" style="color:#DB70DB"></span></font>  Sometimes your whole life boils down to one insame move.
+</center>
+
+<script>
+    function runTime() {
+        var d = new Date(),str = '';
+        BirthDay=new Date("Nov 18,2017");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        str = ""+daysold+"天";
+        str += d.getHours()+'时'; 
+        str  += d.getMinutes()+'分'; 
+        str+= d.getSeconds()+'秒'; 
+        return str;
+    }
+    setInterval(function(){$('#run_time').html(runTime())},1000);
+</script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="255,0,0" opacity="1" zindex="-1" count="230" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="/js/src/Valine.min.js"></script>
+
+  <!-- https://deserts.io/diy-a-comment-system/ -->
+  <script type="text/javascript">
+    new Valine({
+        lang: 'zh-cn',
+        admin_email: '645150765@qq.com', //博主邮箱
+        el: '#comments' ,
+        appId: 'vk3KaAky0698trITaDye8Tul-gzGzoHsz',
+        appKey: '3KISEUBblfzGHUAGvFxJvEyo',
+        emoticon_url: 'https://cloud.panjunwen.com/alu',
+        emoticon_list: ["吐.png","喷血.png","狂汗.png","不说话.png","汗.png","坐等.png","献花.png","不高兴.png","中刀.png","害羞.png","皱眉.png","小眼睛.png","中指.png","尴尬.png","瞅你.png","想一想.png","中枪.png","得意.png","肿包.png","扇耳光.png","亲亲.png","惊喜.png","脸红.png","无所谓.png","便便.png","愤怒.png","蜡烛.png","献黄瓜.png","内伤.png","投降.png","观察.png","看不见.png","击掌.png","抠鼻.png","邪恶.png","看热闹.png","口水.png","抽烟.png","锁眉.png","装大款.png","吐舌.png","无奈.png","长草.png","赞一个.png","呲牙.png","无语.png","阴暗.png","不出所料.png","咽气.png","期待.png","高兴.png","吐血倒地.png","哭泣.png","欢呼.png","黑线.png","喜极而泣.png","喷水.png","深思.png","鼓掌.png","暗地观察.png"],
+        placeholder: '帅的人已经评论',
+  });
+
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+        // ref: https://github.com/ForbesLindesay/unescape-html
+        var unescapeHtml = function(html) {
+          return String(html)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, '\'')
+            .replace(/&#x3A;/g, ':')
+            // replace all the other &#x; chars
+            .replace(/&#(\d+);/g, function (m, p) { return String.fromCharCode(p); })
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        };
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                content = unescapeHtml(content);
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

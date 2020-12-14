@@ -342,7 +342,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">57</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">60</span></a>
 
   </li>
 
@@ -758,6 +758,390 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/05/06/Mysql-InnoDB体系架构-一/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/06/Mysql-InnoDB体系架构-一/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">Mysql-InnoDB体系架构(一)</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-06 08:00:00" itemprop="dateCreated datePublished" datetime="2019-05-06T08:00:00+08:00">2019-05-06</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/06/Mysql-InnoDB体系架构-一/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/06/Mysql-InnoDB体系架构-一/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h3 id="1-InnoDB体系架构"><a href="#1-InnoDB体系架构" class="headerlink" title="1.InnoDB体系架构"></a>1.InnoDB体系架构</h3><p><img src="/2019/05/06/Mysql-InnoDB体系架构-一/mysql-innodb存储引擎架构体系.png" alt="mysql-innodb存储引擎架构体系"></p>
+<pre><code>1.InnoDB存储引擎
+    1.如上图示,InnoDB存储引擎属于Mysql体系架构中存储引擎接口中的一种存储引擎;InnoDB是Mysql默认的存储引擎,也是真正执行SQL语句的部件：
+    2.InnoDB存储引擎是第一个完整支持ACID事务的Mysql存储引擎,其特点是:行锁设计、支持MVCC、支持外键、提供一致性非锁定读（也就是默认读操作不会产生锁）、同时被设计用来最有效的利用内存和CPU;
+    3.InnoDB存储数据是基于磁盘存储的,且其记录是按照页的方式进行管理;
+    4.InnoDB体系架构
+        从上图可以看出,InnoDB存储引擎由内存池、一些重要的后台线程和存储文件三部分组成的;下面分别对这三部分内部结构和作用进行说明;
+    下面分别对这三部分进行说明;
+</code></pre><h3 id="2-1-InnoDB存储引擎内存池"><a href="#2-1-InnoDB存储引擎内存池" class="headerlink" title="2.1.InnoDB存储引擎内存池"></a>2.1.InnoDB存储引擎内存池</h3><pre><code>InnoDB存储引擎内存池
+    内存池是由多个内存块组成的,根据分工以及存储文件的不同分为缓冲池（Buffer_Pool）、重做日志缓冲（redo_log_buffer）、额外内存池（additional_pool）;内存池的主要作用是：
+        1.维护所有进程/线程需要访问的多个内部数据结构
+        2.缓存磁盘上的数据,方便快速读取,同时在对磁盘文件修改之前进行缓存
+        3.缓存重做日志（redo log）
+1.缓冲池(Buffer_Pool)
+    1.缓冲池的作用：
+        1.首先InnoDB作为MySQL的存储引擎,数据是基于在磁盘的,并将其中的记录按照页（page）的方式进行管理,如果数据库读取和写入操作每次都要从磁盘上读取经过磁盘IO效率（众所周知的慢）是非常低的,因此InnoDB提供了缓冲池（Buffer_Pool）通过内存的速度来弥补磁盘速度慢对数据库性能造成的影响;借助于缓冲池后它的工作逻辑是：
+            1.首先将数据库文件按页（每页16K）读取到缓冲池,然后按最近最少使用（LRU）的算法来保留在缓冲池中的缓存数据;
+            2.当Mysql进行读取操作时,首先将从磁盘读到的页存放在缓冲池中,下一次读取相同的页时,首先判定是否存在缓冲池中,如果有就是被命中直接读取,没有的话就从磁盘中读取;
+            3.当Mysql进行修改/写入操作时,首先修改缓冲池中的页（修改后,该页即为脏页）,然后在以一定的频率刷写到磁盘上,需要说明的是这里的刷写机制不是每页在发生变更时触发的,而是通过checkpoint机制刷写到磁盘,在InnoDB中checkpoint有两种,后文会详细说明;
+        2.可以看出缓冲池的大小直接影响着数据库的整体性能,可以通过配置参数innodb_buffer_pool_size来设置;而且在Mysql优化中,Buffer_Pool缓冲池的大小是必须优化项,一般建议设置innodb-buffer-pool-size的值为服务器总可用内存的80%;
+        3.而且从InnoDB1.0.x版本开始,允许有多个缓冲池实例;每个页根据哈希值平均分配到不同缓冲池实例中,这样做的好处是减少数据库内部的资源竞争,增加系统的并发处理能力;
+    2.缓冲池的组成：
+        缓冲池中缓存的数据页类型还包括：数据页和索引页、undo页、插入缓冲、自适应哈希索引、InnoDB的锁信息、数据字典信息、 两次写等;
+        1.数据页和索引页:data page和index page
+            页（Page）是Innodb存储的最基本结构,也是Innodb磁盘管理的最小单位,与数据库相关的所有内容都存储在Page结构里;Page分为几种类型,而数据页和索引页就是其中最为重要的两种类型;
+        2.插入缓冲:insert buffer 
+            1.什么是插入缓冲？
+                1.由于每张表不可能只有一个聚集索引,更多情况下一张表有多个非聚集（且不唯一）的辅助索引;这种情况下,在进行插入操作时,数据页的存放还是按照主键进行顺序存放,但是由于B+树的特性决定了非聚集索引插入的离散性,那么对于非聚集的索引叶子节点的插入就不再是顺序的,而是需要离散的访问辅助索引页,那么这种离散型的随机读取操作必然会导致了插入操作的性能下降;
+                2.于是InnoDB设计了insert_buffer来优化对于非聚簇索引的插入或者更新操作;insert_buffer是一种特殊的数据结构（B+ tree）,而且它并不是缓存的一部分,而是和数据页一样都是物理页的组成部分;
+                3.使用insert_buffer后,对于非聚集索引的插入或更新操作,不是每一次直接插入到索引页中,而是先判断插入的非聚集索引页是否在缓冲池中,如果在,则直接插入,如果不再,则先放入一个insert_buffer对象中;这样会给数据库一个假象：
+                    数据库会认为这个非聚集的索引已经插入到叶子节点,而实际上是放在另一个位置了,然后再以一定的频率和情况进行insert_buffer和非聚簇索引叶子节点的合并merge操作,这时通常能将多个插入合并到一个操作中（因为在同一个索引页中）,于是就可以大大提高了对于非聚集索引插入的性能;
+            2.insert buffer需要同时满足两个条件
+                1.索引必须是非聚簇索引
+                2.索引不是唯一的：
+                    因为在插入缓冲时,数据库并不去查找索引页来判断插入记录的唯一性。如果去查找的话,又会涉及到离散读的情况,insert_buffer失去意义
+        3.两次写:double write buffer
+            1.insert_buffer带给InnoDB存储引擎的是性能上的提升,doublewrite（两次写）带给InnoDB存储引擎的是数据页的可靠性;
+            2.部分失效
+                当数据库正在从内存向磁盘写一个数据页时,数据库宕机,从而导致这个页只写了部分数据,这就是部分写失效,它会导致数据丢失;这时是无法通过重做日志恢复的,因为重做日志记录的是对页的物理修改,如果页本身已经损坏,重做日志也是无法恢复的;
+            3.InnoDB double write双写体系架构
+                从第二步解释可知道,在部分写失效的情况下,我们在应用重做日志之前,需要原始页的一个副本,而两次写就是为了解决这个问题的,如上图是其原理架构图：
+                1.两次写需要额外添加两个部分：
+                    1.内存中的两次写缓冲（doublewrite buffer）,大小为2MB
+                    2.磁盘上共享表空间中连续的128页,大小也为2MB
+                2.原理是这样的：
+                    1.当刷新缓冲池脏页时,并不直接写到数据文件中,而是先拷贝至内存中的两次写缓冲区;
+                    2.接着从两次写缓冲区分两次写入磁盘共享表空间中,每次写入1MB
+                    3.待第2步完成后,再将两次写缓冲区写入数据文件
+                这样就可以解决第二步提到的部分写失效的问题,因为在磁盘共享表空间中已有数据页副本拷贝,如果数据库在页写入数据文件的过程中宕机,在实例恢复时,可以从共享表空间中找到该页副本,将其拷贝覆盖原有的数据页,再应用重做日志就可以了;
+        4.自适应哈希索引:adaptive hash index
+            1.哈希（hash）是一种非常快的查找方法,在一般情况下这种查找的时间复杂度为O(1),即一般仅需要一次查找就能定位数据;而B+树的查找次数,取决于B+树的高度,在生产环境中,B+树的高度一般为3~4层,所以需要3~4次的查询;
+            2.InnoDB存储引擎会根据访问的频率和模式监控对表上各索引页的查询,通过对热点页建立哈希索引来提高查询效率;自适应hash索引是指：
+                如果观察到建立哈希索引可以带来速度提升,则建立哈希索引,称之为自适应哈希索引(Adaptive Hash Index, AHI)
+            3.自适应哈希索引AHI是通过缓冲池的B+树页构造而来,因此建立的速度很快,而且不需要对整张表构建哈希索引;但是AHI有一个要求:对这个页的连续访问模式必须是一样的,也就是说其查询的条件（where）必须完全一样,而且必须是连续的;比如：
+                对于(a,b)这样的联合索引页,其访问模式可以是下面情况：
+                    where a=xxx
+                    where a =xxx and b=xxx
+                    访问模式一样是指查询的条件是一样的,如果使用上面这两种查询语句的查询方式则InnoDB存储引擎不会对该页构造AHI;
+        5.InnoDB锁信息:lock info
+            InnoDB存储引擎会在行级别上对表数据进行上锁;不过InnoDB也会在数据库内部其他很多地方使用锁,从而允许对多种不同资源提供并发访问;数据库系统使用锁是为了支持对共享资源进行并发访问,提供数据的完整性和一致性;(关于锁详见其他锁的相关文章)
+        6.数据字典信息:data dictionary
+            1.InnoDB有自己的表缓存,可以称为表定义缓存或者数据字典;当InnoDB打开一张表,就增加一个对应的对象到数据字典;
+            2.数据字典是对数据库中的数据、库对象、表对象等的元信息的集合;在Mysql中数据字典信息内容就包括表结构、数据库名或表名、字段的数据类型、视图、索引、表字段信息、存储过程、触发器等内容;MySQL INFORMATION_SCHEMA库提供了对数据局元数据、统计信息、以及有关MySQLserver的访问信息（如数据库名或表名、字段的数据类型和访问权限等）;该库中保存的信息也可以称为Mysql的数据字典;
+    3.InnoDB管理缓冲池(Buffer_Pool)的方式:LRU List、Free List和Flush List
+        1.InnoDB是通过LRU算法管理存放了各种类型页的缓冲池的;它是把最频繁最近使用的页在LRU_list的前端,最少使用的页在LRU_list的尾端;当缓冲池中不能存放新读取到的页时,将释放LRU_list尾端的页;
+        2.free list
+            LRU_list用于管理已经读取的页;但数据库刚刚启动时,LRU列表是空的,这时页（page）都在Free_list中的,当需要从缓冲池中分页时,先从Free_List中查找是否有可用的空闲页,如果有则将该页从Free_List中删除,放入LRU_list中;否则根据LRU淘汰LRU末尾的页,将该内存空间分配给新的页;
+        3.flush list
+            LRU_list中被修改后的页称为脏页,也就是缓冲池中的页和磁盘的页数据产生了不一致：这时数据库会通过Checkpoint机制将脏页刷新回磁盘,而Flush_list中的页即为脏页列表;需要注意的是:脏页既存在于LRU_list中,也存在于Flush_list中;LRU_list用来管理缓冲池中页的可用性,Flush用来管理将页刷新回磁盘,二者不影响;
+2.重做日志缓冲(redo_logz的redo_log_buffer)
+    1.buffer pool无法保证事务的持久性和redo_log的作用
+        1.首先我们知道InnoDB是支持事务的,buffer_pool的存在虽然达到了提高数据库读写性能的目的,但也带来了数据丢失的很大风险,风险的详细说明：
+            1.对InnoDB的任何修改操作都会首先在buffer_pool的page上进行,然后这样的页面将被标记为dirty并被放到专门的flush_list上,后续将由master thread或专门的刷脏线程阶段性的将这些页面写入磁盘上;这样的好处是避免每次写操作都操作磁盘导致大量的随机IO,阶段性的刷脏可以将多次对页面的修改merge成一次IO操作,同时异步写入也降低了访问的时延;
+            2.但是如果在dirty page还未刷写到磁盘时,Mysql因故障非正常关闭,这些放在buffer_pool中的修改操作将会丢失,如果写入操作正在进行,甚至会由于损坏数据文件导致数据库不可用,无法保证InnoDB事务的持久性;
+        2.redo_log的作用
+            1.因此为了避免上述问题的发生,Innodb将所有对页面的修改操作会先写入redo_log中,再写入buffer_pool中;这样即使Mysql因故障非正常关闭,在重新启动时也会根据redo_log进行恢复操作;
+            2.所以redo_log存在的目的就是保证Mysql数据安全性,也就是实现了InnoDB事务的持久性;
+    2.重做日志缓冲:redo_log_buffer
+        1.redo日志是由redo_log_buffer和redo_log_file两部分组成的,redo_log_buffer重做日志缓冲就是放在InnoDB内存池中的,redo_log_file是放在磁盘上的;
+        2.innodb是支持事务的存储引擎;因此在事务进行时,会先将修改操作记录在redo_log_buffer中,然后再事务commit时,会调用内核中的fsync将redo_log_buffer刷写到磁盘的redo_log_file中;所以磁盘的性能在一定程度上也决定了事务提交的性能;
+        3.redo_log_buffer一般不需要很大,默认大小为8MB,默认会按照一定的频率将其刷写到磁盘上的redo_log_file,但在以下三种情况下也会对重做日志缓冲进行刷写操作：
+            1.后台线程Master Thread每一秒将重做日志缓冲刷新到重做日志文件
+            2.每个事物提交时,会将重做日志缓冲刷新到重做日志文件
+            3.当重做日志缓冲剩余空间小于1/2时,重做日志缓冲刷新到重做日志文件
+3.额外内存池(additional_pool)
+    在InnoDB存储引擎中,对内存的管理是通过一种称为内存堆的方式进行的;在对一些数据结构本身的内存进行分配时,需要从额外的内存池中进行申请;比如：
+        分配了缓冲池,但是每个缓冲池中的帧缓冲还有对应的缓冲控制对象,这些对象记录以
+        一些诸如LRU、锁、等待等信息,而这个对象的内存需要从额外的内存池中申请;
+
+4.InnoDB的关键特性
+    Mysql InnoDB是通过下面这些关键特性实现了更好的新能和更高的特性：
+        1.插入缓冲（insert buffer）
+        2.两次写（Double write）
+        3.自适应哈希索引（adaptive hash index）
+        4.异步io（Async IO）
+        5.刷新领接页（Flush Neighbor Page）
+        前3个特性上面已经说明,其余两个是：
+    1.异步IO：Async IO
+        1.同步IO(sync IO) :
+            是指每进行一次IO操作,此次操作结束才能继续接下来的操作;但是如果用户发需要等待出一条索引扫描的查询,那么这条SQL查询语句可能需要扫描多个索引页,也就是需要进行多次的IO操作;在每扫描一个页并等待期完成再进行下一次的扫描是没有必要的;
+        2.异步IO(Async IO)
+            是指用户可以在发出一个IO请求后立即再发出另一个IO请求,当全部IO请求发送完毕后,等待所有IO操作的完成,这就是AIO;
+    2.刷新领接页
+        当刷新一个脏页时,innodb会检测该页所在区（extent）的所有页,如果是脏页,那么一起进行刷新;这样通过AIO将多个IO写入操作合并为一个IO操作,在传统机械磁盘下有着显著优势;
+</code></pre><h3 id="2-2-Checkpoint技术"><a href="#2-2-Checkpoint技术" class="headerlink" title="2.2.Checkpoint技术"></a>2.2.Checkpoint技术</h3><pre><code>1.为了避免发生数据丢失的问题,当前事务数据库普遍采用了WAL（Write-ahead logging,预写式日志）策略,即当事务提交时,先写重做日志redo_log,再修改Buffer_Pool中的数据页;当由于宕机导致数据丢失时,通过重做日志完成数据的恢复实现事务ACID中持久性;
+2.而CheckPoint技术是用来解决如下几个问题：
+    1.缩短数据库恢复时间
+        当数据库发生宕机时,数据库不需要重做所有的日志,因为checkpoint之前的数据页都已经刷写到磁盘上了,只需要对checkpoint之后的页进行恢复就可以大大缩短了恢复时间;
+    2.缓冲池不够用时,将脏页刷新到磁盘
+        当缓冲池不够用时,根据LRU算法会移除最近最少使用的页,若此页是脏页,那么需要强制执行checkpoint将脏页刷回磁盘;
+    3.重做日志不可用时,刷新脏页
+        1.由于事务数据库对重做日志的设计都是循环使用的,在Mysql中redo_log则是对ib_logfile0和ib_logfile1两个重做日志文件进行循环覆盖使用;
+        2.而重做日志不可用时是指做日志的这部分不可以被覆盖,因为这部分日志还需要使用（可能用于恢复）,此时就必须强制执行checkpoint,将缓冲池中的数据页少刷新到当前重做日志的位置;
+3.checkpoint的目的是将缓冲池中的脏页刷回到磁盘,不同之处在于刷新多少到磁盘？每次从哪里读取脏页？什么时间触发checkpoint？
+    在InnoDB存储引擎内部有两种checkpoint,分别为:
+    1.Sharp Checkpoint
+        1.Sharp_Checkpoint发生在数据库关闭时将所有的脏页刷写到磁盘,这是默认的工作方式;相关参数是：innodb_fast_shutdown=1
+        2.Sharp Checkpoint不适用于数据库运行时
+            如果数据库运行时使用Sharp_Checkpoint,那么数据库的可用性会受到很大影响;而Fuzzy Checkpoint则可以在数据库运行进行刷写;
+    2.Fuzzy Checkpoint
+        Fuzzy_Checkpoint进行页的刷写,只刷新一部分脏页,而不是刷新所有的脏页回磁盘;InnoDB发生Fuzzy_Checkpoint的情况分为以下几种：
+        1.Master Thread Checkpoint
+            异步刷新,每秒或每10秒从缓冲池脏页列表刷新一定比例的页回磁盘;异步刷新时InnoDB存储引擎可以进行其他操作,用户查询线程不会受阻
+        2.FLUSH_LRU_LIST Checkpoint
+            1.InnoDB存储引擎需要保证LRU列表中差不多有100个空闲页可供使用;在InnoDB 1.1.x版本之前,用户查询线程会检查LRU列表是否有足够的空间操作;如果没有,则根据LRU算法溢出LRU列表尾端的页,如果这些页中有脏页,需要进行checkpoint,因此称为flush_lru_list checkpoint;
+            2.InnoDB 1.2.x开始,这个检查放在了单独的进程（Page Cleaner）中进行,好处在于：
+                1.减少master Thread的压力 2.减轻用户线程阻塞。
+                相关设置参数：
+                innodb_lru_scan_dept：控制LRU列表中可用页的数量,该值默认1024
+        3.Async/Sync Flush Checkpoint
+            1.指的是重做日志不可用的情况,而此时脏页是从脏页列表中选取的;额外补充说明的是：InnoDB存储引擎是通过LSN（Log Sequence Number）来标记版本,LSN是8字节的数字;内存池中的每个页有LSN,重做日志中会记录LSN,checkpoint有LSN;
+            2.如下图所示,若将已经写入到重做日志redo_log中的LSN记为redo_lsn,将已经刷写到磁盘最新页的lsn记为Checkpoint_lsn,则：
+                Checkpoint_age=redo_lsn-checkpoint_lsn
+                async_water_mark = 75% * total_redo_file_size
+                sync_water_mark = 90% * total_redo_file_size
+        4.Dirty Page too much Checkpoint
+            脏页太多导致InnoDB存储引擎强制Checkpoint来保证缓冲池有足够可用的页,默认为75%;相关参数：
+                innodb_max_dirty_pages_pct = 75 
+                #表示缓冲池中脏页的数量占75%时,强制checkpoint
+</code></pre><p><img src="/2019/05/06/Mysql-InnoDB体系架构-一/AsyncSync-Flush-Checkpoint图解.png" alt="AsyncSync-Flush-Checkpoint图解"></p>
+<h3 id="2-3-InnoDB存储引擎内部的主要后台线程"><a href="#2-3-InnoDB存储引擎内部的主要后台线程" class="headerlink" title="2.3.InnoDB存储引擎内部的主要后台线程"></a>2.3.InnoDB存储引擎内部的主要后台线程</h3><pre><code>InnoDB是多线程的模型,不同线程负责不同的任务;后台线程的主要作用是负责刷新内存池中的数据,保证缓冲池中的内存缓存的是最新的数据,此外将已修改的数据文件刷新到磁盘文件;同时,保证在数据库发生异常的情况下,InnoDB能恢复到正常状态;后台线程根据功能不同分为master Thread、IO Thread、Purge Thread、Page Cleaner Thread;
+1.Master Thread
+    1.Master_Thread是InnoDB中最核心的后台线程,主要负责将缓冲池中的数据异步刷写到磁盘上保证数据一致性,数据包括：脏页、合并插入缓存、undo页的回收等;
+    2.Master thread在主循环中,分两大部分操作:每秒钟的操作和每10秒钟的操作
+        1.每秒一次的操作
+            1.日志缓冲刷新到磁盘：
+                即使这个事务还没有提交（总是）,这就可以解释为什么再大的事务commit时都很快;
+            2.合并插入缓冲
+                合并插入并不是每秒都发生,InnoDB会判断当前一秒内发生的IO次数是否小于5,如果是,则系统认为当前的IO压力很小,可以执行合并插入缓冲的操作
+            3.至多刷新100个InnoDB的缓冲池的脏页到磁盘(可能): 
+                这个刷新100个脏页也不是每秒都在做,InnoDB引擎通过判断当前缓冲池中脏页的比例（buf_get_modified_ratio_pct）是否超过了配置文件中innodb_max_drity_pages_pct参数（默认是90,即90%）,如果超过了这个阈值,InnoDB引擎认为需要做磁盘同步操作,将100个脏页写入磁盘;
+        2.每10秒一次的操作
+            1.刷新100个脏页到磁盘(可能)： 
+                InnoDB引擎先判断过去10秒内磁盘的IO操作是否小于200次,如果是,认为当前磁盘有足够的IO操作能力,即将100个脏页刷新到磁盘;
+            2.合并至多5个插入缓冲(总是)： 
+                此次的合并插入缓冲操作总会执行,不同于每秒操作时可能发生的合并操作;
+            3.将日志缓冲刷新到磁盘(总是)： 
+                InnoDB引擎会再次执行日志缓冲刷新到磁盘的操作,与每秒发生的操作一样
+            4.删除无用的undo页(总是)： 
+                当对表执行update、delete操作时,原先的行会被标记为删除,但是为了一致性读的关系,需保留这些行版本的信息,在进行10S一次的删除操作时,InnoDB引擎会判断当前事务系统中已被删除的行是否可以删除,如果可以,InnoDB会立即将其删除;InnoDB每次最多删除20个Undo页;
+            5.产生一个检查点（checkpoint）
+2.IO threads
+    1.在InnoDB存储引擎中大量使用了异步IO来处理写IO请求以提高数据库的性能,IO_Thread的工作主要是负责这些IO请求的回调;IO Thread有4类,分别为:
+        write、read、insert buffer和log IO thread
+    2.线程数量可以通过参数进行调整;
+        5.6以后的版本可以通过innodb_write_io_threads和innodb_read_io_threads来限制读写线程,而在5.6版本以前,只有一个参数innodb_file_io_threads来控制读写总线程数;
+3.Purge threads
+    1.由于InnoDB存储引擎对undo的管理采用回滚段（rollback-segment，简称Rseg）的方式来维护undo_log的并发写入和持久化;而且undo_log中记录的undo操作数量是有限的,所以undo_log需要定时清理的;
+    2.purge threads的作用就是负责回收不再需要的undo页;旧版本Mysql中是在master_thread主线程中完成purge操作的,后来为了减轻master_thread的工作提高cpu使用率以及提升存储引擎的性能,于是使用专门的purge_threads线程进行purge操作;而且从innodb1.2版本开始,可以通过innodb_purge_threads选项指定多个purge线程并发回收提高undo回收速度; 
+        innodb_purge_threads=N  #purge操作每10s进行一次
+4.Page Cleaner Thread
+    Page Cleaner Thread是InnoDB1.2.X版本中新引入的;它是用来是帮助Master_Thread刷新脏页到磁盘上的线程,以减轻Master_Thread的工作以及对于用户查询线程的阻塞,进一步提高InnoDB存储引擎的性能
+</code></pre><h3 id="2-4-InnoDB存储文件"><a href="#2-4-InnoDB存储文件" class="headerlink" title="2.4.InnoDB存储文件"></a>2.4.InnoDB存储文件</h3><pre><code>InnoDB存储引擎中的文件包括重做日志文件、表空间文件;
+1.表空间文件
+    1.在InnoDB中存储数据都是按表空间进行存放的,默认为共享表空间,存储的文件即为共享表空间文件（ibdata1）,该文件初始大小为10M,并且按照参数innodb_autoextend_increment=8M的步进自动增长;设置innodb_data_file_path参数后,所有基于innoDB存储引擎的表的数据都会记录到该共享表空间;
+    2.在生产环境使用Mysql时,很可能会遇到ibdata1文件很大的问题;那是因为ibdata1中存放的是数据库的表数据,如缓存、索引等,所以随着数据库越来越大,该文件会由参数innodb_autoextend_increment=8M的步进自动增长,时间长了该文件会变得很大,清理的办法只能是：
+        先使用mysqldump做一个逻辑全量备份,然后停止Mysql并删除所有数据库、ib_logfile*、ibdata1*文件,当重新启动Mysql后将会创建一个新的共享表空间,然后再把全量备份恢复即可;
+    3.如果开启了InnoDB的参数innodb_file_per_table=ON,则每个基于INnoDB的表使用单独的表空间,独立表空间的命名规则为：表名.ibd,也就是：
+        数据和索引：放在tb_name.ibd中
+        格式定义：放在tb_name.frm
+        这些单独的表空间文件仅存储该表的数据、索引和插入缓冲bitmap等信息,其余信息还是存放在默认的表空间(ibdata1)中;
+2.重做日志文件
+    详见Mysql事务总结一文章;
+</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+</div>
+<div>
+      
+</div>
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/03/23/MySQL-备份和恢复工具之Mysqldump/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -957,13 +1341,17 @@
     5.xtrabackup
         Xtrabackup是Percona组织提供的物理备份工具,支持完全备份、增量备份、差异备份;xtrabackup支持对Innodb存储引擎进行热备,支持并行备份
     下文只要介绍mysqldump和xtrabackup的备用工具使用方式;
-5.备份方案
+5.备份方案和备份策略
     1.假如有一个10G/100G的数据库，如何做备份？
         显然如果使用mysqldump是即为麻烦的而且很慢，如果是使用xtrabackup更可行：
         策略：
             每周一次完全备份+每天一次增量备份+二进制日志做时间点还原
     2.结合我们公司线上业务的实际情况，我们的备份方案主要采取全备+binlog备份方式,其中:
         全备分为逻辑备份+物理备份，同时主从复制也作为一种备份的方式存在，从而最大程度降低数据故障带来的风险；
+    3.低成本、高安全性、且能够快速恢复的备份策略的几个要点：
+        1.全量备份+增量备份+定期演练；
+        2.1小时延时从库；
+        3.双份1小时延时从库；
 </code></pre><h3 id="2-mysqldump"><a href="#2-mysqldump" class="headerlink" title="2.mysqldump"></a>2.mysqldump</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html" target="_blank" rel="noopener">mysqldump命令使用说明</a></p>
 <pre><code>1.生产环境使用mysqldump的备份方案：
     1.如果数据量不大时，可以使用mysqldump一周做一次完全备份，然后每一天（每半天）做一次通过复制二进制日志文件做增量；
@@ -1490,7 +1878,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/20/haproxy配置/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/02/13/MySQL-日志管理/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -1510,7 +1898,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/10/20/haproxy配置/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">haproxy配置</a>
+                <a href="/2019/02/13/MySQL-日志管理/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">MySQL-日志管理</a>
               
             
           </h1>
@@ -1536,7 +1924,7 @@
                 
               
 
-              <time title="创建时间：2017-10-20 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T08:00:00+08:00">2017-10-20</time>
+              <time title="创建时间：2019-02-13 08:00:00" itemprop="dateCreated datePublished" datetime="2019-02-13T08:00:00+08:00">2019-02-13</time>
             
 
             
@@ -1554,14 +1942,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/" itemprop="url" rel="index"><span itemprop="name">负载均衡</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/haproxy/" itemprop="url" rel="index"><span itemprop="name">haproxy</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
 
                 
                 
@@ -1576,8 +1957,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/10/20/haproxy配置/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/20/haproxy配置/" itemprop="commentCount"></span>
+                <a href="/2019/02/13/MySQL-日志管理/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/02/13/MySQL-日志管理/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1634,16 +2015,667 @@
 
       
         
-          <h3 id="HAProxy"><a href="#HAProxy" class="headerlink" title="HAProxy"></a>HAProxy</h3>
-          <!--noindex-->
           
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/10/20/haproxy配置/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
+            <a id="more"></a>
+<h3 id="Mysql的日志管理"><a href="#Mysql的日志管理" class="headerlink" title="Mysql的日志管理"></a>Mysql的日志管理</h3><pre><code>1.对于一个数据库管理系统来讲，它的日志文件种类非常多，这些日志文件表现在mysql物理视图上的各类文件；而且Mysql还有很多种不同类型的存储引擎,每种存储引擎的也会有自己的日志,比如：
+    对于MyISAM来说每个表都有三个文件（*.MYD,*.MYI,*.frm），对于InnoDB来说每个表有两个文件（*.ibd,*.frm）这些都是真正的存储的数据文件，为了保证mysql服务器正常运行和记录mysql运行中产生的事件、错误等，mariadb有诸多类型的日志功能，这些日志文件最终还要表现为存储的一种文件的，所以mariab除了数据、索引文件之外还有第三类文件
+2.Mysql中日志可以按照功能分为如下几类：
+    1.通用日志(也叫查询日志)：query log(general log),默认未开启
+    2.错误日志:error log
+    3.慢查询日志:slow query log
+    4.二进制日志:binary log
+    5.中继日志:reley log
+    6.innodb存储引擎级的事务日志：transaction log
+        事务日志又分:redo log和undo log
+</code></pre><h3 id="1-通用日志-也叫查询日志-：query-log-general-log-默认未开启"><a href="#1-通用日志-也叫查询日志-：query-log-general-log-默认未开启" class="headerlink" title="1.通用日志(也叫查询日志)：query log(general log),默认未开启"></a>1.通用日志(也叫查询日志)：query log(general log),默认未开启</h3><pre><code>通用日志的重要说明：
+    1.查询日志在mysql中被称之为general log（通用日志），不要被&quot;查询日志&quot;的名字误导，错误的以为查询日志只会记录select语句;其实不然,查询日志记录了数据库执行的命令，不管这些语句是否正确都会被记录，这也是general log之所以&quot;通用&quot;的原因；
+    2.默认情况下Mysql的查询日志是未开启的,因为当开启查询日志后,由于数据库操作命令有可能非常多而且执行比较频繁,据库可能需要不停的写入查询日志，这样会增大服务器的IO压力，增加很多系统开销；但是开启查询日志可以帮助我们分析问题,比如：分析哪些语句执行密集，执行密集的select语句对应的数据是否能够被缓存等;但可以根据实际情况决定是否开启查询日志，如果需要可以手动开启;
+1.查询日志的3个相关参数：
+    1.general_log=ON|OFF
+        表示查询日志是否开启，ON表示开启，OFF表示未开启，默认为OFF
+    2.log_output=FILE|TABLE|FILE,TABLE|NONE
+        表示当查询日志开启以后，以哪种方式存放，在mysql中有3种方式存储查询日志：
+        1.FILE：
+            file是指将查询日志存储在指定的日志文件中,可以结合general_log_file参数设定日志文件名;
+        2.TABLE:
+            table是指将查询日志存储在mysql库的general_log表中;
+        3.FILE,TABLE
+            FILE,TABLE&quot;是指将查询日志同时存放于指定的文件与general_log表中，不过一般不会进行这样的设置，因为这样会徒增很多IO压力;
+        需要注意的是:log_output不止控制查询日志的输出，慢查询日志的输出也是由此参数进行控制，也就是说log_output设置为file，就表示查询日志和慢查询日志都存放到对应的文件中，设置为table，查询日志和慢查询日志就都存放在对应的数据库表中;如果需要开启查询日志,建议设置为&quot;table&quot;;
+    3.general_log_file=/path/file
+        当log_output设置成file或者file,table时,可以通过此参数指定查询日志的文件;默认情况下，此文件名与mysql所在的主机名相同,而且此处是相对位置,是相对于my.cnf中datadir变量所对应的目录位置,相对位置默认是/var/lib/mysql目录,如果安装mysql时更改了mysql数据目录,以实际目录为准;
+2.开启查询日志并设置存储为file
+    1.因为在Mysql中日志的参数都是全局变量，所以设置这些变量时需要加上global关键字,而且生产环境中需要要将下面这些配置写入my.cnf配置文件中;
+        &gt; set global general_log=ON;         #开启查询日志
+        &gt; set global log_output=&quot;file&quot;;      #将查询日志存储为file
+        写在my.cnf配置文件中：
+            ~]# vim /etc/my.cnf
+            [mysqld]
+            general_log=ON;
+            global log_output=&quot;file&quot;
+            general_log_file=/data/mysql3/mysql-master.log
+    2.查看设置是否生效
+        MariaDB [(none)]&gt; show global variables like &apos;%gen%&apos;;
+        +------------------+------------------+
+        | Variable_name    | Value            |
+        +------------------+------------------+
+        | general_log      | OFF              |
+        | general_log_file | mysql-master.log |#日志文件名默认为所在主机名.log
+        +------------------+------------------+
+        MariaDB [(none)]&gt; show global variables like &apos;log_output&apos;;
+        +---------------+-------+
+        | Variable_name | Value |
+        +---------------+-------+
+        | log_output    | FILE  |
+        +---------------+-------+
+</code></pre><h3 id="2-错误日志：error-log"><a href="#2-错误日志：error-log" class="headerlink" title="2.错误日志：error log"></a>2.错误日志：error log</h3><pre><code>需要说明的是：错误日志不仅仅记录了mysql执行过程中的错误信息,还会记录其他信息,错误日志会记录如下信息：
+    1.mysql执行过程中的错误信息,称为错误日志的主要原因
+    2.mysql服务器启动、关闭所产生的事件信息,但未必是错误信息
+    3.event scheduler运行一个event时产生的日志信息;
+    4.mysql主从复制结构中,从服务器IO复制线程产生的启动信息、错误信息
+    所以说,错误日志的作用不仅仅与记录错误，它是非常重要的信息日志文件;
+1.错误日志的2个相关参数：
+    1.log_error：
+        log_error变量用于设置错误日志的存放位置,如果想要修改错误信息位置并且永久生效需要将该参数写在my.cnf配置文件中;
+    2.log_warnings=0|1|2
+        log_warnings变量的值也与错误日志有关,log_warnings作用是否将警告信息也记录到错误日志文件中,它的值有3种：
+        1.值为0：0表示不记录警告信息
+        2.值为1:表示警告信息一并记录到错误日志中,默认是1
+        3.值为2：表示&quot;失败的连接&quot;的信息和创建新连接时&quot;拒绝访问&quot;类的错误信息也会被记录到错误日志中;
+        同样,如果想要永久使配置生效，需要将该参数写在my.cnf配置文件中比如：log_warnings=2
+2.定义错误日志
+    使用命令配置都是临时有效的，要想永久有效就需要写在my.cnf配置文件中:
+    ~]# vim /etc/my.cnf     #将配置写在my.cnf配置文件中
+        [mysqld_safe]
+        log-error=/data/mysql3/error_log.log 
+        log_warnings=2
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;%log_error%&apos;;
+        +---------------+----------------------------+
+        | Variable_name | Value                      |
+        +---------------+----------------------------+
+        | log_error     | /data/mysql3/error_log.log |
+        +---------------+----------------------------+
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;%log_warning%&apos;;
+        +---------------+-------+
+        | Variable_name | Value |
+        +---------------+-------+
+        | log_warnings  | 2     |
+        +---------------+-------+
+</code></pre><h3 id="3-慢查询日志-slow-query-log"><a href="#3-慢查询日志-slow-query-log" class="headerlink" title="3.慢查询日志:slow query log"></a>3.慢查询日志:slow query log</h3><pre><code>需要说明的是：
+    1.慢查询日志不只是记录执行比较慢SELECT的sql语句,还包括INSERT、DELETE、UPDATE等DML操作;
+    2.慢查询并不一定是查询语句自己执行速度慢导致的，有可能是这个查询语句所需要查询依赖的表被施加了写锁阻塞了查询;
+    3.mysql会把执行超过10秒的语句定义为慢查询语句;在生产环境中,如果线上请求超时,应该去看一下慢查询日志,先找到慢查询日志中执行时间较长的语句,然后利用mysqldumpslow命令去分析原因;
+1.慢查询日志的几个重要参数
+    1.slow_query_log和log_slow_queries=[ON|OFF]
+        这两个参数都是定义是否开启慢查询日志的,不过在mysql5.6之前的版本是使用log_slow_queries指定是否开启慢查询日志,在mysql5.6之后的版本都是使用slow_query_log代替log_slow_queries;
+    2.log_output=FILE|TABLE|FILE,TABLE|NONE
+        同上文的通用日志中的参数,log_output既用于控制查询日志的输出类型也控制慢查询日志的输出类型;慢查询日志建议输出为file;
+    3.slow_query_log_file:
+        当log_output定义为file时,可以使用此参数定义慢查询日志文件及其路径;同样,路径是my.cnf中datadir相对路径,慢查询的日志文件名默认是以mysql所在主机名来命名的：&quot;主机名-slow.log&quot;;
+    4.long_query_time
+        表示&quot;多长时间的查询&quot;被认定为&quot;慢查询&quot;，此值得默认值为10秒，表示超过10秒的查询被认定为慢查询
+    5.log_queries_not_using_indexes
+        表示如果运行的sql语句没有使用到索引,是否也被当做慢查询语句记录到慢查询日志中，OFF表示不记录，ON表示记录
+    6.log_throttle_queries_not_using_indexes=[ON|OFF]
+        此参数是mysql5.6.5版本新引入的参数，当log_queries_not_using_inde设置为ON时，没有使用索引的查询语句也会被当做慢查询语句记录到慢查询日志中，使用log_throttle_queries_not_using_indexes可以限制这种语句每分钟记录到慢查询日志中的次数，因为在生产环境中，有可能有很多没有使用索引的语句，此类语句频繁的被记录到慢查询日志中，可能会导致慢查询日志快速不断的增长，管理员可以通过此参数进行控制;
+2.开启慢查询日志并设置慢查询时间为5s
+    使用命令配置都是临时有效的，要想永久有效就需要写在my.cnf配置文件中:
+    ~]# vim etc/my.cnf
+        slow_query_log=ON
+        slow_query_log_file=/data/mysql3/master-slow.log
+        long_query_time=5
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;%slow%&apos;;
+    +-------------------------------+------------------------------+
+    | Variable_name                 | Value                        |
+    +-------------------------------+------------------------------+
+    | slow_query_log                | ON                           |
+    | slow_query_log_file           | /data/mysql3/master-slow.log |
+    | log_slow_rate_limit           | 1                            |
+    | log_slow_filter               |                              |
+    | log_slow_queries              | ON                           |
+    | log_slow_verbosity            | Query_plan,explain           |
+    | log_queries_not_using_indexes | OFF                          | 
+    +---------------------------+----------------------------------+
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;long_query_time&apos;;
+    +-----------------+-----------+
+    | Variable_name   | Value     |
+    +-----------------+-----------+
+    | long_query_time | 5.000000  |
+    +-----------------+-----------+
+    MariaDB [(none)]&gt; show global status like &apos;%slow_queries%&apos;;
+    +---------------+-------+
+    | Variable_name | Value |
+    +---------------+-------+
+    | Slow_queries  | 0     |
+    +---------------+-------+
+    开启慢查询日志后,如果有记录可以通过该命令查看有多少条慢查询语句;
+3.mysqldumpslow命令
+    mysqldumpslow命令是mysql自带的慢查询日志统计分析工具,通过mysqldumpslow命令我们可以更加方便的从不同的维度对慢日志进行排序、查找、统计;但是要想使用mysqldumpslow命令,log_output的值必须设置成file,而不能是table;
+    ~]# mysqldumpslow -h
+        -v:输出详细信息
+        -t NUM:输出慢查询日志中前多少行的记录
+        -g PATTERN：通过正则表达式匹配我们想要查看的内容
+        -s Order:-s代表排序,输出的记录可以按照下面这些参数进行排序：
+            c: 执行计数
+            l: 锁定时间
+            r: 返回记录
+            t: 执行时间
+            al:平均锁定时间
+            ar:平均返回记录数
+            at:平均执行时间
+        其中：
+            默认是按照平均查询时间at进行排序的,在使用中会经常用到按照c：查询次数来排序,因为查询次数很频繁但是时间不高也是有必要优化的
+    示例：
+        ~]# mysqldumpslow -v -s t -t 10 master-slow.log
+</code></pre><h3 id="4-二进制日志-binary-log"><a href="#4-二进制日志-binary-log" class="headerlink" title="4.二进制日志:binary log"></a>4.二进制日志:binary log</h3><p><img src="/2019/02/13/MySQL-日志管理/查看二进制日志中的事件.png" alt="查看二进制日志中的事件"></p>
+<pre><code>1.二进制日志说明
+    1.Mysql中的二进制日志记录了所有修改了数据库的语句或者有可能会改变数据库的语句,也就是说select、show这种不修改数据库的语句二进制日志是不会进行记录的;由于它是以二进制格式保存的，所以叫二进制日志;
+    2.二进制日志文件不能使用cat等命令查看,需要使用二进制日志的客户端命令工具mysqlbinlog来查看;
+    3.二进制日志的主要作用是：
+        1.用于mysql主从架构中,从节点从主节点复制同步数据;
+        2.用于mysql基于时间点的数据备份和恢复；
+    4.为了安全,建议将二进制日志文件和mysql的数据分开存放到不同的磁盘上,而且这些磁盘最好都做raid10来保证数据安全;
+2.二进制日志binlog是怎样用于时间点恢复的？
+    1.二进制日志最重要的作用之一就是解决在全量或增量备份到下次备份期间数据库崩溃时的这一段未备份数据的恢复!比如：
+        1.在周一0点进行全量备份后,周一12点数据库突然崩溃了,而0~12点间没有任何备份计划,此时就只能通过二进制日志来恢复0~12点之间的数据,因为上次完全备份到数据库崩溃之时之间的所有操作都会记录在二进制日志中,我们只需要将该时间点后的日志&quot;重放一遍&quot;即可恢复到数据库崩溃之时的样子;
+        2.借助二进制日志恢复数据需要使用mysqlbinlog命令和二进制日志文件,详见下文恢复示例;
+    2.而且mysql中的二进制日志binlog与oracle中的归档日志作用是一样的;
+3.二进制日志的3种记录格式：
+    记录在二进制日志中的格式是基于&quot;语句&quot;还是&quot;行&quot;,在有恢复数据的必要情况下还是有很大区别的,所以mysql二进制日志记录提供了三种格式：
+    1.基于&quot;语句&quot;记录：statement
+        假设A表有1000条数据,当执行update A set test=&apos;test&apos;语句时,如果使用statement模式,那么二进制日志中只会记录这条update语句,而不会记录被修改的1000行数据;可以看出statement模式的优点是binlog日志量少、IO压力小、性能较高;缺点是为了能够尽量的完全一致的还原操作,除了记录语句本身以外,可能还需要记录一些相关的信息，而且在使用一些特定的函数时，并不能保证恢复操作与记录时完全一致;
+    2.基于&quot;行&quot;记录：row
+        还是以A表有1000条数据,当执行update A set test=&apos;test&apos;语句为例,如果使用row模式,当执行这条update语句以后,由于1000条数据都会被修改,所以会有1000行数据被记录到二进制日志中;可以看出row模式的优点是能够完全的还原或者复制日志被记录时的操作,缺点是记录日志量较大、IO压力大、性能消耗较大;
+    3.混合模式：mixed
+        混合使用上述两种模式,一般的语句使用statment方式进行保存，如果遇到一些特殊的函数，则使用row模式进行记录，这种记录方式被称之为mixed，看上去这种方式似乎比较完美,但是在生产环境中,为了安全我们都会使用row模式;
+    可以通过binlog_format变量设置二进制日志的记录方式,为了使配置永久生效需要写在my.cnf配置文件中：binlog_format=row
+4.二进制日志的几个重要参数：
+    1.sql_log_bin=[ON|OFF]
+        此变量表示是否记录二进制日志,默认ON；需要特别注意的是:
+            1.sql_log_bin是一个会话级别的变量，只能在当前会话中使用set sql_log_bin命令进行设置,而不能使用set global sql_log_bin命令进行设置;
+            2.sql_log_bin也不能写在my.cnf文件中,否则可能会无法启动mysql;
+    2.log_bin=/PATH/BIN_LOG_FILE
+        关于此参数项有几点需要强调说明：
+            1.log_bin表示二进制日志存放的路径和二进制日志文件的文件名前缀,不能是ON或OFF（很多人以为是ON或OFF）,所以完整的二进制文件名是BIN_LOG_FILE.00001这种格式的;
+            2.只有sql_log_bin=ON和log_bin=/PATH/BIN_LOG_FILE同时都设置了,mysql才能记录二进制日志：
+            3.log_bin是一个只读变量!这就意味着不能通过set命令设置,只能通过写入my.cnf文件中;
+    3.binlog_format=STATEMENT|ROW|MIXED
+        二进制日志记录的格式，默认是STATEMENT,强烈建议改成row
+    4.max_binlog_size=1073741824：
+        单个二进制日志文件的最大大小,默认为1G,以字节为单位;到达最大值会自动滚动,也就是后缀名编号自动加1（*.000001、*.000002这种格式）;
+    5.sync_binlog=1|0
+        sync_binlog和事务日志中redo_log的innodb_flush_log_at_trx_commit参选选项是一样的都是设置将内存数据同步到磁盘上的刷写策略,此参数项的值有0和1两个:
+            1.值为1：表示每1次事务提交之后，都会立即将内存中的二进制日志立即同步到磁盘中的二进制日志文件中；
+            2.值为0：表示当事务提交之后，mysql不会立即将内存中的binlog刷写到磁盘中的binlog日志文件中，而是由文件系统决定什么时候刷写，这可能取决于文件系统的缓存机制;此值设置为0时,一旦操作系统宕机,那么将丢失未从内存中同步到磁盘中的binlog;
+        所以当此值设置为0时,安全性最差,但是性能最高;当此值设置为1时,安全性最高,性能最差;所以强烈建议将此参数值设置为1;
+    6.expire_logs_days=0:
+        二进制日志可以自动删除的天数,默认是0,0表示不启用根据时间自动删除的功能;
+5.生产环境建议设置二进制日志的参数如下：
+    ~]# vim /etc/my.cnf
+        [mysqld]
+        log_bin=mybinlog          #二进制日志的文件名前缀(相对路径)
+        binlog_format=row
+        max_binlog_size=524288000 #设置满500M时滚动
+        sync_binlog=1
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;%log_bin&apos;;
+        +---------------+-------+
+        | Variable_name | Value |
+        +---------------+-------+
+        | log_bin       | ON    |
+        | sql_log_bin   | ON    |
+        +---------------+-------+  
+        注意：只有这两个参数同时为ON时,mysql才会记录二进制日志
+    MariaDB [(none)]&gt; show GLOBAL VARIABLES like &apos;%binlog%&apos;;
+        +-----------------------------------------+----------------------+
+        | Variable_name                           | Value                |
+        +-----------------------------------------+----------------------+
+        | binlog_format                           | ROW                  |
+        | max_binlog_size                         | 524288000            |
+        | sync_binlog                             | 1                    |
+        +-----------------------------------------+----------------------+
+6.查看、清除二进制日志的相关命令
+    1.查看mysql产生的所有二进制日志文件列表命令：
+        show binary logs;或者show master logs;
+    2.查看mysql当前正在使用的二进制日志文件的命令
+        show master status;
+    3.查看指定二进制日志文件中的事件的命令：
+        show binlog events in &apos;二进制日志文件&apos; from position limit [offset,] [row_count]
+        注：详细使用见下文示例
+    4.清除指定二进制日志的命令：
+        purge {binary|master} logs {to &apos;二进制日志&apos; | before datetime_expr }
+        注：详细使用见下文示例
+    5.删除所有二进制日志，index文件重新记数
+        RESET MASTER [TO #];
+            #删除所有二进制日志文件，并重新生成日志文件，文件名从#开始记数，默认从1开始，一般是master主机第一次启动时执行，MariaDB10.1.6开始支持TO #
+    6.滚动生成新的二进制日志文件
+        FLUSH LOGS; 
+            #也就是说不管二进制日志是否达到设置的max_binlog_size大小,使用flush命令也可以生成新的二进制日志文件;它和备份工具mysqldump的--flush-log选项的作用是类似的;
+    示例：
+        1.MariaDB [(none)]&gt; show master logs;   #查看所有的二进制日志文件列表
+        +------------------+-----------+
+        | Log_name         | File_size |
+        +------------------+-----------+
+        | mysql-bin.000001 |       264 |
+        | mysql-bin.000002 |     21930 |
+        | mysql-bin.000003 |       486 |
+        +------------------+-----------+
+        2.MariaDB [(none)]&gt; show master status; #mysql正在使用的二进制日志文件
+        +------------------+----------+--------------+------------------+
+        | File             | Position | Binlog_Do_DB | Binlog_Ignore_DB |
+        +------------------+----------+--------------+------------------+
+        | mysql-bin.000003 |      486 |              |                  |
+        +------------------+----------+--------------+------------------+
+        3.查看指定二进制日志文件中的事件,见上图:
+7.mysqlbinlog命令和二进制日志中记录的信息说明： 
+    1.mysqlbinlog命令
+        1.除了在mysql提示符中使用show binlog events命令查看日志内容以外,还可以使用二进制日志的客户端命令工具mysqlbinlog查看对应的二进制日志；
+        2.mysqlbinlog的命令格式：
+            ~]# mysqlbinlog --help
+            Usage: mysqlbinlog [options] log-files
+            常用选项：
+                --start-position=#    指定开始位置
+                -stop-position=#      指定结束位置
+                --start-datetime=     指定从哪个时间开始查看
+                --stop-datetime=      指定查看的结束时间
+                    时间格式：YYYY-MM-DD hh:mm:ss 
+                --base64-output[=name]
+                -v | -vvv
+        示例：
+            1.查看二进制日志mysql-bin.000003中的信息
+                ~]# mysqlbinlog mysql-bin.000003
+            2.查看二进制日志mysql-bin.000003中从245~416段的信息
+                ~]# mysqlbinlog --start-position=245 --stop-position=416 mysql-bin.000003
+            3.查看2018年9月2日20点00以后的日志信息
+                ~]# mysqlbinlog --start-datetime &quot;2018-9-2 20:00:00&quot; mysql-bin.000003
+    2.二进制日志中记录的信息说明： 
+        如下图示是二进制日志mysql-bin.000003的文件内容,其中：
+        1.第一部分是每个二进制日志文件固定的开头内容包括一些版本信息和属性信息,此部分不需要关注;
+        2.第二部分是重点关注部分：
+            每个at #：代表一个事件
+            事件发生的日期和时间: 201107 23:24:21
+            事件发生的服务器标识：server id 1
+            事件的结束位置：end_log_pos 316,也代表下一个事件的开始标识
+            事件的类型：Query,广义上来讲所有语句都必须先执行Select,所以这里都是查询
+            事件发生时所在服务器执行此事件的线程的ID：thread_id=19
+            语句的时间戳与将其写入二进制文件中的时间差：exec_time=0 
+            错误代码：error_code=0 
+            事件内容：后面三项都属于事件的内容
+            GTID（mariadb10以上版本专属属性）：
+                Global Transaction ID称为全局事务的ID号,表示在同一个复制集群中，每一个服务器上执行任何事务它都有唯一的标识符,GTID的作用是将来在复制时避免事务之间产生冲突;    
+8.使用二进制日志基于时间点还原数据库
+    只需指定二进制日志的起始位置（可指定终止位置）并将其保存到sql文件中,由mysql命令来载入恢复即可;当然直接通过管道送给mysql命令也可：至于是基于位置position来恢复还是基于时间点来恢复,这两种行为都可以;选择时间点来恢复比较直观些,并且跨日志文件恢复时更方便;
+        ~]# mysqlbinlog --stop-datetime=&quot;2019-03-01 15:27:48&quot; /tmp/mysql-bin.000008 | mysql -u user -p password
+    恢复多个二进制日志文件时：
+        ~]# mysqlbinlog mysql-bin.[*] | mysql -uroot -p password
+    或者将它们导入到一个文件中后恢复:
+        ~]# mysqlbinlog mysql-bin.000001 &gt; /tmp/a.sql
+        ~]# mysqlbinlog mysql-bin.000002 &gt;&gt; /tmp/a.sql
+        ~]# mysql -u root -p password -e &quot;source /tmp/a.sql&quot;  
+</code></pre><p><img src="/2019/02/13/MySQL-日志管理/二进制日志的信息格式说明.png" alt="二进制日志的信息格式说明.png"></p>
+<h3 id="5-中继日志-reley-log"><a href="#5-中继日志-reley-log" class="headerlink" title="5.中继日志:reley log"></a>5.中继日志:reley log</h3><pre><code>中继日志是mysql复制架构中，从服务器用于保存从主服务器的二进制日志中读取到的事件的日志;
+MySQL [(none)]&gt; show GLOBAL VARIABLES LIKE &apos;%relay_log%&apos;;
++---------------------------+----------------+
+| Variable_name             | Value          |
++---------------------------+----------------+
+| max_relay_log_size        | 0              |
+| relay_log                 | relay-log      | #开启relay-log
+| relay_log_basename        |                |
+| relay_log_index           |              |#relay-log的索引类似于二进制index
+| relay_log_info_file       | relay-log.info |
+| relay_log_info_repository | FILE           |
+| relay_log_purge           | ON             |
+| relay_log_recovery        | OFF            |
+| relay_log_space_limit     | 0              |
+| sync_relay_log            | 10000          |  #relay-log将数据经过内存
+| sync_relay_log_info       | 10000          |
++---------------------------+----------------+
+</code></pre><h3 id="6-事务日志：transaction-log"><a href="#6-事务日志：transaction-log" class="headerlink" title="6.事务日志：transaction log"></a>6.事务日志：transaction log</h3><pre><code>事务型存储引擎自行管理和使用,详见Mysql的事务文章
+</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+<div>
+  
+</div>
+<div>
+      
+</div>
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2019/01/03/Mysql-存储引擎/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="空腹吃早餐">
+      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
+      <meta itemprop="image" content="/images/haha.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coool's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/03/Mysql-存储引擎/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">Mysql-存储引擎</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+                  
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-03 08:00:00" itemprop="dateCreated datePublished" datetime="2019-01-03T08:00:00+08:00">2019-01-03</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/03/Mysql-存储引擎/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/03/Mysql-存储引擎/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">6.2k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">6 分钟</span>
+              
             </div>
-         
-          <!--/noindex-->
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h3 id="1-Mysql存储引擎"><a href="#1-Mysql存储引擎" class="headerlink" title="1.Mysql存储引擎"></a>1.Mysql存储引擎</h3><p><img src="/2019/01/03/Mysql-存储引擎/1.gif" alt=""></p>
+<pre><code>1.存储引擎也称为表类型
+    存储引擎是MySQL服务的核心组件,它规定了数据存储时的存储结构;在Mysql中,存储引擎是插件式的;由于同一个数据库中的不同的表可以使用不同的存储引擎,所以存储引擎是表级别的概念,存储引擎也被称为&quot;表类型&quot;,每张表可以使用不同的存储引擎类型;
+2.Mysql中最常用的存储引擎为InnoDB与MyISAM;从Mysql5.5.5开始,Mysql中的默认存储引擎类型为InnoDB;由于InnoDB是99.9%的Mysql用户都会使用的默认存储引擎,所以在Mysql系列文章中的没有明确说明时,默认都是针对InnoDB来说明的,比如:索引、事务等;这两种最常用的两种存储引擎的特性对比：
+    MYISAM：支持表级锁、不支持行级锁、不支持事务、不支持外检约束、支持全文索引、表空间文件相对小
+    INNODB：支持表级锁、行级锁、支持事务、支持外键、不支持全文索引、表空间文件相对较大
+    这里只是简略说明InnoDB与MyISAM的区别,下文会详细再进行说明;
+3.Mysql中的其他存储引擎类型：
+    1.CSV：将CSV文件(以逗号分隔字段的文本文件)作为MySQL表文件;
+    2.Memory
+        内存存储引擎,速度快,但是一旦断电数据将会丢失,支持hash索引,支持表级锁,常用于临时表
+    3.Performance_Schema
+        从mysql5.5之后,多出了Performance_Schema数据库,Performance_Schema数据库中的表的表类型均为Performance_Schema,此数据库用于存储与数据库的性能相关的信息,用户无法创建使用这种存储引擎的表,但是dba可以通过Performance_Schema数据库中的信息进行性能分析,PERFORMANCE_SCHEMA数据库服务启动后此库中将不断的收集数据,mysql停机后此库中的表将不存在数据,类似于linux中的/proc目录;
+    4.Archive
+        创建此种表类型的表往往用于存储归档信息、安全审计信息、历史信息等,创建数据仓库时可能会用到此种表类型,使用archive表类型的表只支持select和insert操作,不能更新和删除操作,支持行级锁;
+    5.BLACKHOLE
+        黑洞存储引擎接受但不存储数据,检索结果总是返回一个空集;该功能可用于分布式数据库设计,数据自动复制,但不是本地存储;类似于linux中的/dev/null; 
+    6.MRG_MyISAM
+        此引擎也被称为MERGE存储引擎,如果一些myisam表的表结构完全相同,可以将这些MyISAM表合并成的一张MRG_MYISAM虚拟表;适用于VLDB(Very Large Data Base)环境,比如数据仓库;
+    7.Federated联合
+        利用federated引擎可将本地数据表映射至远程MySQL数据表,从而就可以解决应用程序中繁多的跨机器连接数据库问题,其实federated相当于一个访问其他远程mysql server的代理接口,它通过创建一个到远程mysql server的客户端连接,通过FEDERATED引擎创建的表只是在本地有表定义文件,数据文件则存在于远程数据库中;
+</code></pre><h3 id="2-InnoDB、MyISAM和Memory的区别"><a href="#2-InnoDB、MyISAM和Memory的区别" class="headerlink" title="2.InnoDB、MyISAM和Memory的区别"></a>2.InnoDB、MyISAM和Memory的区别</h3><pre><code>InnoDB与MyISAM的最大区别就是是否支持事务!Mysql的事务是非常非常重要的逻辑;下面就对这常用的三种存储引擎进行说明;
+</code></pre><h4 id="2-1-InnoDB存储引擎"><a href="#2-1-InnoDB存储引擎" class="headerlink" title="2.1.InnoDB存储引擎"></a>2.1.InnoDB存储引擎</h4><pre><code>1.InnoDB存储引擎特点
+    1.支持事务,适合处理大量短期事务 
+    2.支持行级锁(锁的颗粒度)
+        锁是实现事务隔离性重要基础之一,行级锁意味着一旦两个线程争用同一个资源时,它就需要对数据进行加锁,而且加锁的力度是行row级的；
+    3.读写阻塞与事务隔离级别相关 
+    4.可缓存数据和索引
+    5.支持聚簇索引(数据和索引放在一起称为聚簇索引)
+    6.崩溃恢复性更好(由于支持事务,可使用事务的redo log进行恢复)
+    7.支持MVCC(多版本并发控制机制)高并发 
+        1.InnoDB采用了MVCC来支持较高并发;而且事务的4种隔离级别中,MVCC只在RC:读已提交和RR:可重复读两个隔离级别下工作;
+        2.最重要的是并且基于间隙锁策略防止InnoDB事务隔离级别RR幻读的出现;(隔离级别原理文章中会详细说明)
+    8.支持外键
+    9.从MySQL5.5后支持全文索引 
+    10.从MySQL5.5.5开始为默认的数据库引擎
+    11.支持热备、冷备、温备、逻辑备份和物理备份  
+2.InnoDB的数据库文件
+    1.默认情况下所有InnoDB表的数据和索引放置于同一个表空间文件中;也就是Mysql数据目录下的ibdata文件;
+    2.如果开启了InnoDB的参数innodb_file_per_table=ON,则每个基于INnoDB的表使用单独的表空间,独立表空间的命名规则为：表名.ibd,每张表有两个文件：
+        tb_name.ibd：存放数据文件(数据和索引)
+        tb_name.frm：表格式定义文件
+            frm是format:也就是每张表都有字段每个字段都有自己的格式
+        ~]# ll /mysql/mysql3/hellodb/
+            -rw-rw---- 1 mysql mysql  8630 Nov  7 23:40 coc.frm
+            -rw-rw---- 1 mysql mysql 98304 Nov  7 23:41 coc.ibd
+        说明：
+            1.正是由于此参数的作用让InnoDB的众多高级特性才得以实现,比如单表备份(导入导出)功能；
+            2.这些单独的表空间文件仅存储该表的数据、索引和插入缓冲bitmap等信息,其余信息还是存放在默认的表空间(ibdata1)中;
+            3.InnoDB表的大小只受限于操作系统文件的大小,一般最大为2GB
+3.InnoDB的关键特性
+    1.插入缓冲(insert buffer)
+    2.两次写(Double write)
+    3.自适应哈希索引(adaptive hash index)
+    4.异步io(Async IO)
+    5.刷新领接页(Flush Neighbor Page)
+    这些关键特性会在InnoDB存储引擎架构系列文章中进一步说明;
+</code></pre><h4 id="2-2-MyISAM存储引擎"><a href="#2-2-MyISAM存储引擎" class="headerlink" title="2.2.MyISAM存储引擎"></a>2.2.MyISAM存储引擎</h4><pre><code>1.MyISAM存储引擎特点
+    1.不支持事务(和InnoDB最大的区别,所以很少人使用MyISAM引擎)
+    2.表级锁定
+        表级锁,由于即使是只改表中的一行数据他也需要把整张表锁住,在高并发场景下,锁竞争是常态,锁的颗粒度过于粗糙,不支持高并发业务场景;
+    3.读写相互阻塞,写入不能读,读时不能写 
+    4.只缓存索引 
+    5.不支持外键约束 
+    6.不支持聚簇索引(数据和索引是分开存放的)
+    7.读取数据较快,占用资源较少 
+    8.不支持MVCC（多版本并发控制机制）高并发 
+    9.崩溃恢复性较差
+        由于不支持事务,就不能使用事务日志进行数据恢复;只能通过手工或者自动修复,很大可能会造成数据丢失;
+    10.是MySQL5.5.5前默认的数据库引擎 
+2.MyISAM存储引擎适用场景：
+    只读(或者写较少)、表较小(可以接受长时间进行修复操作)
+3.MyISAM的数据库文件
+    MyISAM的数据库文件是将数据和索引分开放在不同的文件中,保证了安全性,每张表有三个文件：
+        tbl_name.frm 表结构信息(Format)
+        tbl_name.MYD 数据信息(MYData)
+        tbl_name.MYI 索引信息(MYIndex)
+    ~]# ll /mysql/mysql3/mysql/
+        -rw-rw---- 1 mysql mysql   9582 Nov  7 23:40 db.frm
+        -rw-rw---- 1 mysql mysql    880 Nov  7 23:40 db.MYD
+        -rw-rw---- 1 mysql mysql   5120 Nov  7 23:40 db.MYI
+</code></pre><h3 id="2-3-Memory存储引擎"><a href="#2-3-Memory存储引擎" class="headerlink" title="2.3.Memory存储引擎"></a>2.3.Memory存储引擎</h3><pre><code>Memory存储引擎为了提高数据的访问速度,将数据存在内存,每一个表实际上和一个磁盘文件关联;文件是frm;特点是：
+    1.支持的数据类型有限制,比如：不支持TEXT和BLOB类型,对于字符串类型的数据,只支持固定长度的行,VARCHAR会被自动存储为CHAR类型;
+    2.支持的锁粒度为表级锁;所以在访问量比较大时,表级锁会成为Memory存储引擎的瓶颈;
+    3.由于数据是存放在内存中,一旦服务器出现故障,数据都会丢失
+    4.查询的时候,如果有用到临时表,而且临时表中有BLOB、TEXT类型的字段,那么这个临时表就会转化为MyISAM类型的表,性能会急剧降低;
+    5.默认使用hash索引
+    6.如果一个内部表很大,会转化为磁盘表;
+</code></pre><h3 id="3-管理存储引擎-查看表类型"><a href="#3-管理存储引擎-查看表类型" class="headerlink" title="3.管理存储引擎(查看表类型)"></a>3.管理存储引擎(查看表类型)</h3><pre><code>1.查看mysql支持的所有存储引擎类型
+    MySQL [(none)]&gt; show engines;
+2.查看当前Mysql默认的存储引擎 
+    MySQL [(none)]&gt; show variables like &apos;%storage_engine%&apos;;
+    +------------------------+--------+
+    | Variable_name          | Value  |
+    +------------------------+--------+
+    | default_storage_engine | InnoDB |
+    | storage_engine         | InnoDB |
+    +------------------------+--------+
+3.设置Mysql默认的存储引擎 
+    可以通过set命令设置,为了永久生效,需要写在my.cnf配置文件中
+    ~]# vim /etc/my.cnf
+        [mysqld]
+        default_storage_engine= InnoDB 
+4.查看某个库中所有表使用的存储引擎类型
+    MySQL [(none)]&gt; show table status from hellodb\G;  #比如hellodb库的所有表
+    *************************** 1. row ***************************
+               Name: classes
+             Engine: InnoDB         #存储引擎类型
+            Version: 10
+         Row_format: Compact        #行格式,详见InnoDB的行记录格式相关文章
+               Rows: 8
+     Avg_row_length: 2048
+        Data_length: 16384
+    Max_data_length: 0
+       Index_length: 0
+          Data_free: 0
+     Auto_increment: 9
+        Create_time: 2019-05-07 23:40:51
+        Update_time: NULL
+         Check_time: NULL
+          Collation: utf8_general_ci
+           Checksum: NULL
+     Create_options: 
+            Comment: 
+5.查看库中指定表的存储引擎
+    可以使用show table status like &apos;tb_name&apos;\G;或者show create table tb_name;命令;比如：
+    MySQL[hellodb]&gt; show create table hellodb.coc;
+        | Table | Create Table
+        | coc   | CREATE TABLE `coc` (
+          `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `ClassID` tinyint(3) unsigned NOT NULL,
+          `CourseID` smallint(5) unsigned DEFAULT NULL,
+          PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 |
+6.设置一个表的存储引擎类型
+    可以在创建表时设置表的存储引擎类型,也可以先使用默认存储引擎,然后再修改;
+        CREATE TABLE tb_name(... ) ENGINE=InnoDB;
+        ALTER TABLE tb_name ENGINE=InnoDB; 
+    比如：
+        MySQL [hellodb]&gt; alter table coc engine=myisam;   
+        #将coc表的存储引擎从InnoDB修改成MyISAM
+7.每个表都可以任意选择存储引擎吗？
+    外键约束（FOREIGN KEY)不能跨引擎使用;Mysql支持多种存储引擎,每一个表都可以指定一个不同的存储引擎;但是要注意:外键约束是用来保证数据的参照完整性,如果表之间需要关联外键,却指定了不同的存储引擎,这些表之间是不能创建外键约束的;所以说存储引擎的选择也不完全是随意的;
+</code></pre>
+          
         
       
     </div>
@@ -1918,7 +2950,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/16/MongoDB的profile、监控和备份恢复/">
+    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/20/haproxy配置/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空腹吃早餐">
@@ -1938,7 +2970,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/10/16/MongoDB的profile、监控和备份恢复/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">MongoDB的profile、监控和备份恢复</a>
+                <a href="/2017/10/20/haproxy配置/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">haproxy配置</a>
               
             
           </h1>
@@ -1964,7 +2996,7 @@
                 
               
 
-              <time title="创建时间：2017-10-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T08:00:00+08:00">2017-10-16</time>
+              <time title="创建时间：2017-10-20 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-20T08:00:00+08:00">2017-10-20</time>
             
 
             
@@ -1982,14 +3014,14 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/" itemprop="url" rel="index"><span itemprop="name">负载均衡</span></a></span>
 
                 
                 
                   ，
                 
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/负载均衡/haproxy/" itemprop="url" rel="index"><span itemprop="name">haproxy</span></a></span>
 
                 
                 
@@ -2004,8 +3036,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/10/16/MongoDB的profile、监控和备份恢复/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/16/MongoDB的profile、监控和备份恢复/" itemprop="commentCount"></span>
+                <a href="/2017/10/20/haproxy配置/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/20/haproxy配置/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2027,7 +3059,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">12k</span>
+                <span title="本文字数">16k</span>
               
 
               
@@ -2041,7 +3073,7 @@
                 
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
-                <span title="阅读时长">11 分钟</span>
+                <span title="阅读时长">15 分钟</span>
               
             </div>
           
@@ -2062,439 +3094,11 @@
 
       
         
-          <h3 id="1-mongoDB的优化-Profiling捕捉慢查询"><a href="#1-mongoDB的优化-Profiling捕捉慢查询" class="headerlink" title="1.mongoDB的优化-Profiling捕捉慢查询"></a>1.mongoDB的优化-Profiling捕捉慢查询</h3>
+          <h3 id="HAProxy"><a href="#HAProxy" class="headerlink" title="HAProxy"></a>HAProxy</h3>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2017/10/16/MongoDB的profile、监控和备份恢复/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-         
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-<div>
-  
-</div>
-<div>
-      
-</div>
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/10/16/MongoDB的Sharding集群实现/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="空腹吃早餐">
-      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
-      <meta itemprop="image" content="/images/haha.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coool's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/10/16/MongoDB的Sharding集群实现/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">MongoDB的Sharding集群实现</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-                  
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-10-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T08:00:00+08:00">2017-10-16</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/10/16/MongoDB的Sharding集群实现/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/10/16/MongoDB的Sharding集群实现/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">12k</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">11 分钟</span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="1-MongoDB的sharding分片功能原理"><a href="#1-MongoDB的sharding分片功能原理" class="headerlink" title="1.MongoDB的sharding分片功能原理"></a>1.MongoDB的sharding分片功能原理</h3>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/10/16/MongoDB的Sharding集群实现/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-         
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-<div>
-  
-</div>
-<div>
-      
-</div>
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://www.liukui.tech/2017/09/16/MongoDB索引和副本集实现/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="空腹吃早餐">
-      <meta itemprop="description" content="如果你也喜欢杰伦那我们就是好朋友 C'est la vie">
-      <meta itemprop="image" content="/images/haha.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Coool's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/09/16/MongoDB索引和副本集实现/" class="post-title-link" itemprop="https://www.liukui.tech/page/7/index.html">MongoDB索引和副本集实现</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-                  
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-09-16 08:00:00" itemprop="dateCreated datePublished" datetime="2017-09-16T08:00:00+08:00">2017-09-16</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/" itemprop="url" rel="index"><span itemprop="name">Nosql</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Nosql/mongoDB/" itemprop="url" rel="index"><span itemprop="name">mongoDB</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/16/MongoDB索引和副本集实现/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/16/MongoDB索引和副本集实现/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">23k</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">21 分钟</span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="1-mongodb的索引"><a href="#1-mongodb的索引" class="headerlink" title="1.mongodb的索引"></a>1.mongodb的索引</h3>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2017/09/16/MongoDB索引和副本集实现/#more" rel="contents">
+              <a class="btn" href="/2017/10/20/haproxy配置/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -2594,7 +3198,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">57</span>
+                    <span class="site-state-item-count">60</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2778,10 +3382,6 @@
                 Links
               </div>
               <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://shuinoo.github.io/" title="https://shuinoo.github.io/" rel="noopener" target="_blank">蔡shuishui</a>
-                  </li>
                 
                   <li class="links-of-blogroll-item">
                     <a href="http://litten.me/" title="http://litten.me/" rel="noopener" target="_blank">litten</a>
@@ -3110,7 +3710,7 @@ if(canvas.getContext){
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">21:04</span>
+    <span title="站点阅读时长">21:37</span>
   
 </div>
 
